@@ -1,0 +1,14 @@
+/* Variables and mixins declared here will be available in all other SCSS files */
+@import "bootstrap/scss/functions"; /* Override Bootstrap's variables here */
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
+@mixin bg-gradient {
+    background-color: #edce6a;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxsaW5lYXJHcmFkaWVudCBpZD0idnNnZyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIxMDAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjAlIj48c3RvcCBzdG9wLWNvbG9yPSIjZjlmMjk1IiBzdG9wLW9wYWNpdHk9IjEiIG9mZnNldD0iMCIvPjxzdG9wIHN0b3AtY29sb3I9IiNlMGFhM2UiIHN0b3Atb3BhY2l0eT0iMSIgb2Zmc2V0PSIwLjI1Ii8+PHN0b3Agc3RvcC1jb2xvcj0iI2Y5ZjI5NSIgc3RvcC1vcGFjaXR5PSIxIiBvZmZzZXQ9IjAuNSIvPjxzdG9wIHN0b3AtY29sb3I9IiNlMGFhM2UiIHN0b3Atb3BhY2l0eT0iMSIgb2Zmc2V0PSIwLjc1Ii8+PHN0b3Agc3RvcC1jb2xvcj0iI2Y5ZjI5NSIgc3RvcC1vcGFjaXR5PSIxIiBvZmZzZXQ9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjdnNnZykiIC8+PC9zdmc+);
+    background-image: -webkit-gradient(linear, 100% 0%, 0% 0%, color-stop(0, rgb(249, 242, 149)), color-stop(0.25, rgb(224, 170, 62)), color-stop(0.5, rgb(249, 242, 149)), color-stop(0.75, rgb(224, 170, 62)), color-stop(1, rgb(249, 242, 149)));
+    /* Android 2.3 */
+    background-image: -webkit-repeating-linear-gradient(right, rgb(249, 242, 149) 0%, rgb(224, 170, 62) 25%, rgb(249, 242, 149) 50%, rgb(224, 170, 62) 75%, rgb(249, 242, 149) 100%);
+    /* IE10+ */
+    background-image: repeating-linear-gradient(to left, rgb(249, 242, 149) 0%, rgb(224, 170, 62) 25%, rgb(249, 242, 149) 50%, rgb(224, 170, 62) 75%, rgb(249, 242, 149) 100%);
+    background-image: -ms-repeating-linear-gradient(right, rgb(249, 242, 149) 0%, rgb(224, 170, 62) 25%, rgb(249, 242, 149) 50%, rgb(224, 170, 62) 75%, rgb(249, 242, 149) 100%);
+}
