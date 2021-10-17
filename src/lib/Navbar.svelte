@@ -1,13 +1,14 @@
 <script>
     import Fa from 'svelte-fa/src/fa.svelte'
-    import {
+    /*import {
         faShoppingCart
-    } from '@fortawesome/free-solid-svg-icons'
+    } from '@fortawesome/free-solid-svg-icons'*/
+    import {faShoppingCart} from '$lib/my-font-awsome';
 </script>
 <nav class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
-        <a class="navbar-logo" href="#"><img class="nav-logo"
-                src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9.png"
+        <a class="navbar-logo" href="#"><img class="nav-logo" width="auto" height="40px"
+                src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
                 alt=""></a>
 
         <form class="d-flex" id="search_form">
@@ -67,7 +68,7 @@
 
             #search {
                 width: 80%;
-                line-height: 2.5;
+                line-height: 2;
             }
 
             .menu {}

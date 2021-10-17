@@ -12,3 +12,20 @@
     background-image: repeating-linear-gradient(to left, rgb(249, 242, 149) 0%, rgb(224, 170, 62) 25%, rgb(249, 242, 149) 50%, rgb(224, 170, 62) 75%, rgb(249, 242, 149) 100%);
     background-image: -ms-repeating-linear-gradient(right, rgb(249, 242, 149) 0%, rgb(224, 170, 62) 25%, rgb(249, 242, 149) 50%, rgb(224, 170, 62) 75%, rgb(249, 242, 149) 100%);
 }
+$gold-animation-duration: 5s;
+$gold-animation-text-color: rgba(255, 255, 255, 0.3);
+
+@mixin gold-animation-mix {
+    background: #222 -webkit-gradient(linear, left top, right top, from(#222), to(#222), color-stop(0.5, #fff)) 0 0 no-repeat;
+    background-image: -webkit-linear-gradient(-40deg, transparent 0%, transparent 40%, #fff 50%, transparent 60%, transparent 100%);
+    -webkit-background-size: 200px;
+    color: $gold-animation-text-color;
+    -webkit-background-clip: text;
+    -webkit-animation-name: shine;
+    -webkit-animation-duration: $gold-animation-duration;
+    -webkit-animation-iteration-count: infinite;
+    text-shadow: 0 0px 0px #cc9900ce;
+}
+.gold-animation {
+    @include gold-animation-mix;
+  }
