@@ -165,7 +165,7 @@
                 }
             }
         }
-
+/*
         #navCategoryList {
             .dropdown-item {
                 padding: .25rem 1rem;
@@ -178,9 +178,7 @@
 
         .loader {
             border: 6px solid #f3f3f3;
-            /* Light grey */
             border-top: 6px solid #3498db;
-            /* Blue */
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -197,5 +195,6 @@
                 transform: rotate(360deg);
             }
         }
+*/
     }
 </style>
