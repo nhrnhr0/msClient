@@ -1,9 +1,28 @@
 <script>
+    import {albumsJsonStore} from './../stores/stores'
     import Fa from 'svelte-fa/src/fa.svelte'
     /*import {
         faShoppingCart
     } from '@fortawesome/free-solid-svg-icons'*/
     import {faShoppingCart} from '$lib/my-font-awsome';
+    
+    import {
+            Dropdown,
+            DropdownItem,
+            DropdownMenu,
+            DropdownToggle
+        } from 'sveltestrap';
+        import {categoryModalStore} from './../stores/stores'
+        function menuItemClicked(album) {
+            console.log('openCategoryModal: ',album);
+            $categoryModalStore.setAlbum(album);
+            $categoryModalStore.open();
+            //categoryModal = getContext('categoryModal');
+            /*categoryModal.setAlbum(albumId);
+            categoryModal.open();*/
+            //categoryModal
+        }
+
 </script>
 <nav class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
@@ -20,19 +39,32 @@
         </form>
 
 
-        <div class="dropdown">
-            <a class="dropdown-toggle" href="#" role="link" id="dropdownLink" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                <svg viewBox="0 0 100 80" width="40" height="40">
-                    <rect width="100" height="20"></rect>
-                    <rect y="30" width="100" height="20"></rect>
-                    <rect y="60" width="100" height="20"></rect>
-                </svg>
-            </a>
 
-            <ul class="dropdown-menu" id="navCategoryList" aria-labelledby="dropdownLink">
-            </ul>
-        </div>
+            <Dropdown id="navCategoryList">
+                <DropdownToggle color="none" caret>
+                    <svg viewBox="0 0 100 80" width="40" height="40">
+                        <rect width="100" height="20"></rect>
+                        <rect y="30" width="100" height="20"></rect>
+                        <rect y="60" width="100" height="20"></rect>
+                    </svg>
+                </DropdownToggle>
+                <DropdownMenu>                    
+                    {#if $albumsJsonStore }
+                        {#each $albumsJsonStore as  album}
+                            <DropdownItem>
+                                <button class="btn btn-dark" on:click={menuItemClicked(album)}>
+                                    {album.title}
+                                </button>
+                            </DropdownItem>
+                        {/each}
+                    {/if}
+                </DropdownMenu>
+            </Dropdown>
+            
+                
+                
+            
+        
 
         <div onclick="openCart()" id="cart-btn" class="cart">
 
@@ -45,6 +77,9 @@
 
 
 
+        
+        
+        
 
     </div>
 </nav>
@@ -52,7 +87,25 @@
 
 
 <style lang="scss">
+    .navbar :global(#navCategoryList){
+        position: inherit;
+        :global(.dropdown-menu.show) {
+            background: rgb(242, 242, 242);
+            display:flex;
+            width: 95vw;
+            overflow-y: hidden;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            :global(.dropdown-item) {
+                flex-basis: 1%;
+                margin:auto;
+                text-align: center;
+            }
+    }
+}
     .navbar {
+        
+        
         @include bg-gradient();
         position: sticky;
         top: 0;
@@ -71,7 +124,7 @@
                 line-height: 2;
             }
 
-            .menu {}
+            /*.menu {}
 
             .collapsible {
 
@@ -163,7 +216,7 @@
                 .content {
                     display: block !important;
                 }
-            }
+            }*/
         }
 /*
         #navCategoryList {
