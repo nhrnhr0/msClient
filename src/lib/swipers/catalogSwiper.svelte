@@ -30,11 +30,9 @@
     
 </script>
 <Lazy height={300}>
-    <h1>{album.id}</h1>
-
         {#await data}
                 <Spinner
-                size="50"
+                size="200"
                 speed="750"
                 color="#A82124"
                 thickness="2"

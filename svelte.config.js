@@ -1,12 +1,21 @@
 import preprocess from "svelte-preprocess";
 import adapter from '@sveltejs/adapter-static';
+import { terser } from 'rollup-plugin-terser';
+
+const production = !process.env.ROLLUP_WATCH;
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  
+  plugins: [
+		production && terser()
+  ],
   kit: {
-    // hydrate the <div id="svelte"> element in src/app.html
+    paths: { 
+      base: '', 
+      assets: process.env.NODE_ENV === 'production' ? 'https://nhrnhr0.github.io/msClientBuild' : ''
+    }, 
     target: "#svelte",
+    
 
     adapter: adapter({
       // default options are shown
@@ -35,6 +44,7 @@ const config = {
     }),
   ],
 
+  
 };
 
 export default config;
