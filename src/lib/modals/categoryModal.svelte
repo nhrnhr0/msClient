@@ -16,7 +16,7 @@
   import {
     get_album_details
   } from './../../api/api';
-  import {albumsJsonStore} from './../../stores/stores'
+  import {albumsJsonStore,productModalStore} from './../../stores/stores'
 
   export let _open = false;
   export const toggle = () => (_open = !_open);
@@ -33,6 +33,11 @@
     fotter = album.categoryFotter;
     products = get_album_details(album.id);
     title = album.title;
+  }
+  function open_product(imgId) {
+    let catalogId= $current_album.id
+    $productModalStore.setProduct(catalogId, imgId);
+    $productModalStore.open();
   }
 </script>
 
@@ -58,7 +63,7 @@
 
                 {#each $albumsJsonStore as alb}
                     <li class="nav-item">
-                      <a class="nav-link" href aria-label="open category" role="button"><button on:click={setAlbum(alb)} class="btn btn-dark">{alb.title}</button></a>
+                      <a class="nav-link" aria-label="open category" role="button"><button on:click={setAlbum(alb)} class="btn btn-dark">{alb.title}</button></a>
                     </li>
                 {/each}
 
@@ -105,7 +110,7 @@
 
 
             <div class="category-item" data-category-prod-id="{img.id}">
-              <div class="category-item-img-wraper">
+              <div class="category-item-img-wraper" on:click="{open_product(img.id)}" >
                 <img class="product-image" width="250px" height="250px" src="{STATIC_BASE}{img.image}" alt="{img.description}" />
                 <div class="img-title">{img.title}</div>
               </div>

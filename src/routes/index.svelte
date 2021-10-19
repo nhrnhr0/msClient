@@ -13,15 +13,22 @@
 
     let colors_response = await fetch(COLORS_API_URL, {method: 'GET', redirect: 'follow'})
     let colors_json = await colors_response.json();
+    let sizes_ret = {};
+    for(let i = 0; i < sizes_json.length; i++) {
+      sizes_ret[sizes_json[i].id] =  sizes_json[i];
+    }
 
-
+    let colors_ret = {};
+    for(let i = 0; i < colors_json.length; i++) {
+      colors_ret[colors_json[i].id] =  colors_json[i];
+    }
     
     /*
 */
     return {
 			props: {
-        colors: colors_json,
-        sizes: sizes_json,
+        colors: colors_ret,
+        sizes: sizes_ret,
         albums: albums_json
 			}
 		};
@@ -37,7 +44,7 @@
 </svelte:head>
 <CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
 <ProductModal bind:this={$productModalStore}></ProductModal>
-
+{console.log($sizesJsonStore)}
 <Header />
 <About />
 {#each albums as album}

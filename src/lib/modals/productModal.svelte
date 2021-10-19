@@ -1,5 +1,9 @@
 <script>
-import { get_album_details } from './../../api/api';
+    import {
+        get_album_details
+    } from './../../api/api';
+    import SvelteMarkdown from 'svelte-markdown'
+
 
     export let _open = false;
     export const toggle = () => (_open = !_open);
@@ -12,37 +16,89 @@ import { get_album_details } from './../../api/api';
         ModalFooter,
         ModalHeader
     } from 'sveltestrap';
-import { writable } from 'svelte/store';
+    import {
+        writable
+    } from 'svelte/store';
 
-import {albumsJsonStore} from './../../stores/stores'
+    import {
+        albumsJsonStore,
+        categoryModalStore,
+        colorsJsonStore,
+        sizesJsonStore
+    } from './../../stores/stores'
 
-import {STATIC_BASE} from './../../api/consts'
+    import {
+        STATIC_BASE
+    } from './../../api/consts'
     let productData = writable();
     let current_album = writable();
+    let all_products_in_category;
+    let colorMarkup = '';
+    let sizeMarkup = '';
     export function setProduct(catalogId, productId) {
         // find album data from id:
-        
+
         current_album.set($albumsJsonStore.filter((val) => {
-            console.log('hey hey: val=', val);
             return val.id == catalogId;
         })[0]);
 
 
         let productsPromise = get_album_details(catalogId);
-        let colorMarkup  = '';
-        let sizeMarkup = '';
-        productData.subscribe((data)=> {
-            debugger;
-            if(data == undefined) {
+        productsPromise.then((v) => {
+            all_products_in_category = v;
+            for (let i = 0; i < v.length; i++) {
+                if (v[i].id == productId) {
+                    productData.set(v[i]);
+                    break;
+                }
+            }
+        });
+    }
+
+    function nextClick() {
+        for(let i = 0; i < all_products_in_category.length; i++) {
+            if(all_products_in_category[i].id === $productData.id) {
+                let newIndex= ((i+1)%all_products_in_category.length);
+                console.log('setting new product: ', $current_album.id, all_products_in_category[newIndex].id);
+                setProduct($current_album.id, all_products_in_category[newIndex].id);
+                break;
+            }
+        }
+    }
+
+    function prevClick() {
+        for(let i = 0; i < all_products_in_category.length; i++) {
+            if(all_products_in_category[i].id === $productData.id) {
+                let newIndex= (i-1);
+                newIndex = newIndex >= 0? newIndex: all_products_in_category.length-1;
+                console.log('setting new product: ', $current_album.id, all_products_in_category[newIndex].id);
+                setProduct($current_album.id, all_products_in_category[newIndex].id);
+                break;
+            }
+        }
+    }
+
+    function open_category() {
+        $categoryModalStore.setAlbum($current_album);
+        $categoryModalStore.open();
+    }
+
+    productData.subscribe((data) => {
+            colorMarkup = '';
+            sizeMarkup = '';
+            if (data == undefined) {
                 return;
             }
             for (var i = 0; i < data.colors.length; i++) {
                 var col_id = data.colors[i];
-                colorMarkup += `<div class="color-box" title="${col.name}" alt="${col.name}" style="background:${col.color};"></div>`;
+                var col = $colorsJsonStore[col_id];
+                colorMarkup +=
+                    `<div class="color-box" title="${col.name}" alt="${col.name}" style="background:${col.color};"></div>`;
             }
 
             for (var i = 0; i < data.sizes.length; i++) {
                 var size_id = data.sizes[i];
+                var size = $sizesJsonStore[size_id];
                 sizeMarkup += `<div class="size-box">${size.size}</div>`;
             }
 
@@ -51,22 +107,12 @@ import {STATIC_BASE} from './../../api/consts'
         });
 
 
-        productsPromise.then((v)=>{
-            for(let i = 0; i < v.length;i++) {
-                console.log('productId: ', productId, '\t V: ', v[i].id);
-                if(v[i].id == productId) {
-                    productData.set(v[i]);
-                    break;
-                }
-            }
-        })
-    }
 </script>
 <div class="productModalWraper">
     <Modal id="productModal" isOpen={_open} {toggle}>
         {#if $productData }
             <ModalHeader {toggle}>
-                <button data-album-id=""
+                <button id="category-open-btn-{$current_album.id}" on:click={open_category}
                     class="title btn btn-outline-dark">{$current_album.title}
                 </button>
             </ModalHeader>
@@ -83,15 +129,17 @@ import {STATIC_BASE} from './../../api/consts'
                         <hr>
                         <div class="product-properties">
                             <div class="product-color-wraper">
-                                <div class="product-color">'colorMarkup'</div>
+                                <div class="product-color">{@html colorMarkup}</div>
                             </div>
                             <div class="product-size-wraper">
-                                <div class="product-size">'sizeMarkup'</div>
+                                <div class="product-size">{@html sizeMarkup}</div>
                             </div>
                         </div>
                         <hr>
                         
-                        <div class="product-description">marked(img.description)</div>
+                        <div class="product-description">
+                            <SvelteMarkdown source={$productData.description} />
+                        </div>
                         
                     </div>
                     <div class="img-wraper" ><img alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{STATIC_BASE}{$productData.image}"/></div>
@@ -102,7 +150,12 @@ import {STATIC_BASE} from './../../api/consts'
 
             </ModalBody>
             <ModalFooter>
-
+                <button id="modal-prev-btn" class="btn modal-nav-btn" on:click={prevClick}>
+                    <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="prev">
+                </button>
+                <button id="modal-next-btn" class="btn modal-nav-btn" on:click={nextClick}>
+                    <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="next">
+                </button>
             </ModalFooter>
         {/if}
     </Modal>

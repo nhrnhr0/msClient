@@ -22,7 +22,7 @@
 </script>
 <nav class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
-        <a class="navbar-logo" href aria-label="logo" role="button"><img class="nav-logo" width="100px" height="40px"
+        <a class="navbar-logo" aria-label="logo" role="button"><img class="nav-logo" width="100px" height="40px"
                 src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
                 alt=""></a>
 

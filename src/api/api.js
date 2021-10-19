@@ -4,10 +4,12 @@ let albumsData = {};
 import { STATIC_BASE } from "./consts";
 export function get_album_details(albumId) {
     console.log('get_album_details: ', albumId)
-    if(albumsData[albumsData]) {
-        return albumsData[albumsData];
+    if(albumsData[albumId]) {
+        console.log('return ',  albumId, ' from cache');
+        return albumsData[albumId];
     }
     else {
+        console.log('return ',  albumId, ' from server');
         var myHeaders = new Headers();
         var requestOptions = {
         method: 'GET',

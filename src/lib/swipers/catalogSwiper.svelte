@@ -41,7 +41,7 @@ import { onMount } from 'svelte';
         });
     })
     
-    function swiperClicked(e) {
+    /*function swiperClicked(e) {
         e.preventDefault();
         console.log('swiperClicked: ', e);        
         for (let i = 0; i < e.detail[0].length; i++) {
@@ -51,10 +51,12 @@ import { onMount } from 'svelte';
                 $productModalStore.open();
             }
         }
-    }
+    }*/
 
-    function swiperClicked2(catalogId, productId) {
+    function swiperSlideClicked(catalogId, productId) {
         console.log('swiperClicked2: ', catalogId, productId);
+        $productModalStore.setProduct(catalogId, productId);
+        $productModalStore.open();
     }
 </script>
 <Lazy height={500}>
@@ -95,7 +97,7 @@ import { onMount } from 'svelte';
                                         {image.title}
                                 </div>
                                     <div class="img-wraper" >
-                                        <img  class="product-image" on:click="{swiperClicked2(album.id, image.id)}" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{STATIC_BASE}{image.image}" alt="{image.title}">
+                                        <img  class="product-image" on:click="{swiperSlideClicked(album.id, image.id)}" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{STATIC_BASE}{image.image}" alt="{image.title}">
                                     </div>
                                 <button class="like-btn">הוסף</button>
                             </div>
