@@ -17,16 +17,12 @@
             console.log('openCategoryModal: ',album);
             $categoryModalStore.setAlbum(album);
             $categoryModalStore.open();
-            //categoryModal = getContext('categoryModal');
-            /*categoryModal.setAlbum(albumId);
-            categoryModal.open();*/
-            //categoryModal
         }
 
 </script>
 <nav class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
-        <a class="navbar-logo" href="#"><img class="nav-logo" width="auto" height="40px"
+        <a class="navbar-logo" href aria-label="logo" role="button"><img class="nav-logo" width="100px" height="40px"
                 src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
                 alt=""></a>
 
@@ -41,7 +37,7 @@
 
 
             <Dropdown id="navCategoryList">
-                <DropdownToggle color="none" caret>
+                <DropdownToggle color="none" caret aria-label="menu">  
                     <svg viewBox="0 0 100 80" width="40" height="40">
                         <rect width="100" height="20"></rect>
                         <rect y="30" width="100" height="20"></rect>

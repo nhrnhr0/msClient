@@ -58,7 +58,7 @@
 
                 {#each $albumsJsonStore as alb}
                     <li class="nav-item">
-                      <a class="nav-link" href="#"><button on:click={setAlbum(alb)} class="btn btn-dark">{alb.title}</button></a>
+                      <a class="nav-link" href aria-label="open category" role="button"><button on:click={setAlbum(alb)} class="btn btn-dark">{alb.title}</button></a>
                     </li>
                 {/each}
 
@@ -140,9 +140,9 @@
         {/if}
       </ModalBody>
       <ModalFooter>
-        <img class="header-logo header-logo-r" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" />
+        <img class="header-logo header-logo-r" alt="M.S. Global" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" />
         <h5 class="modal-title">{$current_album.title}</h5>
-        <img class="header-logo header-logo-l" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" />
+        <img class="header-logo header-logo-l" alt="M.S. Global" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" />
 
       </ModalFooter>
     </Modal>

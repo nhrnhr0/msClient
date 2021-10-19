@@ -16,20 +16,48 @@
     import 'swiper/css';
     import "swiper/css/effect-coverflow"
     import "swiper/css/pagination"
+    import "swiper/css/navigation"
+
     // import Swiper core and required modules
     import SwiperCore, {
         EffectCoverflow,
-        Pagination
+        Pagination,
+        Navigation
     } from 'swiper';
     import Spinner from 'svelte-spinner';
+    import {productModalStore} from './../../stores/stores'
+import { onMount } from 'svelte';
 
     // install Swiper modules
-    SwiperCore.use([EffectCoverflow, Pagination]);
+    SwiperCore.use([EffectCoverflow, Pagination,Navigation]);
     //let data = get_album_details(album.id);
-    let data = get_album_details(album.id)
+    let data = get_album_details(album.id);
+
+    onMount(()=> {
+        window.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('.product-image').addEventListener("click", function(event) {
+                console.log(event.target);
+            });
+        });
+    })
     
+    function swiperClicked(e) {
+        e.preventDefault();
+        console.log('swiperClicked: ', e);        
+        for (let i = 0; i < e.detail[0].length; i++) {
+            let event = e.detail[0][i];
+            if (event['target'] && event['target'].classList.contains('product-image')) {
+                $productModalStore.setProduct(event['target'].dataset.catalogId, event['target'].dataset.productId);
+                $productModalStore.open();
+            }
+        }
+    }
+
+    function swiperClicked2(catalogId, productId) {
+        console.log('swiperClicked2: ', catalogId, productId);
+    }
 </script>
-<Lazy height={300}>
+<Lazy height={500}>
         {#await data}
                 <Spinner
                 size="200"
@@ -41,12 +69,14 @@
         {:then d} 
                 <Swiper
                 effect="{'coverflow'}"
-                grabCursor="{true}"
                 centeredSlides="{true}"
                 slidesPerView="{'5'}"
                 loopedSlides="{'8'}"
                 speed= "{125}"
                 loop= "{true}"
+                threshold="50px"
+                allowTouchMove="{true}"
+                preventClicks="{false}"
 
                 coverflowEffect='{{
                     "rotate": -13,
@@ -64,8 +94,9 @@
                                 <div class="img-title">
                                         {image.title}
                                 </div>
-                                <img class="product-image" src="{STATIC_BASE}{image.image}" alt="{image.title}">
-                                
+                                    <div class="img-wraper" >
+                                        <img  class="product-image" on:click="{swiperClicked2(album.id, image.id)}" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{STATIC_BASE}{image.image}" alt="{image.title}">
+                                    </div>
                                 <button class="like-btn">הוסף</button>
                             </div>
                         </SwiperSlide>

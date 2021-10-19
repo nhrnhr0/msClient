@@ -3,7 +3,7 @@
 <div class="header-1">
     <div class="inner-header">
         <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
-            alt="M.S. Global" width="400px" height="auto" style="max-width: 100%;" />
+            alt="M.S. Global" width="400px" height="162px" style="max-width: 100%;" />
         <div class="text">
             שיווק &bull; פרסום &bull; מכירות
         </div>
@@ -13,8 +13,8 @@
 <div class="header-2">
     <div class="header-image">
         <img class="class-bg-image"
-            src="https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634462230/msAssets/bg_ppl_img_pwk06i"
-            width="auto" height="auto" alt="אמ. אס גלובל נשמח לעמוד לשירותכם">
+            width="1024px" height="334px" src="https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634462230/msAssets/bg_ppl_img_pwk06i"
+            alt="אמ. אס גלובל נשמח לעמוד לשירותכם">
         <div class="content">
             <div class="title">
                 נשמח לעמוד לשירותכם

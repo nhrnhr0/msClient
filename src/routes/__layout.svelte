@@ -1,4 +1,4 @@
-<script>
+<script context="module">
   import "../app.scss";
   import Navbar from "$lib/Navbar.svelte";
 

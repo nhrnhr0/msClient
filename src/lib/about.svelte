@@ -13,7 +13,7 @@
             ועוד...
             <br>
             מחפשים מוצר ולא מוצאים ?
-            <u><a target="_blank" href="https://wa.me/+972547919908">צרו קשר</a></u>
+            <u><a rel="noopener" target="_blank" href="https://wa.me/+972547919908">צרו קשר</a></u>
 
             ונצא לחיפושים
         </div>

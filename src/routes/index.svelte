@@ -1,18 +1,34 @@
 <script context="module">
 	import Header from "$lib/header.svelte"
 	import About from "$lib/about.svelte"
-	import {albumsJsonStore} from './../stores/stores'
-	import {ALBUMS_API_URL} from './../api/consts'
-	import {categoryModalStore} from './../stores/stores'
-	fetch(ALBUMS_API_URL, { method: 'GET', redirect: 'follow'})
-			.then(response => response.json())
-			.then(result => {console.log(result);albumsJsonStore.set(result)})
-			.catch(error => console.log('error', error));
+	import {albumsJsonStore, productModalStore, categoryModalStore,sizesJsonStore, colorsJsonStore} from './../stores/stores'
+	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL } from './../api/consts'
 	
-	//setContext('categoryModal', categoryModal);
+  export async function load({fetch}) {
+    let albums_response = await fetch(ALBUMS_API_URL, { method: 'GET', redirect: 'follow'});
+    let albums_json = await albums_response.json();
+
+    let sizes_response = await fetch(SIZES_API_URL, {method: 'GET', redirect: 'follow'})
+    let sizes_json = await sizes_response.json();
+
+    let colors_response = await fetch(COLORS_API_URL, {method: 'GET', redirect: 'follow'})
+    let colors_json = await colors_response.json();
 
 
+    
+    /*
+*/
+    return {
+			props: {
+        colors: colors_json,
+        sizes: sizes_json,
+        albums: albums_json
+			}
+		};
+  }
+  
 </script>
+
 
 
 
@@ -20,9 +36,11 @@
 	<title>Home</title>
 </svelte:head>
 <CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
+<ProductModal bind:this={$productModalStore}></ProductModal>
+
 <Header />
 <About />
-{#each $albumsJsonStore as album}
+{#each albums as album}
 
 		<div class="title-wraper">
 			<button class="title btn" on:click={openCategoryModal(album)}>
@@ -36,15 +54,26 @@
 
 <script>
 
-import CatalogSwiper from '$lib/swipers/catalogSwiper.svelte';
-import CategoryModal from "$lib/modals/categoryModal.svelte";
-import { writable } from "svelte/store";
+  import CatalogSwiper from '$lib/swipers/catalogSwiper.svelte';
+  import CategoryModal from "$lib/modals/categoryModal.svelte";
+  import ProductModal from "$lib/modals/productModal.svelte";
+  import { onMount } from "svelte";
 
+  export let colors;
+  export let sizes;
+  export let albums;
 
-function openCategoryModal(album){
-    $categoryModalStore.setAlbum(album);
-    $categoryModalStore.open();
-  }
+  onMount(()=> {
+    console.log('on mount: setting albums');
+    albumsJsonStore.set(albums);
+    sizesJsonStore.set(sizes);
+    colorsJsonStore.set(colors);
+  });
+
+  function openCategoryModal(album){
+      $categoryModalStore.setAlbum(album);
+      $categoryModalStore.open();
+    }
 
 </script>
 
@@ -52,19 +81,6 @@ function openCategoryModal(album){
 .title-wraper {
   display: flex;
   justify-content: center;
-
-  .counter {
-    direction: ltr;
-
-    #year {
-      display: none;
-    }
-
-    #month {
-      display: none;
-    }
-
-  }
 
   .title {
     opacity: 0.5;
