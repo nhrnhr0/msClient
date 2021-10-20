@@ -1,6 +1,9 @@
 <script>
-    import {albumsJsonStore} from './../stores/stores'
+    import AutoComplete from "simple-svelte-autocomplete";
+
+    import {albumsJsonStore, productModalStore} from './../stores/stores'
     import Fa from 'svelte-fa/src/fa.svelte'
+    import {SEARCH_API_URL} from './../api/consts'
     /*import {
         faShoppingCart
     } from '@fortawesome/free-solid-svg-icons'*/
@@ -18,7 +21,59 @@
             $categoryModalStore.setAlbum(album);
             $categoryModalStore.open();
         }
+        let searchValue;
+        async function searchProducts(keyword) {
+            const url = SEARCH_API_URL + '?q=' + encodeURIComponent(keyword);
+            const reponse = await fetch(url);
+            const json = await reponse.json();
+            console.log('search api result: ', json);
+            let data = json;
+            let albums = [];
+            // get all the albums from the products and count how much products from each album
+            for(let i = 0; i < data.all.length; i++) {
+                let my_item = data.all[i];
+                let album = my_item.albums[0];
+                var album_index = albums.findIndex(a => a.id == album.id);
+                if(album_index == -1) {
+                    album.item_count = 1;
+                    albums.push(album);
+                }else{
+                    albums[album_index].item_count += 1;
+                }
+            }
 
+            albums.sort(function (a, b) {
+                if (a.item_count > b.item_count) {
+                    return -1;
+                } else if (a.item_count <= b.item_count) {
+                    return 1
+                }
+                return 0;
+            });
+
+            // add the albums in the start and after the products
+            let items = albums.concat(data.all);
+
+            console.log('returned from search: ', items);
+            return items;
+        }
+
+        function autocompleteItemSelected(item) {
+            if(item == undefined) {
+                console.log('autocompleteItemSelected: item is undefined');
+                return;
+            }
+            console.log('autocompleteItemSelected: ', item);
+            debugger;
+            if(item.item_count) {
+                $categoryModalStore.setAlbum(item);
+                $categoryModalStore.open();
+            }else {
+                $productModalStore.setProduct(item.albums[0].id, item.id);
+                $productModalStore.open();
+
+            }
+        }
 </script>
 <nav class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
@@ -27,8 +82,29 @@
                 alt=""></a>
 
         <form class="d-flex" id="search_form">
+            <AutoComplete createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:selectedItem={searchValue} >
+                <div slot="item" let:item={item} let:label={label}>
+                {#if item.item_count}
+                    <div class="list-category">
+                        <div class="search-item">
+                            {item.title} ({item.item_count})
+                            <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
+                        </div>
+                    </div>
+                {:else}
+                    <div class="search-item">
+                        <img style="height:25px;" src="{item.image}" /> 
+                        <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
+                        {@html label}
+                    </div>
+                {/if}
+
+                  </div>
+            </AutoComplete>
+            <!--
             <input class="form-control" id="search" autocomplete="on" type="search" placeholder="חיפוש..."
                 aria-label="Search">
+                -->
             <!-- <button class="btn btn-outline-success" type="submit">Search</button>-->
             <div class="spiner" style="display: none;"></div>
 
@@ -83,6 +159,54 @@
 
 
 <style lang="scss">
+:global(.autocomplete-cls)  {
+    width: 100%!important;
+    * {
+        font-size: large;
+    
+    }
+}
+.list-category {
+    
+    //background-color: black;
+
+
+
+    .search-item {
+        padding-top: 5px;
+        padding-bottom: 5px;
+      text-align: right;
+      border: 2px solid black;
+      border-radius: 15px;
+      //border: 5px black solid;
+      background-color: #FFD880;
+      text-align: center;
+      font-size: larger;
+    font-weight: bold;
+    }
+
+    &:hover {
+      .search-item {
+        //background-color: #40508d;
+        background-color: #3969B1;
+      }
+    }
+  }
+
+  .search-item {
+    text-align: right;
+    padding-bottom:2px;
+    padding-top:2px;
+    .logo {
+      //display: inline-block;
+      height: 20px;
+      transform: translate(0, 25%);
+      float: left;
+    }
+  }
+
+
+
     .navbar :global(#navCategoryList){
         position: inherit;
         :global(.dropdown-menu.show) {

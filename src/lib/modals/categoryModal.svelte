@@ -16,7 +16,7 @@
   import {
     get_album_details
   } from './../../api/api';
-  import {albumsJsonStore,productModalStore} from './../../stores/stores'
+  import {albumsJsonStore,productModalStore, _modal_z_index_incrementor} from './../../stores/stores'
 
   export let _open = false;
   export const toggle = () => (_open = !_open);
@@ -27,6 +27,20 @@
   let title = 'loading'
   let desctiption = '';
   let fotter = '';
+  let modal_zIndex = 0;
+
+    function categoryModalOpen(e) {
+      console.log('categoryModalOpen: modal_zIndex: ',modal_zIndex , e);
+      debugger;
+      let items = document.querySelectorAll('.modal.show');
+      let zIndex = $_modal_z_index_incrementor++ + 1040 + (10 * items.length);
+      modal_zIndex = zIndex;
+      //setTimeout(function () {
+          //document.querySelector('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+      //}, 0);
+    }
+
+
   export function setAlbum(album) {
     current_album.set(album);
     desctiption = album.description;
@@ -42,7 +56,7 @@
 </script>
 
 <div class="catalogModalWraper">
-  <Modal id="categoryModal" isOpen={_open} {toggle}>
+  <Modal style="z-index={modal_zIndex}"  on:open={categoryModalOpen} id="categoryModal" isOpen={_open} {toggle}>
     <ModalHeader {toggle}>
 
 

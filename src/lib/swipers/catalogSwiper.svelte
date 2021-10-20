@@ -1,4 +1,5 @@
 <script export="module">
+    import { inview } from 'svelte-inview';
     import Lazy from 'svelte-lazy';
     import {STATIC_BASE} from '../../api/consts'
 
@@ -58,23 +59,38 @@ import { onMount } from 'svelte';
         $productModalStore.setProduct(catalogId, productId);
         $productModalStore.open();
     }
+
+    let isInView;
+
 </script>
+<div class="lazy-swiper-wraper" class:active="{isInView}"
+use:inview
+
+on:change={(event) => {
+    //const { inview, entry, scrollDirection, observe, unobserve } = event.detail;
+    isInView = event.detail.inView;
+  }}
+>
 <Lazy height={500}>
+{#if isInView}
         {#await data}
-                <Spinner
-                size="200"
-                speed="750"
-                color="#A82124"
-                thickness="2"
-                gap="40"
-            />
+            <div class="loader-wraper">
+            <Spinner
+            size="200"
+            speed="750"
+            color="#A82124"
+            thickness="2"
+            gap="40"
+        />
+            </div>
         {:then d} 
+            
                 <Swiper
                 effect="{'coverflow'}"
                 centeredSlides="{true}"
                 slidesPerView="{'5'}"
                 loopedSlides="{'8'}"
-                speed= "{125}"
+                speed= "{50}"
                 loop= "{true}"
                 threshold="50px"
                 allowTouchMove="{true}"
@@ -89,6 +105,7 @@ import { onMount } from 'svelte';
                   }}'
                   pagination="{true}" 
                   navigation="{true}"
+                  
                 >
                     {#each d as image}
                         <SwiperSlide>
@@ -104,10 +121,22 @@ import { onMount } from 'svelte';
                         </SwiperSlide>
                     {/each}
               </Swiper>
+            
         {/await}
+{/if}
 </Lazy>
-
+</div>
 <style lang="scss">
+    .loader-wraper {
+        width:100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+.lazy-swiper-wraper {
+    height: 500px!important;
+}
+
     :global(.swiper-slide) {
         
         .slide-content {

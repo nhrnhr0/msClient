@@ -13,7 +13,7 @@ const config = {
   kit: {
     paths: { 
       base: '', 
-      assets: ''// production ? 'https://nhrnhr0.github.io/msClientBuild' : ''
+      assets: production ? 'https://nhrnhr0.github.io/msClientBuild' : ''
     }, 
     target: "#svelte",
     

@@ -44,7 +44,6 @@
 </svelte:head>
 <CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
 <ProductModal bind:this={$productModalStore}></ProductModal>
-{console.log($sizesJsonStore)}
 <Header />
 <About />
 {#each albums as album}
@@ -75,12 +74,28 @@
     albumsJsonStore.set(albums);
     sizesJsonStore.set(sizes);
     colorsJsonStore.set(colors);
+    
+
+
+  //    let _modal_z_index_incrementor = 0;
+  // fix category modal overlaping product modal
+  /*document.on('show.bs.modal', '.modal', function (event) {
+    
+      debugger;
+      let zIndex = _modal_z_index_incrementor++ + 1040 + (10 * document.querySelectorAll('.modal:visible').length);
+      this.css('z-index', zIndex);
+      setTimeout(function () {
+          //$('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+      }, 0);
+  });*/
   });
 
   function openCategoryModal(album){
       $categoryModalStore.setAlbum(album);
       $categoryModalStore.open();
     }
+
+
 
 </script>
 
