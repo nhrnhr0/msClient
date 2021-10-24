@@ -5,12 +5,12 @@
     "dev": "env-cmd -f ./.env/local/.env svelte-kit dev",
     "build": "env-cmd -f ./.env/local/.env svelte-kit build",
     "preview": "env-cmd -f ./.env/local/.env svelte-kit preview",
-
     "sdev": "env-cmd -f ./.env/server/.env svelte-kit dev",
     "sbuild": "env-cmd -f ./.env/server/.env svelte-kit build",
     "spreview": "env-cmd -f ./.env/server/.env svelte-kit preview"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.0.6",
     "@sveltejs/adapter-static": "^1.0.0-next.21",
     "@sveltejs/kit": "next",
     "bootstrap": "^5.1.3",

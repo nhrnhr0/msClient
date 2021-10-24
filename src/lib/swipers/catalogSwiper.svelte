@@ -55,21 +55,23 @@ import { onMount } from 'svelte';
     }*/
 
     function swiperSlideClicked(E) {
+
         console.log('CLICK: ', E);
-        let detail = E.detail[0];
-        for(let i = 0; i < detail.length; i++) {
-            let target = detail[i].target;
-            console.log('>> \t', target);
-            if(target) {
-                if(target.classList.contains('product-image')) {
-                    $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);
-                    $productModalStore.open();
+        if(typeof(E) == 'object') {
+            let detail = E.detail[0];
+            for(let i = 0; i < detail.length; i++) {
+                let target = detail[i].target;
+                console.log('>> \t', target);
+                if(target) {
+                    if(target.classList.contains('product-image')) {
+                        debugger;
+                        $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);
+                        $productModalStore.toggleModal();
+                    }
                 }
             }
         }
-        /*console.log('swiperClicked2: ', catalogId, productId);
-        $productModalStore.setProduct(catalogId, productId);
-        $productModalStore.open();*/
+        
     }
     /*function swiperSlideClicked(catalogId, productId) {
         console.log('swiperClicked2: ', catalogId, productId);

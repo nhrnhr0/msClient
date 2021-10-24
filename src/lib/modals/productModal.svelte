@@ -35,6 +35,7 @@
     let all_products_in_category;
     let colorMarkup = '';
     let sizeMarkup = '';
+    
     export function setProduct(catalogId, productId) {
         // find album data from id:
 
@@ -80,7 +81,7 @@
 
     function open_category() {
         $categoryModalStore.setAlbum($current_album);
-        $categoryModalStore.open();
+        $categoryModalStore.toggleModal();
         close();
     }
 
@@ -108,6 +109,7 @@
         });
 
 
+
 </script>
 <div class="productModalWraper">
     <Modal id="productModal" isOpen={_open} {toggle}>
@@ -119,10 +121,6 @@
             </ModalHeader>
             <ModalBody>
                 
-
-
-
-
                 <div class="inner-body">
 
                     <div class="product-detail">

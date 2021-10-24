@@ -19,7 +19,7 @@
         function menuItemClicked(album) {
             console.log('openCategoryModal: ',album);
             $categoryModalStore.setAlbum(album);
-            $categoryModalStore.open();
+            $categoryModalStore.toggleModal();
         }
         let searchValue;
         async function searchProducts(keyword) {
@@ -67,10 +67,10 @@
             debugger;
             if(item.item_count) {
                 $categoryModalStore.setAlbum(item);
-                $categoryModalStore.open();
+                $categoryModalStore.toggleModal();
             }else {
                 $productModalStore.setProduct(item.albums[0].id, item.id);
-                $productModalStore.open();
+                $productModalStore.toggleModal();
 
             }
         }

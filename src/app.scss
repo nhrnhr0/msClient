@@ -153,8 +153,112 @@ button:focus:not(:focus-visible) {
   }
 }
 */
+*:focus {
+  outline: 0;
+}
 
 
+.modal {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 990;
+  &.active {
+    display:block;
+  }
+}
+
+.modal .overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 995;
+  background: rgba(0,0,0,0.85);
+}
+
+.modal .modal_content {
+  overscroll-behavior: contain;
+
+
+  z-index: 999;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-height: 80%;
+  overflow: auto;
+  background: #fff;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.7);
+  border-radius: 4px;
+  width: 85%;
+  text-align: center;
+  .modal-header {
+    @include bg-gradient();
+    //background: #ffd880;
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+    .header-logo {
+      height: 35px;
+      margin: auto;
+    }
+
+    .modal-title {
+      font-weight: 700;
+      font-size: 2.5em;
+
+    }
+  }
+  .modal-body {
+    background: url('https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634461664/msAssets/wall_bg_az5xzl');
+    background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url('https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634461664/msAssets/wall_bg_az5xzl');
+    background-position: center;
+    //background: linear-gradient( rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) ),url('../imgs/catalogBg1.jpeg');
+    overflow: hidden;
+    text-align: right;
+  }
+
+
+
+  .modal-fotter {
+    @include bg-gradient();
+    //max-height: 10%;
+    display: flex;
+    flex-direction: row;
+
+    .header-logo {
+      height: 35px;
+    }
+
+    .modal-title {
+      font-weight: 700;
+      font-size: 2.5em;
+    }
+  }
+}
+
+
+.modal .close_modal {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.5;
+  background: none;
+  border: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal .close_modal:hover {
+  opacity: 0.9;
+}
+/*
 .modal {
   .close {
     border: 0;
@@ -225,6 +329,8 @@ button:focus:not(:focus-visible) {
     max-width: 850px;
   }
 }
+*/
+/*
 .modal { overflow: auto !important; }
 
 #categoryModal {
@@ -305,29 +411,32 @@ button:focus:not(:focus-visible) {
       }
     }
 
-  }
+    .modal-body {
+      overflow-x: hidden;
 
-  .modal-body {
-    overflow-x: hidden;
+      overflow-y: scroll;
+  
+  
+      background: url(https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl);
+      background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.15)), to(rgba(0, 0, 0, 0.15))), url(https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl);
+      background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url(https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl);
+      background-position: center;
+      text-align: right;
+  
+  
+  
+      .category-description {
+        //background-color: rgba(0, 0, 0, 0.7);
+        //color:white;
+        color: black;
+        border-radius: 15px;
+        padding: 20px;
+      }
 
-    overflow-y: scroll;
 
 
-    background: url(https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl);
-    background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.15)), to(rgba(0, 0, 0, 0.15))), url(https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl);
-    background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url(https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl);
-    background-position: center;
-    text-align: right;
-
-
-
-    .category-description {
-      //background-color: rgba(0, 0, 0, 0.7);
-      //color:white;
-      color: black;
-      border-radius: 15px;
-      padding: 20px;
     }
+
   }
 
   .modal-footer {
@@ -347,110 +456,12 @@ button:focus:not(:focus-visible) {
     }
   }
 
-  .category-items {
-        display: grid;
-    grid-column: 1fr 1fr 1fr;
-    grid-template-columns: repeat(5, 1fr);
-
-    .category-item {
-      cursor: pointer;
-      padding: 5px;
-
-      .category-item-img-wraper {
-        &:hover {
-          background-color: black;
-          transform: scale(1.1);
-          z-index: 1;
-        }
-
-        .product-image {
-          width: 100%;
-          height: auto;
-          z-index: 2;
-          @include bg-image;
-
-          &:hover {
-            transform: scale(1.1);
-            -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(black), to(rgba(0, 0, 0, 0)));
-            -webkit-mask-image: linear-gradient(to bottom, black, rgba(0, 0, 0, 0));
-            mask-image: -webkit-gradient(linear, left top, left bottom, from(black), to(rgba(0, 0, 0, 0)));
-            mask-image: linear-gradient(to bottom, black, rgba(0, 0, 0, 0));
-          }
-        }
-      }
-
-
-
-      &.checked {
-        /*.like-wrapper a {
-            color: #000;
-            border: 1px solid black;
   
-            &:hover {
-              //color: white;
-            }
-  
-            &:after {
-              width: 100%;
-              height: 100%;
-            }
-            span {
-              img {
-  
-              }
-            }
-          }
-  */
-      }
-
-      &:hover {}
-
-      position: relative;
-
-      .category-item-img-wraper {
-        img {
-          height: auto;
-          /*padding: 5px;*/
-          border-radius: 0px;
-          border-top-right-radius: 15px;
-          border-top-left-radius: 15px;
-
-
-          &:hover {
-            transform: scale(1.1);
-            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
-          }
-
-          &:hover+.img-title {
-            display: block;
-            transition: transform 0.2s;
-            //transform: translate(-50%, -80%);
-            font-weight: 700;
-          }
-        }
-      }
-
-      .img-title {
-        position: absolute;
-        display: none;
-        color: white;
-        z-index: 2000;
-        bottom: 50%;
-        transform: translate(-50%, 0%);
-        //top: 0px;
-        font-size: 1.5em;
-
-        left: 50%;
-        pointer-events: none;
-        text-align: center;
-      }
-    }
-  }
 }
 
+*/
 
-
-#productModal {
+/*#productModal {
 
   .modal-dialog {
     .modal-content {
@@ -461,8 +472,6 @@ button:focus:not(:focus-visible) {
         }
       }
     .modal-body {
-      //background-color: rgba(255, 255, 255, 0.6);
-      //background-blend-mode: lighten;
       width: 100%;
       max-width: initial!important;
     }
@@ -473,7 +482,6 @@ button:focus:not(:focus-visible) {
 
 
       .product-detail {
-        //padding-right: 5px;
         flex: 1;
         min-width: 35%;
         padding-left: 10px;
@@ -496,20 +504,13 @@ button:focus:not(:focus-visible) {
 
           .product-color {
             display: flex;
-            //flex-wrap: wrap;
             width: 100%;
             justify-content: flex-start;
             flex-grow: 1;
             flex-shrink: 0;
 
-            /*
-            flex-wrap: wrap;
-            flex-direction: row-reverse;
-            display: flex;
-            flex-direction: row;*/
             .color-box {
               margin: 3px;
-              //width: 25px;
               max-width: 25px;
               flex: 1;
               height: 25px;
@@ -524,16 +525,12 @@ button:focus:not(:focus-visible) {
 
           .product-size-wraper {
             .product-size {
-              /*
-            display: flex;
-            flex-direction: row-reverse;
-            flex-wrap: wrap;*/
+
               display: flex;
               width: 100%;
               justify-content: flex-start;
               flex-grow: 1;
               flex-shrink: 0;
-              //flex-wrap: wrap;
 
               .size-box {
                 flex: 1;
@@ -572,7 +569,6 @@ button:focus:not(:focus-visible) {
 
       .btn {
         padding: 0px;
-        //outline: none;
         box-shadow: none;
       }
 
@@ -606,14 +602,6 @@ button:focus:not(:focus-visible) {
         }
 
         &.isAdded {
-          /*
-            color: #fff;
-            background-color: #398439;
-            border-color: #255625;
-            animation: 5s linear burst;  
-            animation-duration: 5000ms;
-            animation-iteration-count: 1;
-            animation-timing-function: linear; */
         }
       }
 
@@ -631,4 +619,4 @@ button:focus:not(:focus-visible) {
     }
   }
 } 
-}
+}*/

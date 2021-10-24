@@ -1,6 +1,7 @@
 import preprocess from "svelte-preprocess";
 import adapter from '@sveltejs/adapter-static';
 import { terser } from 'rollup-plugin-terser';
+import resolve from '@rollup/plugin-node-resolve';
 
 const production = process.env['NODE_ENV'] == 'production';
 console.log('======================================================================================');
@@ -28,7 +29,11 @@ const config = {
 
     vite: {
       plugins: [
-        production && terser()
+        production && terser(),
+        resolve({
+          // Below is the important line!
+          dedupe: ['svelte', 'svelte/transition', 'svelte/internal']
+        }),
       ],
       css: {
         preprocessorOptions: {

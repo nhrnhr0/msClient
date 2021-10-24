@@ -51,7 +51,7 @@
   function open_product(imgId) {
     let catalogId= $current_album.id
     $productModalStore.setProduct(catalogId, imgId);
-    $productModalStore.open();
+    $productModalStore.toggleModal();
   }
 </script>
 

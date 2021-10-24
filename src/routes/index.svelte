@@ -3,7 +3,8 @@
 	import About from "$lib/about.svelte"
 	import {albumsJsonStore, productModalStore, categoryModalStore,sizesJsonStore, colorsJsonStore} from './../stores/stores'
 	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL } from './../api/consts'
-	
+
+
   export async function load({fetch}) {
     let albums_response = await fetch(ALBUMS_API_URL, { method: 'GET', redirect: 'follow'});
     let albums_json = await albums_response.json();
@@ -46,6 +47,8 @@
 <ProductModal bind:this={$productModalStore}></ProductModal>
 <Header />
 <About />
+<!--<TempModal bind:this={$tempModalStore}/>
+<button on:click={()=>{$tempModalStore.toggleModal()}}>click me to open modal</button>-->
 {#each albums as album}
 
 		<div class="title-wraper">
@@ -61,13 +64,15 @@
 <script>
 
   import CatalogSwiper from '$lib/swipers/catalogSwiper.svelte';
-  import CategoryModal from "$lib/modals/categoryModal.svelte";
-  import ProductModal from "$lib/modals/productModal.svelte";
+  import CategoryModal from "$lib/modals/cModal.svelte";
+  import ProductModal from "$lib/modals/pModal.svelte";
   import { onMount } from "svelte";
+import { tempModalStore } from "$lib/modals/modalManager";
 
   export let colors;
   export let sizes;
   export let albums;
+
 
   onMount(()=> {
     console.log('on mount: setting albums');
@@ -92,7 +97,7 @@
 
   function openCategoryModal(album){
       $categoryModalStore.setAlbum(album);
-      $categoryModalStore.open();
+      $categoryModalStore.toggleModal();
     }
 
 
