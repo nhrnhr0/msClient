@@ -16,7 +16,7 @@ export function get_album_details(albumId) {
         headers: myHeaders,
         redirect: 'follow'
         };
-
+        console.log('fetch from: ', STATIC_BASE + "/_get_album_images/" + albumId);
         let response = fetch(STATIC_BASE + "/_get_album_images/" + albumId, requestOptions).then(response => response.json());
         albumsData[albumId] = response;
         return albumsData[albumId];
