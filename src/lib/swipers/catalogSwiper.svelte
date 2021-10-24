@@ -54,11 +54,28 @@ import { onMount } from 'svelte';
         }
     }*/
 
-    function swiperSlideClicked(catalogId, productId) {
+    function swiperSlideClicked(E) {
+        console.log('CLICK: ', E);
+        let detail = E.detail[0];
+        for(let i = 0; i < detail.length; i++) {
+            let target = detail[i].target;
+            console.log('>> \t', target);
+            if(target) {
+                if(target.classList.contains('product-image')) {
+                    $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);
+                    $productModalStore.open();
+                }
+            }
+        }
+        /*console.log('swiperClicked2: ', catalogId, productId);
+        $productModalStore.setProduct(catalogId, productId);
+        $productModalStore.open();*/
+    }
+    /*function swiperSlideClicked(catalogId, productId) {
         console.log('swiperClicked2: ', catalogId, productId);
         $productModalStore.setProduct(catalogId, productId);
         $productModalStore.open();
-    }
+    }*/
 
     let isInView;
 
@@ -95,6 +112,7 @@ on:change={(event) => {
                 threshold="50px"
                 allowTouchMove="{true}"
                 preventClicks="{false}"
+                on:click="{swiperSlideClicked}"
 
                 coverflowEffect='{{
                     "rotate": -13,
@@ -116,7 +134,7 @@ on:change={(event) => {
                                     <div class="img-wraper" >
                                         <img  class="product-image" on:click="{swiperSlideClicked(album.id, image.id)}" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{STATIC_BASE}{image.image}" alt="{image.title}">
                                     </div>
-                                <button class="like-btn">הוסף</button>
+                                <!--<button class="like-btn">הוסף</button>-->
                             </div>
                         </SwiperSlide>
                     {/each}

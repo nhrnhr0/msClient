@@ -81,6 +81,7 @@
     function open_category() {
         $categoryModalStore.setAlbum($current_album);
         $categoryModalStore.open();
+        close();
     }
 
     productData.subscribe((data) => {

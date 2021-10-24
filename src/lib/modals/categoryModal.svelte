@@ -128,6 +128,7 @@
                 <img class="product-image" width="250px" height="250px" src="{STATIC_BASE}{img.image}" alt="{img.description}" />
                 <div class="img-title">{img.title}</div>
               </div>
+              <!--
               <div>
                 <div class="like-btn" name="like-btn">
                   <div class="like-wrapper">
@@ -138,6 +139,7 @@
                   </div>
                 </div>
               </div>
+              -->
             </div>
 
 

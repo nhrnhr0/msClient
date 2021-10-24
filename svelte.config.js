@@ -8,21 +8,21 @@ console.log('===================================================================
 console.log('===============================> svelte.config.js mode: ', process.env['NODE_ENV'], '<================');
 console.log('======================================================================================');
 console.log('======================================================================================');
+console.log(import.meta.env);
+console.log('======================================================================================');
+console.log(process.env['ASSETS_BASE_URL']);
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   kit: {
+    appDir: "app",
     paths: { 
-      base: '', 
-      assets: production ? 'https://nhrnhr0.github.io/msClientBuild' : ''
+      base: process.env.NODE_ENV === "production" ? "/msClientBuild" : "",
+      assets: '', //process.env['GITHUB_REPO_ABS']
     }, 
     target: "#svelte",
     
 
     adapter: adapter({
-      // default options are shown
-      pages: 'build',
-      assets: 'build',
-      fallback: null
     }),
     
 

@@ -225,8 +225,16 @@ button:focus:not(:focus-visible) {
     max-width: 850px;
   }
 }
+.modal { overflow: auto !important; }
 
 #categoryModal {
+  .btn-close {
+    border: 1px solid red;
+    padding: .5em;
+    margin-left: 1em;
+    margin-right: auto;
+  }
+
   .modal-dialog {
     margin: 0px;
     padding: 0px;
