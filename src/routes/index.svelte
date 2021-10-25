@@ -3,9 +3,15 @@
 	import About from "$lib/about.svelte"
 	import {albumsJsonStore, productModalStore, categoryModalStore,sizesJsonStore, colorsJsonStore} from './../stores/stores'
 	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL } from './../api/consts'
+  import { browser } from '$app/env';
 
 
-  export async function load({fetch}) {
+  export async function load({fetch, page}) {
+debugger;
+    const qs = browser ? document.location.search : '';
+    const query = new URLSearchParams(qs);
+    const productQuery = (query.get('product') || '-1');
+    const categoryQuery = query.get('category');
     let albums_response = await fetch(ALBUMS_API_URL, { method: 'GET', redirect: 'follow'});
     let albums_json = await albums_response.json();
 
@@ -30,7 +36,9 @@
 			props: {
         colors: colors_ret,
         sizes: sizes_ret,
-        albums: albums_json
+        albums: albums_json,
+        onLoadProduct: productQuery,
+        onLoadCategory: categoryQuery
 			}
 		};
   }
@@ -73,27 +81,32 @@ import { tempModalStore } from "$lib/modals/modalManager";
   export let sizes;
   export let albums;
 
+  
+  export let onLoadCategory;
+  export let onLoadProduct;
 
   onMount(()=> {
     console.log('on mount: setting albums');
     albumsJsonStore.set(albums);
     sizesJsonStore.set(sizes);
     colorsJsonStore.set(colors);
-    
-
-
-  //    let _modal_z_index_incrementor = 0;
-  // fix category modal overlaping product modal
-  /*document.on('show.bs.modal', '.modal', function (event) {
-    
-      debugger;
-      let zIndex = _modal_z_index_incrementor++ + 1040 + (10 * document.querySelectorAll('.modal:visible').length);
-      this.css('z-index', zIndex);
-      setTimeout(function () {
-          //$('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
-      }, 0);
-  });*/
+debugger;
+    if(onLoadCategory != '-1') {
+      for(let i = 0; i < albums.length; i++) {
+        if(albums[i].id == onLoadCategory) {
+          openCategoryModal(albums[i])
+          break;
+        }
+      }
+    }
+    if(onLoadProduct != '-1') {
+      let [prodId, cateId] = onLoadProduct.split(',');
+      $productModalStore.setProduct(prodId, cateId);
+      $productModalStore.toggleModal()
+      //openProductModalFromId(cateId, prodId)
+    }
   });
+
 
   function openCategoryModal(album){
       $categoryModalStore.setAlbum(album);

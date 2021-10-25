@@ -1,13 +1,21 @@
 <script context="module">
   import "../app.scss";
   import Navbar from "$lib/Navbar.svelte";
+  import { stateQuery} from './../stores/queryStore'
+  
 
 </script>
 <Navbar></Navbar>
+<div class="hidden">
+<input type="text" bind:value={$stateQuery['product']}> 
+<input type="text" bind:value={$stateQuery['category']}> 
+</div>
 <div class="bg-wraper">
   <slot />
 </div>
 
+<script>
+</script>
 
 <style lang="scss">
   .bg-wraper  {

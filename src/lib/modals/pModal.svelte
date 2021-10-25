@@ -14,16 +14,29 @@
     colorsJsonStore,
     sizesJsonStore
   } from './../../stores/stores'
+  import {    _modal_z_index_incrementor
+  } from './../../stores/stores'
 
   import {
     STATIC_BASE
-  } from './../../api/consts'
+  } from './../../api/consts';
+  import { stateQuery} from './../../stores/queryStore'
+
   let productData = writable();
   let current_album = writable();
   let all_products_in_category;
   let colorMarkup = '';
   let sizeMarkup = '';
+  let modal_zIndex = 0;
+  let _productId, _catalogId;
+  export function isOpen() {
+    return isModalOpen;
+  }
   export function setProduct(catalogId, productId) {
+    $stateQuery['product'] = catalogId + ',' + productId;
+    _productId = productId;
+    _catalogId = catalogId;
+    modal_zIndex=1200+ (++$_modal_z_index_incrementor * 15);
     // find album data from id:
 
     current_album.set($albumsJsonStore.filter((val) => {
@@ -68,8 +81,10 @@
 
   function open_category() {
     $categoryModalStore.setAlbum($current_album);
+    if($categoryModalStore.isOpen()) {
+      $categoryModalStore.toggleModal();
+    }
     $categoryModalStore.toggleModal();
-    close();
   }
 
   productData.subscribe((data) => {
@@ -93,22 +108,30 @@
 
     console.log('new sizeMarkup: ', sizeMarkup);
     console.log('new colorMarkup: ', colorMarkup);
+
+    
+    
   });
 
-  let isModalOpen;
+  let isModalOpen = false;
   export function toggleModal() {
     console.log('product toggleModal');
     isModalOpen = !isModalOpen;
+    if(isModalOpen == false) {
+      $stateQuery['product']= -1;
+    }
+    
   }
 </script>
 
 
 
 
-<div id="productModal" class="modal" class:active={isModalOpen}>
-  <div class="overlay" on:click={toggleModal}></div>
+<div style="z-index: {modal_zIndex};" id="productModal" class="modal" class:active={isModalOpen}>
+  <div style="z-index: {modal_zIndex+5};" class="overlay" on:click={toggleModal}></div>
+
   {#if $productData }
-        <div class="modal_content">
+        <div style="z-index: {modal_zIndex+10};" class="modal_content">
             <div class="modal-header">
                 <button id="category-open-btn-{$current_album.id}" on:click={open_category}
                         class="title btn btn-outline-dark">{$current_album.title}
@@ -117,7 +140,6 @@
 
             <div class="modal-body">
                 <div class="inner-body">
-
                     <div class="product-detail">
                         <div class="product-title">{$productData.title}</div>
                         <hr>
@@ -238,9 +260,14 @@
   opacity: 0.9;
 }
 */
-
-
-.modal-body {
+#productModal {
+.modal_content {
+  display: flex;
+  flex-direction: column;
+  .modal-header {
+    height: 50px;
+  }
+  .modal-body {
       //background-color: rgba(255, 255, 255, 0.6);
       //background-blend-mode: lighten;
         width: 100%;
@@ -248,11 +275,13 @@
         
 
         .inner-body {
+          height: 55vh;
         display: flex;
         flex-direction: row;
 
 
         .product-detail {
+          overflow-y: scroll;
             //padding-right: 5px;
             flex: 1;
             min-width: 35%;
@@ -264,7 +293,6 @@
             }
 
             .product-description {
-            max-height: 120px;
             overflow-y: auto;
             font-size: 1.3em;
             font-weight: bold;
@@ -354,7 +382,7 @@
 
       #modal-prev-btn {
         :hover {
-          transform: scale(1.4);
+          //transform: scale(1.4);
         }
       }
 
@@ -362,7 +390,7 @@
         transform: rotate(180deg);
 
         :hover {
-          transform: scale(1.4) !important;
+          //transform: scale(1.4) !important;
         }
       }
 
@@ -399,4 +427,10 @@
         }
       }
     }
+
+
+
+
+}
+}
 </style>

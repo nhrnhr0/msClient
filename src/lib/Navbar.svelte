@@ -64,7 +64,6 @@
                 return;
             }
             console.log('autocompleteItemSelected: ', item);
-            debugger;
             if(item.item_count) {
                 $categoryModalStore.setAlbum(item);
                 $categoryModalStore.toggleModal();

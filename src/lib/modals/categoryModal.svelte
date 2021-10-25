@@ -31,7 +31,6 @@
 
     function categoryModalOpen(e) {
       console.log('categoryModalOpen: modal_zIndex: ',modal_zIndex , e);
-      debugger;
       let items = document.querySelectorAll('.modal.show');
       let zIndex = $_modal_z_index_incrementor++ + 1040 + (10 * items.length);
       modal_zIndex = zIndex;
@@ -44,7 +43,7 @@
   export function setAlbum(album) {
     current_album.set(album);
     desctiption = album.description;
-    fotter = album.categoryFotter;
+    fotter = album.fotter;
     products = get_album_details(album.id);
     title = album.title;
   }

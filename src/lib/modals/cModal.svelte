@@ -13,13 +13,26 @@
     albumsJsonStore,
     productModalStore,
     _modal_z_index_incrementor
-  } from './../../stores/stores'
+  } from './../../stores/stores';
+  import {
+            Dropdown,
+            DropdownItem,
+            DropdownMenu,
+            DropdownToggle
+        } from 'sveltestrap';
 
   let isModalOpen;
   export function toggleModal() {
+    debugger;
     isModalOpen = !isModalOpen;
+    if(isModalOpen == false) {
+      $stateQuery['category']='-1';
+    }
   }
-
+  export function isOpen() {
+    return isModalOpen;
+  }
+  import { stateQuery} from './../../stores/queryStore'
   let products = []
   let current_album = new writable({});
   let title = 'loading'
@@ -28,26 +41,59 @@
   let modal_zIndex = 0;
 
   export function setAlbum(album) {
+    debugger;
     current_album.set(album);
     desctiption = album.description;
-    fotter = album.categoryFotter;
+    fotter = album.fotter;
     products = get_album_details(album.id);
     title = album.title;
+    modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
+    $stateQuery['category']=album.id;
+
   }
 
   function open_product(imgId) {
     let catalogId = $current_album.id
     $productModalStore.setProduct(catalogId, imgId);
+    if ($productModalStore.isOpen()) {
+      $productModalStore.toggleModal();
+    }
     $productModalStore.toggleModal();
+    
   }
 </script>
 
 
-<div id="categoryModal" class="modal" class:active={isModalOpen}>
-  <div class="overlay" on:click={toggleModal}></div>
-  <div class="modal_content">
+<div id="categoryModal" style="z-index: {modal_zIndex};" class="modal" class:active={isModalOpen}>
+  <div class="overlay" style="z-index: {modal_zIndex+5};" on:click={toggleModal}></div>
+  <div class="modal_content" style="z-index: {modal_zIndex+10};">
     <div class="modal-header">
+      <h5 class="modal-title">{$current_album.title}</h5>
+
       <div class="modal-header-links">
+
+        <Dropdown id="modalCategoryList">
+          <DropdownToggle color="none" caret class="btn btn-outline-dark" aria-label="menu">  
+            
+
+              כל הקטגוריות
+            
+
+          </DropdownToggle>
+          <DropdownMenu>            
+            {#each $albumsJsonStore as alb}
+              <DropdownItem>
+                <button on:click={setAlbum(alb)} class="btn btn-dark">
+                  {alb.title}
+                </button>
+              </DropdownItem>        
+            {/each}
+          </DropdownMenu>
+      </Dropdown>
+
+
+
+        <!--
         <nav class="navbar navbar-expand">
           <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#categoryNavbarNavDropdown"
@@ -62,10 +108,17 @@
                       <a class="nav-link" aria-label="open category" role="button"><button on:click={setAlbum(alb)} class="btn btn-dark">{alb.title}</button></a>
                     </li>
                 {/each}
+                <li class="nav-item dropdown d-none">
+                  <a class="btn btn-secondary dropdown-toggle" href="#"  role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  </ul>
+                </li>
               </ul>
             </div>
           </div>
         </nav>
+        -->
       </div>
     </div>
     <div class="modal-body">
@@ -157,6 +210,22 @@
 
 
 <style lang="scss">
+:global(#modalCategoryList.show) {
+  
+  :global(.dropdown-menu) {
+    display: flex;
+      flex-flow: row wrap;
+      width: 70vw;
+      justify-content: start;
+      :global(.dropdown-item){
+        flex:1;
+        flex-grow: 0;
+        flex-shrink: 1;
+      }
+  }
+}
+
+
   *:focus {
   outline: 0;
 }
@@ -188,8 +257,12 @@
 }
 
 .modal .modal_content {
+  .modal-header {
+    justify-content: space-around;
+  }
   overscroll-behavior: contain;
-
+  display: flex;
+  flex-direction: column;
 
   z-index: 999;
   position: absolute;
@@ -203,6 +276,9 @@
   border-radius: 4px;
   width: 85%;
   text-align: center;
+  
+  .modal-body{
+    overflow-y: scroll;
 
   .category-items {
         display: grid;
@@ -302,6 +378,7 @@
         text-align: center;
       }
     }
+  }
   }
 
 
