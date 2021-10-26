@@ -61,12 +61,12 @@ export const query = <T extends Record<string, string | string[]>>(
 	};
 	const set = (value: T): void => {
 		const actualValue: T = { ...defaultValue, ...value };
-		/*goto(`?${query2location(actualValue).toString()}`, {
+		goto(`?${query2location(actualValue).toString()}`, {
 			replaceState: false,
 			noscroll: true,
 			keepfocus: true
-		});*/
-		history.pushState({}, null, `?${query2location(actualValue).toString()}`);
+		});
+		//history.pushState({}, null, `?${query2location(actualValue).toString()}`);
 	};
 	const update = (updater: Updater<T>): void => {
 		set(updater({ ...defaultValue, ...location2query(get(page)) }));

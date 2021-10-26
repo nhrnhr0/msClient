@@ -6,10 +6,10 @@
 
 </script>
 <Navbar></Navbar>
-<div class="hidden">
+<!--<div class="hidden">
 <input type="text" bind:value={$stateQuery['product']}> 
 <input type="text" bind:value={$stateQuery['category']}> 
-</div>
+</div>-->
 <div class="bg-wraper">
   <slot />
 </div>

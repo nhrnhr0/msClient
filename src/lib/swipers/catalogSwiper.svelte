@@ -1,7 +1,7 @@
 <script export="module">
     import { inview } from 'svelte-inview';
     import Lazy from 'svelte-lazy';
-    import {STATIC_BASE} from '../../api/consts'
+    import {STATIC_BASE} from '../../api/consts';
 
     import {
         get_album_details
@@ -17,7 +17,9 @@
     import 'swiper/css';
     import "swiper/css/effect-coverflow"
     import "swiper/css/pagination"
-    import "swiper/css/navigation"
+    import "swiper/css/navigation";
+    import {cart} from './../../stores/cartStore'
+
 
     // import Swiper core and required modules
     import SwiperCore, {
@@ -53,7 +55,10 @@ import { onMount } from 'svelte';
             }
         }
     }*/
+    function likeBtnClicked() {
+        console.log('YESSSS!~: likeBtnClicked')
 
+    }
     function swiperSlideClicked(E) {
 
         console.log('CLICK: ', E);
@@ -63,9 +68,15 @@ import { onMount } from 'svelte';
                 let target = detail[i].target;
                 console.log('>> \t', target);
                 if(target) {
+                    console.log('>>>>> class list: >> \t', target.classList);
+
                     if(target.classList.contains('product-image')) {
                         $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);
                         $productModalStore.toggleModal();
+                    }else if(target.classList.contains('like-btn-wraper')) {
+                        $cart[target.dataset.productId] = true;
+                        $cart = $cart;
+                        console.log('cart: ', $cart);
                     }
                 }
             }
@@ -113,7 +124,9 @@ on:change={(event) => {
                 threshold="50px"
                 allowTouchMove="{true}"
                 preventClicks="{false}"
-                on:click="{swiperSlideClicked}"
+                observer="{true}"
+                on:click={swiperSlideClicked}
+                
 
                 coverflowEffect='{{
                     "rotate": -13,
@@ -128,24 +141,65 @@ on:change={(event) => {
                 >
                     {#each d as image}
                         <SwiperSlide>
-                            <div class="slide-content">
+                            <!--<div class="slide-content" >-->
                                 <div class="img-title">
                                         {image.title}
                                 </div>
+                                <div class="slide-content" >
                                     <div class="img-wraper" >
-                                        <img  class="product-image" on:click="{swiperSlideClicked(album.id, image.id)}" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{STATIC_BASE}{image.image}" alt="{image.title}">
+                                        <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{STATIC_BASE}{image.image}" alt="{image.title}">
                                     </div>
-                                <!--<button class="like-btn">הוסף</button>-->
-                            </div>
+                                </div>
+                               
+                            <!--</div>-->
                         </SwiperSlide>
                     {/each}
+                    
               </Swiper>
-            
+              
+                
         {/await}
 {/if}
 </Lazy>
 </div>
 <style lang="scss">
+        /*.like-btn-wraper {
+            &.active {
+                border: 1px solid red;
+            }
+            width:100%;
+            .like-btn {
+            &.active{
+                border: 1px solid red;
+            }
+                    //visibility: visible;
+                    color: white;
+                    width: 100%;
+                    text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
+                    z-index: 2000;
+                    font-size: 2em;
+                    font-weight: bold;
+                    pointer-events: none;
+                    text-align: center;
+                    word-break: break-all;
+
+
+                    background: #0000007a;
+                    border-radius: 25px;
+                    //border-top-right-radius: 0px;
+                    //border-top-left-radius: 0;
+                    //border: var(--swiper-slide-border) solid black;
+                    border-bottom-width: 0px;
+
+                    &:hover {
+                        border: 1px solid red;
+                        &::after {
+                            content: ' להצעת מחיר'
+                        }
+                    }
+                }
+        }
+        */
     .loader-wraper {
         width:100%;
         display: flex;
@@ -157,18 +211,9 @@ on:change={(event) => {
 }
 
     :global(.swiper-slide) {
-        
-        .slide-content {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction:column;    
-            overflow: visible;
-            margin-top: 70px;
-            margin-bottom: 40px;;
-            position: relative;
-            .img-title {
+        position: relative;
+
+        .img-title {
                 //display: none;
                 visibility: hidden;
                 color: white;
@@ -183,7 +228,7 @@ on:change={(event) => {
 
                 position: absolute;
                 top:0px;
-                transform: translate(0, -100%);
+                //transform: translate(0, -100%);
 
                 
 
@@ -195,6 +240,17 @@ on:change={(event) => {
                 border: var(--swiper-slide-border) solid black;
                 border-bottom-width: 0px;
             }
+        .slide-content {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction:column;    
+            overflow: visible;
+            margin-top: 35px;
+            margin-bottom: 40px;;
+            position: relative;
+            
             .product-image {
                 border-top-width: 0px;
                 border: 2px solid black;
@@ -207,36 +263,13 @@ on:change={(event) => {
                 border-radius: 0px;
             }
 
-            .like-btn {
-                visibility: visible;
-                color: white;
-                width: 100%;
-                text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
-                z-index: 2000;
-                font-size: 2.5em;
-                font-weight: bold;
-                pointer-events: none;
-                text-align: center;
-                word-break: break-all;
-
-
-                background: #0000007a;
-                border-radius: 25px;
-                border-top-right-radius: 0px;
-                border-top-left-radius: 0;
-                border: var(--swiper-slide-border) solid black;
-                border-bottom-width: 0px;
-            }
+            
         }
     }
     :global(.swiper-slide-active) {
-        .slide-content {
-            .img-title {
+        .img-title {
                 //display: block;
                 visibility: visible;
-
-                
-            }
         }
     }
     /*

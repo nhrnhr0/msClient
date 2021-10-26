@@ -23,7 +23,6 @@
 
   let isModalOpen;
   export function toggleModal() {
-    debugger;
     isModalOpen = !isModalOpen;
     if(isModalOpen == false) {
       $stateQuery['category']='-1';
@@ -41,7 +40,6 @@
   let modal_zIndex = 0;
 
   export function setAlbum(album) {
-    debugger;
     current_album.set(album);
     desctiption = album.description;
     fotter = album.fotter;
@@ -49,17 +47,16 @@
     title = album.title;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
     $stateQuery['category']=album.id;
-
   }
 
   function open_product(imgId) {
     let catalogId = $current_album.id
-    $productModalStore.setProduct(catalogId, imgId);
+    
     if ($productModalStore.isOpen()) {
       $productModalStore.toggleModal();
     }
     $productModalStore.toggleModal();
-    
+    $productModalStore.setProduct(catalogId, imgId);
   }
 </script>
 

@@ -7,7 +7,6 @@
 
 
   export async function load({fetch, page}) {
-debugger;
     const qs = browser ? document.location.search : '';
     const query = new URLSearchParams(qs);
     const productQuery = (query.get('product') || '-1');
@@ -90,7 +89,6 @@ import { tempModalStore } from "$lib/modals/modalManager";
     albumsJsonStore.set(albums);
     sizesJsonStore.set(sizes);
     colorsJsonStore.set(colors);
-debugger;
     if(onLoadCategory != '-1') {
       for(let i = 0; i < albums.length; i++) {
         if(albums[i].id == onLoadCategory) {
@@ -101,16 +99,18 @@ debugger;
     }
     if(onLoadProduct != '-1') {
       let [prodId, cateId] = onLoadProduct.split(',');
-      $productModalStore.setProduct(prodId, cateId);
       $productModalStore.toggleModal()
+      $productModalStore.setProduct(prodId, cateId);
+      
       //openProductModalFromId(cateId, prodId)
     }
   });
 
 
   function openCategoryModal(album){
-      $categoryModalStore.setAlbum(album);
       $categoryModalStore.toggleModal();
+      $categoryModalStore.setAlbum(album);
+      
     }
 
 

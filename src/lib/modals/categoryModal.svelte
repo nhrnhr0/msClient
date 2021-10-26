@@ -16,7 +16,7 @@
   import {
     get_album_details
   } from './../../api/api';
-  import {albumsJsonStore,productModalStore, _modal_z_index_incrementor} from './../../stores/stores'
+  import {albumsJsonStore,productModalStore, _modal_z_index_incrementor} from './../../stores/stores';
 
   export let _open = false;
   export const toggle = () => (_open = !_open);
@@ -127,6 +127,7 @@
                 <img class="product-image" width="250px" height="250px" src="{STATIC_BASE}{img.image}" alt="{img.description}" />
                 <div class="img-title">{img.title}</div>
               </div>
+              
               <!--
               <div>
                 <div class="like-btn" name="like-btn">

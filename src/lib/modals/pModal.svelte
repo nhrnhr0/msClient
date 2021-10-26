@@ -14,13 +14,17 @@
     colorsJsonStore,
     sizesJsonStore
   } from './../../stores/stores'
-  import {    _modal_z_index_incrementor
+  import {
+    _modal_z_index_incrementor
   } from './../../stores/stores'
 
   import {
     STATIC_BASE
   } from './../../api/consts';
-  import { stateQuery} from './../../stores/queryStore'
+  import {
+    stateQuery
+  } from './../../stores/queryStore'
+  import {cart } from './../../stores/cartStore'
 
   let productData = writable();
   let current_album = writable();
@@ -36,7 +40,7 @@
     $stateQuery['product'] = catalogId + ',' + productId;
     _productId = productId;
     _catalogId = catalogId;
-    modal_zIndex=1200+ (++$_modal_z_index_incrementor * 15);
+    modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
     // find album data from id:
 
     current_album.set($albumsJsonStore.filter((val) => {
@@ -80,11 +84,12 @@
   }
 
   function open_category() {
-    $categoryModalStore.setAlbum($current_album);
-    if($categoryModalStore.isOpen()) {
+
+    if ($categoryModalStore.isOpen()) {
       $categoryModalStore.toggleModal();
     }
     $categoryModalStore.toggleModal();
+    $categoryModalStore.setAlbum($current_album);
   }
 
   productData.subscribe((data) => {
@@ -109,18 +114,26 @@
     console.log('new sizeMarkup: ', sizeMarkup);
     console.log('new colorMarkup: ', colorMarkup);
 
-    
-    
+
+
   });
 
   let isModalOpen = false;
   export function toggleModal() {
     console.log('product toggleModal');
     isModalOpen = !isModalOpen;
-    if(isModalOpen == false) {
-      $stateQuery['product']= -1;
+    if (isModalOpen == false) {
+      $stateQuery['product'] = -1;
     }
-    
+
+  }
+
+
+  function likeBtnClicked() {
+    console.log('like btn clicked');
+    $cart[_productId] = true;
+    $cart = $cart;
+    console.log($cart);
   }
 </script>
 
@@ -167,6 +180,20 @@
                 <button id="modal-prev-btn" class="btn modal-nav-btn" on:click={prevClick}>
                     <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="prev">
                 </button>
+                <div  on:click={likeBtnClicked} class="like-btn-wraper">
+                    <button  id="productModalLikeBtn" class:active={$cart[_productId] === true} class="like-btn">
+                      <div class="img-wraper">
+                        {#if $cart[_productId] === true}
+                            <img src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
+                          {:else}
+                            <img src="https://img.icons8.com/android/48/000000/plus.png"/>
+                        {/if}
+                      </div>
+                      <div class="text">
+                        הוסף
+                      </div>
+                    </button>
+                  </div>
                 <button id="modal-next-btn" class="btn modal-nav-btn" on:click={nextClick}>
                     <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="next">
                 </button>
@@ -178,6 +205,57 @@
 
 
 <style lang="scss">
+    
+    .like-btn-wraper{
+      &:hover {
+          & .like-btn:not(.active) .text::after {
+            content: ' להצעת מחיר'
+          }
+        } 
+      .like-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &.active {
+          //border: 1px solid red;
+          background: rgba(255, 255, 255, 0.478);
+          color:rgb(70, 70, 70);
+
+        }
+        .text {
+          display:inline-block;
+        }
+        .img-wraper {
+          width:48px;
+          height: 48px;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+        }
+        margin-top: 10px;
+        margin-bottom: 10px;
+        //visibility: visible;
+        color: white;
+        width: auto;
+        text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
+        z-index: 2000;
+        font-size: 2em;
+        font-weight: bold;
+        pointer-events: none;
+        text-align: center;
+        //word-break: break-all;
+
+
+        background: #0000007a;
+        border-radius: 25px;
+        //border-top-right-radius: 0px;
+        //border-top-left-radius: 0;
+        //border: var(--swiper-slide-border) solid black;
+        //border-bottom-width: 0px;
+   
+      }
+    }
+
 /*
 *:focus {
   outline: 0;
