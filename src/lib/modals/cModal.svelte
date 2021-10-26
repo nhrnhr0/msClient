@@ -1,5 +1,6 @@
 <script>
-  import SvelteMarkdown from 'svelte-markdown'
+  import SvelteMarkdown from 'svelte-markdown';
+  import {cart } from './../../stores/cartStore';
   import {
     STATIC_BASE
   } from '../../api/consts'
@@ -57,6 +58,10 @@
     }
     $productModalStore.toggleModal();
     $productModalStore.setProduct(catalogId, imgId);
+  }
+
+  function likeBtnClicked() {
+
   }
 </script>
 
@@ -146,6 +151,20 @@
           <img class="product-image" width="250px" height="250px" src="{STATIC_BASE}{img.image}" alt="{img.description}" />
           <div class="img-title">{img.title}</div>
         </div>
+        <div  on:click={likeBtnClicked} class="like-btn-wraper">
+          <button  id="categoryModalLikeBtn" class:active={$cart[img.id] === true} class="like-btn">
+            <div class="img-wraper">
+              {#if $cart[img.id] === true}
+                  <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
+                {:else}
+                  <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>
+              {/if}
+            </div>
+            <div class="text">
+              הוסף
+            </div>
+          </button>
+        </div>
         <!--
         <div>
           <div class="like-btn" name="like-btn">
@@ -207,6 +226,58 @@
 
 
 <style lang="scss">
+      
+      .like-btn-wraper{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      &:hover {
+          & .like-btn:not(.active) .text::after {
+            //content: ' להצעת מחיר'
+          }
+        } 
+      .like-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &.active {
+          //border: 1px solid red;
+          background: rgba(255, 255, 255, 0.478);
+          color:rgb(70, 70, 70);
+
+        }
+        .text {
+          display:inline-block;
+        }
+        .img-wraper {
+          width:48px;
+          height: 48px;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+        }
+        margin-top: 10px;
+        margin-bottom: 10px;
+        //visibility: visible;
+        color: white;
+        width: auto;
+        text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
+        z-index: 2000;
+        font-size: 2em;
+        font-weight: bold;
+        pointer-events: none;
+        text-align: center;
+        //word-break: break-all;
+
+
+        background: #0000007a;
+        border-radius: 25px;
+        //border-top-right-radius: 0px;
+        //border-top-left-radius: 0;
+        //border: var(--swiper-slide-border) solid black;
+        //border-bottom-width: 0px;
+      }
+    }
 :global(#modalCategoryList.show) {
   
   :global(.dropdown-menu) {
@@ -309,32 +380,6 @@
         }
       }
 
-
-
-      &.checked {
-        /*.like-wrapper a {
-            color: #000;
-            border: 1px solid black;
-  
-            &:hover {
-              //color: white;
-            }
-  
-            &:after {
-              width: 100%;
-              height: 100%;
-            }
-            span {
-              img {
-  
-              }
-            }
-          }
-  */
-      }
-
-      &:hover {}
-
       position: relative;
 
       .category-item-img-wraper {
@@ -361,7 +406,7 @@
       }
 
       .img-title {
-        position: absolute;
+        /*position: absolute;
         display: none;
         color: white;
         z-index: 2000;
@@ -372,7 +417,19 @@
 
         left: 50%;
         pointer-events: none;
+        text-align: center;*/
+        position: absolute;
+        display: none;
+        color: white;
+        z-index: 2000;
+        /* bottom: 50%; */
+        /* transform: translate(-50%, 0%); */
+        font-size: 1.5em;
+        /* left: 50%; */
+        pointer-events: none;
+        top: 50%;
         text-align: center;
+        width: 100%;
       }
     }
   }

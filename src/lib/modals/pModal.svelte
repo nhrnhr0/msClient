@@ -184,9 +184,9 @@
                     <button  id="productModalLikeBtn" class:active={$cart[_productId] === true} class="like-btn">
                       <div class="img-wraper">
                         {#if $cart[_productId] === true}
-                            <img src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
+                            <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
                           {:else}
-                            <img src="https://img.icons8.com/android/48/000000/plus.png"/>
+                            <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>
                         {/if}
                       </div>
                       <div class="text">
