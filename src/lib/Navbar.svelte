@@ -2,13 +2,13 @@
     import AutoComplete from "simple-svelte-autocomplete";
 
     import {albumsJsonStore, productModalStore} from './../stores/stores'
-    import Fa from 'svelte-fa/src/fa.svelte'
-    import {SEARCH_API_URL} from './../api/consts'
+    import {SEARCH_API_URL} from './../api/consts';
+
     /*import {
         faShoppingCart
     } from '@fortawesome/free-solid-svg-icons'*/
-    import {faShoppingCart} from '$lib/my-font-awsome';
-    
+    import { fade, fly } from 'svelte/transition';
+
     import {
             Dropdown,
             DropdownItem,
@@ -16,6 +16,9 @@
             DropdownToggle
         } from 'sveltestrap';
         import {categoryModalStore} from './../stores/stores'
+        import { cartStore } from './../stores/cartStore';
+        import { onDestroy } from "svelte";
+        import Cart from '$lib/components/cart/cart.svelte'
         function menuItemClicked(album) {
             console.log('openCategoryModal: ',album);
             $categoryModalStore.setAlbum(album);
@@ -73,6 +76,8 @@
 
             }
         }
+
+        
 </script>
 <nav class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
@@ -81,7 +86,8 @@
                 alt=""></a>
 
         <form class="d-flex" id="search_form">
-            <AutoComplete createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:selectedItem={searchValue} >
+            <AutoComplete  loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:selectedItem={searchValue} >
+
                 <div slot="item" let:item={item} let:label={label}>
                 {#if item.item_count}
                     <div class="list-category">
@@ -137,11 +143,8 @@
             
         
 
-        <div onclick="openCart()" id="cart-btn" class="cart">
-
-            <Fa size="2x" icon={faShoppingCart} />
-
-        </div>
+<!--TODO: CART-->
+        <Cart></Cart>
         <div id="navbar_filler" class="none">
             <!--used as a filler in the navbar-->
         </div>
@@ -158,6 +161,10 @@
 
 
 <style lang="scss">
+
+
+
+
 :global(.autocomplete-cls)  {
     width: 100%!important;
     * {

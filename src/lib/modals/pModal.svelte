@@ -24,7 +24,7 @@
   import {
     stateQuery
   } from './../../stores/queryStore'
-  import {cart } from './../../stores/cartStore'
+  import {cartStore } from './../../stores/cartStore'
 
   let productData = writable();
   let current_album = writable();
@@ -131,9 +131,9 @@
 
   function likeBtnClicked() {
     console.log('like btn clicked');
-    $cart[_productId] = true;
-    $cart = $cart;
-    console.log($cart);
+    $cartStore[_productId] = true;
+    //$cart = $cart;
+    console.log($cartStore);
   }
 </script>
 
@@ -181,9 +181,9 @@
                     <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="prev">
                 </button>
                 <div  on:click={likeBtnClicked} class="like-btn-wraper">
-                    <button  id="productModalLikeBtn" class:active={$cart[_productId] === true} class="like-btn">
+                    <button  id="productModalLikeBtn" class:active={$cartStore[_productId] === true} class="like-btn">
                       <div class="img-wraper">
-                        {#if $cart[_productId] === true}
+                        {#if $cartStore[_productId] === true}
                             <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
                           {:else}
                             <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>
@@ -238,7 +238,7 @@
         color: white;
         width: auto;
         text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
-        z-index: 2000;
+        z-index: 1;
         font-size: 2em;
         font-weight: bold;
         pointer-events: none;
@@ -434,11 +434,15 @@
             flex: 1;
 
             img {
-            @include bg-image;
-            width: 450px;
-            float: left;
-            border-radius: 15px;
-            box-shadow: 10px 10px 5px rgb(133, 133, 133);
+              @include bg-image;
+              float: left;
+              border-radius: 15px;
+              box-shadow: 10px 10px 5px rgb(133, 133, 133);
+
+              max-height: 100%;
+              max-width: 100%;
+              width: auto;
+              height: auto;
             }
         }
         }

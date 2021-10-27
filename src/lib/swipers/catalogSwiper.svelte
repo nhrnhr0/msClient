@@ -18,7 +18,7 @@
     import "swiper/css/effect-coverflow"
     import "swiper/css/pagination"
     import "swiper/css/navigation";
-    import {cart} from './../../stores/cartStore'
+    import {cartStore} from './../../stores/cartStore'
 
 
     // import Swiper core and required modules
@@ -55,10 +55,7 @@ import { onMount } from 'svelte';
             }
         }
     }*/
-    function likeBtnClicked() {
-        console.log('YESSSS!~: likeBtnClicked')
 
-    }
     function swiperSlideClicked(E) {
 
         console.log('CLICK: ', E);
@@ -74,9 +71,9 @@ import { onMount } from 'svelte';
                         $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);
                         $productModalStore.toggleModal();
                     }else if(target.classList.contains('like-btn-wraper')) {
-                        $cart[target.dataset.productId] = true;
-                        $cart = $cart;
-                        console.log('cart: ', $cart);
+                        $cartStore[target.dataset.productId] = true;
+                        //$cart = $cart;
+                        console.log('cart: ', $cartStore);
                     }
                 }
             }
@@ -150,7 +147,22 @@ on:change={(event) => {
                                         <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{STATIC_BASE}{image.image}" alt="{image.title}">
                                     </div>
                                 </div>
-                               
+                                <div  class="like-btn-wraper" data-product-id="{image.id}">
+                                    {#key $cartStore}
+                                        <button  id="categoryModalLikeBtn" class:active={$cartStore[image.id] === true} class="like-btn">
+                                        <div class="img-wraper">
+                                            {#if $cartStore[image.id] === true}
+                                                <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
+                                            {:else}
+                                                <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>
+                                            {/if}
+                                        </div>
+                                        <div class="text">
+                                            הוסף
+                                        </div>
+                                        </button>
+                                    {/key}
+                                  </div>
                             <!--</div>-->
                         </SwiperSlide>
                     {/each}
@@ -163,7 +175,7 @@ on:change={(event) => {
 </Lazy>
 </div>
 <style lang="scss">
-        /*.like-btn-wraper {
+        .like-btn-wraper {
             &.active {
                 border: 1px solid red;
             }
@@ -199,7 +211,7 @@ on:change={(event) => {
                     }
                 }
         }
-        */
+        
     .loader-wraper {
         width:100%;
         display: flex;
@@ -212,7 +224,11 @@ on:change={(event) => {
 
     :global(.swiper-slide) {
         position: relative;
-
+        &:hover {
+            .img-title {
+                visibility: visible;
+            }    
+        }
         .img-title {
                 //display: none;
                 visibility: hidden;

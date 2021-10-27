@@ -1,6 +1,8 @@
 <script>
   import SvelteMarkdown from 'svelte-markdown';
-  import {cart } from './../../stores/cartStore';
+  import {
+    cartStore
+  } from './../../stores/cartStore';
   import {
     STATIC_BASE
   } from '../../api/consts'
@@ -16,23 +18,25 @@
     _modal_z_index_incrementor
   } from './../../stores/stores';
   import {
-            Dropdown,
-            DropdownItem,
-            DropdownMenu,
-            DropdownToggle
-        } from 'sveltestrap';
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownToggle
+  } from 'sveltestrap';
 
   let isModalOpen;
   export function toggleModal() {
     isModalOpen = !isModalOpen;
-    if(isModalOpen == false) {
-      $stateQuery['category']='-1';
+    if (isModalOpen == false) {
+      $stateQuery['category'] = '-1';
     }
   }
   export function isOpen() {
     return isModalOpen;
   }
-  import { stateQuery} from './../../stores/queryStore'
+  import {
+    stateQuery
+  } from './../../stores/queryStore'
   let products = []
   let current_album = new writable({});
   let title = 'loading'
@@ -47,12 +51,12 @@
     products = get_album_details(album.id);
     title = album.title;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
-    $stateQuery['category']=album.id;
+    $stateQuery['category'] = album.id;
   }
 
   function open_product(imgId) {
     let catalogId = $current_album.id
-    
+
     if ($productModalStore.isOpen()) {
       $productModalStore.toggleModal();
     }
@@ -60,8 +64,16 @@
     $productModalStore.setProduct(catalogId, imgId);
   }
 
-  function likeBtnClicked() {
+  function likeBtnClicked(imgId) {
+    $cartStore[imgId] = true;
+  }
 
+
+  let modal_body;
+
+  function changeCategory(alb) {
+    setAlbum(alb);
+    modal_body.scrollTop = 0;
   }
 </script>
 
@@ -75,17 +87,17 @@
       <div class="modal-header-links">
 
         <Dropdown id="modalCategoryList">
-          <DropdownToggle color="none" caret class="btn btn-outline-dark" aria-label="menu">  
-            
+          <DropdownToggle color="none" caret class="btn btn-outline-dark" aria-label="menu">
 
-              כל הקטגוריות
-            
+
+            כל הקטגוריות
+
 
           </DropdownToggle>
-          <DropdownMenu>            
+          <DropdownMenu>
             {#each $albumsJsonStore as alb}
               <DropdownItem>
-                <button on:click={setAlbum(alb)} class="btn btn-dark">
+                <button on:click={changeCategory(alb)} class="btn btn-dark">
                   {alb.title}
                 </button>
               </DropdownItem>        
@@ -123,7 +135,7 @@
         -->
       </div>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" bind:this={modal_body}>
 
 
 
@@ -151,10 +163,10 @@
           <img class="product-image" width="250px" height="250px" src="{STATIC_BASE}{img.image}" alt="{img.description}" />
           <div class="img-title">{img.title}</div>
         </div>
-        <div  on:click={likeBtnClicked} class="like-btn-wraper">
-          <button  id="categoryModalLikeBtn" class:active={$cart[img.id] === true} class="like-btn">
+        <div  on:click={likeBtnClicked(img.id)} class="like-btn-wraper">
+          <button  id="categoryModalLikeBtn" class:active={$cartStore[img.id] === true} class="like-btn">
             <div class="img-wraper">
-              {#if $cart[img.id] === true}
+              {#if $cartStore[img.id] === true}
                   <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
                 {:else}
                   <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>
@@ -262,7 +274,7 @@
         color: white;
         width: auto;
         text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
-        z-index: 2000;
+        z-index: 1;
         font-size: 2em;
         font-weight: bold;
         pointer-events: none;
@@ -285,10 +297,15 @@
       flex-flow: row wrap;
       width: 70vw;
       justify-content: start;
+      align-items: center;
+      background: #d2d1d1;
       :global(.dropdown-item){
         flex:1;
-        flex-grow: 0;
-        flex-shrink: 1;
+        flex-grow: 1;
+        flex-shrink: 0;
+        button.btn-dark {
+          width:100%;
+        }
       }
   }
 }
@@ -300,29 +317,6 @@
 
 
 /* Modal */
-
-.modal {
-  display: none;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 990;
-  &.active {
-    display:block;
-  }
-}
-
-.modal .overlay {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 995;
-  background: rgba(0,0,0,0.85);
-}
 
 .modal .modal_content {
   .modal-header {
@@ -337,12 +331,12 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  max-height: 80%;
+  max-height: 99%;
   overflow: auto;
   background: #fff;
   box-shadow: 0 1px 5px rgba(0,0,0,0.7);
   border-radius: 4px;
-  width: 85%;
+  width: 99%;
   text-align: center;
   
   .modal-body{
