@@ -104,9 +104,6 @@
             {/each}
           </DropdownMenu>
       </Dropdown>
-
-
-
         <!--
         <nav class="navbar navbar-expand">
           <div class="container-fluid">
@@ -293,11 +290,14 @@
 :global(#modalCategoryList.show) {
   
   :global(.dropdown-menu) {
-    display: flex;
-      flex-flow: row wrap;
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    grid-template-rows: repeat(5, auto);
+    //display: flex;
+      //flex-flow: row wrap;
       width: 70vw;
-      justify-content: start;
-      align-items: center;
+      //justify-content: start;
+      //align-items: center;
       background: #d2d1d1;
       :global(.dropdown-item){
         flex:1;

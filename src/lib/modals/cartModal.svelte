@@ -1,9 +1,16 @@
 <script>
+
+import {_modal_z_index_incrementor} from "./../../stores/stores";
+import { cartStore } from "./../../stores/cartStore"
+
     let isModalOpen;
     let modal_zIndex = 0;
 
     export function toggleModal() {
         isModalOpen = !isModalOpen;
+        if(isModalOpen) {
+            modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
+        }
     }
     export function isOpen() {
         return isModalOpen;
@@ -16,6 +23,11 @@
         <div class="modal-header">
         </div>
         <div class="modal-body">
+            {#if cartStore}
+                {#each Object.keys($cartStore) as key}
+                    <div>key: {key}</div>
+                {/each}
+            {/if}
         </div>
         <div class="modal-footer">
         </div>

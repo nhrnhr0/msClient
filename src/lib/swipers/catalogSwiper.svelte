@@ -35,13 +35,17 @@ import { onMount } from 'svelte';
     SwiperCore.use([EffectCoverflow, Pagination,Navigation]);
     //let data = get_album_details(album.id);
     let data = get_album_details(album.id);
+    let isLoaded = false;
+    data.then(()=>{
+        isLoaded = true;
+    });
 
     onMount(()=> {
-        window.addEventListener('DOMContentLoaded', (event) => {
+        /*window.addEventListener('DOMContentLoaded', (event) => {
             document.querySelectorAll('.product-image').addEventListener("click", function(event) {
                 console.log(event.target);
             });
-        });
+        });*/
     })
     
     /*function swiperClicked(e) {
@@ -57,28 +61,29 @@ import { onMount } from 'svelte';
     }*/
 
     function swiperSlideClicked(E) {
-
-        console.log('CLICK: ', E);
+        //console.log('CLICK: ', E);
         if(typeof(E) == 'object') {
             let detail = E.detail[0];
             for(let i = 0; i < detail.length; i++) {
                 let target = detail[i].target;
-                console.log('>> \t', target);
+                //console.log('>> \t', target);
                 if(target) {
-                    console.log('>>>>> class list: >> \t', target.classList);
+                    //console.log('>>>>> class list: >> \t', target.classList);
 
                     if(target.classList.contains('product-image')) {
                         $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);
                         $productModalStore.toggleModal();
                     }else if(target.classList.contains('like-btn-wraper')) {
                         $cartStore[target.dataset.productId] = true;
+                        copySwiperduplicates(E);
                         //$cart = $cart;
-                        console.log('cart: ', $cartStore);
+                        //console.log('cart: ', $cartStore);
                     }
                 }
             }
         }
         
+
     }
     /*function swiperSlideClicked(catalogId, productId) {
         console.log('swiperClicked2: ', catalogId, productId);
@@ -87,9 +92,26 @@ import { onMount } from 'svelte';
     }*/
 
     let isInView;
+    function copySwiperduplicates(e) {
+        debugger;
+        /*console.log('===========> run slideChangeTransitionStart', e);
+        let $wrapperEl = e.detail[0][0].$wrapperEl[0];
+        let params = e.detail[0][0].params;
+        let childs = $wrapperEl.querySelectorAll(('.' + (params.slideClass) + '.' + (params.slideDuplicateClass)))
+        for(let i = 0; i < childs.length; i++) {
+            let idx = childs[i].getAttribute('data-swiper-slide-index');
+            let t = $wrapperEl.querySelector('.' + params.slideClass + '[data-swiper-slide-index="' + idx + '"]:not(.' + params.slideDuplicateClass + ')')
+            childs[i].innerHTML = t.innerHTML;
+        }
+        */
+       setTimeout(()=>{
+            e.detail[0][0].loopDestroy()
+            e.detail[0][0].loopCreate();
+        });
 
+    }
 </script>
-<div class="lazy-swiper-wraper" class:active="{isInView}"
+<div class="lazy-swiper-wraper" class:active="{isInView}" class:loaded="{isLoaded}"
 use:inview
 
 on:change={(event) => {
@@ -143,13 +165,13 @@ on:change={(event) => {
                                         {image.title}
                                 </div>
                                 <div class="slide-content" >
-                                    <div class="img-wraper" >
+                                    <div class="img-wraper">
                                         <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{STATIC_BASE}{image.image}" alt="{image.title}">
                                     </div>
                                 </div>
                                 <div  class="like-btn-wraper" data-product-id="{image.id}">
                                     {#key $cartStore}
-                                        <button  id="categoryModalLikeBtn" class:active={$cartStore[image.id] === true} class="like-btn">
+                                        <button class:active={$cartStore[image.id] === true} class="like-btn">
                                         <div class="img-wraper">
                                             {#if $cartStore[image.id] === true}
                                                 <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
@@ -175,6 +197,12 @@ on:change={(event) => {
 </Lazy>
 </div>
 <style lang="scss">
+    :global(.swiper-wrapper) {
+        margin-bottom: 50px;
+    }
+    :global(.swiper-pagination-bullets) {
+        bottom: 24px;
+    }
         .like-btn-wraper {
             &.active {
                 border: 1px solid red;
@@ -198,9 +226,9 @@ on:change={(event) => {
 
                     background: #0000007a;
                     border-radius: 25px;
-                    //border-top-right-radius: 0px;
-                    //border-top-left-radius: 0;
-                    //border: var(--swiper-slide-border) solid black;
+                    border-top-right-radius: 0px;
+                    border-top-left-radius: 0;
+                    border: var(--swiper-slide-border) solid black;
                     border-bottom-width: 0px;
 
                     &:hover {
@@ -220,6 +248,9 @@ on:change={(event) => {
     }
 .lazy-swiper-wraper {
     height: 500px!important;
+    &.loaded:not(&.active) {
+        //height: auto!important;
+    }
 }
 
     :global(.swiper-slide) {
@@ -264,19 +295,39 @@ on:change={(event) => {
             flex-direction:column;    
             overflow: visible;
             margin-top: 35px;
-            margin-bottom: 40px;;
+            //margin-bottom: 40px;;
             position: relative;
-            
-            .product-image {
-                border-top-width: 0px;
-                border: 2px solid black;
-                //border-bottom-width: 0px;
-                background: white;
-                background: radial-gradient(circle, white 0%, white 32%, #c7c7c7 84%);
+                @keyframes shine {
+                    to {
+                        background-position-x: -200%;
+                    }
+            }
+            .img-wraper{
+                //min-height: 200px;
+                //min-width: 200px;
+                background: rgb(170, 170, 170);
+                background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+                background: linear-gradient(110deg, rgb(197, 197, 197) 8%, rgb(207, 207, 207) 18%, rgb(197, 197, 197) 33%);
+                border-radius: 5px;
+                background-size: 200% 100%;
+                animation: 1.5s shine linear infinite;
 
+                position: relative;
                 width: 100%;
-                height: auto;
-                border-radius: 0px;
+                height: 0;
+                padding-bottom: 100%;
+                .product-image {
+                    border-top-width: 0px;
+                    border: 2px solid black;
+                    //border-bottom-width: 0px;
+                    background: white;
+                    background: radial-gradient(circle, white 0%, white 32%, #c7c7c7 84%);
+
+                    width: 100%;
+                    height: auto;
+                    border-radius: 0px;
+                    
+                }
             }
 
             
