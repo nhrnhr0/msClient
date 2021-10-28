@@ -122,6 +122,7 @@
 .title-wraper {
   display: flex;
   justify-content: center;
+  padding-bottom: 50px;
 
   .title {
     opacity: 0.5;

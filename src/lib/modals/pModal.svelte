@@ -199,7 +199,11 @@
                         {/if}
                       </div>
                       <div class="text">
-                        הוסף
+                        {#if $cartStore[_productId] != undefined}
+                          נוסף
+                        {:else}
+                          הוסף
+                        {/if}
                       </div>
                     </button>
                   </div>
@@ -443,6 +447,9 @@
         .img-wraper {
             flex: 1;
             cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             img {
               @include bg-image;
               float: left;

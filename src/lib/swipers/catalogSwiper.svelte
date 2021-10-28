@@ -188,9 +188,14 @@ on:change={(event) => {
                                                 <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>
                                             {/if}
                                         </div>
+                                        
                                         <div class="text">
-                                            הוסף
-                                        </div>
+                                            {#if $cartStore[image.id] != undefined}
+                                              נוסף
+                                            {:else}
+                                              הוסף
+                                            {/if}
+                                          </div>
                                         </button>
                                     {/key}
                                   </div>
@@ -256,7 +261,7 @@ on:change={(event) => {
         align-items: center;
     }
 .lazy-swiper-wraper {
-    height: 500px!important;
+    height: 408px !important;
     &.loaded:not(&.active) {
         //height: auto!important;
     }

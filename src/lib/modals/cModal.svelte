@@ -30,6 +30,11 @@ Spinner
     isModalOpen = !isModalOpen;
     if (isModalOpen == false) {
       $stateQuery['category'] = '-1';
+    }else {
+      debugger;
+      setTimeout(()=> {
+        modal_body.scrollTop = 0;
+      });
     }
   }
   export function isOpen() {
@@ -75,7 +80,6 @@ Spinner
 
   function changeCategory(alb) {
     setAlbum(alb);
-    modal_body.scrollTop = 0;
   }
 </script>
 
@@ -173,13 +177,17 @@ Spinner
             <div class="img-wraper">
               {#if $cartStore[img.id] != undefined}
                   <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
+                  <div class="text">
+                    נוסף
+                  </div>
                 {:else}
                   <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>
+                  <div class="text">
+                    הוסף
+                  </div>
               {/if}
             </div>
-            <div class="text">
-              הוסף
-            </div>
+            
           </button>
         </div>
         <!--
