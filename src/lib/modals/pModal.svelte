@@ -135,7 +135,7 @@
 
   function likeBtnClicked() {
     console.log('like btn clicked');
-    $cartStore[_productId] = true;
+    $cartStore[_productId] = $productData;
     //$cart = $cart;
     console.log($cartStore);
   }
@@ -190,9 +190,9 @@
                     <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="prev">
                 </button>
                 <div  on:click={likeBtnClicked} class="like-btn-wraper">
-                    <button  id="productModalLikeBtn" class:active={$cartStore[_productId] === true} class="like-btn">
+                    <button  id="productModalLikeBtn" class:active={$cartStore[_productId] != undefined} class="like-btn">
                       <div class="img-wraper">
-                        {#if $cartStore[_productId] === true}
+                        {#if $cartStore[_productId] != undefined}
                             <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
                           {:else}
                             <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>

@@ -31,6 +31,7 @@
     "cookie": "^0.4.1",
     "env-cmd": "^10.1.0",
     "svelte-inview": "^2.0.2",
+    "svelte-json-tree": "^0.1.0",
     "svelte-markdown": "^0.1.12",
     "svelte-spinner": "^2.0.2",
     "sveltestrap": "^5.6.3",

@@ -13,6 +13,7 @@ export function get_album_details(albumId) {
         var myHeaders = new Headers();
         var requestOptions = {
         method: 'GET',
+        credentials: 'same-origin',//'',
         headers: myHeaders,
         redirect: 'follow'
         };

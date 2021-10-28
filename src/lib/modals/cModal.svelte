@@ -65,8 +65,9 @@ Spinner
     $productModalStore.setProduct(catalogId, imgId);
   }
 
-  function likeBtnClicked(imgId) {
-    $cartStore[imgId] = true;
+  function likeBtnClicked(img) {
+    console.log('liked image clicked' ,img);
+    $cartStore[img.id] = img;
   }
 
 
@@ -167,10 +168,10 @@ Spinner
           <img class="product-image" width="250px" height="250px" src="{STATIC_BASE}{img.image}" alt="{img.description}" />
           <div class="img-title">{img.title}</div>
         </div>
-        <div  on:click={likeBtnClicked(img.id)} class="like-btn-wraper">
-          <button  id="categoryModalLikeBtn" class:active={$cartStore[img.id] === true} class="like-btn">
+        <div  on:click={likeBtnClicked(img)} class="like-btn-wraper">
+          <button  id="categoryModalLikeBtn" class:active={$cartStore[img.id] != undefined} class="like-btn">
             <div class="img-wraper">
-              {#if $cartStore[img.id] === true}
+              {#if $cartStore[img.id] != undefined}
                   <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
                 {:else}
                   <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>

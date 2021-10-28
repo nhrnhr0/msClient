@@ -28,6 +28,7 @@
         Navigation
     } from 'swiper';
     import Spinner from 'svelte-spinner';
+    let loaded_data;
     import {productModalStore} from './../../stores/stores'
 import { onMount } from 'svelte';
 
@@ -36,8 +37,9 @@ import { onMount } from 'svelte';
     //let data = get_album_details(album.id);
     let data = get_album_details(album.id);
     let isLoaded = false;
-    data.then(()=>{
+    data.then((newData)=>{
         isLoaded = true;
+        loaded_data = newData;
     });
 
     onMount(()=> {
@@ -60,6 +62,15 @@ import { onMount } from 'svelte';
         }
     }*/
 
+    function get_product_by_id(imgId) {
+        for(let i = 0; i < loaded_data.length; i++) {
+            if(loaded_data[i].id == imgId) {
+                return loaded_data[i];
+            }
+        }
+        return undefined;
+    }
+
     function swiperSlideClicked(E) {
         //console.log('CLICK: ', E);
         if(typeof(E) == 'object') {
@@ -74,7 +85,7 @@ import { onMount } from 'svelte';
                         $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);
                         $productModalStore.toggleModal();
                     }else if(target.classList.contains('like-btn-wraper')) {
-                        $cartStore[target.dataset.productId] = true;
+                        $cartStore[target.dataset.productId] = get_product_by_id(target.dataset.productId);
                         copySwiperduplicates(E);
                         //$cart = $cart;
                         //console.log('cart: ', $cartStore);
@@ -93,7 +104,6 @@ import { onMount } from 'svelte';
 
     let isInView;
     function copySwiperduplicates(e) {
-        debugger;
         /*console.log('===========> run slideChangeTransitionStart', e);
         let $wrapperEl = e.detail[0][0].$wrapperEl[0];
         let params = e.detail[0][0].params;
@@ -140,12 +150,11 @@ on:change={(event) => {
                 loopedSlides="{'8'}"
                 speed= "{50}"
                 loop= "{true}"
-                threshold="50px"
                 allowTouchMove="{true}"
                 preventClicks="{false}"
                 observer="{true}"
                 on:click={swiperSlideClicked}
-                
+                threshold={10}
 
                 coverflowEffect='{{
                     "rotate": -13,
@@ -160,8 +169,8 @@ on:change={(event) => {
                 >
                     {#each d as image}
                         <SwiperSlide>
-                            <!--<div class="slide-content" >-->
-                                <div class="img-title" class:active={$cartStore[image.id] === true}>
+                            <!--TODO: use only one cart active on the top and not one in the title, like button and more -->
+                                <div class="img-title" class:active={$cartStore[image.id] != undefined}>
                                         {image.title}
                                 </div>
                                 <div class="slide-content" >
@@ -171,9 +180,9 @@ on:change={(event) => {
                                 </div>
                                 <div  class="like-btn-wraper" data-product-id="{image.id}">
                                     {#key $cartStore}
-                                        <button class:active={$cartStore[image.id] === true} class="like-btn">
+                                        <button class:active={$cartStore[image.id] != undefined} class="like-btn">
                                         <div class="img-wraper">
-                                            {#if $cartStore[image.id] === true}
+                                            {#if $cartStore[image.id] != undefined}
                                                 <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
                                             {:else}
                                                 <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>
