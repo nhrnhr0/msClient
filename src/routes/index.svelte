@@ -1,7 +1,7 @@
 <script context="module">
 	import Header from "$lib/header.svelte"
 	import About from "$lib/about.svelte"
-	import {albumsJsonStore, productModalStore, categoryModalStore,sizesJsonStore, colorsJsonStore} from './../stores/stores'
+	import {albumsJsonStore, productModalStore, categoryModalStore,productImageModalStore, sizesJsonStore, colorsJsonStore} from './../stores/stores'
 	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL } from './../api/consts'
   import { browser } from '$app/env';
 
@@ -52,6 +52,7 @@
 </svelte:head>
 <CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
 <ProductModal bind:this={$productModalStore}></ProductModal>
+<ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
 <Header />
 <About />
 <!--<TempModal bind:this={$tempModalStore}/>
@@ -73,8 +74,8 @@
   import CatalogSwiper from '$lib/swipers/catalogSwiper.svelte';
   import CategoryModal from "$lib/modals/cModal.svelte";
   import ProductModal from "$lib/modals/pModal.svelte";
+  import ProductImageModal from "$lib/modals/pImgModal.svelte";
   import { onMount } from "svelte";
-import { tempModalStore } from "$lib/modals/modalManager";
 
   export let colors;
   export let sizes;

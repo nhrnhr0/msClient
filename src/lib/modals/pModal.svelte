@@ -12,6 +12,7 @@
     albumsJsonStore,
     categoryModalStore,
     colorsJsonStore,
+    productImageModalStore,
     sizesJsonStore
   } from './../../stores/stores'
   import {
@@ -35,6 +36,9 @@
   let _productId, _catalogId;
   export function isOpen() {
     return isModalOpen;
+  }
+  function getProduct() {
+    return [_catalogId, _productId];
   }
   export function setProduct(catalogId, productId) {
     $stateQuery['product'] = catalogId + ',' + productId;
@@ -135,6 +139,11 @@
     //$cart = $cart;
     console.log($cartStore);
   }
+
+  function openProductImageModal(e) {
+    $productImageModalStore.setProduct($productData);
+    $productImageModalStore.toggleModal();
+  }
 </script>
 
 
@@ -171,7 +180,7 @@
                         </div>
                         
                     </div>
-                    <div class="img-wraper" ><img alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{STATIC_BASE}{$productData.image}"/></div>
+                    <div class="img-wraper" on:click={openProductImageModal}><img alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{STATIC_BASE}{$productData.image}"/></div>
                 </div>
             </div>
 
@@ -207,6 +216,7 @@
 <style lang="scss">
     
     .like-btn-wraper{
+      cursor: pointer;
       &:hover {
           & .like-btn:not(.active) .text::after {
             content: ' להצעת מחיר'
@@ -432,7 +442,7 @@
 
         .img-wraper {
             flex: 1;
-
+            cursor: pointer;
             img {
               @include bg-image;
               float: left;

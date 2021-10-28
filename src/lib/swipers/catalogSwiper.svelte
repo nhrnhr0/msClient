@@ -161,7 +161,7 @@ on:change={(event) => {
                     {#each d as image}
                         <SwiperSlide>
                             <!--<div class="slide-content" >-->
-                                <div class="img-title">
+                                <div class="img-title" class:active={$cartStore[image.id] === true}>
                                         {image.title}
                                 </div>
                                 <div class="slide-content" >
@@ -204,14 +204,14 @@ on:change={(event) => {
         bottom: 24px;
     }
         .like-btn-wraper {
-            &.active {
-                border: 1px solid red;
-            }
             width:100%;
             .like-btn {
-            &.active{
-                border: 1px solid red;
-            }
+                &.active {
+                    @include bg-gradient();
+                }
+                display: flex;
+                justify-content: center;
+                align-items: center;
                     //visibility: visible;
                     color: white;
                     width: 100%;
@@ -258,6 +258,7 @@ on:change={(event) => {
         &:hover {
             .img-title {
                 visibility: visible;
+                
             }    
         }
         .img-title {
@@ -286,6 +287,10 @@ on:change={(event) => {
                 border-bottom-left-radius: 0;
                 border: var(--swiper-slide-border) solid black;
                 border-bottom-width: 0px;
+
+                &.active {
+                    @include bg-gradient();
+                }
             }
         .slide-content {
             position: relative;
@@ -317,6 +322,7 @@ on:change={(event) => {
                 height: 0;
                 padding-bottom: 100%;
                 .product-image {
+                    
                     border-top-width: 0px;
                     border: 2px solid black;
                     //border-bottom-width: 0px;
@@ -326,7 +332,6 @@ on:change={(event) => {
                     width: 100%;
                     height: auto;
                     border-radius: 0px;
-                    
                 }
             }
 

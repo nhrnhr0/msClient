@@ -21,7 +21,8 @@
     Dropdown,
     DropdownItem,
     DropdownMenu,
-    DropdownToggle
+    DropdownToggle,
+Spinner
   } from 'sveltestrap';
 
   let isModalOpen;
@@ -146,7 +147,13 @@
     
   
   {#await products}
-    loading...
+  <Spinner
+    size="200"
+    speed="750"
+    color="#A82124"
+    thickness="2"
+    gap="40"
+  />  
   {:then prods} 
     <div class="category-items">
       {#each prods as img}
@@ -218,8 +225,8 @@
     
     <!-- End of Dynamic Section -->
     <button title="Close" on:click={toggleModal} class="close_modal">x</button>
-  
-  
+    <button title="Close" on:click={toggleModal} class="close_modal left">x</button>
+
   
   
   
@@ -249,10 +256,33 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        width: 100%;
+        //margin-top: 10px;
+        margin-bottom: 10px;
+        //visibility: visible;
+        color: white;
+        text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
+        z-index: 1;
+        font-size: 2em;
+        font-weight: bold;
+        pointer-events: none;
+        text-align: center;
+        //word-break: break-all;
+
+
+        background: #0000007a;
+        border-radius: 25px;
+        border-top-right-radius: 0px;
+        border-top-left-radius: 0;
+        border: var(--swiper-slide-border) solid black;
+        border-bottom-width: 0px;
+
+
         &.active {
+          @include bg-gradient();
           //border: 1px solid red;
-          background: rgba(255, 255, 255, 0.478);
-          color:rgb(70, 70, 70);
+          //background: rgba(255, 255, 255, 0.478);
+          //color:rgb(70, 70, 70);
 
         }
         .text {
@@ -265,26 +295,7 @@
           justify-content: center;
           align-items: center;
         }
-        margin-top: 10px;
-        margin-bottom: 10px;
-        //visibility: visible;
-        color: white;
-        width: auto;
-        text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
-        z-index: 1;
-        font-size: 2em;
-        font-weight: bold;
-        pointer-events: none;
-        text-align: center;
-        //word-break: break-all;
-
-
-        background: #0000007a;
-        border-radius: 25px;
-        //border-top-right-radius: 0px;
-        //border-top-left-radius: 0;
-        //border: var(--swiper-slide-border) solid black;
-        //border-bottom-width: 0px;
+        
       }
     }
 :global(#modalCategoryList.show) {

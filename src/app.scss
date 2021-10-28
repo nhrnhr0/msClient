@@ -254,6 +254,10 @@ button:focus:not(:focus-visible) {
   background: none;
   border: none;
   transition: opacity 0.2s ease;
+  &.left {
+    right: auto!important;;
+    left:10px;
+  }
 }
 
 .modal .close_modal:hover {
