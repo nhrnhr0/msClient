@@ -48,8 +48,9 @@
 
 
 <svelte:head>
-	<title>Home</title>
+	<title>M.S. Global</title>
 </svelte:head>
+<svelte:window bind:scrollY={y_scroll}/>
 <CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
 <ProductModal bind:this={$productModalStore}></ProductModal>
 <ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
@@ -80,6 +81,7 @@
   export let colors;
   export let sizes;
   export let albums;
+  let y_scroll;
 
   
   export let onLoadCategory;
@@ -105,6 +107,11 @@
       
       //openProductModalFromId(cateId, prodId)
     }
+
+    setTimeout(()=> {
+      console.log('y_scroll: ', y_scroll)
+      y_scroll = 0;
+    },500);
   });
 
 

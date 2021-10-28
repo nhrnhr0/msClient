@@ -1,6 +1,6 @@
 
 
-<div class="header-1">
+<div class="header-1" id="header">
     <div class="inner-header">
         <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
             alt="M.S. Global" width="400px" height="162px" style="max-width: 100%;" />

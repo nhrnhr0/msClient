@@ -73,6 +73,7 @@ import { onMount } from 'svelte';
 
     function swiperSlideClicked(E) {
         //console.log('CLICK: ', E);
+        
         if(typeof(E) == 'object') {
             let detail = E.detail[0];
             for(let i = 0; i < detail.length; i++) {
@@ -218,6 +219,7 @@ on:change={(event) => {
         bottom: 24px;
     }
         .like-btn-wraper {
+            cursor: pointer;
             width:100%;
             .like-btn {
                 &.active {
@@ -336,7 +338,7 @@ on:change={(event) => {
                 height: 0;
                 padding-bottom: 100%;
                 .product-image {
-                    
+                    cursor: pointer;
                     border-top-width: 0px;
                     border: 2px solid black;
                     //border-bottom-width: 0px;

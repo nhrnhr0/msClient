@@ -81,7 +81,8 @@
 </script>
 <nav class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
-        <a class="navbar-logo" aria-label="logo" role="button"><img class="nav-logo" width="100px" height="40px"
+        <!-- svelte-ignore a11y-invalid-attribute -->
+        <a class="navbar-logo" href="javascript:window.location.href=window.location.href" aria-label="logo" role="button"><img class="nav-logo" width="100px" height="40px"
                 src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
                 alt=""></a>
 
@@ -117,7 +118,7 @@
 
 
 
-            <Dropdown id="navCategoryList">
+            <Dropdown id="navCategoryList" class="category-menu">
                 <DropdownToggle color="none" caret aria-label="menu">  
                     <svg viewBox="0 0 100 80" width="40" height="40">
                         <rect width="100" height="20"></rect>
@@ -213,7 +214,7 @@
 
 
 
-    .navbar :global(#navCategoryList){
+    /*.navbar :global(#navCategoryList){
         position: inherit;
         :global(.dropdown-menu.show) {
             background: rgb(242, 242, 242);
@@ -228,7 +229,7 @@
                 text-align: center;
             }
     }
-}
+}*/
     .navbar {
         
         

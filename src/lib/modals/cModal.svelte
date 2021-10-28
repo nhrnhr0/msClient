@@ -92,7 +92,7 @@ Spinner
 
       <div class="modal-header-links">
 
-        <Dropdown id="modalCategoryList">
+        <Dropdown id="modalCategoryList" class="category-menu">
           <DropdownToggle color="none" caret class="btn btn-outline-dark" aria-label="menu">
 
 
@@ -308,26 +308,6 @@ Spinner
       }
     }
 :global(#modalCategoryList.show) {
-  
-  :global(.dropdown-menu) {
-    display: grid;
-    grid-template-columns: repeat(5, auto);
-    grid-template-rows: repeat(5, auto);
-    //display: flex;
-      //flex-flow: row wrap;
-      width: 70vw;
-      //justify-content: start;
-      //align-items: center;
-      background: #d2d1d1;
-      :global(.dropdown-item){
-        flex:1;
-        flex-grow: 1;
-        flex-shrink: 0;
-        button.btn-dark {
-          width:100%;
-        }
-      }
-  }
 }
 
 

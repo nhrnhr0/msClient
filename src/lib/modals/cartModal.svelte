@@ -4,7 +4,7 @@ import {productModalStore, _modal_z_index_incrementor} from "./../../stores/stor
 import { cartStore } from "./../../stores/cartStore"
 import { STATIC_BASE } from "./../../api/consts";
 
-    let isModalOpen;
+    let isModalOpen = false;
     let modal_zIndex = 0;
 
     export function toggleModal() {
