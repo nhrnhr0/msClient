@@ -264,6 +264,12 @@ on:change={(event) => {
     }
 .lazy-swiper-wraper {
     height: 408px !important;
+    @media all and (min-width: 1300px) and (max-width:1460px) { 
+        height: 438px !important;
+    }
+    @media all and (min-width: 1460px)  { 
+        height: 508px !important;
+    }
     &.loaded:not(&.active) {
         //height: auto!important;
     }

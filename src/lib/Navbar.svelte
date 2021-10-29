@@ -18,6 +18,7 @@
         import {categoryModalStore} from './../stores/stores'
         import { cartStore } from './../stores/cartStore';
         import { onDestroy } from "svelte";
+        import boop from '$lib/components/boop/boop'
         import Cart from '$lib/components/cart/cart.svelte'
         function menuItemClicked(album) {
             console.log('openCategoryModal: ',album);
@@ -76,7 +77,10 @@
 
             }
         }
-
+        let isBooped = false;
+    function setIsBooped(val) {
+		isBooped = val;
+	}
         
 </script>
 <nav class="navbar navbar-expand-* navbar-light">
@@ -140,12 +144,13 @@
             </Dropdown>
             
                 
-                
+            <Cart></Cart>
+            <div   on:mouseenter={() => isBooped = true} use:boop={{isBooped, scale:1.2, timing: 200, setter: setIsBooped}}>
+            <a rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
+                <img src="whatsapp.png" alt="whatsapp">
+            </a>
+        </div>
             
-        
-
-<!--TODO: CART-->
-        <Cart></Cart>
         <div id="navbar_filler" class="none">
             <!--used as a filler in the navbar-->
         </div>

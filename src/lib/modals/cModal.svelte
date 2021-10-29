@@ -32,9 +32,7 @@ Spinner
       $stateQuery['category'] = '-1';
     }else {
       debugger;
-      setTimeout(()=> {
-        modal_body.scrollTop = 0;
-      });
+      
     }
   }
   export function isOpen() {
@@ -51,6 +49,7 @@ Spinner
   let modal_zIndex = 0;
 
   export function setAlbum(album) {
+    debugger;
     current_album.set(album);
     desctiption = album.description;
     fotter = album.fotter;
@@ -58,6 +57,9 @@ Spinner
     title = album.title;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
     $stateQuery['category'] = album.id;
+    setTimeout(()=> {
+        modal_body.scrollTop = 0;
+      },30);
   }
 
   function open_product(imgId) {
