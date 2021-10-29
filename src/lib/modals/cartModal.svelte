@@ -102,8 +102,12 @@ import { STATIC_BASE } from "./../../api/consts";
                         align-self: flex-start;
                         position: sticky;
                         top: 50px;
+                        
+                        height: calc(100% - 60px);
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-evenly;
                         .form-control {
-                            padding-bottom: 35px;
                             input {
                                 width: 70%;
                                 font-size: 30px;
@@ -113,7 +117,6 @@ import { STATIC_BASE } from "./../../api/consts";
                         .send-btn {
                             width: 80%;
                             border-radius: 35px;
-                            margin-top: 50px;
                             font-size: xxx-large;
                             font-weight: bold;
                             transition: all 1s;
@@ -142,7 +145,7 @@ import { STATIC_BASE } from "./../../api/consts";
                             flex-grow: 0;
                             flex-shrink: 1;
                             //@include bg-gradient();
-                            background-color: #fffdd0;
+                            background-color: #faf8e1;
                             margin-left: 10%;
 
                             .modal-open-area {

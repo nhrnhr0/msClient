@@ -298,6 +298,9 @@ on:change={(event) => {
 
                 position: absolute;
                 top:0px;
+                &.active {
+                    visibility: visible;
+                }
                 //transform: translate(0, -100%);
 
                 
