@@ -233,7 +233,7 @@ on:change={(event) => {
                     width: 100%;
                     text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
                     z-index: 2000;
-                    font-size: 2em;
+                    font-size: 1.5em;
                     font-weight: bold;
                     pointer-events: none;
                     text-align: center;
@@ -251,6 +251,12 @@ on:change={(event) => {
                         border: 1px solid red;
                         &::after {
                             content: ' להצעת מחיר'
+                        }
+                    }
+
+                    .img-wraper  {
+                        img {
+                            width:40px;
                         }
                     }
                 }

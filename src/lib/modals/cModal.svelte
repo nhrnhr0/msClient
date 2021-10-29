@@ -274,7 +274,7 @@ Spinner
         color: white;
         text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
         z-index: 1;
-        font-size: 2em;
+        
         font-weight: bold;
         pointer-events: none;
         text-align: center;
@@ -298,13 +298,17 @@ Spinner
         }
         .text {
           display:inline-block;
+          font-size: 1.5em;
         }
         .img-wraper {
-          width:48px;
-          height: 48px;
+          
           display: inline-flex;
           justify-content: center;
           align-items: center;
+          img {
+            width:40px;
+            height: 40px;
+          }
         }
         
       }
