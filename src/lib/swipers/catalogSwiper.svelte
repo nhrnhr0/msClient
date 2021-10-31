@@ -28,21 +28,36 @@
         Navigation
     } from 'swiper';
     import Spinner from 'svelte-spinner';
-    let loaded_data;
+    export let loaded_data;
     import {productModalStore} from './../../stores/stores'
 import { onMount } from 'svelte';
 
     // install Swiper modules
     SwiperCore.use([EffectCoverflow, Pagination,Navigation]);
     //let data = get_album_details(album.id);
-    let data = get_album_details(album.id);
+    let isLoaded = false;
+    /*let data = get_album_details(album.id);
     let isLoaded = false;
     data.then((newData)=>{
         isLoaded = true;
         loaded_data = newData;
-    });
+    });*/
 
+    $: {
+        if(isInView) {
+            if(loaded_data == undefined) {
+            let data = get_album_details(album.id);
+            isLoaded = false;
+            data.then((newData)=>{
+                loaded_data = newData;
+                isLoaded = true;
+            });
+        }
+        }
+    }
     onMount(()=> {
+        console.log('swiper on mount: ', loaded_data);
+        
         /*window.addEventListener('DOMContentLoaded', (event) => {
             document.querySelectorAll('.product-image').addEventListener("click", function(event) {
                 console.log(event.target);
@@ -132,7 +147,8 @@ on:change={(event) => {
 >
 <Lazy height={500}>
 {#if isInView}
-        {#await data}
+        <!--
+            {#await data}
             <div class="loader-wraper">
             <Spinner
             size="200"
@@ -143,7 +159,18 @@ on:change={(event) => {
         />
             </div>
         {:then d} 
-            
+        -->
+        {#if loaded_data == undefined}
+        <div class="loader-wraper">
+            <Spinner
+                size="200"
+                speed="750"
+                color="#A82124"
+                thickness="2"
+                gap="40"
+            />
+        </div>
+        {:else}
                 <Swiper
                 effect="{'coverflow'}"
                 centeredSlides="{true}"
@@ -168,7 +195,7 @@ on:change={(event) => {
                   navigation="{true}"
                   
                 >
-                    {#each d as image}
+                    {#each loaded_data as image}
                         <SwiperSlide>
                             <!--TODO: use only one cart active on the top and not one in the title, like button and more -->
                                 <div class="img-title" class:active={$cartStore[image.id] != undefined}>
@@ -205,9 +232,10 @@ on:change={(event) => {
                     {/each}
                     
               </Swiper>
-              
-                
+        {/if}
+    <!--
         {/await}
+        -->
 {/if}
 </Lazy>
 </div>

@@ -4,7 +4,8 @@
     import Fa from 'svelte-fa/src/fa.svelte'
 	import boop from '$lib/components/boop/boop'
 import { onDestroy } from 'svelte';
-import CartModal from '$lib/modals/cartModal.svelte';
+    //import CartModal from '$lib/modals/cartModal.svelte';
+    import {cartModalStore} from "./../../../stores/stores"
 	let isBooped = false;
     function setIsBooped(val) {
 		isBooped = val;
@@ -18,12 +19,10 @@ import CartModal from '$lib/modals/cartModal.svelte';
     onDestroy(()=> {
         unsub();
     });
-    let cartModal;
     function open_cart() {
-        cartModal.toggleModal();
+        $cartModalStore.toggleModal();
     }
 </script>
-<CartModal bind:this={cartModal}></CartModal>
 <div id="cart-btn" class="cart" on:click={open_cart} on:mouseenter={() => isBooped = true} use:boop={{isBooped, scale:1.2, timing: 200, setter: setIsBooped}}>
 
     <Fa size="2x" icon={faShoppingCart} />

@@ -2,7 +2,7 @@
 	import Header from "$lib/header.svelte"
 	import About from "$lib/about.svelte"
   import LogoSwiper from "$lib/swipers/logoSwiper.svelte"
-	import {albumsJsonStore, productModalStore, categoryModalStore,productImageModalStore, sizesJsonStore, colorsJsonStore} from './../stores/stores'
+	import {albumsJsonStore,cartModalStore, productModalStore, categoryModalStore,productImageModalStore, sizesJsonStore, colorsJsonStore} from './../stores/stores'
 	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL, LOGOS_API_URL } from './../api/consts'
   import { browser } from '$app/env';
 
@@ -33,6 +33,15 @@
     for(let i = 0; i < colors_json.length; i++) {
       colors_ret[colors_json[i].id] =  colors_json[i];
     }
+    let products = {};
+    //if (!browser) {
+      for(let i = 0; i < albums_json.length; i++) {
+        let productResponse = await get_album_details(albums_json[i].id, fetch);
+        products[albums_json[i].id] = productResponse;
+      }
+    //}
+
+    console.log('load: productQuery: ', productQuery);
     
     /*
 */
@@ -43,7 +52,8 @@
         albums: albums_json,
         onLoadProduct: productQuery,
         onLoadCategory: categoryQuery,
-        logos: logos_json
+        logos: logos_json,
+        all_products: products
 			}
 		};
   }
@@ -57,9 +67,7 @@
 	<title>M.S. Global</title>
 </svelte:head>
 <svelte:window bind:scrollY={y_scroll}/>
-<CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
-<ProductModal bind:this={$productModalStore}></ProductModal>
-<ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
+
 <Header />
 <About />
 <LogoSwiper {logos}/>
@@ -73,22 +81,30 @@
 			</button>
 		</div>
 
-	<CatalogSwiper album={album}/>
+	<CatalogSwiper album={album} loaded_data={all_products[album.id]}/>
 	
 {/each}
 
+
+<ProductModal bind:this={$productModalStore}></ProductModal>
+<ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
+<CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
+<CartModal bind:this={$cartModalStore}></CartModal>
 <script>
 
   import CatalogSwiper from '$lib/swipers/catalogSwiper.svelte';
   import CategoryModal from "$lib/modals/cModal.svelte";
   import ProductModal from "$lib/modals/pModal.svelte";
   import ProductImageModal from "$lib/modals/pImgModal.svelte";
+  import CartModal from "$lib/modals/cartModal.svelte"
   import { onMount } from "svelte";
+import { get_album_details } from "./../api/api";
 
   export let colors;
   export let sizes;
   export let albums;
   export let logos;
+  export let all_products;
   let y_scroll;
 
   
