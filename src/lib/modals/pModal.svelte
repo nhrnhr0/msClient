@@ -26,6 +26,7 @@
     stateQuery
   } from './../../stores/queryStore'
   import {cartStore } from './../../stores/cartStore'
+  import Spinner from 'svelte-spinner';
 
   let productData = writable();
   let current_album = writable();
@@ -34,6 +35,7 @@
   let sizeMarkup = '';
   let modal_zIndex = 0;
   let _productId, _catalogId;
+  let isLoaded = false;
   export function isOpen() {
     return isModalOpen;
   }
@@ -41,6 +43,7 @@
     return [_catalogId, _productId];
   }
   export function setProduct(catalogId, productId) {
+    isLoaded = false;
     $stateQuery['product'] = catalogId + ',' + productId;
     _productId = productId;
     _catalogId = catalogId;
@@ -117,12 +120,13 @@
 
     console.log('new sizeMarkup: ', sizeMarkup);
     console.log('new colorMarkup: ', colorMarkup);
-
+    isLoaded = true;
 
 
   });
 
   let isModalOpen = false;
+  let loadingText = 'טוען...'
   export function toggleModal() {
     console.log('product toggleModal');
     isModalOpen = !isModalOpen;
@@ -152,7 +156,7 @@
 <div style="z-index: {modal_zIndex};" id="productModal" class="modal" class:active={isModalOpen}>
   <div style="z-index: {modal_zIndex+5};" class="overlay" on:click={toggleModal}></div>
 
-  {#if $productData }
+  {#if isLoaded }
         <div style="z-index: {modal_zIndex+10};" class="modal_content">
             <div class="modal-header">
                 <button id="category-open-btn-{$current_album.id}" on:click={open_category}
@@ -176,7 +180,9 @@
                         <hr>
                         
                         <div class="product-description">
+                          {#if $productData && $productData.description}
                             <SvelteMarkdown source={$productData.description} />
+                          {/if}
                         </div>
                         
                     </div>
@@ -212,6 +218,65 @@
                 </button>
             </div>
         </div>
+    {:else}
+    <div style="z-index: {modal_zIndex+10};" class="modal_content">
+      <div class="modal-header">
+          <button
+                  class="title btn btn-outline-dark">{loadingText}
+              </button>
+      </div>
+
+      <div class="modal-body">
+          <div class="inner-body">
+              <div class="product-detail">
+                  <div class="product-title">{loadingText}</div>
+                  <hr>
+                  <div class="product-properties">
+                      <div class="product-color-wraper">
+                          <div class="product-color">{loadingText}</div>
+                      </div>
+                      <div class="product-size-wraper">
+                          <div class="product-size">{loadingText}</div>
+                      </div>
+                  </div>
+                  <hr>
+                  
+                  <div class="product-description">
+                    {loadingText}
+                  </div>
+                  
+              </div>
+              <div class="img-wraper">  
+                  <Spinner
+                size="200"
+                speed="750"
+                color="#A82124"
+                thickness="2"
+                gap="40"
+            /></div>
+          </div>
+      </div>
+
+
+      <div class="modal-fotter">
+          <button id="modal-prev-btn" class="btn modal-nav-btn" on:click={prevClick}>
+              <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="prev">
+          </button>
+          <div  on:click={likeBtnClicked} class="like-btn-wraper">
+              <button  id="productModalLikeBtn" class="like-btn">
+                <div class="img-wraper">
+                      <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>
+                </div>
+                <div class="text">
+                  {loadingText}
+                </div>
+              </button>
+            </div>
+          <button id="modal-next-btn" class="btn modal-nav-btn" on:click={nextClick}>
+              <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="next">
+          </button>
+      </div>
+  </div>
     {/if}
 </div>
 

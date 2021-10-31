@@ -34,8 +34,11 @@
         </div>
 
         <div class="modal-body">
-            <div class="img-wraper" style="background-image: url('{STATIC_BASE}{product['image']}');">
-            </div>
+            <a  target="_blank" href="{STATIC_BASE}{product['image']}">
+                <div class="img-wraper" style="background-image: url('{STATIC_BASE}{product['image']}');">
+                    
+                </div>
+            </a>
         </div>
 
 

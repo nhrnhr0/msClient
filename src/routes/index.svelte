@@ -1,8 +1,9 @@
 <script context="module">
 	import Header from "$lib/header.svelte"
 	import About from "$lib/about.svelte"
+  import LogoSwiper from "$lib/swipers/logoSwiper.svelte"
 	import {albumsJsonStore, productModalStore, categoryModalStore,productImageModalStore, sizesJsonStore, colorsJsonStore} from './../stores/stores'
-	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL } from './../api/consts'
+	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL, LOGOS_API_URL } from './../api/consts'
   import { browser } from '$app/env';
 
 
@@ -14,12 +15,16 @@
     let albums_response = await fetch(ALBUMS_API_URL, { method: 'GET', redirect: 'follow'});
     let albums_json = await albums_response.json();
 
+    let logos_response = await fetch(LOGOS_API_URL, {method: 'GET', redirect: 'follow'})
+    let logos_json = await logos_response.json();
+
     let sizes_response = await fetch(SIZES_API_URL, {method: 'GET', redirect: 'follow'})
     let sizes_json = await sizes_response.json();
 
     let colors_response = await fetch(COLORS_API_URL, {method: 'GET', redirect: 'follow'})
     let colors_json = await colors_response.json();
     let sizes_ret = {};
+
     for(let i = 0; i < sizes_json.length; i++) {
       sizes_ret[sizes_json[i].id] =  sizes_json[i];
     }
@@ -37,7 +42,8 @@
         sizes: sizes_ret,
         albums: albums_json,
         onLoadProduct: productQuery,
-        onLoadCategory: categoryQuery
+        onLoadCategory: categoryQuery,
+        logos: logos_json
 			}
 		};
   }
@@ -56,6 +62,7 @@
 <ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
 <Header />
 <About />
+<LogoSwiper {logos}/>
 <!--<TempModal bind:this={$tempModalStore}/>
 <button on:click={()=>{$tempModalStore.toggleModal()}}>click me to open modal</button>-->
 {#each albums as album}
@@ -81,6 +88,7 @@
   export let colors;
   export let sizes;
   export let albums;
+  export let logos;
   let y_scroll;
 
   
