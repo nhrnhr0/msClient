@@ -3,6 +3,7 @@
         _modal_z_index_incrementor
     } from './../../stores/stores';
     import {
+CLOUDINARY_URL,
     STATIC_BASE
   } from './../../api/consts';
     let isModalOpen = false;
@@ -34,8 +35,8 @@
         </div>
 
         <div class="modal-body">
-            <a  target="_blank" href="{STATIC_BASE}{product['image']}">
-                <div class="img-wraper" style="background-image: url('{STATIC_BASE}{product['image']}');">
+            <a  target="_blank" href="{CLOUDINARY_URL}f_auto,w_auto/{product['cimage']}">
+                <div class="img-wraper" style="background-image: url('{CLOUDINARY_URL}f_auto,w_auto/{product['cimage']}');">
                     
                 </div>
             </a>

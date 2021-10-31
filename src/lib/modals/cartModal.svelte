@@ -1,8 +1,8 @@
 <script>
 
-import {productModalStore, _modal_z_index_incrementor} from "./../../stores/stores";
+import {all_swipers, productModalStore, _modal_z_index_incrementor} from "./../../stores/stores";
 import { cartStore } from "./../../stores/cartStore"
-import { STATIC_BASE } from "./../../api/consts";
+import { CLOUDINARY_URL, STATIC_BASE } from "./../../api/consts";
 
     let isModalOpen = false;
     let modal_zIndex = 0;
@@ -19,8 +19,13 @@ import { STATIC_BASE } from "./../../api/consts";
 
     function delete_product_from_cart(key) {
         console.log('delete_product_from_cart');
+        debugger;
+        
+        let item = $cartStore[key];
+        let swiper = $all_swipers[item.albums[0]];
         delete $cartStore[key];
         $cartStore =$cartStore;
+        swiper.fixDups();
         debugger;
     }
 
@@ -53,7 +58,7 @@ import { STATIC_BASE } from "./../../api/consts";
                                 <button on:click="{delete_product_from_cart(key)}"class="delete-product">X</button>
                                 <div class="modal-open-area" on:click={open_product_modal(key)}>
                                     <div class="title">{$cartStore[key].title}</div>
-                                    <div class="img-wraper"><img src="{STATIC_BASE}{$cartStore[key].image}" alt="{$cartStore[key].title}"></div>
+                                    <div class="img-wraper"><img src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[key].cimage}" alt="{$cartStore[key].title}"></div>
                                 </div>
                             </div>
 

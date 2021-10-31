@@ -23,3 +23,6 @@ export const LOGOS_API_URL = BASE_API_URL + 'logos/';
 
 
 export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
+
+
+export const CLOUDINARY_URL = 'https://res.cloudinary.com/ms-global/image/upload/';

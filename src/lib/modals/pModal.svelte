@@ -20,6 +20,7 @@
   } from './../../stores/stores'
 
   import {
+CLOUDINARY_URL,
     STATIC_BASE
   } from './../../api/consts';
   import {
@@ -186,7 +187,7 @@
                         </div>
                         
                     </div>
-                    <div class="img-wraper" on:click={openProductImageModal}><img alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{STATIC_BASE}{$productData.image}"/></div>
+                    <div class="img-wraper" on:click={openProductImageModal}><img alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"/></div>
                 </div>
             </div>
 

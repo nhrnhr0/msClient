@@ -4,6 +4,7 @@
     cartStore
   } from './../../stores/cartStore';
   import {
+CLOUDINARY_URL,
     STATIC_BASE
   } from '../../api/consts'
   import {
@@ -171,7 +172,7 @@ Spinner
   
       <div class="category-item" data-category-prod-id="{img.id}">
         <div class="category-item-img-wraper" on:click="{open_product(img.id)}" >
-          <img class="product-image" width="250px" height="250px" src="{STATIC_BASE}{img.image}" alt="{img.description}" />
+          <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
           <div class="img-title">{img.title}</div>
         </div>
         <div  on:click={likeBtnClicked(img)} class="like-btn-wraper">

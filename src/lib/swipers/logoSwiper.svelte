@@ -5,6 +5,7 @@
         Swiper,
         SwiperSlide
     } from 'swiper/svelte';
+    import {CLOUDINARY_URL} from './../../api/consts'
 
     // Import Swiper styles
     import 'swiper/css';
@@ -23,7 +24,7 @@
     {#if logos}
     <div class="logo-section">
         <Swiper
-                slidesPerView="{'5'}"
+                slidesPerView="{'7'}"
                 autoplay='{{
                     "delay": 50,
                     "disableOnInteraction": false
@@ -41,7 +42,7 @@
                     {#each logos as logo}
                         <SwiperSlide>
                             <div class="img-wraper">
-                                <img alt="{logo.title}" src="{logo.cimg}">
+                                <img height="100px" width="auto" alt="{logo.title}" src="{CLOUDINARY_URL}f_auto,w_auto,h_100/{logo.cimg}">
                             </div>
                         </SwiperSlide>
                     {/each}
@@ -57,7 +58,7 @@
             justify-content: center;
             align-items: center;
             img {
-                height: 200px;
+                height: 100px;
                 max-width: 100%;
             }
         }

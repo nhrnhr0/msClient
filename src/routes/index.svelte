@@ -2,7 +2,7 @@
 	import Header from "$lib/header.svelte"
 	import About from "$lib/about.svelte"
   import LogoSwiper from "$lib/swipers/logoSwiper.svelte"
-	import {albumsJsonStore,cartModalStore, productModalStore, categoryModalStore,productImageModalStore, sizesJsonStore, colorsJsonStore} from './../stores/stores'
+	import {all_swipers, albumsJsonStore,cartModalStore, productModalStore, categoryModalStore,productImageModalStore, sizesJsonStore, colorsJsonStore} from './../stores/stores'
 	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL, LOGOS_API_URL } from './../api/consts'
   import { browser } from '$app/env';
 
@@ -36,7 +36,8 @@
     let products = {};
     //if (!browser) {
       for(let i = 0; i < albums_json.length; i++) {
-        let productResponse = await get_album_details(albums_json[i].id, fetch);
+        let productResponse = await get_album_details(albums_json[i].id, fetch)
+        
         products[albums_json[i].id] = productResponse;
       }
     //}
@@ -73,6 +74,10 @@
 <LogoSwiper {logos}/>
 <!--<TempModal bind:this={$tempModalStore}/>
 <button on:click={()=>{$tempModalStore.toggleModal()}}>click me to open modal</button>-->
+<ProductModal bind:this={$productModalStore}></ProductModal>
+<ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
+<CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
+<CartModal bind:this={$cartModalStore}></CartModal>
 {#each albums as album}
 
 		<div class="title-wraper">
@@ -81,15 +86,12 @@
 			</button>
 		</div>
 
-	<CatalogSwiper album={album} loaded_data={all_products[album.id]}/>
+	<CatalogSwiper album={album} bind:this={$all_swipers[album.id]} loaded_data={all_products[album.id]}/>
 	
 {/each}
 
 
-<ProductModal bind:this={$productModalStore}></ProductModal>
-<ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
-<CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
-<CartModal bind:this={$cartModalStore}></CartModal>
+
 <script>
 
   import CatalogSwiper from '$lib/swipers/catalogSwiper.svelte';

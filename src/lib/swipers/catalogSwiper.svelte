@@ -1,7 +1,7 @@
 <script export="module">
     import { inview } from 'svelte-inview';
-    import Lazy from 'svelte-lazy';
-    import {STATIC_BASE} from '../../api/consts';
+    //import Lazy from 'svelte-lazy';
+    import {CLOUDINARY_URL, STATIC_BASE} from '../../api/consts';
 
     import {
         get_album_details
@@ -18,7 +18,10 @@
     import "swiper/css/effect-coverflow"
     import "swiper/css/pagination"
     import "swiper/css/navigation";
+    import "swiper/css/lazy"
+
     import {cartStore} from './../../stores/cartStore'
+    import LazyImage from 'svelte-lazy-image';
 
 
     // import Swiper core and required modules
@@ -31,11 +34,13 @@
     export let loaded_data;
     import {productModalStore} from './../../stores/stores'
 import { onMount } from 'svelte';
+    
 
     // install Swiper modules
     SwiperCore.use([EffectCoverflow, Pagination,Navigation]);
     //let data = get_album_details(album.id);
     let isLoaded = false;
+    let mswiper;
     /*let data = get_album_details(album.id);
     let isLoaded = false;
     data.then((newData)=>{
@@ -52,6 +57,8 @@ import { onMount } from 'svelte';
                 loaded_data = newData;
                 isLoaded = true;
             });
+            
+            
         }
         }
     }
@@ -117,7 +124,13 @@ import { onMount } from 'svelte';
         $productModalStore.setProduct(catalogId, productId);
         $productModalStore.open();
     }*/
-
+    export function fixDups() {
+        setTimeout(()=>{
+            mswiper.swiper().loopDestroy();
+            mswiper.swiper().loopCreate();
+        });
+    }
+    let slides = [];
     let isInView;
     function copySwiperduplicates(e) {
         /*console.log('===========> run slideChangeTransitionStart', e);
@@ -145,7 +158,7 @@ on:change={(event) => {
     isInView = event.detail.inView;
   }}
 >
-<Lazy height={500}>
+<!--<Lazy height={500}> -->
 {#if isInView}
         <!--
             {#await data}
@@ -172,10 +185,11 @@ on:change={(event) => {
         </div>
         {:else}
                 <Swiper
+                bind:this={mswiper}
                 effect="{'coverflow'}"
                 centeredSlides="{true}"
                 slidesPerView="{'5'}"
-                loopedSlides="{'8'}"
+                
                 speed= "{50}"
                 loop= "{true}"
                 allowTouchMove="{true}"
@@ -183,7 +197,6 @@ on:change={(event) => {
                 observer="{true}"
                 on:click={swiperSlideClicked}
                 threshold={10}
-
                 coverflowEffect='{{
                     "rotate": -13,
                     "stretch": 10,
@@ -195,15 +208,17 @@ on:change={(event) => {
                   navigation="{true}"
                   
                 >
-                    {#each loaded_data as image}
-                        <SwiperSlide>
+                    {#each loaded_data as image,index (image.id)}
+                        <SwiperSlide bind:this={slides[index]}>
                             <!--TODO: use only one cart active on the top and not one in the title, like button and more -->
                                 <div class="img-title" class:active={$cartStore[image.id] != undefined}>
                                         {image.title}
                                 </div>
                                 <div class="slide-content" >
                                     <div class="img-wraper">
-                                        <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{STATIC_BASE}{image.image}" alt="{image.title}">
+                                        
+                                        <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{image.cimage}" alt="{image.title}">
+                                        
                                     </div>
                                 </div>
                                 <div  class="like-btn-wraper" data-product-id="{image.id}">
@@ -237,7 +252,7 @@ on:change={(event) => {
         {/await}
         -->
 {/if}
-</Lazy>
+<!--</Lazy>-->
 </div>
 <style lang="scss">
     :global(.swiper-wrapper) {
