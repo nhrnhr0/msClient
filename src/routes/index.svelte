@@ -2,10 +2,10 @@
 	import Header from "$lib/header.svelte"
 	import About from "$lib/about.svelte"
   import LogoSwiper from "$lib/swipers/logoSwiper.svelte"
-	import {all_swipers, albumsJsonStore,cartModalStore, productModalStore, categoryModalStore,productImageModalStore, sizesJsonStore, colorsJsonStore} from './../stores/stores'
+	import {all_swipers, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore, sizesJsonStore, colorsJsonStore} from './../stores/stores'
 	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL, LOGOS_API_URL } from './../api/consts'
   import { browser } from '$app/env';
-
+  import {getCookie} from '$lib/utils/cookies';
 
   export async function load({fetch, page}) {
     const qs = browser ? document.location.search : '';
@@ -14,7 +14,8 @@
     const categoryQuery = query.get('category');
     let albums_response = await fetch(ALBUMS_API_URL, { method: 'GET', redirect: 'follow'});
     let albums_json = await albums_response.json();
-
+    albums_json = albums_json.filter(album => album.is_public)
+    
     let logos_response = await fetch(LOGOS_API_URL, {method: 'GET', redirect: 'follow'})
     let logos_json = await logos_response.json();
 
@@ -34,13 +35,15 @@
       colors_ret[colors_json[i].id] =  colors_json[i];
     }
     let products = {};
-    //if (!browser) {
+
+    //TODO: remove the !browser on production build
+    if (!browser) {
       for(let i = 0; i < albums_json.length; i++) {
         let productResponse = await get_album_details(albums_json[i].id, fetch)
         
         products[albums_json[i].id] = productResponse;
       }
-    //}
+    }
 
     console.log('load: productQuery: ', productQuery);
     
@@ -68,7 +71,6 @@
 	<title>M.S. Global</title>
 </svelte:head>
 <svelte:window bind:scrollY={y_scroll}/>
-
 <Header />
 <About />
 <LogoSwiper {logos}/>
@@ -78,6 +80,7 @@
 <ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
 <CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
 <CartModal bind:this={$cartModalStore}></CartModal>
+<SuccessModal bind:this={$successModalStore}></SuccessModal>
 {#each albums as album}
 
 		<div class="title-wraper">
@@ -90,6 +93,7 @@
 	
 {/each}
 
+<ContentForm></ContentForm>
 
 
 <script>
@@ -100,8 +104,10 @@
   import ProductImageModal from "$lib/modals/pImgModal.svelte";
   import CartModal from "$lib/modals/cartModal.svelte"
   import { onMount } from "svelte";
-import { get_album_details } from "./../api/api";
-
+import { get_album_details, request_csrf_token  } from "./../api/api";
+import ContentForm from '$lib/contentForm.svelte';
+import SuccessModal from '$lib/modals/successModal.svelte';
+  
   export let colors;
   export let sizes;
   export let albums;
@@ -112,8 +118,10 @@ import { get_album_details } from "./../api/api";
   
   export let onLoadCategory;
   export let onLoadProduct;
+  
 
   onMount(()=> {
+    let response = request_csrf_token();
     console.log('on mount: setting albums');
     albumsJsonStore.set(albums);
     sizesJsonStore.set(sizes);
@@ -134,10 +142,10 @@ import { get_album_details } from "./../api/api";
       //openProductModalFromId(cateId, prodId)
     }
 
-    setTimeout(()=> {
+    /*setTimeout(()=> {
       console.log('y_scroll: ', y_scroll)
       y_scroll = 0;
-    },500);
+    },500);*/
   });
 
 

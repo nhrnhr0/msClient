@@ -1,8 +1,10 @@
 <script>
 
-import {all_swipers, productModalStore, _modal_z_index_incrementor} from "./../../stores/stores";
+import {all_swipers, cartModalStore, productModalStore, successModalStore, _modal_z_index_incrementor} from "./../../stores/stores";
 import { cartStore } from "./../../stores/cartStore"
-import { CLOUDINARY_URL, STATIC_BASE } from "./../../api/consts";
+import { CLOUDINARY_URL, STATIC_BASE, SUBMIT_CART_URL } from "./../../api/consts";
+import { subscribe } from "svelte/internal";
+import { get_user_uuid, submit_cart_form } from "./../../api/api"
 
     let isModalOpen = false;
     let modal_zIndex = 0;
@@ -19,21 +21,47 @@ import { CLOUDINARY_URL, STATIC_BASE } from "./../../api/consts";
 
     function delete_product_from_cart(key) {
         console.log('delete_product_from_cart');
-        debugger;
         
         let item = $cartStore[key];
         let swiper = $all_swipers[item.albums[0]];
         delete $cartStore[key];
         $cartStore =$cartStore;
         swiper.fixDups();
-        debugger;
     }
 
     function open_product_modal(key) {
-        debugger;
         let product = $cartStore[key];
         $productModalStore.setProduct(product.albums[0], product.id);
         $productModalStore.toggleModal();
+    }
+    let mform;
+    let form_name;
+    let form_email;
+    let form_phone;
+    function cart_submit() {
+        if(mform.reportValidity()) {
+            let data = {
+                name: form_name || '',
+                email: form_email || '',
+                phone:form_phone || '',
+                uuid: get_user_uuid() || '',
+                products: Object.keys($cartStore),
+            };
+            let response = submit_cart_form(data);
+            response.then((data)=> {
+                data.json().then((data_json) => {
+                    debugger;
+                    console.log('data_json: ', data_json);
+                    if(data_json['status'] == 'success') {
+                        $cartModalStore.toggleModal();
+                        $successModalStore.toggleModal();
+                        $cartStore = {};
+                    }
+                    console.log('cart info: ', data_json);
+                });
+            });
+            mform.reset();
+        }
     }
 </script>
 
@@ -43,13 +71,14 @@ import { CLOUDINARY_URL, STATIC_BASE } from "./../../api/consts";
         <div class="modal-header">
             <h1>מוצרים שאהבתי</h1>
         </div>
+        <form bind:this={mform} method="POST" action="{SUBMIT_CART_URL}" >
         <div class="modal-body">
             <div class="inner-body">
                 <div class="cart-info">
-                    <div class="form-control"><input placeholder="שם:" type="text"></div>
-                    <div class="form-control"><input placeholder="אימייל:" type="email"></div>
-                    <div class="form-control"><input placeholder="טלפון:" type="phone"></div>
-                    <button class="send-btn">שלח</button>
+                    <div class="form-control"><input bind:value="{form_name}" required="true" placeholder="שם:" type="text"></div>
+                    <div class="form-control"><input bind:value="{form_email}" placeholder="אימייל:" type="email"></div>
+                    <div class="form-control"><input bind:value="{form_phone}" required="true" placeholder="טלפון:" type="phone"></div>
+                    <button class="send-btn" on:click|preventDefault="{cart_submit}">שלח</button>
                 </div>
                 <div class="cart-products">
                     {#if cartStore}
@@ -66,9 +95,10 @@ import { CLOUDINARY_URL, STATIC_BASE } from "./../../api/consts";
                     {/if}
 
                 </div>
+                
             </div>
-            
         </div>
+        </form>
         <div class="modal-footer">
         </div>
         <!-- End of Dynamic Section -->

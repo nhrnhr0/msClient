@@ -28,7 +28,14 @@
         let searchValue;
         async function searchProducts(keyword) {
             const url = SEARCH_API_URL + '?q=' + encodeURIComponent(keyword);
-            const reponse = await fetch(url);
+            var requestOptions = {
+        method: 'GET',
+        mode:'cors',
+        credentials: 'include',//'',
+        headers: myHeaders,
+        redirect: 'follow'
+        };
+            const reponse = await fetch(url, requestOptions);
             const json = await reponse.json();
             console.log('search api result: ', json);
             let data = json;

@@ -32,7 +32,6 @@ Spinner
     if (isModalOpen == false) {
       $stateQuery['category'] = '-1';
     }else {
-      debugger;
       
     }
   }
@@ -50,7 +49,6 @@ Spinner
   let modal_zIndex = 0;
 
   export function setAlbum(album) {
-    debugger;
     current_album.set(album);
     desctiption = album.description;
     fotter = album.fotter;

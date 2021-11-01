@@ -13,3 +13,5 @@ export let sizesJsonStore = writable([]);
 export let colorsJsonStore = writable([]);
 
 export let all_swipers = writable([]);
+
+export let successModalStore = writable();
