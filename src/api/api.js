@@ -12,6 +12,7 @@ function fetch_wraper(url, requestOptions, custom_fetch){
     if(requestOptions && requestOptions.method == "POST") {
         headers_json['X-CSRFToken']= get_csrf_token();
     }
+    console.log('set scft token: ', headers_json['X-CSRFToken']);
     var myHeaders = new Headers(headers_json);
     var requestOptions = Object.assign({}, {
             method: "GET",
