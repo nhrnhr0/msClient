@@ -1,7 +1,6 @@
 import { browser } from "$app/env";
 import { writable } from "svelte/store";
 let initCart = {};
-debugger;
 if(browser) {
     initCart=JSON.parse(localStorage.getItem('cart'));
     if(!initCart) {

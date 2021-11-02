@@ -48,9 +48,8 @@ import { get_user_uuid, submit_cart_form } from "./../../api/api"
                 products: Object.keys($cartStore),
             };
             let response = submit_cart_form(data);
-            response.then((data)=> {
-                data.json().then((data_json) => {
-                    debugger;
+            response.then((data_json)=> {
+                
                     console.log('data_json: ', data_json);
                     if(data_json['status'] == 'success') {
                         $cartModalStore.toggleModal();
@@ -58,7 +57,7 @@ import { get_user_uuid, submit_cart_form } from "./../../api/api"
                         $cartStore = {};
                     }
                     console.log('cart info: ', data_json);
-                });
+                
             });
             mform.reset();
         }
@@ -75,19 +74,21 @@ import { get_user_uuid, submit_cart_form } from "./../../api/api"
         <div class="modal-body">
             <div class="inner-body">
                 <div class="cart-info">
-                    <div class="form-control"><input bind:value="{form_name}" required="true" placeholder="שם:" type="text"></div>
-                    <div class="form-control"><input bind:value="{form_email}" placeholder="אימייל:" type="email"></div>
-                    <div class="form-control"><input bind:value="{form_phone}" required="true" placeholder="טלפון:" type="phone"></div>
+                    <div class="form-control"><input bind:value="{form_name}" name="name" required="true" placeholder="שם:" type="text"></div>
+                    <div class="form-control"><input bind:value="{form_email}" name="email" placeholder="אימייל:" type="email"></div>
+                    <div class="form-control"><input bind:value="{form_phone}" name="tel" required="true" placeholder="טלפון:" type="tel"></div>
                     <button class="send-btn" on:click|preventDefault="{cart_submit}">שלח</button>
                 </div>
                 <div class="cart-products">
                     {#if cartStore}
                         {#each Object.keys($cartStore) as key}
                             <div class="product">
-                                <button on:click="{delete_product_from_cart(key)}"class="delete-product">X</button>
+                                <button on:click|preventDefault="{delete_product_from_cart(key)}"class="delete-product">X</button>
                                 <div class="modal-open-area" on:click={open_product_modal(key)}>
                                     <div class="title">{$cartStore[key].title}</div>
-                                    <div class="img-wraper"><img src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[key].cimage}" alt="{$cartStore[key].title}"></div>
+                                    <div class="img-wraper">
+                                        <img src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[key].cimage}" alt="{$cartStore[key].title}">
+                                    </div>
                                 </div>
                             </div>
 

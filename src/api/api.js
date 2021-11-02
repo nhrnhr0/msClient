@@ -2,7 +2,35 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL, GET_CSRF_TOKEN, STATIC_BASE ,CONTACT_FORM_URL, SUBMIT_CART_URL} from "./consts";
+import { BASE_URL, GET_CSRF_TOKEN_URL, STATIC_BASE ,CONTACT_FORM_URL, SUBMIT_CART_URL} from "./consts";
+
+function fetch_wraper(url, requestOptions, custom_fetch){
+    let headers_json= {
+        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=UTF-8',
+    }
+    if(requestOptions && requestOptions.method == "POST") {
+        headers_json['X-CSRFToken']= get_csrf_token();
+    }
+    var myHeaders = new Headers(headers_json);
+    var requestOptions = Object.assign({}, {
+            method: "GET",
+            mode:'cors',
+            credentials: 'include',//'',
+            headers: myHeaders,
+            redirect: 'follow'
+        },requestOptions);
+    
+    let response;
+    if(custom_fetch) {
+        response = custom_fetch(url, requestOptions).then(response => response.json());
+    }
+    else {
+        response = fetch(url, requestOptions).then(response => response.json());
+    }
+    return response;
+}
+
 export function get_album_details(albumId, server_fetch) {
     console.log('get_album_details: ', albumId)
     if(albumsData[albumId]) {
@@ -11,21 +39,9 @@ export function get_album_details(albumId, server_fetch) {
     }
     else {
         console.log('return ',  albumId, ' from server');
-        var myHeaders = new Headers({'Content-Type': 'application/json'});
-        var requestOptions = {
-        method: 'GET',
-        mode:'cors',
-        credentials: 'include',//'',
-        headers: myHeaders,
-        redirect: 'follow'
-        };
         console.log('fetch from: ', STATIC_BASE + "/_get_album_images/" + albumId);
-        let response 
-        if(server_fetch) {
-            response = server_fetch(STATIC_BASE + "/_get_album_images/" + albumId, requestOptions).then(response => response.json());
-        }else {
-            response = fetch(STATIC_BASE + "/_get_album_images/" + albumId, requestOptions).then(response => response.json());
-        }
+        let response = fetch_wraper(STATIC_BASE + "/_get_album_images/" + albumId,{method:"GET"}, server_fetch)
+
         albumsData[albumId] = response;
         return albumsData[albumId];
     }
@@ -33,21 +49,11 @@ export function get_album_details(albumId, server_fetch) {
 
 export async function request_csrf_token() {
     let uid = get_user_uuid();
-    
-    var myHeaders = new Headers({'Content-Type': 'application/json'});
-    var requestOptions = {
-    method: 'GET',
-    mode:'cors',
-    credentials: 'include',//'',
-    headers: myHeaders,
-    redirect: 'follow'
-    };
 
     let extra = '/'
     if(uid)
         extra +=  uid;
-    let response = await fetch(GET_CSRF_TOKEN + extra,requestOptions);
-    let json_response = await response.json();
+    let json_response = await fetch_wraper(GET_CSRF_TOKEN_URL + extra);
     set_user_uuid(json_response['uid']);
     console.log('response: ', json_response);
     console.log(document.cookie);
@@ -65,42 +71,21 @@ export function get_csrf_token() {
 }
 
 export function submit_cart_form(data) {
-    debugger;
     console.log(data);
-    var myHeaders = new Headers({
-        'Content-Type': 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-        'X-CSRFToken': get_csrf_token()
-      
-      });
         var requestOptions = {
-        method: 'POST',
-        mode:'cors',
-        credentials: 'include',//'',
-        headers: myHeaders,
-        body: JSON.stringify(data),
-        redirect: 'follow'
+            method:"POST",
+            body: JSON.stringify(data),
         };
         let response 
-        response = fetch(SUBMIT_CART_URL, requestOptions)//.then(response => response.json());
+        response = fetch_wraper(SUBMIT_CART_URL, requestOptions)//.then(response => response.json());
         return response;
 }
 export function submit_contact_form(data) {
-    var myHeaders = new Headers({
-        'Content-Type': 'application/json',
-        'Content-Type': 'application/json; charset=UTF-8',
-        'X-CSRFToken': get_csrf_token()
-      
-      });
-        var requestOptions = {
+    var requestOptions = {
         method: 'POST',
-        mode:'cors',
-        credentials: 'include',//'',
-        headers: myHeaders,
-        body: JSON.stringify(data),
-        redirect: 'follow'
-        };
-        let response 
-        response = fetch(CONTACT_FORM_URL, requestOptions)//.then(response => response.json());
-        return response;
+        body: JSON.stringify(data)
+    };
+    let response 
+    response = fetch_wraper(CONTACT_FORM_URL, requestOptions)//.then(response => response.json());
+    return response;
 }

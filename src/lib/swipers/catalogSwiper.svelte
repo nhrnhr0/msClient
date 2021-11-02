@@ -313,6 +313,8 @@ on:change={(event) => {
     }
 .lazy-swiper-wraper {
     height: 408px !important;
+    max-width: 99vw;
+    margin: auto;
     @media all and (min-width: 1300px) and (max-width:1460px) { 
         height: 438px !important;
     }
