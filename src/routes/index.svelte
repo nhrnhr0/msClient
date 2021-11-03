@@ -2,7 +2,7 @@
 	import Header from "$lib/header.svelte"
 	import About from "$lib/about.svelte"
   import LogoSwiper from "$lib/swipers/logoSwiper.svelte"
-	import {all_swipers, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore, sizesJsonStore, colorsJsonStore} from './../stores/stores'
+	import {all_swipers, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore} from './../stores/stores'
 	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL, LOGOS_API_URL } from './../api/consts'
   import { browser } from '$app/env';
   import {getCookie} from '$lib/utils/cookies';
@@ -76,6 +76,7 @@
 <LogoSwiper {logos}/>
 <!--<TempModal bind:this={$tempModalStore}/>
 <button on:click={()=>{$tempModalStore.toggleModal()}}>click me to open modal</button>-->
+<LoginModal bind:this={$loginModalStore}></LoginModal>
 <ProductModal bind:this={$productModalStore}></ProductModal>
 <ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
 <CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
@@ -107,6 +108,7 @@
 import { get_album_details, request_csrf_token  } from "./../api/api";
 import ContentForm from '$lib/contentForm.svelte';
 import SuccessModal from '$lib/modals/successModal.svelte';
+import LoginModal from '$lib/modals/loginModal.svelte';
   
   export let colors;
   export let sizes;

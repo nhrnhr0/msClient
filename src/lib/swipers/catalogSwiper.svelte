@@ -53,7 +53,7 @@ import { onMount } from 'svelte';
             if(loaded_data == undefined) {
             let data = get_album_details(album.id);
             isLoaded = false;
-            data.then((newData)=>{
+            data.then((newData)=> {
                 loaded_data = newData;
                 isLoaded = true;
             });

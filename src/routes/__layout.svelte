@@ -2,6 +2,7 @@
   import "../app.scss";
   import Navbar from "$lib/Navbar.svelte";
   import { stateQuery} from './../stores/queryStore'
+import { onMount } from "svelte";
 
 
 </script>
