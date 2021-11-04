@@ -18,9 +18,7 @@ import { get_csrf_token, get_user_uuid, submit_contact_form } from './../api/api
         };
         let response = submit_contact_form(data);
         console.log(response);
-        response.then(data => data.json())
-        .then((json_response)=> {
-          debugger;
+        response.then((json_response)=> {
             console.log('reset form: ', json_response);
             if(json_response['status'] == 'success') {
               mform.reset();

@@ -6,10 +6,9 @@ import { BASE_URL, GET_CSRF_TOKEN_URL, STATIC_BASE ,CONTACT_FORM_URL, SUBMIT_CAR
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
-import { request_refresh_token } from "./auth";
+//import { request_refresh_token } from "./auth";
 
-export function fetch_wraper(url, requestOptions, custom_fetch){
-    debugger;
+export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false) {
     let headers_json= {
         'Content-Type': 'application/json',
         'Content-Type': 'application/json; charset=UTF-8',
@@ -20,7 +19,7 @@ export function fetch_wraper(url, requestOptions, custom_fetch){
     console.log('get(userInfoStore).token: ', get(userInfoStore));
     if (browser) {
         if (get(userInfoStore).access) {
-            headers_json['Authorization'] = "Bearer " +get(userInfoStore).access;
+            headers_json['Authorization'] = "Token " +get(userInfoStore).access;
         }
     }
     console.log('headers_json: ', headers_json);
@@ -48,11 +47,21 @@ export function fetch_wraper(url, requestOptions, custom_fetch){
         // Note - error messages will vary depending on browser
       }
     return response.then((data)=>{
+        if(data.status == 401) {
+            console.log('data.status == 401');
+            let userInfo = get(userInfoStore);
+            userInfo.isLogin = false;
+            userInfo.access = null;
+            userInfoStore.set(userInfo);
+            if(!isRetry) {
+                return fetch_wraper(url, requestOptions, custom_fetch, true);
+            }
+        }
         return data.json()
     }).then((info)=> {
-        if(info.code === "token_not_valid") {
+        /*if(info.code === "token_not_valid") {
+            
             request_refresh_token().then((refresh_response)=> {
-                debugger;
                 if(refresh_response.access) {
                     let oldStore = get(userInfoStore);
                     oldStore.access = refresh_response.access;
@@ -62,7 +71,8 @@ export function fetch_wraper(url, requestOptions, custom_fetch){
                 console.log('retriying url: ', url);
                 return fetch_wraper(url, requestOptions, custom_fetch);
             });
-        }
+            
+        }*/
         console.log(info);
         return info;
     });

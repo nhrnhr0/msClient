@@ -40,8 +40,8 @@ Spinner
   }
   import {
     stateQuery
-  } from './../../stores/queryStore'
-  let products = []
+  } from './../../stores/queryStore';
+  let products = [];
   let current_album = new writable({});
   let title = 'loading'
   let desctiption = '';

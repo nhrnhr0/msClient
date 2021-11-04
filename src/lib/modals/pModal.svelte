@@ -13,6 +13,7 @@
     categoryModalStore,
     colorsJsonStore,
     productImageModalStore,
+    productModalStore,
     sizesJsonStore
   } from './../../stores/stores'
   import {
@@ -20,13 +21,15 @@
   } from './../../stores/stores'
 
   import {
-CLOUDINARY_URL,
+    CLOUDINARY_URL,
     STATIC_BASE
   } from './../../api/consts';
   import {
     stateQuery
-  } from './../../stores/queryStore'
-  import {cartStore } from './../../stores/cartStore'
+  } from './../../stores/queryStore';
+  import {
+    cartStore
+  } from './../../stores/cartStore';
   import Spinner from 'svelte-spinner';
 
   let productData = writable();
@@ -40,6 +43,7 @@ CLOUDINARY_URL,
   export function isOpen() {
     return isModalOpen;
   }
+
   function getProduct() {
     return [_catalogId, _productId];
   }
@@ -98,6 +102,9 @@ CLOUDINARY_URL,
     }
     $categoryModalStore.toggleModal();
     $categoryModalStore.setAlbum($current_album);
+    if ($productModalStore.isOpen()) {
+      $productModalStore.toggleModal();
+    }
   }
 
   productData.subscribe((data) => {

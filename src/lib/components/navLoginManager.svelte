@@ -5,9 +5,28 @@
             DropdownMenu,
             DropdownToggle
         } from 'sveltestrap';
-        import {loginModalStore, userInfoStore} from './../../stores/stores';
+        import {loginModalStore, userDetailModalStore, userInfoStore} from './../../stores/stores';
+        import {request_logout} from './../../api/auth'
         function open_login_modal() {
             $loginModalStore.toggleModal();
+        }
+        function open_user_detail_modal() {
+            $userDetailModalStore.toggleModal();
+        }
+        function logout() {
+            request_logout().then((response) => {
+                if (response.status === "success") {
+                    
+                }else if(response.status === "warning"){
+                    alert(response.detail);
+                }
+                $userInfoStore = {isLogin:false};
+                //window.location.href=window.location.href;
+                
+            });
+            
+            
+
         }
 </script>
 
@@ -56,21 +75,16 @@
         <DropdownItem>
             <div class="title">
                 שלום
-                {$userInfoStore.me['name']}
+                {$userInfoStore.me['first_name']}
             </div>
         </DropdownItem>
         <DropdownItem>
-            <button class="btn btn-dark">
-                שנה סיסמא
-            </button>
-        </DropdownItem>
-        <DropdownItem>
-            <button class="btn btn-dark">
+            <button on:click={open_user_detail_modal} class="btn btn-dark">
                 עדכון פרטים
             </button>
         </DropdownItem>
         <DropdownItem>
-            <button class="btn btn-dark">
+            <button on:click="{logout}" class="btn btn-dark">
                 התנתק
             </button>
         </DropdownItem>
