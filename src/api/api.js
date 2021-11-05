@@ -16,7 +16,7 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
     if(requestOptions && requestOptions.method == "POST") {
         headers_json['X-CSRFToken']= get_csrf_token();
     }
-    console.log('get(userInfoStore).token: ', get(userInfoStore));
+    console.log('set scft token: ', headers_json['X-CSRFToken']);
     if (browser) {
         if (get(userInfoStore).access) {
             headers_json['Authorization'] = "Token " +get(userInfoStore).access;
