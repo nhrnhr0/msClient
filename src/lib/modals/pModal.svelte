@@ -31,6 +31,7 @@
     cartStore
   } from './../../stores/cartStore';
   import Spinner from 'svelte-spinner';
+import { logStore } from './../../stores/logStore';
 
   let productData = writable();
   let current_album = writable();
@@ -40,6 +41,8 @@
   let modal_zIndex = 0;
   let _productId, _catalogId;
   let isLoaded = false;
+  let isModalOpen = false;
+  let loadingText = 'טוען...'
   export function isOpen() {
     return isModalOpen;
   }
@@ -73,26 +76,56 @@
   }
 
   function nextClick() {
+    let old_product = {'type':'product', 'id':$productData.id, 'ti': $productData.title}
+    let newProductObj;
     for (let i = 0; i < all_products_in_category.length; i++) {
       if (all_products_in_category[i].id === $productData.id) {
         let newIndex = ((i + 1) % all_products_in_category.length);
+        newProductObj = all_products_in_category[newIndex];
         console.log('setting new product: ', $current_album.id, all_products_in_category[newIndex].id);
         setProduct($current_album.id, all_products_in_category[newIndex].id);
         break;
       }
     }
+
+    let new_product = {'type':'product', 'id':newProductObj.id, 'ti': newProductObj.title}
+    logStore.addLog({
+      'a': 'פתיחת מוצר',
+      'f': {
+        ...old_product,
+      },
+      'w': {
+        ...new_product,
+      }
+    });
+    
   }
 
   function prevClick() {
+    debugger;
+    let old_product = {'type':'product', 'id':$productData.id, 'ti': $productData.title}
+    let newProductObj;
     for (let i = 0; i < all_products_in_category.length; i++) {
       if (all_products_in_category[i].id === $productData.id) {
         let newIndex = (i - 1);
         newIndex = newIndex >= 0 ? newIndex : all_products_in_category.length - 1;
-        console.log('setting new product: ', $current_album.id, all_products_in_category[newIndex].id);
-        setProduct($current_album.id, all_products_in_category[newIndex].id);
+        newProductObj = all_products_in_category[newIndex];
+        console.log('setting new product: ', $current_album.id, newProductObj.id);
+        setProduct($current_album.id, newProductObj.id);
         break;
       }
     }
+    let new_product = {'type':'product', 'id':newProductObj.id, 'ti': newProductObj.title}
+    logStore.addLog({
+      'a': 'פתיחת מוצר',
+      'f': {
+        ...old_product,
+      },
+      'w': {
+        ...new_product,
+      }
+    });
+    
   }
 
   function open_category() {
@@ -105,6 +138,23 @@
     if ($productModalStore.isOpen()) {
       $productModalStore.toggleModal();
     }
+
+debugger;
+    logStore.addLog(
+                            {
+                                'a': 'פתיחת קטגוריה',
+                                'f': {
+                                  'type': 'product modal',
+                                  'id': $productData.id,
+                                  'ti': $productData.title,
+                                },
+                                'w':{
+                                    'type':'category',
+                                    'id':$current_album.id,
+                                    'ti':$current_album.title, 
+                                }
+                            }
+                            );
   }
 
   productData.subscribe((data) => {
@@ -137,8 +187,7 @@
 
   });
 
-  let isModalOpen = false;
-  let loadingText = 'טוען...'
+
   export function toggleModal() {
     console.log('product toggleModal');
     isModalOpen = !isModalOpen;
@@ -152,8 +201,20 @@
   function likeBtnClicked() {
     console.log('like btn clicked');
     $cartStore[_productId] = $productData;
-    //$cart = $cart;
-    console.log($cartStore);
+    
+    logStore.addLog(
+                            {
+                                'a': 'הוסף לעגלה',
+                                'f': {
+                                    'type':'product modal',
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':$productData.id,
+                                    'ti':$productData.title, 
+                                }
+                            }
+                            );
   }
 
   function openProductImageModal(e) {

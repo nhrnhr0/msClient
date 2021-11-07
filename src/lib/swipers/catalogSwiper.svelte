@@ -34,6 +34,7 @@
     export let loaded_data;
     import {productModalStore} from './../../stores/stores'
 import { onDestroy, onMount } from 'svelte';
+import { logStore } from './../../stores/logStore';
     
 
     // install Swiper modules
@@ -65,12 +66,10 @@ import { onDestroy, onMount } from 'svelte';
     let unsubCart = undefined;
     let lastCartLen = 0;
     function cartSubscripter(newCart) {
-        debugger;
         if(mswiper) {
             setTimeout(()=> {
                 mswiper.swiper().loopDestroy();
                 mswiper.swiper().loopCreate();
-                mswiper.update();
             }),0
         }
     }
@@ -125,9 +124,42 @@ import { onDestroy, onMount } from 'svelte';
                     if(target.classList.contains('product-image')) {
                         $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);
                         $productModalStore.toggleModal();
+
+                        logStore.addLog(
+                            {
+                                'a': 'פתיחת מוצר',
+                                'f':{
+                                    'type':'slider',
+                                    'id':album.id,
+                                    'ti':album.title,
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':target.dataset.productId,
+                                    'ti':target.getAttribute('alt'), 
+                                }
+                            }
+                            );
+
                     }else if(target.classList.contains('like-btn-wraper')) {
-                        $cartStore[target.dataset.productId] = get_product_by_id(target.dataset.productId);
+                        let currentProduct = get_product_by_id(target.dataset.productId);
+                        $cartStore[target.dataset.productId]= currentProduct;
                         copySwiperduplicates(E);
+                        logStore.addLog(
+                            {
+                                'a': 'הוסף לעגלה',
+                                'f': {
+                                    'type':'slider',
+                                    'id':album.id,
+                                    'ti':album.title
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':target.dataset.productId,
+                                    'ti':currentProduct.title, 
+                                }
+                            }
+                            );
                         //$cart = $cart;
                         //console.log('cart: ', $cartStore);
                     }
@@ -224,7 +256,26 @@ on:change={(event) => {
                   }}'
                   pagination="{true}" 
                   navigation="{true}"
-                  
+                  on:realIndexChange={(event) => {
+                    //console.log('activeIndexChange: ', event);
+                    //console.log('activeIndexChange: ', event.detail[0]);
+                    let idx = event.detail[0][0].activeIndex;
+                    //console.log('slide: ', slide);
+                    //console.log('activeIndexChange: ', event.detail[0][0].activeIndex);
+                    let productId = mswiper.swiper().slides[idx].querySelector('.product-image').dataset.productId
+                    let product = get_product_by_id(productId);
+                    logStore.addLog(
+                            {
+                                'a': 's',
+                                'f': {
+                                    'id':album.id,
+                                },
+                                'w':{
+                                    'id':product.id,
+                                }
+                            }
+                            );
+                  }}
                 >
                     {#each loaded_data as image,index (image.id)}
                         <SwiperSlide bind:this={slides[index]}>

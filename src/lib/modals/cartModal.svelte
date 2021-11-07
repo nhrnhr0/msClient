@@ -15,6 +15,7 @@ import {
     CardTitle
   } from 'sveltestrap';
 import { get_user_uuid, submit_cart_form } from "./../../api/api"
+import { logStore } from "./../../stores/logStore";
 
     let isModalOpen = false;
     let modal_zIndex = 0;
@@ -37,12 +38,39 @@ import { get_user_uuid, submit_cart_form } from "./../../api/api"
         delete $cartStore[key];
         $cartStore =$cartStore;
         swiper.fixDups();
+        logStore.addLog(
+                            {
+                                'a': 'הסר מהעגלה',
+                                'f': {
+                                    'type':'cart',
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':item.id,
+                                    'ti':item.title, 
+                                }
+                            }
+                            );
     }
 
     function open_product_modal(key) {
         let product = $cartStore[key];
         $productModalStore.setProduct(product.albums[0], product.id);
         $productModalStore.toggleModal();
+
+        logStore.addLog(
+                            {
+                                'a': 'פתיחת מוצר',
+                                'f': {
+                                    'type': 'cart',
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':product.id,
+                                    'ti':product.title, 
+                                }
+                            }
+                            );
     }
     let mform;
     let form_name;
