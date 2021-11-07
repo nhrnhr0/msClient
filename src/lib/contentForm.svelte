@@ -1,5 +1,5 @@
 <script>
-import { successModalStore } from './../stores/stores';
+import { successModalStore, userInfoStore } from './../stores/stores';
 
 import { get_csrf_token, get_user_uuid, submit_contact_form } from './../api/api';
 
@@ -16,6 +16,11 @@ import { get_csrf_token, get_user_uuid, submit_contact_form } from './../api/api
           message: form_message || '',
           uuid: get_user_uuid() || ''
         };
+        if($userInfoStore.isLogin) {
+          data.name = $userInfoStore.me['businessName']
+          data.email = $userInfoStore.me['email']
+          data.phone = '0000000000'
+        }
         let response = submit_contact_form(data);
         console.log(response);
         response.then((json_response)=> {
@@ -33,34 +38,58 @@ import { get_csrf_token, get_user_uuid, submit_contact_form } from './../api/api
 <div class="contact-form-wraper2">
     <div class="contact-form-wraper">
         <form bind:this={mform} id="catalog-contact-form" method="post" action="{BASE_URL}/contact-form" class="contact-form">
-            <h2 class="form-header">
+            
+            
+            {#if $userInfoStore}
+              {#if !$userInfoStore.isLogin}
+              <h2 class="form-header">
                 לקבלת הצעה משתלמת
                 <div class="mark-strong">&nbsp;ללא&nbsp;</div>
                 עלות
                 <div class="mark-strong">&nbsp;וללא&nbsp;</div>
                 התחייבות השאירו פרטים ומיד נחזור אליכם
             </h2>
-            
-            
-            <div class="form-group">
-                <input bind:value={form_name} class="form-control" id="id_name" name="name" placeholder="שם - חובה" required="true" title="" type="text">
-            </div>
-            <div class="form-group">
-                <input bind:value={form_phone} class="form-control" id="id_phone" name="phone" placeholder="פאלפון - חובה" required="true" title="" type="text">
-            </div><div class="form-group">
-              <input bind:value={form_email} class="form-control" id="id_email" name="email" placeholder="אימייל" title="" type="text">
-            </div><div class="form-group">
-                <textarea bind:value={form_message} class="form-control" cols="40" id="id_message" name="message" placeholder="הודעה" rows="2" title=""></textarea>
-            </div>
-            <div class="form-group">
 
-            <button type="submit" on:click|preventDefault={contact_submit} class="btn btn-success form-submit">לשליחת טופס לחץ כאן</button>
+                  <div class="form-group">
+                    <input bind:value={form_name} class="form-control" id="id_name" name="name" placeholder="שם - חובה" required="true" title="" type="text">
+                </div>
+                <div class="form-group">
+                    <input bind:value={form_phone} class="form-control" id="id_phone" name="phone" placeholder="פאלפון - חובה" required="true" title="" type="text">
+                </div><div class="form-group">
+                  <input bind:value={form_email} class="form-control" id="id_email" name="email" placeholder="אימייל" title="" type="text">
+                </div><div class="form-group">
+                    <textarea bind:value={form_message} class="form-control" cols="40" id="id_message" name="message" placeholder="הודעה" rows="2" title=""></textarea>
+                </div>
+                <div class="form-group">
+                <button type="submit" on:click|preventDefault={contact_submit} class="btn btn-success form-submit">לשליחת טופס לחץ כאן</button>
+                </div>
+              {:else}
+              <h2 class="form-header">
+                לכל שאלה או בקשה אנחנו פה לספק לכם תשובות באופן
+                <div class="mark-strong">מיידי</div>
+                <div class="mark-under">
+                  לא להסס לשאול
+                </div>
+            </h2>
+                <div class="form-group">
+                  <textarea bind:value={form_message} class="form-control" cols="40" id="id_message" name="message" placeholder="הודעה" rows="7" title=""></textarea>
+                </div>
+                <div class="form-group">
+                  <button type="submit" on:click|preventDefault={contact_submit} class="btn btn-success form-submit">לשליחת טופס לחץ כאן</button>
+                </div>
+              {/if}
+            {/if}
+
         </form>
     </div>
 </div>
 
 <style lang="scss">
 
+.mark-under {
+  text-decoration: underline;
+  display: inline-block;
+}
 .contact-form-wraper2 {
   @include bg-gradient();
   //background-color: #FFD880;

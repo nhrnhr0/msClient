@@ -13,10 +13,16 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
         'Content-Type': 'application/json',
         'Content-Type': 'application/json; charset=UTF-8',
     }
+    
     if(requestOptions && requestOptions.method == "POST") {
+        debugger;
         headers_json['X-CSRFToken']= get_csrf_token();
+        console.log('set scft token: ', headers_json['X-CSRFToken']);
     }
-    console.log('set scft token: ', headers_json['X-CSRFToken']);
+    else {
+        console.log('csrf token is unneed');
+    }
+    
     if (browser) {
         if (get(userInfoStore).access) {
             headers_json['Authorization'] = "Token " +get(userInfoStore).access;
