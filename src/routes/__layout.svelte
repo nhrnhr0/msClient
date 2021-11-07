@@ -1,9 +1,14 @@
 <script context="module">
   import "../app.scss";
   import Navbar from "$lib/Navbar.svelte";
-  import { stateQuery} from './../stores/queryStore'
+  //import { stateQuery} from './../stores/stores'
+import { onMount } from "svelte";
 
-
+    //console.log('stateQuery: ', stateQuery);
+    /*.subscribe(query => {
+      console.log('query: ', query);
+    });*/
+  
 </script>
 <Navbar></Navbar>
 <!--<div class="hidden">

@@ -1,7 +1,7 @@
 <script>
     import AutoComplete from "simple-svelte-autocomplete";
 
-    import {albumsJsonStore, productModalStore} from './../stores/stores'
+    import {albumsJsonStore, loginModalStore, productModalStore, userInfoStore} from './../stores/stores'
     import {SEARCH_API_URL} from './../api/consts';
 
     /*import {
@@ -20,6 +20,7 @@
         import { onDestroy } from "svelte";
         import boop from '$lib/components/boop/boop'
         import Cart from '$lib/components/cart/cart.svelte'
+import NavLoginManager from "./components/navLoginManager.svelte";
         function menuItemClicked(album) {
             console.log('openCategoryModal: ',album);
             $categoryModalStore.setAlbum(album);
@@ -88,6 +89,8 @@
     function setIsBooped(val) {
 		isBooped = val;
 	}
+
+
         
 </script>
 <nav class="navbar navbar-expand-* navbar-light">
@@ -96,6 +99,11 @@
         <a class="navbar-logo" href="javascript:window.location.href=window.location.href" aria-label="logo" role="button"><img class="nav-logo" width="100px" height="40px"
                 src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
                 alt=""></a>
+
+                
+
+                <NavLoginManager></NavLoginManager>
+
 
         <form class="d-flex" id="search_form">
             <AutoComplete  loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:selectedItem={searchValue} >
@@ -175,7 +183,14 @@
 
 <style lang="scss">
 
-
+:global(#navLoginManager) {
+    :global(.dropdown-toggle) {
+        padding: 0px;
+        &::after {
+            display: none;
+        }
+    }
+}
 
 
 :global(.autocomplete-cls)  {

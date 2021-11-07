@@ -33,7 +33,7 @@
     import Spinner from 'svelte-spinner';
     export let loaded_data;
     import {productModalStore} from './../../stores/stores'
-import { onMount } from 'svelte';
+import { onDestroy, onMount } from 'svelte';
     
 
     // install Swiper modules
@@ -53,7 +53,7 @@ import { onMount } from 'svelte';
             if(loaded_data == undefined) {
             let data = get_album_details(album.id);
             isLoaded = false;
-            data.then((newData)=>{
+            data.then((newData)=> {
                 loaded_data = newData;
                 isLoaded = true;
             });
@@ -62,14 +62,32 @@ import { onMount } from 'svelte';
         }
         }
     }
+    let unsubCart = undefined;
+    let lastCartLen = 0;
+    function cartSubscripter(newCart) {
+        debugger;
+        if(mswiper) {
+            setTimeout(()=> {
+                mswiper.swiper().loopDestroy();
+                mswiper.swiper().loopCreate();
+                mswiper.update();
+            }),0
+        }
+    }
     onMount(()=> {
         console.log('swiper on mount: ', loaded_data);
+        unsubCart = cartStore.subscribe(cartSubscripter);
         
         /*window.addEventListener('DOMContentLoaded', (event) => {
             document.querySelectorAll('.product-image').addEventListener("click", function(event) {
                 console.log(event.target);
             });
         });*/
+    });
+    onDestroy(()=> {
+        if(unsubCart) {
+            unsubCart();
+        }
     })
     
     /*function swiperClicked(e) {
@@ -144,7 +162,7 @@ import { onMount } from 'svelte';
         }
         */
        setTimeout(()=>{
-            e.detail[0][0].loopDestroy()
+            e.detail[0][0].loopDestroy();
             e.detail[0][0].loopCreate();
         });
 

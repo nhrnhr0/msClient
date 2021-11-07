@@ -13,6 +13,7 @@
     categoryModalStore,
     colorsJsonStore,
     productImageModalStore,
+    productModalStore,
     sizesJsonStore
   } from './../../stores/stores'
   import {
@@ -20,13 +21,15 @@
   } from './../../stores/stores'
 
   import {
-CLOUDINARY_URL,
+    CLOUDINARY_URL,
     STATIC_BASE
   } from './../../api/consts';
   import {
     stateQuery
-  } from './../../stores/queryStore'
-  import {cartStore } from './../../stores/cartStore'
+  } from './../../stores/queryStore';
+  import {
+    cartStore
+  } from './../../stores/cartStore';
   import Spinner from 'svelte-spinner';
 
   let productData = writable();
@@ -40,6 +43,7 @@ CLOUDINARY_URL,
   export function isOpen() {
     return isModalOpen;
   }
+
   function getProduct() {
     return [_catalogId, _productId];
   }
@@ -98,29 +102,36 @@ CLOUDINARY_URL,
     }
     $categoryModalStore.toggleModal();
     $categoryModalStore.setAlbum($current_album);
+    if ($productModalStore.isOpen()) {
+      $productModalStore.toggleModal();
+    }
   }
 
   productData.subscribe((data) => {
     colorMarkup = '';
     sizeMarkup = '';
+    let colorMarkupLocal = '';
+    let sizeMarkupLocal = '';
     if (data == undefined) {
       return;
     }
     for (var i = 0; i < data.colors.length; i++) {
       var col_id = data.colors[i];
       var col = $colorsJsonStore[col_id];
-      colorMarkup +=
+      colorMarkupLocal +=
         `<div class="color-box" title="${col.name}" alt="${col.name}" style="background:${col.color};"></div>`;
     }
 
     for (var i = 0; i < data.sizes.length; i++) {
       var size_id = data.sizes[i];
       var size = $sizesJsonStore[size_id];
-      sizeMarkup += `<div class="size-box">${size.size}</div>`;
+      sizeMarkupLocal += `<div class="size-box">${size.size}</div>`;
     }
 
-    console.log('new sizeMarkup: ', sizeMarkup);
-    console.log('new colorMarkup: ', colorMarkup);
+    console.log('new sizeMarkup: ', sizeMarkupLocal);
+    console.log('new colorMarkup: ', colorMarkupLocal);
+    colorMarkup = colorMarkupLocal;
+    sizeMarkup = sizeMarkupLocal;
     isLoaded = true;
 
 
@@ -157,7 +168,7 @@ CLOUDINARY_URL,
 <div style="z-index: {modal_zIndex};" id="productModal" class="modal" class:active={isModalOpen}>
   <div style="z-index: {modal_zIndex+5};" class="overlay" on:click={toggleModal}></div>
 
-  {#if isLoaded }
+  {#if isLoaded && isModalOpen }
         <div style="z-index: {modal_zIndex+10};" class="modal_content">
             <div class="modal-header">
                 <button id="category-open-btn-{$current_album.id}" on:click={open_category}

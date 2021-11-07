@@ -1,9 +1,19 @@
 <script>
 
-import {all_swipers, cartModalStore, productModalStore, successModalStore, _modal_z_index_incrementor} from "./../../stores/stores";
+import {all_swipers, cartModalStore, productModalStore, successModalStore, userInfoStore, _modal_z_index_incrementor} from "./../../stores/stores";
 import { cartStore } from "./../../stores/cartStore"
 import { CLOUDINARY_URL, STATIC_BASE, SUBMIT_CART_URL } from "./../../api/consts";
 import { subscribe } from "svelte/internal";
+import {
+    Button,
+    Card,
+    CardBody,
+    CardFooter,
+    CardHeader,
+    CardSubtitle,
+    CardText,
+    CardTitle
+  } from 'sveltestrap';
 import { get_user_uuid, submit_cart_form } from "./../../api/api"
 
     let isModalOpen = false;
@@ -70,17 +80,52 @@ import { get_user_uuid, submit_cart_form } from "./../../api/api"
         <div class="modal-header">
             <h1>מוצרים שאהבתי</h1>
         </div>
-        <form bind:this={mform} method="POST" action="{SUBMIT_CART_URL}" >
+        
         <div class="modal-body">
             <div class="inner-body">
                 <div class="cart-info">
-                    <div class="form-control"><input bind:value="{form_name}" name="name" required="true" placeholder="שם:" type="text"></div>
-                    <div class="form-control"><input bind:value="{form_email}" name="email" placeholder="אימייל:" type="email"></div>
-                    <div class="form-control"><input bind:value="{form_phone}" name="tel" required="true" placeholder="טלפון:" type="tel"></div>
-                    <button class="send-btn" on:click|preventDefault="{cart_submit}">שלח</button>
+                    {#if $userInfoStore}
+                        {#if $userInfoStore.isLogin}
+                        <Card>
+                            <CardHeader>
+                            <CardTitle>פרטי עסק</CardTitle>
+                            </CardHeader>
+                            <CardBody>
+                            <CardText>
+                                <div class="info">
+                                    <div class="info-title">שם עסק בחשבונית</div>
+                                    <div class="info-res">
+                                        <input disabled value={$userInfoStore.me['businessName']}/>
+                                    </div>
+                                </div>
+                                <div class="info">
+                                    <div class="info-title">מייל</div>
+                                    <div class="info-res">
+                                        <input disabled value={$userInfoStore.me['email']}/>
+                                    </div>
+                                </div>
+                                <div class="info">
+                                    <div class="info-title">ח.פ.</div>
+                                    <div class="info-res">
+                                        <input disabled value={$userInfoStore.me['privateCompany']}/>
+                                    </div>
+                                </div>
+                            </CardText>
+                            </CardBody>
+                        </Card>
+                        
+                            
+                        {/if}
+                        <form bind:this={mform} method="POST" action="{SUBMIT_CART_URL}" >
+                            <div class="form-control"><input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="שם:" type="text"></div>
+                            <div class="form-control"><input bind:value="{form_email}" name="email" placeholder="אימייל:" type="email"></div>
+                            <div class="form-control"><input bind:value="{form_phone}" name="tel" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="טלפון:" type="tel"></div>
+                            <button class="send-btn" on:click|preventDefault="{cart_submit}">שלח</button>
+                        </form>
+                    {/if}
                 </div>
                 <div class="cart-products">
-                    {#if cartStore}
+                    {#if $cartStore && Object.keys($cartStore).length > 0}
                         {#each Object.keys($cartStore) as key}
                             <div class="product">
                                 <button on:click|preventDefault="{delete_product_from_cart(key)}"class="delete-product">X</button>
@@ -93,13 +138,18 @@ import { get_user_uuid, submit_cart_form } from "./../../api/api"
                             </div>
 
                         {/each}
+                    {:else}
+                        <div class="empty-cart">
+                            <div>עוד לא הוספת מוצרים לסל</div>
+                            <div>לחץ על כפתור ההוסף ליד כל מוצר כדי להוסיף אותו</div>
+                            <div>אין מה לדאוג, אין התחייבות כספית בשליחת טופס זה</div>
+                        </div>
                     {/if}
 
                 </div>
                 
             </div>
         </div>
-        </form>
         <div class="modal-footer">
         </div>
         <!-- End of Dynamic Section -->
@@ -111,6 +161,47 @@ import { get_user_uuid, submit_cart_form } from "./../../api/api"
 
 
 <style lang="scss">
+    .empty-cart {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        
+        height: 100%;
+        width: 100%;
+        font-size: 1.5rem;
+        
+    }
+:global(.card) {
+            padding:10px;
+            font-size: 1.4em;
+            :global(.card-title) {
+                font-size: 1.3em;
+                font-weight: bold;
+                text-decoration: underline;
+            }
+        }
+        .info {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            .info-res {
+                flex:2;
+                
+            }
+            .info-title {
+                flex:1;
+                .actions {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    .btn {
+                        margin-left: 10px;
+                    }
+                }
+            }
+        }
+
     .debug-wraper {
         direction: ltr;
         text-align: left;
