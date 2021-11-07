@@ -2,12 +2,21 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL, GET_CSRF_TOKEN_URL, STATIC_BASE ,CONTACT_FORM_URL, SUBMIT_CART_URL} from "./consts";
+import { BASE_URL, GET_CSRF_TOKEN_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
 //import { request_refresh_token } from "./auth";
-
+export function apiSendLogs(logs) {
+    let body = {
+        logs: logs,
+        uid: get_user_uuid(),
+    }
+    return fetch_wraper(LOGS_URL, {
+        method: 'POST',
+        body: JSON.stringify(body)
+    })
+}
 export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false) {
     let headers_json= {
         'Content-Type': 'application/json',
@@ -15,7 +24,6 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
     }
     
     if(requestOptions && requestOptions.method == "POST") {
-        debugger;
         headers_json['X-CSRFToken']= get_csrf_token();
         console.log('set scft token: ', headers_json['X-CSRFToken']);
     }
@@ -84,7 +92,10 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
     });
 //    return response;
 }
-
+export function apiSearchProducts(keyword) {
+    const url = SEARCH_API_URL + '?q=' + encodeURIComponent(keyword);
+    return fetch_wraper(url);
+}
 export function get_album_details(albumId, server_fetch) {
     console.log('get_album_details: ', albumId)
     if(albumsData[albumId]) {

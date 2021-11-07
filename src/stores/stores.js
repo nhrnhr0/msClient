@@ -18,6 +18,11 @@ export let all_swipers = writable([]);
 
 export let successModalStore = writable();
 
+
+
+
+
+// browser storage - userInfoStore
 let initUserData = {'isLogin': false};
 if(browser) {
     initUserData=JSON.parse(localStorage.getItem('user'));
@@ -29,6 +34,8 @@ export let userInfoStore = writable(initUserData);
 
 userInfoStore.subscribe((value) => {
     if (browser) {
-    window.localStorage.setItem('user', JSON.stringify(value));
+        window.localStorage.setItem('user', JSON.stringify(value));
     }
 });
+
+
