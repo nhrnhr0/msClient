@@ -162,7 +162,7 @@ import NavLoginManager from "./components/navLoginManager.svelte";
             <Cart></Cart>
             <div   on:mouseenter={() => isBooped = true} use:boop={{isBooped, scale:1.2, timing: 200, setter: setIsBooped}}>
             <a rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
-                <img src="whatsapp.png" alt="whatsapp">
+                <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
             </a>
         </div>
             

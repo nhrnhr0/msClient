@@ -49,7 +49,8 @@
   }
   export function setProduct(catalogId, productId) {
     isLoaded = false;
-    $stateQuery['product'] = catalogId + ',' + productId;
+    //$stateQuery['product'] = catalogId + ',' + productId;
+    window.history.pushState('מודל מוצר', 'כותרת מודל מוצר', `/products/${productId}`);
     _productId = productId;
     _catalogId = catalogId;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
