@@ -34,6 +34,7 @@
     export let loaded_data;
     import {productModalStore} from './../../stores/stores'
 import { onDestroy, onMount } from 'svelte';
+import { flyToCart } from '$lib/utils/js/flyToCart';
     
 
     // install Swiper modules
@@ -65,12 +66,10 @@ import { onDestroy, onMount } from 'svelte';
     let unsubCart = undefined;
     let lastCartLen = 0;
     function cartSubscripter(newCart) {
-        debugger;
         if(mswiper) {
             setTimeout(()=> {
                 mswiper.swiper().loopDestroy();
                 mswiper.swiper().loopCreate();
-                mswiper.update();
             }),0
         }
     }
@@ -124,9 +123,13 @@ import { onDestroy, onMount } from 'svelte';
 
                     if(target.classList.contains('product-image')) {
                         $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);
+                        
                         $productModalStore.toggleModal();
                     }else if(target.classList.contains('like-btn-wraper')) {
                         $cartStore[target.dataset.productId] = get_product_by_id(target.dataset.productId);
+                        debugger;
+                        // get the image closest to the target
+                        flyToCart(target.parentElement.querySelector('.product-image'));
                         copySwiperduplicates(E);
                         //$cart = $cart;
                         //console.log('cart: ', $cartStore);

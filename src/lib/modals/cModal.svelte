@@ -30,7 +30,9 @@ Spinner
   export function toggleModal() {
     isModalOpen = !isModalOpen;
     if (isModalOpen == false) {
-      $stateQuery['category'] = '-1';
+      //$stateQuery['category'] = '-1';
+      pushMainPage();
+      
     }else {
       
     }
@@ -38,9 +40,11 @@ Spinner
   export function isOpen() {
     return isModalOpen;
   }
-  import {
+  /*import {
     stateQuery
-  } from './../../stores/queryStore';
+  } from './../../stores/queryStore';*/
+import { flyToCart } from '$lib/utils/js/flyToCart';
+import { pushCategoryState, pushMainPage } from './../../stores/urlManager';
   let products = [];
   let current_album = new writable({});
   let title = 'loading'
@@ -55,7 +59,8 @@ Spinner
     products = get_album_details(album.id);
     title = album.title;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
-    $stateQuery['category'] = album.id;
+    //$stateQuery['category'] = album.id;
+    pushCategoryState(album.id);
     setTimeout(()=> {
         modal_body.scrollTop = 0;
       },30);
@@ -71,9 +76,13 @@ Spinner
     $productModalStore.setProduct(catalogId, imgId);
   }
 
-  function likeBtnClicked(img) {
-    console.log('liked image clicked' ,img);
-    $cartStore[img.id] = img;
+  function likeBtnClicked(e) {
+    console.log(e);
+    let img = e.currentTarget.parentElement.querySelector('.product-image');
+    let imgData = e.currentTarget.dataset["img"];
+    console.log('liked image clicked' ,imgData);
+    flyToCart(img);
+    $cartStore[imgData.id] = imgData;
   }
 
 
@@ -173,7 +182,7 @@ Spinner
           <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
           <div class="img-title">{img.title}</div>
         </div>
-        <div  on:click={likeBtnClicked(img)} class="like-btn-wraper">
+        <div  on:click={likeBtnClicked} data-img={JSON.stringify(img)} class="like-btn-wraper">
           <button  id="categoryModalLikeBtn" class:active={$cartStore[img.id] != undefined} class="like-btn">
             <div class="img-wraper">
               {#if $cartStore[img.id] != undefined}
@@ -359,7 +368,7 @@ Spinner
       .category-item-img-wraper {
         &:hover {
           background-color: black;
-          transform: scale(1.1);
+          transform: scale(1.0);
           z-index: 1;
         }
 
@@ -370,7 +379,7 @@ Spinner
           @include bg-image;
 
           &:hover {
-            transform: scale(1.1);
+            transform: scale(1.0);
             -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(black), to(rgba(0, 0, 0, 0)));
             -webkit-mask-image: linear-gradient(to bottom, black, rgba(0, 0, 0, 0));
             mask-image: -webkit-gradient(linear, left top, left bottom, from(black), to(rgba(0, 0, 0, 0)));
@@ -391,7 +400,7 @@ Spinner
 
 
           &:hover {
-            transform: scale(1.1);
+            transform: scale(1.0);
             mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
           }
 

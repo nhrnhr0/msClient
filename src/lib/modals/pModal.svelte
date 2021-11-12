@@ -31,6 +31,7 @@
     cartStore
   } from './../../stores/cartStore';
   import Spinner from 'svelte-spinner';
+import {pushMainPage, pushProductState } from './../../stores/urlManager';
 
   let productData = writable();
   let current_album = writable();
@@ -50,7 +51,8 @@
   export function setProduct(catalogId, productId) {
     isLoaded = false;
     //$stateQuery['product'] = catalogId + ',' + productId;
-    window.history.pushState('מודל מוצר', 'כותרת מודל מוצר', `/products/${productId}`);
+    
+    pushProductState(productId);
     _productId = productId;
     _catalogId = catalogId;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
@@ -103,9 +105,9 @@
     }
     $categoryModalStore.toggleModal();
     $categoryModalStore.setAlbum($current_album);
-    if ($productModalStore.isOpen()) {
+    /*if ($productModalStore.isOpen()) {
       $productModalStore.toggleModal();
-    }
+    }*/
   }
 
   productData.subscribe((data) => {
@@ -144,7 +146,9 @@
     console.log('product toggleModal');
     isModalOpen = !isModalOpen;
     if (isModalOpen == false) {
-      $stateQuery['product'] = -1;
+      //$stateQuery['product'] = -1;
+      
+      pushMainPage();
     }
 
   }
@@ -558,39 +562,18 @@
         }
       }
 
-      #modal-prev-btn {
-        :hover {
-          //transform: scale(1.4);
-        }
-      }
-
       #modal-next-btn {
         transform: rotate(180deg);
-
-        :hover {
-          //transform: scale(1.4) !important;
-        }
       }
 
       #modal-add-btn {
         cursor: pointer;
 
-        a {
+        /*a {
           padding: 5px !important;
           border-top-left-radius: 25px;
           border-top-right-radius: 25px;
-        }
-
-        &.isAdded {
-          /*
-            color: #fff;
-            background-color: #398439;
-            border-color: #255625;
-            animation: 5s linear burst;  
-            animation-duration: 5000ms;
-            animation-iteration-count: 1;
-            animation-timing-function: linear; */
-        }
+        }*/
       }
 
       #modal-add-btn:disabled {}

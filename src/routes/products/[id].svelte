@@ -3,7 +3,7 @@ import { browser } from "$app/env";
 import { onMount } from "svelte";
 
 import { fetch_wraper } from "./../../api/api";
-import { PRODUCTS_API_URL } from "./../../api/consts";
+import { CLOUDINARY_URL, PRODUCTS_API_URL } from "./../../api/consts";
 
 
     export async function load({page, fetch, session, contex}) {
@@ -37,6 +37,7 @@ import { PRODUCTS_API_URL } from "./../../api/consts";
 <script>
     export let data;
     onMount(()=> {
+        sessionStorage.setItem("onLoadTask",JSON.stringify({type: 'product', data: data}));
         window.location.replace("/"); 
     })
     
@@ -48,7 +49,7 @@ import { PRODUCTS_API_URL } from "./../../api/consts";
     <meta name="keywords" content={data?.keywords} />
     <meta property="og:title" content={data?.title} />
     <meta property="og:description" content={data?.description} />
-    <meta property="og:image" content={data?.cimage} />
+    <meta property="og:image" content={CLOUDINARY_URL + 'f_auto,w_auto/' + data?.cimage} />
     <meta property="og:type" content="product" />
     <meta property="og:site_name" content="M.S. Global" />
     <meta property="og:locale" content="IL" />
