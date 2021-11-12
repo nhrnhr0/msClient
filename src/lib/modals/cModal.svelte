@@ -45,6 +45,8 @@ Spinner
   } from './../../stores/queryStore';*/
 import { flyToCart } from '$lib/utils/js/flyToCart';
 import { pushCategoryState, pushMainPage } from './../../stores/urlManager';
+  } from './../../stores/queryStore';
+import { logStore } from './../../stores/logStore';
   let products = [];
   let current_album = new writable({});
   let title = 'loading'
@@ -66,14 +68,30 @@ import { pushCategoryState, pushMainPage } from './../../stores/urlManager';
       },30);
   }
 
-  function open_product(imgId) {
+  function open_product(img) {
     let catalogId = $current_album.id
 
     if ($productModalStore.isOpen()) {
       $productModalStore.toggleModal();
     }
     $productModalStore.toggleModal();
-    $productModalStore.setProduct(catalogId, imgId);
+    $productModalStore.setProduct(catalogId, img.id);
+
+    logStore.addLog(
+                            {
+                                'a': 'פתיחת מוצר',
+                                'f':{
+                                    'type':'category modal',
+                                    'id':$current_album.id,
+                                    'ti':$current_album.title,
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':img.id,
+                                    'ti':img.title, 
+                                }
+                            }
+                            );
   }
 
   function likeBtnClicked(e) {
@@ -83,12 +101,46 @@ import { pushCategoryState, pushMainPage } from './../../stores/urlManager';
     console.log('liked image clicked' ,imgData);
     flyToCart(img);
     $cartStore[imgData.id] = imgData;
+    
+    console.log('liked image clicked' ,img);
+    logStore.addLog(
+                            {
+                                'a': 'הוסף לעגלה',
+                                'f': {
+                                    'type':'category modal',
+                                    'id':$current_album.id,
+                                    'ti':$current_album.title
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':imgData.id,
+                                    'ti':imgData.title, 
+                                }
+                            }
+                            );
   }
 
 
   let modal_body;
 
   function changeCategory(alb) {
+    
+
+    logStore.addLog(
+                            {
+                                'a': 'פתיחת קטגוריה',
+                                'f':{
+                                    'type':'category modal',
+                                    'id':$current_album.id,
+                                    'ti':$current_album.title,
+                                },
+                                'w':{
+                                    'type':'category',
+                                    'id':alb.id,
+                                    'ti':alb.title, 
+                                }
+                            }
+                            );
     setAlbum(alb);
   }
 </script>
@@ -178,7 +230,7 @@ import { pushCategoryState, pushMainPage } from './../../stores/urlManager';
   
   
       <div class="category-item" data-category-prod-id="{img.id}">
-        <div class="category-item-img-wraper" on:click="{open_product(img.id)}" >
+        <div class="category-item-img-wraper" on:click="{open_product(img)}" >
           <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
           <div class="img-title">{img.title}</div>
         </div>
@@ -346,6 +398,7 @@ import { pushCategoryState, pushMainPage } from './../../stores/urlManager';
   left: 50%;
   transform: translate(-50%, -50%);
   max-height: 99%;
+  height: 99%;
   overflow: auto;
   background: #fff;
   box-shadow: 0 1px 5px rgba(0,0,0,0.7);

@@ -21,23 +21,32 @@
         import boop from '$lib/components/boop/boop'
         import Cart from '$lib/components/cart/cart.svelte'
 import NavLoginManager from "./components/navLoginManager.svelte";
+import { apiSearchProducts } from "./../api/api";
+import { logStore } from "./../stores/logStore";
         function menuItemClicked(album) {
             console.log('openCategoryModal: ',album);
             $categoryModalStore.setAlbum(album);
             $categoryModalStore.toggleModal();
+
+
+
+            logStore.addLog(
+                            {
+                                'a': 'פתיחת קטגוריה',
+                                'f':{
+                                    'type':'navbar',
+                                },
+                                'w':{
+                                    'type':'category',
+                                    'id':album.id,
+                                    'ti':album.title, 
+                                }
+                            }
+                            );
         }
         let searchValue;
         async function searchProducts(keyword) {
-            const url = SEARCH_API_URL + '?q=' + encodeURIComponent(keyword);
-            var requestOptions = {
-        method: 'GET',
-        mode:'cors',
-        credentials: 'include',//'',
-        headers: myHeaders,
-        redirect: 'follow'
-        };
-            const reponse = await fetch(url, requestOptions);
-            const json = await reponse.json();
+            let json = await apiSearchProducts(keyword);
             console.log('search api result: ', json);
             let data = json;
             let albums = [];
@@ -76,14 +85,44 @@ import NavLoginManager from "./components/navLoginManager.svelte";
                 return;
             }
             console.log('autocompleteItemSelected: ', item);
+            let keyword = document.querySelector('input.autocomplete-input').value;
+            
             if(item.item_count) {
                 $categoryModalStore.setAlbum(item);
                 $categoryModalStore.toggleModal();
+                logStore.addLog(
+                            {
+                                'a': 'פתיחת קטגוריה',
+                                'f':{
+                                    'type':'search',
+                                    'term': keyword,
+                                },
+                                'w':{
+                                    'type':'category',
+                                    'id':item.id,
+                                    'ti':item.title, 
+                                }
+                            }
+                            );
             }else {
                 $productModalStore.setProduct(item.albums[0].id, item.id);
                 $productModalStore.toggleModal();
-
+                logStore.addLog(
+                            {
+                                'a': 'פתיחת מוצר',
+                                'f':{
+                                    'type':'search',
+                                    'term': keyword,
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':item.id,
+                                    'ti':item.title, 
+                                }
+                            }
+                            );
             }
+            
         }
         let isBooped = false;
     function setIsBooped(val) {
@@ -106,7 +145,7 @@ import NavLoginManager from "./components/navLoginManager.svelte";
 
 
         <form class="d-flex" id="search_form">
-            <AutoComplete  loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:selectedItem={searchValue} >
+            <AutoComplete id="search_input" loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:value={searchValue}  >
 
                 <div slot="item" let:item={item} let:label={label}>
                 {#if item.item_count}
@@ -118,7 +157,7 @@ import NavLoginManager from "./components/navLoginManager.svelte";
                     </div>
                 {:else}
                     <div class="search-item">
-                        <img style="height:25px;" src="{item.image}" /> 
+                        <img alt="{item.title}" style="height:25px;" src="{item.image}" /> 
                         <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
                         {@html label}
                     </div>

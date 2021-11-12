@@ -30,6 +30,8 @@ export const AUTH_TOKEN_URL = BASE_URL + '/api/get-token/';
 export const WHO_AM_I_URL = BASE_URL + '/api/who-am-i/'
 export const AUTH_LOGOUT_URL = BASE_URL + '/api/logout/';
 export const ALL_IMAGE_ID_URL = BASE_URL + '/api/all-image-ids/';
+export const LOGS_URL = BASE_URL + '/api/logs/';
+
 //http://127.0.0.1:8000/api/token/
 //export const OG_META_ALBUMS_URL = BASE_API_URL + 'og-meta-albums/';
 

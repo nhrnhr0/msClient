@@ -110,6 +110,7 @@ import LoginModal from '$lib/modals/loginModal.svelte';
 import UserDetailsModal from '$lib/modals/userDetailsModal.svelte';
 import { bind } from 'svelte/internal';
 import { stateQuery} from './../stores/queryStore'
+import { logStore } from "../stores/logStore";
 
   export let colors;
   export let sizes;
@@ -158,7 +159,8 @@ import { stateQuery} from './../stores/queryStore'
     /*if(onLoadCategory != '-1') {
       for(let i = 0; i < albums.length; i++) {
         if(albums[i].id == onLoadCategory) {
-          openCategoryModal(albums[i])
+          openCategoryModal(albums[i]);
+
           break;
         }
       }
@@ -181,7 +183,16 @@ import { stateQuery} from './../stores/queryStore'
   function openCategoryModal(album){
       $categoryModalStore.toggleModal();
       $categoryModalStore.setAlbum(album);
-      
+      logStore.addLog(
+                            {
+                                'a': 'פתיחת קטגוריה',
+                                'w':{
+                                    'type':'category',
+                                    'id':album.id,
+                                    'ti':album.title, 
+                                }
+                            }
+                            );
     }
 
 
