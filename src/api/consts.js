@@ -17,6 +17,7 @@ export const BASE_URL = import.meta.env['VITE_SERVER_LOCATION'];
 export const SEARCH_API_URL = BASE_URL + '/search';
 export const BASE_API_URL = BASE_URL  + '/client-api/';
 export const ALBUMS_API_URL = BASE_API_URL +  'albums/';
+export const PRODUCTS_API_URL = BASE_API_URL + 'images/';
 export const SIZES_API_URL = BASE_API_URL + 'sizes/';
 export const COLORS_API_URL = BASE_API_URL + 'colors/';
 export const LOGOS_API_URL = BASE_API_URL + 'logos/';
@@ -28,8 +29,11 @@ export const SUBMIT_CART_URL = BASE_URL + '/cart-form';
 export const AUTH_TOKEN_URL = BASE_URL + '/api/get-token/';
 export const WHO_AM_I_URL = BASE_URL + '/api/who-am-i/'
 export const AUTH_LOGOUT_URL = BASE_URL + '/api/logout/';
+export const ALL_IMAGE_ID_URL = BASE_URL + '/api/all-image-ids/';
 export const LOGS_URL = BASE_URL + '/api/logs/';
+
 //http://127.0.0.1:8000/api/token/
+//export const OG_META_ALBUMS_URL = BASE_API_URL + 'og-meta-albums/';
 
 export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
 

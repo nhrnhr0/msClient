@@ -8,10 +8,10 @@
   import {getCookie} from '$lib/utils/cookies';
 
   export async function load({fetch, page}) {
-    const qs = browser ? document.location.search : '';
-    const query = new URLSearchParams(qs);
-    const productQuery = (query.get('product') || '-1');
-    const categoryQuery = query.get('category');
+    //const qs = browser ? document.location.search : '';
+    //const query = new URLSearchParams(qs);
+    //const productQuery = (query.get('product') || '-1');
+    //const categoryQuery = query.get('category');
     let albums_response = await fetch(ALBUMS_API_URL, { method: 'GET', redirect: 'follow'});
     let albums_json = await albums_response.json();
     albums_json = albums_json.filter(album => album.is_public)
@@ -37,15 +37,14 @@
     let products = {};
 
     //TODO: remove the !browser on production build
-    if (!browser) {
+    //if (!browser) {
       for(let i = 0; i < albums_json.length; i++) {
         let productResponse = await get_album_details(albums_json[i].id, fetch)
         
         products[albums_json[i].id] = productResponse;
       }
-    }
+    //}
 
-    console.log('load: productQuery: ', productQuery);
     
     /*
 */
@@ -54,8 +53,6 @@
         colors: colors_ret,
         sizes: sizes_ret,
         albums: albums_json,
-        onLoadProduct: productQuery,
-        onLoadCategory: categoryQuery,
         logos: logos_json,
         all_products: products
 			}
@@ -123,8 +120,8 @@ import { logStore } from "../stores/logStore";
   let y_scroll;
 
   
-  export let onLoadCategory;
-  export let onLoadProduct;
+  //export let onLoadCategory;
+  //export let onLoadProduct;
   
 
   onMount(()=> {
@@ -141,7 +138,25 @@ import { logStore } from "../stores/logStore";
     albumsJsonStore.set(albums);
     sizesJsonStore.set(sizes);
     colorsJsonStore.set(colors);
-    if(onLoadCategory != '-1') {
+    
+    let onLoadTask = sessionStorage.getItem('onLoadTask');
+    if(onLoadTask) {
+      debugger;
+      onLoadTask = JSON.parse(onLoadTask);
+      if (onLoadTask.type == 'product') {
+        let prodId = onLoadTask.data.id;
+        let cateId = onLoadTask.data.albums[0];;
+        $productModalStore.toggleModal()
+        $productModalStore.setProduct(cateId, prodId);
+      }else if(onLoadTask.type == 'category') {
+        let album = onLoadTask.data;
+        $categoryModalStore.toggleModal();
+        $categoryModalStore.setAlbum(album);
+      }
+      sessionStorage.removeItem('onLoadTask');
+    }
+    
+    /*if(onLoadCategory != '-1') {
       for(let i = 0; i < albums.length; i++) {
         if(albums[i].id == onLoadCategory) {
           openCategoryModal(albums[i]);
@@ -156,7 +171,7 @@ import { logStore } from "../stores/logStore";
       $productModalStore.setProduct(prodId, cateId);
       
       //openProductModalFromId(cateId, prodId)
-    }
+    }*/
 
     /*setTimeout(()=> {
       console.log('y_scroll: ', y_scroll)
