@@ -144,7 +144,7 @@ import { logStore } from './../../stores/logStore';
     /*if ($productModalStore.isOpen()) {
       $productModalStore.toggleModal();
     }*/
-    }
+    
 
     debugger;
     logStore.addLog(

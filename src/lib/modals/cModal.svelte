@@ -45,7 +45,6 @@ Spinner
   } from './../../stores/queryStore';*/
 import { flyToCart } from '$lib/utils/js/flyToCart';
 import { pushCategoryState, pushMainPage } from './../../stores/urlManager';
-  } from './../../stores/queryStore';
 import { logStore } from './../../stores/logStore';
   let products = [];
   let current_album = new writable({});
