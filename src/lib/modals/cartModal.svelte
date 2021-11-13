@@ -41,6 +41,7 @@ import { logStore } from "./../../stores/logStore";
         logStore.addLog(
                             {
                                 'a': 'הסר מהעגלה',
+                                't': 'remove from cart',
                                 'f': {
                                     'type':'cart',
                                 },
@@ -60,7 +61,8 @@ import { logStore } from "./../../stores/logStore";
 
         logStore.addLog(
                             {
-                                'a': 'פתיחת מוצר',
+                                'a': 'פתיחת מוצר מעגלת קניות',
+                                't': 'open product',
                                 'f': {
                                     'type': 'cart',
                                 },

@@ -1,4 +1,5 @@
 <script>
+  import {flyToCart} from './../utils/js/flyToCart';
   import {
     get_album_details
   } from './../../api/api';
@@ -95,8 +96,10 @@ import { logStore } from './../../stores/logStore';
     }
 
     let new_product = {'type':'product', 'id':newProductObj.id, 'ti': newProductObj.title}
-    logStore.addLog({
-      'a': 'פתיחת מוצר',
+    logStore.addLog(
+      {
+      'a': 'פתיחת מוצר ממודל מוצר (כפתור הבא)',
+      't': 'open product',
       'f': {
         ...old_product,
       },
@@ -122,8 +125,10 @@ import { logStore } from './../../stores/logStore';
       }
     }
     let new_product = {'type':'product', 'id':newProductObj.id, 'ti': newProductObj.title}
-    logStore.addLog({
-      'a': 'פתיחת מוצר',
+    logStore.addLog(
+      {
+      'a': 'פתיחת מוצר ממודל מוצר (כפתור הקודם)',
+      't': 'open product',
       'f': {
         ...old_product,
       },
@@ -146,12 +151,12 @@ import { logStore } from './../../stores/logStore';
     }*/
     
 
-    debugger;
+    debugger; 
     logStore.addLog(
                             {
-                                'a': 'פתיחת קטגוריה',
+                                'a': 'פתיחת קטגוריה ממודל מוצר',
                                 'f': {
-                                  'type': 'product modal',
+                                  'type': 'product',
                                   'id': $productData.id,
                                   'ti': $productData.title,
                                 },
@@ -209,13 +214,17 @@ import { logStore } from './../../stores/logStore';
 
   function likeBtnClicked() {
     console.log('like btn clicked');
+    flyToCart(document.querySelector('.product-modal-img'))
     $cartStore[_productId] = $productData;
+    
     
     logStore.addLog(
                             {
-                                'a': 'הוסף לעגלה',
+                                'a': 'הוסף לעגלה ממודל מוצר',
                                 'f': {
-                                    'type':'product modal',
+                                  'type':'product',
+                                    'id':$productData.id,
+                                    'ti':$productData.title, 
                                 },
                                 'w':{
                                     'type':'product',
@@ -268,7 +277,7 @@ import { logStore } from './../../stores/logStore';
                         </div>
                         
                     </div>
-                    <div class="img-wraper" on:click={openProductImageModal}><img alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"/></div>
+                    <div class="img-wraper" on:click={openProductImageModal}><img class="product-modal-img" alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"/></div>
                 </div>
             </div>
 

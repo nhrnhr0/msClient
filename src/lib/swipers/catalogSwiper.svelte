@@ -132,7 +132,8 @@ import { logStore } from './../../stores/logStore';
 
                         logStore.addLog(
                             {
-                                'a': 'פתיחת מוצר',
+                                'a': 'פתיחת מוצר מסליידר',
+                                't': 'open product',
                                 'f':{
                                     'type':'slider',
                                     'id':album.id,
@@ -156,7 +157,8 @@ import { logStore } from './../../stores/logStore';
                         copySwiperduplicates(E);
                         logStore.addLog(
                             {
-                                'a': 'הוסף לעגלה',
+                                'a': 'הוסף לעגלה מסליידר',
+                                't': 'add to cart',
                                 'f': {
                                     'type':'slider',
                                     'id':album.id,
@@ -248,12 +250,13 @@ on:change={(event) => {
                 effect="{'coverflow'}"
                 centeredSlides="{true}"
                 slidesPerView="{'5'}"
-                
+                observer="{true}"
+                observeParents= "{true}"
                 speed= "{50}"
                 loop= "{true}"
                 allowTouchMove="{true}"
                 preventClicks="{false}"
-                observer="{true}"
+                
                 on:click={swiperSlideClicked}
                 threshold={10}
                 coverflowEffect='{{
@@ -276,6 +279,7 @@ on:change={(event) => {
                     logStore.addLog(
                             {
                                 'a': 's',
+                                't': 's',
                                 'f': {
                                     'id':album.id,
                                 },

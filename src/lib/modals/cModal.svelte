@@ -78,9 +78,10 @@ import { logStore } from './../../stores/logStore';
 
     logStore.addLog(
                             {
-                                'a': 'פתיחת מוצר',
+                                'a': 'פתיחת מוצר ממודל קטגוריה',
+                                't': 'open product',
                                 'f':{
-                                    'type':'category modal',
+                                    'type':'category',
                                     'id':$current_album.id,
                                     'ti':$current_album.title,
                                 },
@@ -96,7 +97,7 @@ import { logStore } from './../../stores/logStore';
   function likeBtnClicked(e) {
     console.log(e);
     let img = e.currentTarget.parentElement.querySelector('.product-image');
-    let imgData = e.currentTarget.dataset["img"];
+    let imgData = JSON.parse(e.currentTarget.dataset["img"]);
     console.log('liked image clicked' ,imgData);
     flyToCart(img);
     $cartStore[imgData.id] = imgData;
@@ -104,9 +105,10 @@ import { logStore } from './../../stores/logStore';
     console.log('liked image clicked' ,img);
     logStore.addLog(
                             {
-                                'a': 'הוסף לעגלה',
+                                'a': 'הוסף לעגלה ממודל קטגוריה',
+                                't': 'add to cart',
                                 'f': {
-                                    'type':'category modal',
+                                    'type':'category',
                                     'id':$current_album.id,
                                     'ti':$current_album.title
                                 },
@@ -127,9 +129,10 @@ import { logStore } from './../../stores/logStore';
 
     logStore.addLog(
                             {
-                                'a': 'פתיחת קטגוריה',
+                                'a': 'פתיחת קטגוריה ממודל קטגוריה',
+                                't': 'open category',
                                 'f':{
-                                    'type':'category modal',
+                                    'type':'category',
                                     'id':$current_album.id,
                                     'ti':$current_album.title,
                                 },

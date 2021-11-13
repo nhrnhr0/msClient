@@ -1,4 +1,5 @@
 import { _modal_z_index_incrementor } from "./../../../stores/stores";
+import {cartObjStore} from './../../../stores/cartStore'
 import {get} from 'svelte/store';
 export function flyToCart(item) {
     let img = item;
@@ -65,11 +66,12 @@ export function flyToCart(item) {
             }
         ],
         {
-            duration: 10000,
+            duration: 1000,
             iterations: 1,
             easing: 'ease-in-out'
         },
     ).finished.then(()=> {
         clone.remove();
+        get(cartObjStore).setIsBooped(true);
     });
 }

@@ -185,7 +185,12 @@ import { logStore } from "../stores/logStore";
       $categoryModalStore.setAlbum(album);
       logStore.addLog(
                             {
-                                'a': 'פתיחת קטגוריה',
+                                'a': 'פתיחת קטגוריה מכפתור סליידר',
+                                'f':{
+                                    'type':'category',
+                                    'id':album.id,
+                                    'ti':album.title, 
+                                },
                                 'w':{
                                     'type':'category',
                                     'id':album.id,

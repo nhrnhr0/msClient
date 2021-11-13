@@ -8,10 +8,16 @@ if(browser) {
     }
 }
 
-export let cartStore = writable(initCart);
+export const cartStore = writable(initCart);
 
 cartStore.subscribe((value) => {
     if (browser) {
       window.localStorage.setItem('cart', JSON.stringify(value));
     }
   });
+
+
+
+
+
+export const cartObjStore = writable({});

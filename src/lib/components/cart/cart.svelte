@@ -1,28 +1,30 @@
 <script>
     import {faShoppingCart} from '$lib/my-font-awsome';
     import { cartStore } from './../../../stores/cartStore'
+    
     import Fa from 'svelte-fa/src/fa.svelte'
 	import boop from '$lib/components/boop/boop'
 import { onDestroy } from 'svelte';
     //import CartModal from '$lib/modals/cartModal.svelte';
     import {cartModalStore} from "./../../../stores/stores"
 	let isBooped = false;
-    function setIsBooped(val) {
+    export function setIsBooped(val) {
 		isBooped = val;
 	}
 
-    let unsub = cartStore.subscribe(()=> {
+    /*let unsub = cartStore.subscribe(()=> {
         if(Object.keys($cartStore).length > 0) {
             isBooped = true;
         }
-    })
+    })*/
     onDestroy(()=> {
-        unsub();
+        //unsub();
     });
     function open_cart() {
         $cartModalStore.toggleModal();
     }
 </script>
+
 <div id="cart-btn" class="cart" on:click={open_cart} on:mouseenter={() => isBooped = true} use:boop={{isBooped, scale:1.2, timing: 200, setter: setIsBooped}}>
 
     <Fa size="2x" icon={faShoppingCart} />

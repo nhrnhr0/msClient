@@ -1,8 +1,8 @@
 <script>
     import AutoComplete from "simple-svelte-autocomplete";
-
+    import {cartObjStore} from './../stores/cartStore';
     import {albumsJsonStore, loginModalStore, productModalStore, userInfoStore} from './../stores/stores'
-    import {SEARCH_API_URL} from './../api/consts';
+    import {CLOUDINARY_URL, SEARCH_API_URL} from './../api/consts';
 
     /*import {
         faShoppingCart
@@ -32,7 +32,8 @@ import { logStore } from "./../stores/logStore";
 
             logStore.addLog(
                             {
-                                'a': 'פתיחת קטגוריה',
+                                'a': 'פתיחת קטגוריה מהנאב-בר',
+                                't': 'open category',
                                 'f':{
                                     'type':'navbar',
                                 },
@@ -92,7 +93,8 @@ import { logStore } from "./../stores/logStore";
                 $categoryModalStore.toggleModal();
                 logStore.addLog(
                             {
-                                'a': 'פתיחת קטגוריה',
+                                'a': 'פתיחת קטגוריה מחיפוש',
+                                't': 'open category',
                                 'f':{
                                     'type':'search',
                                     'term': keyword,
@@ -109,7 +111,8 @@ import { logStore } from "./../stores/logStore";
                 $productModalStore.toggleModal();
                 logStore.addLog(
                             {
-                                'a': 'פתיחת מוצר',
+                                'a': 'פתיחת מוצר מחיפוש',
+                                't': 'open product',
                                 'f':{
                                     'type':'search',
                                     'term': keyword,
@@ -157,7 +160,7 @@ import { logStore } from "./../stores/logStore";
                     </div>
                 {:else}
                     <div class="search-item">
-                        <img alt="{item.title}" style="height:25px;" src="{item.image}" /> 
+                        <img alt="{item.title}" style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
                         <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
                         {@html label}
                     </div>
@@ -198,7 +201,7 @@ import { logStore } from "./../stores/logStore";
             </Dropdown>
             
                 
-            <Cart></Cart>
+            <Cart bind:this={$cartObjStore}></Cart>
             <div   on:mouseenter={() => isBooped = true} use:boop={{isBooped, scale:1.2, timing: 200, setter: setIsBooped}}>
             <a rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
                 <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
