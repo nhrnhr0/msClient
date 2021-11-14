@@ -36,7 +36,8 @@
 import {pushMainPage, pushProductState } from './../../stores/urlManager';
 
 import { logStore } from './../../stores/logStore';
-
+import {Event} from '$lib/utils/js/Event'
+    import {Magnifier} from '$lib/utils/js/Magnifier.js';
 
   let productData = writable();
   let current_album = writable();
@@ -47,7 +48,8 @@ import { logStore } from './../../stores/logStore';
   let _productId, _catalogId;
   let isLoaded = false;
   let isModalOpen = false;
-  let loadingText = 'טוען...'
+  let loadingText = 'טוען...';
+  let m, evt;
   export function isOpen() {
     return isModalOpen;
   }
@@ -76,6 +78,7 @@ import { logStore } from './../../stores/logStore';
       for (let i = 0; i < v.length; i++) {
         if (v[i].id == productId) {
           productData.set(v[i]);
+          
           break;
         }
       }
@@ -194,6 +197,17 @@ import { logStore } from './../../stores/logStore';
     console.log('new colorMarkup: ', colorMarkupLocal);
     colorMarkup = colorMarkupLocal;
     sizeMarkup = sizeMarkupLocal;
+    setTimeout(()=> {
+      evt = new Event(),
+      m = new Magnifier(evt);
+      m.attach({
+          thumb: `#catalog-image-${$productData.id}`,
+          largeWrapper: 'preview', 
+          zoomable:true,
+          zoom: 1.5,
+          
+      });
+    },100);
     isLoaded = true;
 
 
@@ -247,7 +261,7 @@ import { logStore } from './../../stores/logStore';
 <div style="z-index: {modal_zIndex};" id="productModal" class="modal" class:active={isModalOpen}>
   <div style="z-index: {modal_zIndex+5};" class="overlay" on:click={toggleModal}></div>
 
-  {#if isLoaded && isModalOpen }
+  {#if isLoaded && isModalOpen && $productData && $productData.cimage}
         <div style="z-index: {modal_zIndex+10};" class="modal_content">
             <div class="modal-header">
                 <button id="category-open-btn-{$current_album.id}" on:click={open_category}
@@ -277,7 +291,17 @@ import { logStore } from './../../stores/logStore';
                         </div>
                         
                     </div>
-                    <div class="img-wraper" on:click={openProductImageModal}><img class="product-modal-img" alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"/></div>
+                    <div class="img-wraper">
+                      <div class="img-inner-wraper">
+                      <img class="product-modal-img" alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_500/{$productData.cimage}"
+                        data-large-img-url="{CLOUDINARY_URL}f_auto,w_500/{$productData.cimage}"
+                        data-large-img-wrapper="preview"/>
+                    </div>
+                  </div>
+                    
+                </div>
+                <div class="magnifier-preview-wraper">
+                  <div class="magnifier-preview example heading" id="preview"></div>
                 </div>
             </div>
 
@@ -374,7 +398,9 @@ import { logStore } from './../../stores/logStore';
 
 
 <style lang="scss">
-    
+    @import '$lib/utils/css/magnifier.css';
+    #preview {
+    }
     .like-btn-wraper{
       cursor: pointer;
       &:hover {
@@ -513,6 +539,7 @@ import { logStore } from './../../stores/logStore';
 .modal_content {
   display: flex;
   flex-direction: column;
+  max-height: fit-content;
   .modal-header {
     height: 50px;
   }
@@ -521,10 +548,25 @@ import { logStore } from './../../stores/logStore';
       //background-blend-mode: lighten;
         width: 100%;
         max-width: initial!important;
-        
+        position: relative;
+
+        .magnifier-preview-wraper {
+          position: absolute;
+          position: absolute;
+          width: 100%;
+          top: 0px;
+          height: 100%;
+          width: 50%;
+          
+          .magnifier-preview {
+            width: 100%;
+            height: 100%;
+            line-height: 30px;
+          }
+        }
 
         .inner-body {
-          height: 55vh;
+          height: auto;
         display: flex;
         flex-direction: row;
 
@@ -607,16 +649,20 @@ import { logStore } from './../../stores/logStore';
             display: flex;
             justify-content: center;
             align-items: center;
+            .img-inner-wraper{
+              position: relative;
+            }
             img {
               @include bg-image;
-              float: left;
-              border-radius: 15px;
+              //float: left;
+              //border-radius: 15px;
               box-shadow: 10px 10px 5px rgb(133, 133, 133);
-
-              max-height: 100%;
-              max-width: 100%;
+              line-height: 30px;
+              
+              
               width: auto;
-              height: auto;
+              height: 100%;
+              
             }
         }
         }

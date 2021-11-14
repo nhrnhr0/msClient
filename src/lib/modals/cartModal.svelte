@@ -123,7 +123,7 @@ import { logStore } from "./../../stores/logStore";
                             <CardBody>
                             <CardText>
                                 <div class="info">
-                                    <div class="info-title">שם עסק בחשבונית</div>
+                                    <div class="info-title">שם העסק</div>
                                     <div class="info-res">
                                         <input disabled value={$userInfoStore.me['businessName']}/>
                                     </div>
@@ -150,7 +150,9 @@ import { logStore } from "./../../stores/logStore";
                             <div class="form-control"><input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="שם:" type="text"></div>
                             <div class="form-control"><input bind:value="{form_email}" name="email" placeholder="אימייל:" type="email"></div>
                             <div class="form-control"><input bind:value="{form_phone}" name="tel" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="טלפון:" type="tel"></div>
-                            <button class="send-btn" on:click|preventDefault="{cart_submit}">שלח</button>
+                            <div class="form-control">
+                                <button class="send-btn" on:click|preventDefault="{cart_submit}">שלח</button>
+                            </div>
                         </form>
                     {/if}
                 </div>
@@ -180,8 +182,7 @@ import { logStore } from "./../../stores/logStore";
                 
             </div>
         </div>
-        <div class="modal-footer">
-        </div>
+        <div class="modal-footer"></div>
         <!-- End of Dynamic Section -->
         <button title="Close" on:click={toggleModal} class="close_modal">x</button>
         <button title="Close" on:click={toggleModal} class="close_modal left">x</button>
@@ -216,8 +217,10 @@ import { logStore } from "./../../stores/logStore";
             justify-content: space-between;
             margin-bottom: 10px;
             .info-res {
-                flex:2;
-                
+                flex:3;
+                input {
+                    width: 95%;
+                }
             }
             .info-title {
                 flex:1;
@@ -246,13 +249,13 @@ import { logStore } from "./../../stores/logStore";
             }
 
             .modal-body {
-                height: 70vh;
+                //height: 70vh;
                 .inner-body {
                     display:flex;
                     flex-direction: row;
                     justify-content: center;
                     align-items: center;
-                    overflow-y: scroll;
+                    //overflow-y: scroll;
                     height: 100%;
                     .cart-info {
                         flex: 1;
@@ -265,16 +268,23 @@ import { logStore } from "./../../stores/logStore";
                         flex-direction: column;
                         justify-content: space-evenly;
                         .form-control {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
                             input {
-                                width: 70%;
-                                font-size: 30px;
+                                width: 90%;
+                                font-size: x-large;
+                                border: none;
+                                border-radius: 25px;
+                                margin-bottom: 10px;
                             }
                         }
 
                         .send-btn {
-                            width: 80%;
+                            margin-top: 15px;
+                            width: 70%;
                             border-radius: 35px;
-                            font-size: xxx-large;
+                            font-size: xx-large;
                             font-weight: bold;
                             transition: all 1s;
                             @include bg-gradient();
@@ -302,8 +312,12 @@ import { logStore } from "./../../stores/logStore";
                             flex-grow: 0;
                             flex-shrink: 1;
                             //@include bg-gradient();
-                            background-color: #faf8e1;
+                            //background-color: #faf8e1;
+                            background-color: #ffffff;
                             margin-left: 10%;
+                            &:hover, &:focus {
+                                background-color: rgb(204, 204, 204);
+                            }
 
                             .modal-open-area {
                                 width: 100%;
@@ -343,6 +357,10 @@ import { logStore } from "./../../stores/logStore";
                         }
                     }
                 }
+            }
+
+            .modal-footer {
+                @include bg-gradient();
             }
         }
     }
