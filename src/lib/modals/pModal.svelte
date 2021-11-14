@@ -207,7 +207,7 @@ import {Event} from '$lib/utils/js/Event'
           zoom: 1.5,
           
       });
-    },100);
+    },50);
     isLoaded = true;
 
 
@@ -293,8 +293,8 @@ import {Event} from '$lib/utils/js/Event'
                     </div>
                     <div class="img-wraper">
                       <div class="img-inner-wraper">
-                      <img class="product-modal-img" alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_500/{$productData.cimage}"
-                        data-large-img-url="{CLOUDINARY_URL}f_auto,w_500/{$productData.cimage}"
+                      <img class="product-modal-img" alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
+                        data-large-img-url="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
                         data-large-img-wrapper="preview"/>
                     </div>
                   </div>
@@ -546,6 +546,7 @@ import {Event} from '$lib/utils/js/Event'
   .modal-body {
       //background-color: rgba(255, 255, 255, 0.6);
       //background-blend-mode: lighten;
+        min-height: 60vh;
         width: 100%;
         max-width: initial!important;
         position: relative;
