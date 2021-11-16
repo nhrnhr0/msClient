@@ -39,7 +39,6 @@ export function request_whoAmI() {
     let data = {
         'refresh': get(userInfoStore).refresh,
     }
-    console.log('refresh: ', get(userInfoStore).refresh);
     let response = fetch_wraper(REFRESH_TOKEN_URL, {method: "POST", body:JSON.stringify(data)});
     return response;
 }*/

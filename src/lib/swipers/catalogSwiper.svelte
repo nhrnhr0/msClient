@@ -78,12 +78,12 @@ import { logStore } from './../../stores/logStore';
         }
     }
     onMount(()=> {
-        console.log('swiper on mount: ', loaded_data);
+        //console.log('swiper on mount: ', loaded_data);
         unsubCart = cartStore.subscribe(cartSubscripter);
         
         /*window.addEventListener('DOMContentLoaded', (event) => {
             document.querySelectorAll('.product-image').addEventListener("click", function(event) {
-                console.log(event.target);
+                //console.log(event.target);
             });
         });*/
     });
@@ -95,7 +95,7 @@ import { logStore } from './../../stores/logStore';
     
     /*function swiperClicked(e) {
         e.preventDefault();
-        console.log('swiperClicked: ', e);        
+        //console.log('swiperClicked: ', e);        
         for (let i = 0; i < e.detail[0].length; i++) {
             let event = e.detail[0][i];
             if (event['target'] && event['target'].classList.contains('product-image')) {
@@ -115,8 +115,18 @@ import { logStore } from './../../stores/logStore';
     }
 
     function swiperSlideClicked(E) {
-        //console.log('CLICK: ', E);
-        
+        debugger;
+        let dont_open_modal = false;
+        // don't open the modal if the user use 2 fingers to zoom on slider
+        for(let i = 0; i < E.detail[0].length;i++) {
+            let item = E.detail[0][i];
+            let len = item?.touches?.length || 0;
+            if(len > 0) {
+                dont_open_modal = true
+            }
+        }
+
+        // handle clicks on add to card and image
         if(typeof(E) == 'object') {
             let detail = E.detail[0];
             for(let i = 0; i < detail.length; i++) {
@@ -125,7 +135,7 @@ import { logStore } from './../../stores/logStore';
                 if(target) {
                     //console.log('>>>>> class list: >> \t', target.classList);
 
-                    if(target.classList.contains('product-image')) {
+                    if(target.classList.contains('product-image') && dont_open_modal == false) {
                         $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);
                         
                         $productModalStore.toggleModal();
@@ -180,7 +190,7 @@ import { logStore } from './../../stores/logStore';
 
     }
     /*function swiperSlideClicked(catalogId, productId) {
-        console.log('swiperClicked2: ', catalogId, productId);
+        //console.log('swiperClicked2: ', catalogId, productId);
         $productModalStore.setProduct(catalogId, productId);
         $productModalStore.open();
     }*/

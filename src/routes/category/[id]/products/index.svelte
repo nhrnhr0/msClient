@@ -7,10 +7,10 @@ import { get_album_details } from ".../../../../api/api";
 import { ALBUMS_API_URL } from "./../../../../api/consts";
 
     export async function load({page, fetch, session, contex}) {
-        console.log(page.params.id);
+        //console.log(page.params.id);
         if(isNumeric(page.params.id)) {
             let response = await get_album_details(page.params.id, fetch)
-            console.log(response);
+            //console.log(response);
             return {
                 props: {
                     products: response,

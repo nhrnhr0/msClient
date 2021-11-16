@@ -1,5 +1,4 @@
 <script context="module">
-    import { browser } from "$app/env";
 import { isNumeric } from "$lib/utils/utils";
     import { onMount } from "svelte";
     
@@ -8,13 +7,13 @@ import { isNumeric } from "$lib/utils/utils";
     
     
         export async function load({page, fetch, session, contex}) {
-            console.log(page);
-            console.log("load", page.params);
+            //console.log(page);
+            //console.log("load", page.params);
             let url = ALBUMS_API_URL + page.params.id + "/";
-            console.log(url);
+            //console.log(url);
             if(isNumeric(page.params.id)) {
                 let response = await fetch_wraper(url , {"method":"GET"}, fetch);
-                console.log(response);
+                //console.log(response);
                 return {
                     props: {
                         data: response,

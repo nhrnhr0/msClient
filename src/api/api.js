@@ -25,10 +25,8 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
     
     if(requestOptions && requestOptions.method == "POST") {
         headers_json['X-CSRFToken']= get_csrf_token();
-        console.log('set scft token: ', headers_json['X-CSRFToken']);
     }
     else {
-        console.log('csrf token is unneed');
     }
     
     if (browser) {
@@ -36,7 +34,6 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
             headers_json['Authorization'] = "Token " +get(userInfoStore).access;
         }
     }
-    console.log('headers_json: ', headers_json);
     var myHeaders = new Headers(headers_json);
     var requestOptions = Object.assign({}, {
             method: "GET",
@@ -62,7 +59,6 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
       }
     return response.then((data)=>{
         if(data.status == 401) {
-            console.log('data.status == 401');
             let userInfo = get(userInfoStore);
             userInfo.isLogin = false;
             userInfo.access = null;
@@ -71,6 +67,7 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
                 return fetch_wraper(url, requestOptions, custom_fetch, true);
             }
         }
+        console.log(url, ' ==> ', data.status);
         return data.json()
     }).then((info)=> {
         /*if(info.code === "token_not_valid") {
@@ -81,13 +78,11 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
                     oldStore.access = refresh_response.access;
                     userInfoStore.set(oldStore);
                 }
-                console.log('refresh_response: ', refresh_response);
-                console.log('retriying url: ', url);
+
                 return fetch_wraper(url, requestOptions, custom_fetch);
             });
             
         }*/
-        console.log(info);
         return info;
     });
 //    return response;
@@ -97,14 +92,10 @@ export function apiSearchProducts(keyword) {
     return fetch_wraper(url);
 }
 export function get_album_details(albumId, server_fetch) {
-    console.log('get_album_details: ', albumId)
     if(albumsData[albumId]) {
-        console.log('return ',  albumId, ' from cache');
         return albumsData[albumId];
     }
     else {
-        console.log('return ',  albumId, ' from server');
-        console.log('fetch from: ', STATIC_BASE + "/_get_album_images/" + albumId);
         let response = fetch_wraper(STATIC_BASE + "/_get_album_images/" + albumId,{method:"GET"}, server_fetch);
         
         albumsData[albumId] = response;
@@ -121,8 +112,6 @@ export async function request_csrf_token() {
     let response = await fetch_wraper(GET_CSRF_TOKEN_URL + extra);
     let json_response = response;
     set_user_uuid(json_response['uid']);
-    console.log('response: ', json_response);
-    console.log(document.cookie);
 }
 
 function set_user_uuid(newUid) {
@@ -137,7 +126,6 @@ export function get_csrf_token() {
 }
 
 export function submit_cart_form(data) {
-    console.log(data);
         var requestOptions = {
             method:"POST",
             body: JSON.stringify(data),

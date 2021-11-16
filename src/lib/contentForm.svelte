@@ -22,9 +22,7 @@ import { get_csrf_token, get_user_uuid, submit_contact_form } from './../api/api
           data.phone = '0000000000'
         }
         let response = submit_contact_form(data);
-        console.log(response);
         response.then((json_response)=> {
-            console.log('reset form: ', json_response);
             if(json_response['status'] == 'success') {
               mform.reset();
               $successModalStore.toggleModal();

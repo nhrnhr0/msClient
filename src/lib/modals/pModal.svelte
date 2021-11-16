@@ -437,11 +437,14 @@ import {Event} from '$lib/utils/js/Event'
     }
     .like-btn-wraper{
       cursor: pointer;
-      &:hover {
+      @media (min-width: 820px) {
+        &:hover {
           & .like-btn:not(.active) .text::after {
             content: ' להצעת מחיר'
           }
         } 
+      }
+      
       .like-btn {
         display: flex;
         justify-content: center;

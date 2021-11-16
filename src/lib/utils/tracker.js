@@ -28,7 +28,7 @@ if(browser) {
             console.log('send log to server:', data);
             let response = fetch_wraper(`/api/log`, {method: 'POST', body: JSON.stringify(data)});
             response.then(() => {
-                console.log('log send');
+                //console.log('log send');
                 logger.set(initUserData);
             });
         }

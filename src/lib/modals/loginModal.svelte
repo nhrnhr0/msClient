@@ -13,20 +13,16 @@ import { request_login, request_whoAmI } from './../../api/auth'
         error_detail = '';
         let response = request_login(username, password);
         response.then(data=> {
-            console.log("DATA:", data);
             if(data['detail']) {
-                console.log('error');
                 error_detail = data['detail']
             }else if(data['non_field_errors'] && data['non_field_errors'].length > 0) {
                 error_detail = data['non_field_errors'][0];
             }else {
-                console.log('success');
                 //localStorage.setItem('refresh', data.refresh);
                 $userInfoStore.access = data.token;
                 
                 let whoAmI = request_whoAmI();
                 whoAmI.then(me=> {
-                    console.log('me: ',me);
                     $userInfoStore.me=me;
                     $userInfoStore.isLogin=true;
                 })

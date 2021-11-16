@@ -7,7 +7,7 @@
     
         export async function load({fetch}) {
             let response = await fetch_wraper(ALBUMS_API_URL, {method: "GET"}, fetch);
-            console.log(response);
+            //console.log(response);
             return {
                 props: {
                     data: response

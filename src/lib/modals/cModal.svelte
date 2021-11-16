@@ -95,14 +95,11 @@ import { logStore } from './../../stores/logStore';
   }
 
   function likeBtnClicked(e) {
-    console.log(e);
     let img = e.currentTarget.parentElement.querySelector('.product-image');
     let imgData = JSON.parse(e.currentTarget.dataset["img"]);
-    console.log('liked image clicked' ,imgData);
     flyToCart(img);
     $cartStore[imgData.id] = imgData;
     
-    console.log('liked image clicked' ,img);
     logStore.addLog(
                             {
                                 'a': 'הוסף לעגלה ממודל קטגוריה',

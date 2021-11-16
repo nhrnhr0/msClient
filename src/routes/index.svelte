@@ -160,7 +160,7 @@ import { logStore } from "../stores/logStore";
       }
     });*/
       
-    console.log('on mount: setting albums');
+    
     albumsJsonStore.set(albums);
     sizesJsonStore.set(sizes);
     colorsJsonStore.set(colors);
@@ -248,18 +248,21 @@ import { logStore } from "../stores/logStore";
     margin-right: 20px;
     margin-left: 20px;
 
-    &:hover {
-      &::before {
-        content: '>> למעבר לקטגוריית ';
-        opacity: 1;
-        font-size: 1.4rem;
-      }
+    &:hover,&:focus {
+      @media (min-width: 820px) {
+          &::before {
+          content: '>> למעבר לקטגוריית ';
+          opacity: 1;
+          font-size: 1.4rem;
+        }
 
-      &::after {
-        content: ' לחץ כאן <<';
-        opacity: 1;
-        font-size: 1.4rem;
+        &::after {
+          content: ' לחץ כאן <<';
+          opacity: 1;
+          font-size: 1.4rem;
+        }
       }
+      
 
       opacity: 0.8;
       //font-size: 2.2rem;

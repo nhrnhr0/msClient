@@ -31,7 +31,6 @@ import { logStore } from "./../../stores/logStore";
     }
 
     function delete_product_from_cart(key) {
-        console.log('delete_product_from_cart');
         
         let item = $cartStore[key];
         let swiper = $all_swipers[item.albums[0]];
@@ -103,13 +102,11 @@ import { logStore } from "./../../stores/logStore";
             let response = submit_cart_form(data);
             response.then((data_json)=> {
                 
-                    console.log('data_json: ', data_json);
                     if(data_json['status'] == 'success') {
                         $cartModalStore.toggleModal();
                         $successModalStore.toggleModal();
                         $cartStore = {};
                     }
-                    console.log('cart info: ', data_json);
                 
             });
             mform.reset();
@@ -161,7 +158,9 @@ import { logStore } from "./../../stores/logStore";
                         {/if}
                         <Card>
                             <CardHeader>
-                                <CardTitle>פרטי השולח (לא חובה)</CardTitle>
+                                <CardTitle>פרטי השולח 
+                                {$userInfoStore.isLogin ? '(לא חובה)' : ''}
+                                </CardTitle>
                             </CardHeader>
                             <form bind:this={mform} method="POST" action="{SUBMIT_CART_URL}" >
                                 <div class="form-control"><input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="שם:" type="text"></div>

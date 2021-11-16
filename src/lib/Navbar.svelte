@@ -24,7 +24,6 @@ import NavLoginManager from "./components/navLoginManager.svelte";
 import { apiSearchProducts } from "./../api/api";
 import { logStore } from "./../stores/logStore";
         function menuItemClicked(album) {
-            console.log('openCategoryModal: ',album);
             $categoryModalStore.setAlbum(album);
             $categoryModalStore.toggleModal();
 
@@ -48,7 +47,6 @@ import { logStore } from "./../stores/logStore";
         let searchValue;
         async function searchProducts(keyword) {
             let json = await apiSearchProducts(keyword);
-            console.log('search api result: ', json);
             let data = json;
             let albums = [];
             // get all the albums from the products and count how much products from each album
@@ -76,16 +74,13 @@ import { logStore } from "./../stores/logStore";
             // add the albums in the start and after the products
             let items = albums.concat(data.all);
 
-            console.log('returned from search: ', items);
             return items;
         }
 
         function autocompleteItemSelected(item) {
             if(item == undefined) {
-                console.log('autocompleteItemSelected: item is undefined');
                 return;
             }
-            console.log('autocompleteItemSelected: ', item);
             let keyword = document.querySelector('input.autocomplete-input').value;
             
             if(item.item_count) {

@@ -4,12 +4,12 @@
   //import { stateQuery} from './../stores/stores'
 import { onMount } from "svelte";
 
-    //console.log('stateQuery: ', stateQuery);
-    /*.subscribe(query => {
-      console.log('query: ', query);
-    });*/
+    
   
 </script>
+
+
+
 
 <svelte:head>
   <meta name="theme-color" content="#FFD700" />
@@ -24,9 +24,6 @@ import { onMount } from "svelte";
 <div id="main_wraper" class="bg-wraper">
   <slot />
 </div>
-
-<script>
-</script>
 
 <style lang="scss">
   .bg-wraper  {
