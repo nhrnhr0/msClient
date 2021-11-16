@@ -61,7 +61,7 @@ import {Event} from '$lib/utils/js/Event'
     isLoaded = false;
     //$stateQuery['product'] = catalogId + ',' + productId;
     
-    pushProductState(productId);
+    pushProductState(catalogId, productId);
     _productId = productId;
     _catalogId = catalogId;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);

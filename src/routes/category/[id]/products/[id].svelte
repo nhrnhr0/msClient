@@ -1,9 +1,10 @@
 <script context="module">
 import { browser } from "$app/env";
+import { isNumeric } from "$lib/utils/utils";
 import { onMount } from "svelte";
 
-import { fetch_wraper } from "./../../api/api";
-import { CLOUDINARY_URL, PRODUCTS_API_URL } from "./../../api/consts";
+import { fetch_wraper } from "../../../../api/api";
+import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
 
 
     export async function load({page, fetch, session, contex}) {
@@ -27,11 +28,7 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "./../../api/consts";
         
     }
 
-    function isNumeric(str) {
-  if (typeof str != "string") return false // we only process strings!  
-  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
-}
+    
 </script>
 <script>
     export let data;
@@ -43,14 +40,26 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "./../../api/consts";
             
 </script>
 <svelte:head>
+    <!-- Primary Meta Tags -->
     <title>{data?.title}</title>
+    <meta name="title" content="{data?.title}">
+    <meta name="description" content="{data?.description}">
     <meta name="description" content={data?.description} />
     <meta name="keywords" content={data?.keywords} />
+
+
+
     <meta property="og:title" content={data?.title} />
     <meta property="og:description" content={data?.description} />
     <meta property="og:image" content={CLOUDINARY_URL + 'f_auto,w_auto/' + data?.cimage} />
     <meta property="og:type" content="product" />
     <meta property="og:site_name" content="M.S. Global" />
     <meta property="og:locale" content="IL" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="{data?.title}">
+    <meta property="twitter:description" content="{data?.description}">
+    <meta property="twitter:image" content="{CLOUDINARY_URL + 'f_auto,w_auto/' + data?.cimage}">
     
 </svelte:head>

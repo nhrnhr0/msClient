@@ -1,5 +1,5 @@
-export function pushProductState(productId) {
-    pushState(`/products/${productId}`);
+export function pushProductState(categoryId, productId) {
+    pushState(`/category/${categoryId}/products/${productId}`);
 }
 export function pushCategoryState(categoryId) {
     pushState(`/category/${categoryId}`);

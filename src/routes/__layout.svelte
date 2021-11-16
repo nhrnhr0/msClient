@@ -10,6 +10,11 @@ import { onMount } from "svelte";
     });*/
   
 </script>
+
+<svelte:head>
+  <meta name="theme-color" content="#FFD700" />
+
+  </svelte:head>
 <Navbar></Navbar>
 <!--<div class="hidden">
 <input type="text" bind:value={$stateQuery['product']}> 
