@@ -50,6 +50,8 @@ import {Event} from '$lib/utils/js/Event'
   let isModalOpen = false;
   let loadingText = 'טוען...';
   let m, evt;
+
+  let is_image_loaded = false;
   export function isOpen() {
     return isModalOpen;
   }
@@ -59,6 +61,7 @@ import {Event} from '$lib/utils/js/Event'
   }
   export function setProduct(catalogId, productId) {
     isLoaded = false;
+    is_image_loaded = false;
     //$stateQuery['product'] = catalogId + ',' + productId;
     
     pushProductState(catalogId, productId);
@@ -195,21 +198,44 @@ import {Event} from '$lib/utils/js/Event'
     console.log('new colorMarkup: ', colorMarkupLocal);
     colorMarkup = colorMarkupLocal;
     sizeMarkup = sizeMarkupLocal;
+
+    // waiting for isLoaded=true to init magnifier and retry init if fail after timeout
     setTimeout(()=> {
-      evt = new Event(),
-      m = new Magnifier(evt);
-      m.attach({
-          thumb: `#catalog-image-${$productData.id}`,
-          largeWrapper: 'preview', 
-          zoomable:true,
-          zoom: 1.5,
-          
-      });
+      if (window.matchMedia && !window.matchMedia("(hover: none)").matches) {
+        let init_magnifier = ()=> {
+          evt = new Event(),
+          m = new Magnifier(evt);
+          m.attach({
+              thumb: `#catalog-image-${$productData.id}`,
+              largeWrapper: 'preview', 
+              zoomable:true,
+              zoom: 1.5,
+              
+          });
+        }
+        try {
+          init_magnifier();
+        } catch (e) {
+          console.log('error: ', e);
+          setTimeout(()=> {
+            init_magnifier();
+            }, 1000);
+        }
+      }
+      
     },0);
     isLoaded = true;
-
-
   });
+
+
+  function should_use_pImg_modal() {
+    if (window.matchMedia && window.matchMedia("(hover: none)").matches) {
+      if(window.matchMedia("(max-width: 1100px)").matches && window.matchMedia("(min-width:500px)").matches) {
+        return true;
+      }
+    }
+    return false;
+  }
 
 
   export function toggleModal() {
@@ -246,10 +272,15 @@ import {Event} from '$lib/utils/js/Event'
                             }
                             );
   }
+  let is_under_500px = ()=> { return window && window.matchMedia && window.matchMedia("(max-width:500px)").matches;}
 
   function openProductImageModal(e) {
-    $productImageModalStore.setProduct($productData);
-    $productImageModalStore.toggleModal();
+    
+    if(should_use_pImg_modal()) {
+      $productImageModalStore.setProduct($productData);
+      $productImageModalStore.toggleModal();
+    }
+
   }
 </script>
 
@@ -289,11 +320,16 @@ import {Event} from '$lib/utils/js/Event'
                         </div>
                         
                     </div>
-                    <div class="img-wraper">
+                    <div class="img-wraper"
+                    style="padding-bottom:{(!is_image_loaded && is_under_500px())?"100%":"0%"}
+                            
+                    "
+                    >
                       <div class="img-inner-wraper">
-                      <img class="product-modal-img" alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
+                      <img class:loaded={is_image_loaded} on:load={()=>{is_image_loaded = true}} on:error={()=>{is_image_loaded = false}} class="product-modal-img" on:click={openProductImageModal} alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
                         data-large-img-url="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
-                        data-large-img-wrapper="preview"/>
+                        data-large-img-wrapper="preview"
+                        />
                     </div>
                   </div>
                     
@@ -693,8 +729,15 @@ import {Event} from '$lib/utils/js/Event'
 
         .img-wraper {
             flex: 1;
+            
             @media screen and (max-width: 1100px) {
               flex:2;
+            }
+
+            @media screen and (max-width: 500px) {
+              //height: 0;
+              //padding-bottom: 100%;
+              
             }
             cursor: pointer;
             display: flex;

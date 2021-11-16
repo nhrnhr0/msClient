@@ -2,17 +2,16 @@
     import {
         _modal_z_index_incrementor
     } from './../../stores/stores';
-    import {Event} from '$lib/utils/js/Event'
-    import {Magnifier} from '$lib/utils/js/Magnifier.js';
+    //import {Event} from '$lib/utils/js/Event'
+    //import {Magnifier} from '$lib/utils/js/Magnifier.js';
     
     import {
-CLOUDINARY_URL,
-    STATIC_BASE
+CLOUDINARY_URL
     } from './../../api/consts';
     let isModalOpen = false;
     let modal_zIndex = 0;
-    export let product = {'title':'loading...', 'image': ''};
-    let m, evt;
+    export let product = {'title':'טוען...', 'image': ''};
+    //let m, evt;
     export function toggleModal() {
         isModalOpen = !isModalOpen;
         if (isModalOpen) {
@@ -28,7 +27,7 @@ CLOUDINARY_URL,
     export function setProduct(p) {
         
         product = p
-        setTimeout(()=> {
+        /*setTimeout(()=> {
             evt = new Event(),
             m = new Magnifier(evt);
             m.attach({
@@ -38,7 +37,7 @@ CLOUDINARY_URL,
                 zoom: 1.5,
                 
             });
-        }, 100)
+        }, 100)*/
     }
 </script>
 
@@ -61,11 +60,7 @@ CLOUDINARY_URL,
                         data-large-img-url="{CLOUDINARY_URL}f_auto,w_auto/{product['cimage']}"
                         data-large-img-wrapper="preview">
                     </div>
-                    <!-- </a>-->
-                    <div class="magnifier-preview example heading" id="preview">
-                        
-
-                    </div>
+                    
                 </div>
             {/key}
 
@@ -86,7 +81,7 @@ CLOUDINARY_URL,
 
 <style lang="scss">
     @import '$lib/utils/css/magnifier.css';
-    .opaque {
+    /*.opaque {
         opacity: .5;
         background-color: #343232;
     }
@@ -102,7 +97,7 @@ CLOUDINARY_URL,
 
         height: 500px;
         width: 500px;
-    }
+    }*/
     .modal_content {
         max-height:95%;
         width: 95%;

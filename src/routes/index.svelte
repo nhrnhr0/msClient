@@ -148,6 +148,9 @@ import { logStore } from "../stores/logStore";
   
 
   onMount(()=> {
+    /*window.onpopstate = function(event) {
+      alert("location: " + document.location + ", state: " + JSON.stringify(event.state));
+    };*/
     let csrf_response = request_csrf_token();
     /*csrf_response.then(response => {
       if($userInfoStore.isLogin == false && $userInfoStore.refresh != null) {
