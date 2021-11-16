@@ -104,26 +104,26 @@ import { onDestroy } from 'svelte';
                 -->
                                 <div class="accordion">
                     <div class="accordion-header">
-                        <h3>עריכת פרופיל</h3>
+                        
                     </div>
                     <div class="accordion-content">
                         <form action="/update-user-details">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <Card class="mb-3">
+                            <div class="card-row">
+                                <div class="card-wraper">
+                                    <Card class="">
                                         <CardHeader>
                                         <CardTitle>פרטי עסק</CardTitle>
                                         </CardHeader>
                                         <CardBody>
                                         <CardText>
                                             <div class="info">
-                                                <div class="info-title">שם עסק בחשבונית</div>
+                                                <div class="info-title">שם העסק</div>
                                                 <div class="info-res">
                                                     <input disabled value={businessName}/>
                                                 </div>
                                             </div>
                                             <div class="info">
-                                                <div class="info-title">מייל</div>
+                                                <div class="info-title">אימייל</div>
                                                 <div class="info-res">
                                                     <input disabled value={email}/>
                                                 </div>
@@ -138,8 +138,8 @@ import { onDestroy } from 'svelte';
                                         </CardBody>
                                     </Card>
                                 </div>
-                                <div class="col-md-6">
-                                    <Card class="mb-3">
+                                <div class="card-wraper">
+                                    <Card class="">
                                         <CardHeader>
                                         <CardTitle>פרטי משתמש</CardTitle>
                                         </CardHeader>
@@ -203,18 +203,48 @@ import { onDestroy } from 'svelte';
             padding:15px;
         }
     }
-    .modal-body {
+    #loginModal {
         
-        :global(.card) {
-            background-color: rgba(160, 158, 158, 0.4);
-            padding:20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-            height: 100%;
-            :global(.card-title) {
-                font-size: 1.3em;
-                font-weight: bold;
-                text-decoration: underline;
+        @media (max-width: 1200px) {
+            
+            :global(.modal_content) {
+                max-height: 90%;
+            }
+        }
+        @media screen and (max-width: 768px) {
+            :global(.modal_content) {
+                width: 90%;
+            }
+        }
+    }
+    
+    .modal-body {
+        // decrease font-size as screen max-width decreases
+        @media screen and (max-width: 600px) {
+            font-size: 0.8em;
+        }
+
+        .card-row {
+            display: flex;
+            @media screen and (max-width: 1200px) {
+                flex-direction: column;
+                
+            }
+            :global(.card-wraper) {
+                flex:1;
+                margin:10px;
+                :global(.card) {
+                    background-color: rgba(235, 235, 235, 0.7);
+                    padding:5%;
+                    border-radius: 15px;
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                    height: 100%;
+                    :global(.card-title) {
+                        font-size: 1.3em;
+                        font-weight: bold;
+                        text-decoration: underline;
+                    }
+                }
             }
         }
         .info {
@@ -222,12 +252,20 @@ import { onDestroy } from 'svelte';
             flex-direction: row;
             justify-content: space-between;
             margin-bottom: 10px;
+            @media screen and (max-width: 465px) {
+                flex-direction: column;
+            
+                
+            }
             .info-res {
                 flex:2;
                 
             }
             .info-title {
                 flex:1;
+                width: max-content;
+                white-space: nowrap !important;
+                padding-left: 10px;
                 .actions {
                     display: flex;
                     flex-direction: row;

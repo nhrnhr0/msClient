@@ -44,9 +44,7 @@ function sendLogsToServer() {
         console.log('logStore.js sending logs to server!', logs);
         apiSendLogs(logs).then(res => {
             console.log('logStore.js response from server', res);
-            debugger;
             logStore.update((value) => {
-                debugger;
                 value.splice(0, res.rows.length);
                 return value;
             });

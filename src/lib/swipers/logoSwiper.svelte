@@ -25,6 +25,26 @@
     <div class="logo-section">
         <Swiper
                 slidesPerView="{'7'}"
+                breakpoints='{{
+                    "220": {
+                        "slidesPerView":2,
+                    },
+                    "400": {
+                        "slidesPerView": 3.5,
+                    },
+                    "600": {
+                        "slidesPerView": 4,
+                    },
+                    "820": {
+                        "slidesPerView": 5,
+                    },
+                    "960": {
+                        "slidesPerView": 6,
+                    },
+                    "1100": {
+                        "slidesPerView": 7,
+                    }
+                }}'
                 autoplay='{{
                     "delay": 50,
                     "disableOnInteraction": false
@@ -38,6 +58,7 @@
                 
                 pagination="{true}" 
                 navigation="{false}"
+                
                 >
                     {#each logos as logo}
                         <SwiperSlide>

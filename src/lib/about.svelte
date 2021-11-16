@@ -35,6 +35,15 @@
             border-radius: 35px;
             margin-top: 75px;
             margin-bottom: 75px;
+            .hero-description {
+                // reduce the font size as the screen size decreases
+                @media screen and (max-width: 600px) {
+                    font-size: 1.5rem;
+                }
+                @media screen and (max-width: 400px) {
+                    font-size: 1.2rem;
+                }
+            }
         }
     }
 </style>

@@ -389,6 +389,27 @@ import { logStore } from './../../stores/logStore';
 .modal .modal_content {
   .modal-header {
     justify-content: space-around;
+    
+    .modal-header-links {
+      
+      :global(.category-menu) {
+        :global(.dropdown-menu.show) {
+          max-height: 80vh;
+          overflow-y: auto;
+          left: 0%!important;
+          @media screen and (max-width: 900px) {
+            grid-template-columns: repeat(3, auto);
+          }
+          @media screen and (max-width: 600px) {
+            grid-template-columns: repeat(2, auto);
+            
+          }
+          @media screen and (max-width: 400px) {
+            grid-template-columns: repeat(1, 1fr);
+          }
+        }
+      }
+    }
   }
   overscroll-behavior: contain;
   display: flex;
@@ -415,7 +436,16 @@ import { logStore } from './../../stores/logStore';
         display: grid;
     grid-column: 1fr 1fr 1fr;
     grid-template-columns: repeat(5, 1fr);
-
+    @media screen and (max-width: 900px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @media screen and (max-width: 600px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @media screen and (max-width: 450px) {
+      grid-template-columns: repeat(2, 1fr);
+      
+    }
     .category-item {
       cursor: pointer;
       padding: 5px;
@@ -506,14 +536,22 @@ import { logStore } from './../../stores/logStore';
     justify-content: space-between;
     display: flex;
     flex-direction: row;
-
     .header-logo {
       height: 35px;
     }
 
     .modal-title {
       font-weight: 700;
-      font-size: 2.5em;
+      font-size: xx-large;
+    }
+    @media screen and (max-width: 600px) {
+      padding:0px;
+      .header-logo {
+        display: none;
+      }
+      .modal-title {
+        margin:auto;
+      }
     }
   }
 }

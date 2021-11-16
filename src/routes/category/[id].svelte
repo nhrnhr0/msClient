@@ -7,7 +7,6 @@
     
     
         export async function load({page, fetch, session, contex}) {
-            debugger;
             console.log(page);
             console.log("load", page.params);
             let url = ALBUMS_API_URL + page.params.id + "/";

@@ -148,7 +148,7 @@ import { logStore } from "./../stores/logStore";
 
 
         <form class="d-flex" id="search_form">
-            <AutoComplete id="search_input" loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:value={searchValue}  >
+            <AutoComplete id="search_input" on:focus loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:value={searchValue}  >
 
                 <div slot="item" let:item={item} let:label={label}>
                 {#if item.item_count}
@@ -224,7 +224,23 @@ import { logStore } from "./../stores/logStore";
 
 
 <style lang="scss">
-
+:global(#navCategoryList) {
+        :global(.dropdown-menu.show) {
+          max-height: 80vh;
+          overflow-y: auto;
+          left: 0%!important;
+          @media screen and (max-width: 900px) {
+            grid-template-columns: repeat(3, auto);
+          }
+          @media screen and (max-width: 600px) {
+            grid-template-columns: repeat(2, auto);
+            
+          }
+          @media screen and (max-width: 400px) {
+            grid-template-columns: repeat(1, 1fr);
+          }
+        }
+      }
 :global(#navLoginManager) {
     :global(.dropdown-toggle) {
         padding: 0px;
@@ -234,14 +250,18 @@ import { logStore } from "./../stores/logStore";
     }
 }
 
-
+/*
 :global(.autocomplete-cls)  {
-    width: 100%!important;
+    
+    
     * {
         font-size: large;
-    
     }
-}
+    
+    :global(.autocomplete-list) {
+        border:1px solid red;
+    }
+}*/
 .list-category {
     
     //background-color: black;
@@ -300,7 +320,9 @@ import { logStore } from "./../stores/logStore";
     }
 }*/
     .navbar {
-        
+        .container-fluid {
+            flex-wrap: nowrap;
+        }
         
         @include bg-gradient();
         position: sticky;
@@ -310,14 +332,44 @@ import { logStore } from "./../stores/logStore";
         .nav-logo {
             width: auto;
             height: 40px;
+            @media screen and (max-width: 768px) {
+                display: none;
+            }
         }
 
         #search_form {
             flex-basis: 50%;
+            :global(.autocomplete) {
+                min-width: 83px;
+                width: 100%;
+                flex: 1;
+                :global(.autocomplete-list) {
+                    :global(.autocomplete-list-item) {
+                        :global(.logo) {
+                            @media screen and (max-width: 768px) {
+                                display: none;
+                            }
+                        }
+                    }
 
-            #search {
-                width: 80%;
-                line-height: 2;
+                    @media screen and (max-width: 550px) {
+                        min-width: 90vw;
+                        top: 100%;
+                        right: -70px;
+                        position: absolute;
+                    }
+                    
+                }
+                /*:global(.autocomplete-input) {
+                    border: none;
+                    border-radius: 0;
+                    border-bottom: 1px solid #ccc;
+                    padding: 0;
+                    font-size: 1.2em;
+                    :global(.autocomplete-input-icon) {
+                        display: none;
+                    }
+                }*/
             }
 
             /*.menu {}

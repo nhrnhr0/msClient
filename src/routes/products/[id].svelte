@@ -7,7 +7,6 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "./../../api/consts";
 
 
     export async function load({page, fetch, session, contex}) {
-        debugger;
         console.log(page);
         console.log("load", page.params);
         let url = PRODUCTS_API_URL + page.params.id + "/";

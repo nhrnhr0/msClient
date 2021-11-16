@@ -141,7 +141,6 @@ import { logStore } from "../stores/logStore";
     
     let onLoadTask = sessionStorage.getItem('onLoadTask');
     if(onLoadTask) {
-      debugger;
       onLoadTask = JSON.parse(onLoadTask);
       if (onLoadTask.type == 'product') {
         let prodId = onLoadTask.data.id;

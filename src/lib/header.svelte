@@ -12,9 +12,37 @@
 
 <div class="header-2">
     <div class="header-image">
+        <!--
         <img class="class-bg-image"
-            width="1024px" height="334px" src="https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634462230/msAssets/bg_ppl_img_pwk06i"
+            height="334px" style="max-height:334px" src="https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_auto/v1634462230/msAssets/bg_ppl_img_pwk06i"
             alt="אמ. אס גלובל נשמח לעמוד לשירותכם">
+            -->
+            <picture class="class-bg-image" stlye="border:1px solid red;">
+                <source
+                media="(max-width: 767px)"
+                sizes="(max-width: 334px) 100vw, 334px"
+                srcset="
+                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_200/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 200w,
+                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_334/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 334w">
+                <source
+                media="(min-width: 768px) and (max-width: 991px)"
+                sizes="(max-width: 636px) 70vw, 445px"
+                srcset="
+                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_445/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 445w">
+                <source
+                media="(min-width: 992px) and (max-width: 1199px)"
+                sizes="(max-width: 988px) 60vw, 593px"
+                srcset="
+                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_596/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 596w,
+                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_593/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 593w">
+                <img
+                sizes="(max-width: 2560px) 40vw, 1024px"
+                srcset="
+                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_480/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 480w,
+                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_1024/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 1024w"
+                src="https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_1024/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg"
+                alt="">
+                </picture>
         <div class="content">
             <div class="title">
                 נשמח לעמוד לשירותכם
@@ -57,7 +85,14 @@
             position: relative;
 
             .class-bg-image {
-                width: 100%;
+                width: 100vw;
+                border:1px solid red;
+                img {
+                    width: 100%;
+                    height: auto;
+                    max-width: 100%;
+                    max-height: 334px;
+                }
             }
 
             .content {
@@ -87,7 +122,7 @@
             @media screen and (max-width:500px) {
                 .content {
                     .title {
-                        font-size: 35px;
+                        font-size: 40px;
                     }
                 }
             }

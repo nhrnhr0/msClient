@@ -18,10 +18,13 @@ export function flyToCart(item) {
     clone.style.zIndex = (get(_modal_z_index_incrementor) + 50) + '00';
     clone.style.opacity = '1';
     let cart = document.querySelector('#cart-btn');
-    document.body.appendChild(clone);
+    document.querySelector('#main_wraper').appendChild(clone);
     let cartRect = cart.getBoundingClientRect();
     let cartOffsetTop   = cartRect.top - bodyRect.top;
     let cartOffsetLeft   = cartRect.left - bodyRect.left;
+    if(offsetLeft < 0){
+        offsetLeft = 0;
+    }
     clone.animate(
         [
             {

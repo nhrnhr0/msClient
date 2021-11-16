@@ -87,6 +87,19 @@ import { logStore } from "./../../stores/logStore";
                 uuid: get_user_uuid() || '',
                 products: Object.keys($cartStore),
             };
+            logStore.addLog(
+                            {
+                                'a': 'שליחת הזמנה',
+                                't': 'submit order',
+                                'f': {
+                                    'type': 'cart',
+                                },
+                                'w':{
+                                    'type':'order',
+                                    'data':data,
+                                }
+                            }
+                            );
             let response = submit_cart_form(data);
             response.then((data_json)=> {
                 
@@ -118,7 +131,7 @@ import { logStore } from "./../../stores/logStore";
                         {#if $userInfoStore.isLogin}
                         <Card>
                             <CardHeader>
-                            <CardTitle>פרטי עסק</CardTitle>
+                            <CardTitle>פרטי העסק</CardTitle>
                             </CardHeader>
                             <CardBody>
                             <CardText>
@@ -129,8 +142,8 @@ import { logStore } from "./../../stores/logStore";
                                     </div>
                                 </div>
                                 <div class="info">
-                                    <div class="info-title">מייל</div>
-                                    <div class="info-res">
+                                    <div class="info-title">אימייל</div>
+                                    <div class="info-res" style="direction:ltr">
                                         <input disabled value={$userInfoStore.me['email']}/>
                                     </div>
                                 </div>
@@ -146,14 +159,19 @@ import { logStore } from "./../../stores/logStore";
                         
                             
                         {/if}
-                        <form bind:this={mform} method="POST" action="{SUBMIT_CART_URL}" >
-                            <div class="form-control"><input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="שם:" type="text"></div>
-                            <div class="form-control"><input bind:value="{form_email}" name="email" placeholder="אימייל:" type="email"></div>
-                            <div class="form-control"><input bind:value="{form_phone}" name="tel" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="טלפון:" type="tel"></div>
-                            <div class="form-control">
-                                <button class="send-btn" on:click|preventDefault="{cart_submit}">שלח</button>
-                            </div>
-                        </form>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>פרטי השולח (לא חובה)</CardTitle>
+                            </CardHeader>
+                            <form bind:this={mform} method="POST" action="{SUBMIT_CART_URL}" >
+                                <div class="form-control"><input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="שם:" type="text"></div>
+                                <div class="form-control"><input bind:value="{form_email}" name="email" placeholder="אימייל:" type="email"></div>
+                                <div class="form-control"><input bind:value="{form_phone}" name="tel" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="טלפון:" type="tel"></div>
+                                <div class="form-control">
+                                    <button class="send-btn" on:click|preventDefault="{cart_submit}">שלח</button>
+                                </div>
+                            </form>
+                        </Card>
                     {/if}
                 </div>
                 <div class="cart-products">
@@ -257,6 +275,12 @@ import { logStore } from "./../../stores/logStore";
                     align-items: center;
                     //overflow-y: scroll;
                     height: 100%;
+                    @media screen and (max-width: 1000px) {
+                        flex-direction: column;
+                    }
+                    @media screen and (max-width: 870px) {
+                            flex-direction: column-reverse;
+                        }
                     .cart-info {
                         flex: 1;
                         align-self: flex-start;
@@ -267,6 +291,16 @@ import { logStore } from "./../../stores/logStore";
                         display: flex;
                         flex-direction: column;
                         justify-content: space-evenly;
+
+                        @media screen and (max-width: 1000px) {
+                            
+                            flex-direction: row;
+                            width: 100%;
+                        }
+                        @media screen and (max-width: 870px) {
+                            flex-direction: column;
+                            
+                        }
                         .form-control {
                             display: flex;
                             justify-content: center;

@@ -149,7 +149,6 @@ import { logStore } from './../../stores/logStore';
 
                     }else if(target.classList.contains('like-btn-wraper')) {
                         //$cartStore[target.dataset.productId] = get_product_by_id(target.dataset.productId);
-                        debugger;
                         // get the image closest to the target
                         flyToCart(target.parentElement.querySelector('.product-image'));
                         let currentProduct = get_product_by_id(target.dataset.productId);
@@ -266,6 +265,26 @@ on:change={(event) => {
                     "modifier": 1,
                     "slideShadows": false
                   }}'
+                  breakpoints='{{
+                        "220": {
+                            "slidesPerView": 1.4,
+                        },
+                        "400": {
+                            "slidesPerView": 2,
+                        },
+                        "600": {
+                            "slidesPerView": 3,
+                        },
+                        "870": {
+                            "slidesPerView": 3.3,
+                        },
+                        "960": {
+                            "slidesPerView": 4,
+                        },
+                        "1100": {
+                            "slidesPerView": 5,
+                        }
+                    }}'
                   pagination="{true}" 
                   navigation="{true}"
                   on:realIndexChange={(event) => {

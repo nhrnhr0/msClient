@@ -114,7 +114,6 @@ import {Event} from '$lib/utils/js/Event'
   }
 
   function prevClick() {
-    debugger;
     let old_product = {'type':'product', 'id':$productData.id, 'ti': $productData.title}
     let newProductObj;
     for (let i = 0; i < all_products_in_category.length; i++) {
@@ -154,7 +153,6 @@ import {Event} from '$lib/utils/js/Event'
     }*/
     
 
-    debugger; 
     logStore.addLog(
                             {
                                 'a': 'פתיחת קטגוריה ממודל מוצר',
@@ -207,7 +205,7 @@ import {Event} from '$lib/utils/js/Event'
           zoom: 1.5,
           
       });
-    },50);
+    },0);
     isLoaded = true;
 
 
@@ -540,16 +538,24 @@ import {Event} from '$lib/utils/js/Event'
   display: flex;
   flex-direction: column;
   max-height: fit-content;
+  @media screen and (max-width: 768px) {
+    width: 94%;
+    height: 85%;
+  }
   .modal-header {
     height: 50px;
   }
   .modal-body {
       //background-color: rgba(255, 255, 255, 0.6);
       //background-blend-mode: lighten;
-        min-height: 60vh;
+        min-height: 63vh;
         width: 100%;
         max-width: initial!important;
         position: relative;
+        @media screen and (max-width: 1100px) {
+          overflow-y: auto;
+          
+        }
 
         .magnifier-preview-wraper {
           position: absolute;
@@ -570,29 +576,63 @@ import {Event} from '$lib/utils/js/Event'
           height: auto;
         display: flex;
         flex-direction: row;
+        @media screen and (max-width: 1100px) {
+          position: relative;
+          overflow: unset;
+        }
+        @media screen and (max-width: 500px) {
+          flex-direction: column-reverse;
+        }
+          
+        
 
 
         .product-detail {
+          .product-title {
+            font-size: 2em;
+            font-weight: bolder;
+            }
           overflow-y: scroll;
             //padding-right: 5px;
             flex: 1;
             min-width: 35%;
             padding-left: 10px;
-
-            .product-title {
-            font-size: 2em;
-            font-weight: bolder;
+            @media screen and (max-width: 1100px) {
+              flex:3;
+              padding-left: 10px;
+              overflow-y: scroll;
             }
+            @media screen and (max-width: 550px) {
+              flex:2;
+              padding-left: 10px;
+              overflow-y: scroll; 
+              .product-title {
+                font-size: 1.7em;
+              }
+            }
+
+
+            
 
             .product-description {
             overflow-y: auto;
             font-size: 1.3em;
             font-weight: bold;
+            @media screen and (max-width: 1100px) {
+              font-size: 1.2em;
+              
+            }
+            @media screen and (max-width: 800px) {
+              font-size: 1.3em;
+              position: absolute;
+              top:100%;
+            }
             }
 
             .product-properties {
               display: flex;
               flex-direction: column;
+              padding-left: 10px;
               .product-color-wraper {
               .product-color {
                   display: flex;
@@ -600,14 +640,19 @@ import {Event} from '$lib/utils/js/Event'
                   justify-content: flex-start;
                   flex-grow: 1;
                   flex-shrink: 0;
+                  flex-wrap: wrap;
 
                   :global(.color-box) {
-                    margin: 3px;
+                    margin: minmax(3px auto);
                     max-width: 25px;
                     flex: 1;
                     height: 25px;
                     border: 1px black solid;
                     border-radius: 50%;
+                    flex-shrink: 1;
+                    
+                    flex-grow: 1;
+                    margin:1%;
 
                     &:hover {
                         border: 2px red solid;
@@ -628,10 +673,12 @@ import {Event} from '$lib/utils/js/Event'
                   :global(.size-box) {
                       flex: 1;
                       border: 1px black solid;
-                      margin: 3px;
-                      min-width: 30px;
                       text-align: center;
                       font-weight: 700;
+                      
+                      flex-grow: 1;
+                      margin:1%;
+
 
                       &:hover {
                       background-color: #3D3D3D;
@@ -646,10 +693,13 @@ import {Event} from '$lib/utils/js/Event'
 
         .img-wraper {
             flex: 1;
+            @media screen and (max-width: 1100px) {
+              flex:2;
+            }
             cursor: pointer;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             .img-inner-wraper{
               position: relative;
             }
@@ -663,6 +713,13 @@ import {Event} from '$lib/utils/js/Event'
               
               width: auto;
               height: 100%;
+              @media screen and (max-width: 1100px) {
+                width: 100%;
+                height: auto;
+                max-width: 100%;
+                max-height: 100%;
+              }
+                
               
             }
         }
