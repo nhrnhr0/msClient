@@ -58,14 +58,37 @@
 			}
 		};
   }
-  
+  const meta_data = {
+    title: 'M.S. Global',
+    description: `מתמחה באספקת מגוון רחב של מוצרים למוסדות ולחנויות ברחבי הארץביגוד • הנעלה • הלבשה תחתונה • טקסטיל לבית • תיקים ופאוצ'ים • משק בית • חשמל לבית • כלי מטבח • משחקים וצעצועים • תחזוקה לבית • ספורט • גאדג'טים ועוד...`,
+    keywords: `ביגוד • הנעלה • הלבשה תחתונה • טקסטיל לבית • תיקים ופאוצ'ים • משק בית • חשמל לבית • כלי מטבח • משחקים וצעצועים • תחזוקה לבית • ספורט • גאדג'טים ועוד...`,
+    image: 'https://res.cloudinary.com/ms-global/image/upload/v1635432768/msAssets/global_favicon_mtnlkz.png',
+  }
 </script>
 
 
 
 
 <svelte:head>
-	<title>M.S. Global</title>
+        <title>{meta_data.title}</title>
+        <link rel="icon" href="https://res.cloudinary.com/ms-global/image/upload/v1635432768/msAssets/global_favicon_mtnlkz.png" />
+        <meta name="title" content="{meta_data.title}">
+        <meta name="description" content="{meta_data.description}">
+        <meta name="keywords" content="{meta_data.keywords}" />
+
+
+        <meta property="og:title" content="{meta_data.title}" />
+        <meta property="og:description" content={meta_data.description} />
+        <meta property="og:image" content={meta_data.image} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="M.S. Global" />
+        <meta property="og:locale" content="IL" />
+
+            <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="{meta_data.title}">
+    <meta property="twitter:description" content="{meta_data.description}">
+    <meta property="twitter:image" content="{meta_data.image}">
 </svelte:head>
 <svelte:window bind:scrollY={y_scroll}/>
 <Header />

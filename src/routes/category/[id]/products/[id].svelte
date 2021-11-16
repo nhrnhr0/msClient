@@ -44,7 +44,6 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
     <title>{data?.title}</title>
     <meta name="title" content="{data?.title}">
     <meta name="description" content="{data?.description}">
-    <meta name="description" content={data?.description} />
     <meta name="keywords" content={data?.keywords} />
 
 
