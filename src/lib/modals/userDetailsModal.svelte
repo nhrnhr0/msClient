@@ -92,9 +92,11 @@ import { onDestroy } from 'svelte';
     <div style="z-index: {modal_zIndex+10};" class="modal_content">
         {#if $userInfoStore.isLogin }
             <div class="modal-header">
+                <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
                 <h1> 
                     שלום {$userInfoStore.me['businessName']}
                 </h1>
+                <button title="Close" on:click={toggleModal} class="close-btn left">x</button>
             </div>
 
             <div class="modal-body">
@@ -189,8 +191,6 @@ import { onDestroy } from 'svelte';
             <div class="modal-fotter">
 
             </div>
-            <button title="Close" on:click={toggleModal} class="close_modal">x</button>
-            <button title="Close" on:click={toggleModal} class="close_modal left">x</button>
         {/if}
 
     </div>

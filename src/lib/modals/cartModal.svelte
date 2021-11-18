@@ -118,7 +118,9 @@ import { logStore } from "./../../stores/logStore";
     <div class="overlay" style="z-index: {modal_zIndex+5};" on:click={toggleModal}></div>
     <div class="modal_content" style="z-index: {modal_zIndex+10};">
         <div class="modal-header">
+            <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
             <h1>מוצרים שאהבתי</h1>
+            <button title="Close" on:click={toggleModal} class="close-btn left">x</button>
         </div>
         
         <div class="modal-body">
@@ -201,8 +203,6 @@ import { logStore } from "./../../stores/logStore";
         </div>
         <div class="modal-footer"></div>
         <!-- End of Dynamic Section -->
-        <button title="Close" on:click={toggleModal} class="close_modal">x</button>
-        <button title="Close" on:click={toggleModal} class="close_modal left">x</button>
 
     </div>
 </div>
@@ -259,6 +259,10 @@ import { logStore } from "./../../stores/logStore";
     #cartModal {
         .modal_content {
             .modal-header {
+                padding:0px;
+                .close-btn {
+
+                }
                 h1 {
                     text-align: center;
                     margin: auto;

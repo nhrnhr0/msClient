@@ -134,7 +134,7 @@ import { logStore } from "./../stores/logStore";
     <div class="container-fluid">
         <!-- svelte-ignore a11y-invalid-attribute -->
         <a class="navbar-logo" href="javascript:window.location.href=window.location.href" aria-label="logo" role="button"><img class="nav-logo" width="100px" height="40px"
-                src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
+                src="https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634457672/msAssets/favicon_rza3n9"
                 alt=""></a>
 
                 
@@ -327,7 +327,7 @@ import { logStore } from "./../stores/logStore";
         .nav-logo {
             width: auto;
             height: 40px;
-            @media screen and (max-width: 768px) {
+            @media screen and (max-width: 800px) {
                 display: none;
             }
         }

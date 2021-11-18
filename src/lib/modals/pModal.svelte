@@ -293,9 +293,11 @@ import {Event} from '$lib/utils/js/Event'
   {#if isLoaded && isModalOpen && $productData && $productData.cimage}
         <div style="z-index: {modal_zIndex+10};" class="modal_content">
             <div class="modal-header">
+              <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
                 <button id="category-open-btn-{$current_album.id}" on:click={open_category}
                         class="title btn btn-outline-dark">{$current_album.title}
                     </button>
+                    <button title="Close" on:click={toggleModal} class="close-btn left">x</button>
             </div>
 
             <div class="modal-body">
@@ -354,6 +356,7 @@ import {Event} from '$lib/utils/js/Event'
                         {/if}
                       </div>
                       <div class="text">
+                        
                         {#if $cartStore[_productId] != undefined}
                           נוסף
                         {:else}
@@ -370,9 +373,12 @@ import {Event} from '$lib/utils/js/Event'
     {:else}
     <div style="z-index: {modal_zIndex+10};" class="modal_content">
       <div class="modal-header">
+        <button title="Close" on:click={toggleModal} class="close-btn">x</button>
           <button
                   class="title btn btn-outline-dark">{loadingText}
               </button>
+          <button title="Close" on:click={toggleModal} class="close-btn">x</button>
+            
       </div>
 
       <div class="modal-body">
@@ -583,6 +589,28 @@ import {Event} from '$lib/utils/js/Event'
   }
   .modal-header {
     height: 50px;
+    padding:0px;
+    .close-btn {
+      flex:1;
+      
+      flex-grow: 0;
+      flex-shrink: 1;
+      font-weight: bolder;
+      border: none;
+      background: none;
+      font-size: 2rem;
+      &:hover,&:focus {
+        color:red;
+      }
+      &.left {
+        padding-right:4%;
+        padding-left: 2%;
+      }
+      &.right {
+        padding-left:4%;
+        padding-right: 2%;
+      }
+    }
   }
   .modal-body {
       //background-color: rgba(255, 255, 255, 0.6);

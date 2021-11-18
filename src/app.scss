@@ -244,24 +244,26 @@ button:focus:not(:focus-visible) {
 }
 
 
-.modal .close_modal {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  cursor: pointer;
-  font-size: 18px;
-  opacity: 0.5;
-  background: none;
+.close-btn {
+  flex:1;
+  border-radius: 999999px;
+  flex-grow: 0;
+  flex-shrink: 1;
+  font-weight: bolder;
   border: none;
-  transition: opacity 0.2s ease;
-  &.left {
-    right: auto!important;;
-    left:10px;
+  background: none;
+  font-size: 2rem;
+  &:hover,&:focus {
+    color:red;
   }
-}
-
-.modal .close_modal:hover {
-  opacity: 0.9;
+  &.left {
+    padding-right:7%;
+    padding-left: 2%;
+  }
+  &.right {
+    padding-left:7%;
+    padding-right: 2%;
+  }
 }
 
 

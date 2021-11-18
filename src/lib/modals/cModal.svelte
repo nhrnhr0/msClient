@@ -149,6 +149,7 @@ import { logStore } from './../../stores/logStore';
   <div class="overlay" style="z-index: {modal_zIndex+5};" on:click={toggleModal}></div>
   <div class="modal_content" style="z-index: {modal_zIndex+10};">
     <div class="modal-header">
+      <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
       <h5 class="modal-title">{$current_album.title}</h5>
 
       <div class="modal-header-links">
@@ -170,7 +171,7 @@ import { logStore } from './../../stores/logStore';
               </DropdownItem>        
             {/each}
           </DropdownMenu>
-      </Dropdown>
+        </Dropdown>
         <!--
         <nav class="navbar navbar-expand">
           <div class="container-fluid">
@@ -198,6 +199,8 @@ import { logStore } from './../../stores/logStore';
         </nav>
         -->
       </div>
+      
+      <button title="Close" on:click={toggleModal} class="close-btn left">x</button>
     </div>
     <div class="modal-body" bind:this={modal_body}>
 
@@ -236,6 +239,10 @@ import { logStore } from './../../stores/logStore';
         <div  on:click={likeBtnClicked} data-img={JSON.stringify(img)} class="like-btn-wraper">
           <button  id="categoryModalLikeBtn" class:active={$cartStore[img.id] != undefined} class="like-btn">
             <div class="img-wraper">
+              <div class="btn-product-title">
+                          {img.title}
+              </div>
+              <div class="action">
               {#if $cartStore[img.id] != undefined}
                   <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
                   <div class="text">
@@ -247,6 +254,7 @@ import { logStore } from './../../stores/logStore';
                     הוסף
                   </div>
               {/if}
+            </div>
             </div>
             
           </button>
@@ -294,8 +302,7 @@ import { logStore } from './../../stores/logStore';
 
     
     <!-- End of Dynamic Section -->
-    <button title="Close" on:click={toggleModal} class="close_modal">x</button>
-    <button title="Close" on:click={toggleModal} class="close_modal left">x</button>
+    
 
   
   
@@ -312,11 +319,13 @@ import { logStore } from './../../stores/logStore';
 
 
 <style lang="scss">
-      
+
       .like-btn-wraper{
         display: flex;
         justify-content: center;
         align-items: center;
+        flex:1;
+        
       &:hover {
           & .like-btn:not(.active) .text::after {
             //content: ' להצעת מחיר'
@@ -364,10 +373,37 @@ import { logStore } from './../../stores/logStore';
           display: inline-flex;
           justify-content: center;
           align-items: center;
+          flex-direction: column;
+          @media (hover: hover) {
+            .btn-product-title {
+              display:none;
+            }
+          }
           img {
             width:40px;
             height: 40px;
           }
+          .btn-product-title {
+            font-size: 1.5em;
+            //text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: normal;
+            word-break: break-all;
+            
+            width: auto;
+            height: 1.5em; 
+            
+            
+            
+          }
+          .action {
+            .text {
+              display: inline-block;
+              font-size: 1em;
+              
+            }
+          }
+          
         }
         
       }
@@ -384,10 +420,18 @@ import { logStore } from './../../stores/logStore';
 /* Modal */
 
 .modal .modal_content {
+  .modal-title {
+      font-size: 1.5em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   .modal-header {
-    justify-content: space-around;
+    justify-content: space-between;
+    
     
     .modal-header-links {
+      flex:4;
       
       :global(.category-menu) {
         :global(.dropdown-menu.show) {
@@ -407,6 +451,10 @@ import { logStore } from './../../stores/logStore';
         }
       }
     }
+    h5 {
+      flex:4;
+    }
+
   }
   overscroll-behavior: contain;
   display: flex;
@@ -417,13 +465,13 @@ import { logStore } from './../../stores/logStore';
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  max-height: 99%;
-  height: 99%;
+  max-height: 90%;
+  height: 90%;
   overflow: auto;
   background: #fff;
   box-shadow: 0 1px 5px rgba(0,0,0,0.7);
   border-radius: 4px;
-  width: 99%;
+  width: 90%;
   text-align: center;
   
   .modal-body{
@@ -446,8 +494,12 @@ import { logStore } from './../../stores/logStore';
     .category-item {
       cursor: pointer;
       padding: 5px;
-
+      flex:1;
+      flex-grow: 0;
+      flex-shrink: 1;
       .category-item-img-wraper {
+        
+
         &:hover {
           background-color: black;
           transform: scale(1.0);
@@ -492,6 +544,7 @@ import { logStore } from './../../stores/logStore';
             //transform: translate(-50%, -80%);
             font-weight: 700;
           }
+          
         }
       }
 
@@ -520,6 +573,7 @@ import { logStore } from './../../stores/logStore';
         top: 50%;
         text-align: center;
         width: 100%;
+      
       }
     }
   }
@@ -540,6 +594,7 @@ import { logStore } from './../../stores/logStore';
     .modal-title {
       font-weight: 700;
       font-size: xx-large;
+      
     }
     @media screen and (max-width: 600px) {
       padding:0px;
@@ -554,19 +609,5 @@ import { logStore } from './../../stores/logStore';
 }
 
 
-.modal .close_modal {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  cursor: pointer;
-  font-size: 18px;
-  opacity: 0.5;
-  background: none;
-  border: none;
-  transition: opacity 0.2s ease;
-}
 
-.modal .close_modal:hover {
-  opacity: 0.9;
-}
 </style>
