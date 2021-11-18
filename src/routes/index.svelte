@@ -8,6 +8,7 @@
   import {getCookie} from '$lib/utils/cookies';
 
   export async function load({fetch, page}) {
+    console.log('load: ', page, page.path);
     //const qs = browser ? document.location.search : '';
     //const query = new URLSearchParams(qs);
     //const productQuery = (query.get('product') || '-1');
@@ -148,6 +149,13 @@ import { logStore } from "../stores/logStore";
   
 
   onMount(()=> {
+    debugger;
+    console.log('protocol: ', location.protocol);
+    if (location.protocol !== 'https:' && import.meta.env.PROD) {
+      // page is secure
+      //location.replace(`https:${location.href.substring(location.protocol.length)}`);
+
+    }
     /*window.onpopstate = function(event) {
       alert("location: " + document.location + ", state: " + JSON.stringify(event.state));
     };*/
