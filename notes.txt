@@ -4,3 +4,7 @@ Copy-item -Force -Recurse -Verbose .\build\* -Destination .\msClientBuild\
 
 # STAGE SETUP - copy from build to msClientBuildTest
 Copy-item -Force -Recurse -Verbose .\build\* -Destination .\msClientBuildTest\
+cd msClientBuildTest/
+git add .
+git commit -m "deploy"
+git push
