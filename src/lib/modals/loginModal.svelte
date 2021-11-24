@@ -42,7 +42,7 @@ import { request_login, request_whoAmI } from './../../api/auth'
     export function isOpen() {
         return isModalOpen;
     }
-
+    let show_password = false;
 </script>
 
 
@@ -58,7 +58,14 @@ import { request_login, request_whoAmI } from './../../api/auth'
         <div class="modal-body">
             <form action="" method="POST">
                 <Input name="username" bind:value={username} placeholder="שם משתמש" type="text" />
-                <Input name="password" data="current-password" bind:value={password} placeholder="סיסמא" type="password" />
+                <Input name="password" data="current-password" bind:value={password} placeholder="סיסמא" type="{show_password?'text': 'password'}" />
+                <!-- checkbox to show password when typing -->
+                <div class="checkbox form-control">
+                    <label>
+                        <input type="checkbox" style="width: 20px;height: 20px;" bind:checked="{show_password}" />
+                        הצג סיסמא
+                    </label>
+                </div>
                 <button class="btn btn-dark" on:click|preventDefault={login}>התחבר</button>
                 <div>{error_detail}</div>
             </form>

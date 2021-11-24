@@ -47,7 +47,9 @@ CLOUDINARY_URL
     <div style="z-index: {modal_zIndex+5};" class="overlay" on:click={toggleModal}></div>
     <div style="z-index: {modal_zIndex+10};" class="modal_content">
         <div class="modal-header">
+            <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
             <h1>{product['title']}</h1>
+            <button title="Close" on:click={toggleModal} class="close-btn left">x</button>
         </div>
 
         <div class="modal-body">
@@ -72,8 +74,6 @@ CLOUDINARY_URL
         <div class="modal-fotter">
 
         </div>
-        <button title="Close" on:click={toggleModal} class="close_modal">x</button>
-        <button title="Close" on:click={toggleModal} class="close_modal left">x</button>
 
 
     </div>

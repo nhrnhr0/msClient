@@ -13,6 +13,7 @@
     //const query = new URLSearchParams(qs);
     //const productQuery = (query.get('product') || '-1');
     //const categoryQuery = query.get('category');
+    console.log('getting: ', ALBUMS_API_URL);
     let albums_response = await fetch(ALBUMS_API_URL, { method: 'GET', redirect: 'follow'});
     let albums_json = await albums_response.json();
     albums_json = albums_json.filter(album => album.is_public)

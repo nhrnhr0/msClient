@@ -328,8 +328,8 @@ import {Event} from '$lib/utils/js/Event'
                     "
                     >
                       <div class="img-inner-wraper">
-                      <img class:loaded={is_image_loaded} on:load={()=>{is_image_loaded = true}} on:error={()=>{is_image_loaded = false}} class="product-modal-img" on:click={openProductImageModal} alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
-                        data-large-img-url="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
+                      <img class:loaded={is_image_loaded} on:load={()=>{is_image_loaded = true}} on:error={()=>{is_image_loaded = false}} class="product-modal-img" on:click={openProductImageModal} alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"
+                        data-large-img-url="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"
                         data-large-img-wrapper="preview"
                         />
                     </div>

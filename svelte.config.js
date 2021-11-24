@@ -11,7 +11,7 @@ console.log('===================================================================
 console.log('======================================================================================');
 console.log(import.meta.env);
 console.log('======================================================================================');
-console.log(process.env['ASSETS_BASE_URL']);
+//console.log(process.env['ASSETS_BASE_URL']);
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   kit: {
