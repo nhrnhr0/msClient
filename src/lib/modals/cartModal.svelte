@@ -34,8 +34,9 @@ import { logStore } from "./../../stores/logStore";
         
         let item = $cartStore[key];
         let swiper = $all_swipers[item.albums[0]];
-        delete $cartStore[key];
-        $cartStore =$cartStore;
+        //delete $cartStore[key];
+        cartStore.removeFromCart(item);
+        //$cartStore =$cartStore;
         swiper.fixDups();
         logStore.addLog(
                             {
@@ -105,7 +106,8 @@ import { logStore } from "./../../stores/logStore";
                     if(data_json['status'] == 'success') {
                         $cartModalStore.toggleModal();
                         $successModalStore.toggleModal();
-                        $cartStore = {};
+                        //$cartStore = {};
+                        cartStore.clearCart();
                     }
                 
             });

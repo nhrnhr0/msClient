@@ -163,11 +163,7 @@ import { logStore } from './../../stores/logStore';
                         if(cartStore.isInCart(currentProduct) == false) {
                             flyToCart(target.parentElement.querySelector('.product-image'));
                             cartStore.addToCart(currentProduct);
-                        }else {
-                            cartStore.removeFromCart(currentProduct);
-                        }
-                        copySwiperduplicates(E);
-                        logStore.addLog(
+                            logStore.addLog(
                             {
                                 'a': 'הוסף לעגלה מסליידר',
                                 't': 'add to cart',
@@ -183,6 +179,27 @@ import { logStore } from './../../stores/logStore';
                                 }
                             }
                             );
+                        }else {
+                            cartStore.removeFromCart(currentProduct);
+                            logStore.addLog(
+                            {
+                                'a': 'הסר מהעגלה מסליידר',
+                                't': 'remove from cart',
+                                'f': {
+                                    'type':'slider',
+                                    'id':album.id,
+                                    'ti':album.title
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':target.dataset.productId,
+                                    'ti':currentProduct.title, 
+                                }
+                            }
+                            );
+                        }
+                        copySwiperduplicates(E);
+                        
                         //$cart = $cart;
                         //console.log('cart: ', $cartStore);
                     }

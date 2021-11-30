@@ -101,10 +101,10 @@ import { logStore } from './../../stores/logStore';
   function likeBtnClicked(e) {
     let img = e.currentTarget.parentElement.querySelector('.product-image');
     let imgData = JSON.parse(e.currentTarget.dataset["img"]);
-    flyToCart(img);
-    $cartStore[imgData.id] = imgData;
-    
-    logStore.addLog(
+    if(cartStore.isInCart(imgData) == false) {
+      cartStore.addToCart(imgData);
+      flyToCart(img);
+      logStore.addLog(
                             {
                                 'a': 'הוסף לעגלה ממודל קטגוריה',
                                 't': 'add to cart',
@@ -120,6 +120,31 @@ import { logStore } from './../../stores/logStore';
                                 }
                             }
                             );
+    }
+    else {
+      cartStore.removeFromCart(imgData);
+      logStore.addLog(
+                            {
+                                'a': 'הסר מהעגלה ממודל קטגוריה',
+                                't': 'remove from cart',
+                                'f': {
+                                    'type':'category',
+                                    'id':$current_album.id,
+                                    'ti':$current_album.title
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':imgData.id,
+                                    'ti':imgData.title, 
+                                }
+                            }
+                            );
+    }
+    
+    //flyToCart(img);
+    //$cartStore[imgData.id] = imgData;
+    
+    
   }
 
 

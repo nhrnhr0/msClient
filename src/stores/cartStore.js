@@ -16,28 +16,31 @@ const createCartStore = () => {
           let cart = get(this);
           delete cart[product.id];
           set(cart);
-      },
-      addToCart: function(product) {
-        debugger;
-        const store = get(this);
-        let exist = false;
-        if(product && product.id) {
-          if(store[product.id]) {
-            exist = true;
-          } else {
-            store[product.id] = product;
-            set(store);
+        },
+        addToCart: function(product) {
+          debugger;
+          const store = get(this);
+          let exist = false;
+          if(product && product.id) {
+            if(store[product.id]) {
+              exist = true;
+            } else {
+              store[product.id] = product;
+              set(store);
+            }
+            return exist;
           }
-          return exist;
+        },
+        isInCart: function(product) {
+          const store = get(this);
+          if(product && product.id) {
+            return store[product.id] ? true : false;
+          }
+          return false;
+        },
+        clearCart: function() {
+          set({});
         }
-      },
-      isInCart: function(product) {
-        const store = get(this);
-        if(product && product.id) {
-          return store[product.id] ? true : false;
-        }
-        return false;
-      }
     }
   }
 

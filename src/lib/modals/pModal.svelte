@@ -259,13 +259,12 @@ import {Event} from '$lib/utils/js/Event'
 
   function likeBtnClicked() {
     console.log('like btn clicked');
-    flyToCart(document.querySelector('.product-modal-img'))
-    $cartStore[_productId] = $productData;
-    
-    
-    logStore.addLog(
+    if(cartStore.isInCart($productData) == false) {
+      flyToCart(document.querySelector('.product-modal-img'));
+      logStore.addLog(
                             {
                                 'a': 'הוסף לעגלה ממודל מוצר',
+                                't': 'add to cart',
                                 'f': {
                                   'type':'product',
                                     'id':$productData.id,
@@ -278,6 +277,31 @@ import {Event} from '$lib/utils/js/Event'
                                 }
                             }
                             );
+      cartStore.addToCart($productData);
+    }else {
+      cartStore.removeFromCart($productData);
+      logStore.addLog(
+                            {
+                                'a': 'הסר מעגל ממודל מוצר',
+                                't': 'remove from cart',
+                                'f': {
+                                  'type':'product',
+                                    'id':$productData.id,
+                                    'ti':$productData.title, 
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':$productData.id,
+                                    'ti':$productData.title, 
+                                }
+                            }
+                            );
+    }
+    
+    //$cartStore[_productId] = $productData;
+    
+    
+    
   }
   let is_under_500px = ()=> { return window && window.matchMedia && window.matchMedia("(max-width:500px)").matches;}
 
