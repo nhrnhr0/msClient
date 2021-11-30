@@ -119,6 +119,7 @@
 
 <ContentForm></ContentForm>
 
+<link rel="preload" as="image" href="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png">
 
 <script>
 
@@ -150,16 +151,46 @@ import { logStore } from "../stores/logStore";
   
 
   onMount(()=> {
-    debugger;
     console.log('protocol: ', location.protocol);
     if (location.protocol !== 'https:' && import.meta.env.PROD) {
       // page is secure
       //location.replace(`https:${location.href.substring(location.protocol.length)}`);
 
     }
-    /*window.onpopstate = function(event) {
-      alert("location: " + document.location + ", state: " + JSON.stringify(event.state));
-    };*/
+    window.onpopstate = function(event) {
+      var pathArray = window.location.pathname.split('/');
+      let vals = {}
+      for(let i = 1; i < pathArray.length; i+=2) {
+        vals[pathArray[i]] = pathArray[i+1];
+      }
+      debugger;
+      let categoryId, productId;
+      if(vals.category) {
+        categoryId = vals.category;
+        let album = albums.filter(album => album.id == categoryId)[0];
+        $categoryModalStore.setAlbum(album,false);
+        if($categoryModalStore.isOpen() == false) {
+          $categoryModalStore.toggleModal(false);
+        }
+        if(vals.products) {
+          productId = vals.products;
+          $productModalStore.setProduct(categoryId, productId,false);
+          if($productModalStore.isOpen() == false) {
+            $productModalStore.toggleModal(false);
+          }
+        }
+      }
+      
+
+      if(productId == undefined && categoryId == undefined) {
+        if($categoryModalStore.isOpen()) {
+          $categoryModalStore.toggleModal(false);
+        }
+        if($productModalStore.isOpen()) {
+          $productModalStore.toggleModal(false);
+        }
+      }
+    };
     let csrf_response = request_csrf_token();
     /*csrf_response.then(response => {
       if($userInfoStore.isLogin == false && $userInfoStore.refresh != null) {

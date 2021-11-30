@@ -53,18 +53,22 @@ import {Event} from '$lib/utils/js/Event'
 
   let is_image_loaded = false;
   export function isOpen() {
+    debugger;
     return isModalOpen;
   }
 
   function getProduct() {
     return [_catalogId, _productId];
   }
-  export function setProduct(catalogId, productId) {
+  export function setProduct(catalogId, productId, push_url = true) {
+    debugger;
     isLoaded = false;
     is_image_loaded = false;
     //$stateQuery['product'] = catalogId + ',' + productId;
     
-    pushProductState(catalogId, productId);
+    if(push_url) {
+      pushProductState(catalogId, productId);
+    }
     _productId = productId;
     _catalogId = catalogId;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
@@ -145,15 +149,17 @@ import {Event} from '$lib/utils/js/Event'
   }
 
   function open_category() {
-
-    if ($categoryModalStore.isOpen()) {
+    debugger;
+    $categoryModalStore.setAlbum($current_album);
+    if ($categoryModalStore.isOpen() == false) {
       $categoryModalStore.toggleModal();
     }
-    $categoryModalStore.toggleModal();
-    $categoryModalStore.setAlbum($current_album);
-    /*if ($productModalStore.isOpen()) {
-      $productModalStore.toggleModal();
-    }*/
+    
+    
+
+    if ($productModalStore.isOpen()) {
+      $productModalStore.toggleModal(false);
+    }
     
 
     logStore.addLog(
@@ -238,13 +244,14 @@ import {Event} from '$lib/utils/js/Event'
   }
 
 
-  export function toggleModal() {
+  export function toggleModal(push_url=true) {
     console.log('product toggleModal');
     isModalOpen = !isModalOpen;
     if (isModalOpen == false) {
       //$stateQuery['product'] = -1;
-      
-      pushMainPage();
+      if(push_url) {
+        pushMainPage();
+      }
     }
 
   }

@@ -115,7 +115,6 @@ import { logStore } from './../../stores/logStore';
     }
 
     function swiperSlideClicked(E) {
-        debugger;
         let dont_open_modal = false;
         // don't open the modal if the user use 2 fingers to zoom on slider
         for(let i = 0; i < E.detail[0].length;i++) {
@@ -160,9 +159,13 @@ import { logStore } from './../../stores/logStore';
                     }else if(target.classList.contains('like-btn-wraper')) {
                         //$cartStore[target.dataset.productId] = get_product_by_id(target.dataset.productId);
                         // get the image closest to the target
-                        flyToCart(target.parentElement.querySelector('.product-image'));
                         let currentProduct = get_product_by_id(target.dataset.productId);
-                        $cartStore[target.dataset.productId]= currentProduct;
+                        if(cartStore.isInCart(currentProduct) == false) {
+                            flyToCart(target.parentElement.querySelector('.product-image'));
+                            cartStore.addToCart(currentProduct);
+                        }else {
+                            cartStore.removeFromCart(currentProduct);
+                        }
                         copySwiperduplicates(E);
                         logStore.addLog(
                             {

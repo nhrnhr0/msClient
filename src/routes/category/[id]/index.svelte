@@ -14,6 +14,7 @@ import { isNumeric } from "$lib/utils/utils";
             if(isNumeric(page.params.id)) {
                 let response = await fetch_wraper(url , {"method":"GET"}, fetch);
                 //console.log(response);
+                response.description = response.fotter.replace(/(\r\n|\n|\r)/gm, "");
                 return {
                     props: {
                         data: response,

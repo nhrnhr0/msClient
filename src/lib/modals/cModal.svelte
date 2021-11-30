@@ -26,12 +26,14 @@ CLOUDINARY_URL,
 Spinner
   } from 'sveltestrap';
 
-  let isModalOpen;
-  export function toggleModal() {
+  let isModalOpen = false;
+  export function toggleModal(push_url=true) {
     isModalOpen = !isModalOpen;
     if (isModalOpen == false) {
       //$stateQuery['category'] = '-1';
-      pushMainPage();
+      if(push_url) {
+        pushMainPage();
+      }
       
     }else {
       
@@ -53,7 +55,7 @@ import { logStore } from './../../stores/logStore';
   let fotter = '';
   let modal_zIndex = 0;
 
-  export function setAlbum(album) {
+  export function setAlbum(album, push_url=true) {
     current_album.set(album);
     desctiption = album.description;
     fotter = album.fotter;
@@ -61,7 +63,9 @@ import { logStore } from './../../stores/logStore';
     title = album.title;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
     //$stateQuery['category'] = album.id;
-    pushCategoryState(album.id);
+    if(push_url) {
+      pushCategoryState(album.id);
+    }
     setTimeout(()=> {
         modal_body.scrollTop = 0;
       },30);
