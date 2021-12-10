@@ -291,7 +291,7 @@ import { logStore } from "./../stores/logStore";
     .logo {
       //display: inline-block;
       height: 20px;
-      transform: translate(0, 25%);
+      //transform: translate(0, 25%);
       float: left;
     }
   }
