@@ -58,12 +58,13 @@ import { request_login, request_whoAmI } from './../../api/auth'
         <div class="modal-body">
             <form action="" method="POST">
                 <Input name="username" bind:value={username} placeholder="שם משתמש" type="text" />
-                <Input name="password" data="current-password" bind:value={password} placeholder="סיסמא" type="{show_password?'text': 'password'}" />
+                <Input name="password" data="current-password" bind:value={password} placeholder="סיסמא" type="{show_password?'text': 'password'}" />                 
                 <!-- checkbox to show password when typing -->
+                
                 <div class="checkbox form-control">
                     <label>
-                        <input type="checkbox" style="width: 20px;height: 20px;" bind:checked="{show_password}" />
                         הצג סיסמא
+                        <input type="checkbox" style="width: 20px;height: 20px;" bind:checked="{show_password}" />
                     </label>
                 </div>
                 <button class="btn btn-dark" on:click|preventDefault={login}>התחבר</button>
@@ -83,7 +84,7 @@ import { request_login, request_whoAmI } from './../../api/auth'
     #loginModal {
         
         .modal_content {
-            
+            max-width: 876px;
             //width: auto;
             .modal-header {
                 h1 {
@@ -94,22 +95,36 @@ import { request_login, request_whoAmI } from './../../api/auth'
                 min-height: 40vh;
                 width: auto;
                 
+                
                 display:flex;
                 justify-content: center;
                 align-items: center;
+                direction: ltr;
                 form {
                     
                     width:100%;
                     font-weight: 2rem;
-                    min-width: 40vw;
+                    //min-width: 40vw;
                     display: flex;
                     flex-direction: column;
+                    
                     margin:auto;
                     :global(.form-control) { 
                         line-height: 2;
-                        margin-bottom: 75px;
+                        margin-bottom: 25px;
                         font-size: 2rem;
-                        
+                        &::-webKit-input-placeholder { /* WebKit browsers */
+                            text-align: center;
+                        }
+                        &::-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+                            text-align: center;
+                        }
+                        &::-moz-placeholder { /* Mozilla Firefox 19+ but I'm not sure about working */
+                            text-align: center;
+                        }
+                        &:-ms-input-placeholder { /* Internet Explorer 10+ */
+                            direction: rtl;
+                        }
                     }
                     .btn {
                         line-height: 1;
