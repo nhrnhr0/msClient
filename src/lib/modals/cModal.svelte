@@ -325,7 +325,7 @@ import { logStore } from './../../stores/logStore';
     </div>
     <div class="modal-footer">
       <img class="header-logo header-logo-r" alt="M.S. Global" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" />
-      <h5 class="modal-title">{$current_album.title}</h5>
+      <h6 class="modal-title">{$current_album.title}</h6>
       <img class="header-logo header-logo-l" alt="M.S. Global" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" />
     </div>
 
@@ -616,13 +616,14 @@ import { logStore } from './../../stores/logStore';
     justify-content: space-between;
     display: flex;
     flex-direction: row;
+    padding: 0px;
     .header-logo {
       height: 35px;
     }
 
     .modal-title {
       font-weight: 700;
-      font-size: xx-large;
+      font-size: x-large;
       
     }
     @media screen and (max-width: 600px) {
