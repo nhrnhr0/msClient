@@ -306,7 +306,8 @@ import {Event} from '$lib/utils/js/Event'
   let is_under_500px = ()=> { return window && window.matchMedia && window.matchMedia("(max-width:500px)").matches;}
 
   function openProductImageModal(e) {
-    
+    debugger;
+    console.log('openProductImageModal');
     if(should_use_pImg_modal()) {
       $productImageModalStore.setProduct($productData);
       $productImageModalStore.toggleModal();

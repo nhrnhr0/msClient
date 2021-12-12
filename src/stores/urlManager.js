@@ -9,5 +9,6 @@ export function pushMainPage() {
 }
 
 export function pushState(url) {
+    console.log('pushState: ', url);
     window.history.pushState(null, null, url);
 }

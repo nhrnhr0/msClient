@@ -152,11 +152,6 @@ import { logStore } from "../stores/logStore";
 
   onMount(()=> {
     console.log('protocol: ', location.protocol);
-    if (location.protocol !== 'https:' && import.meta.env.PROD) {
-      // page is secure
-      //location.replace(`https:${location.href.substring(location.protocol.length)}`);
-
-    }
     window.onpopstate = function(event) {
       var pathArray = window.location.pathname.split('/');
       let vals = {}
@@ -210,9 +205,20 @@ import { logStore } from "../stores/logStore";
       onLoadTask = JSON.parse(onLoadTask);
       if (onLoadTask.type == 'product') {
         let prodId = onLoadTask.data.id;
-        let cateId = onLoadTask.data.albums[0];;
-        $productModalStore.toggleModal()
-        $productModalStore.setProduct(cateId, prodId);
+        let cateId = onLoadTask.data.albums[0];
+        
+
+
+        $categoryModalStore.setAlbum(albums.filter(album => album.id == cateId)[0]);
+        
+        $categoryModalStore.toggleModal();
+        setTimeout(()=> {
+          $productModalStore.toggleModal()
+          $productModalStore.setProduct(cateId, prodId);
+        },1);
+
+
+        
       }else if(onLoadTask.type == 'category') {
         let album = onLoadTask.data;
         $categoryModalStore.toggleModal();
