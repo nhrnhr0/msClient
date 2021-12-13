@@ -353,7 +353,7 @@ on:change={(event) => {
                                     </div>
                                 </div>
                                 <div  class="like-btn-wraper" data-product-id="{image.id}">
-                                    {#key $cartStore}
+                                    {#key $cartStore[image.id]}
                                         <button class:active={$cartStore[image.id] != undefined} class="like-btn">
                                         <div class="img-wraper">
                                             {#if $cartStore[image.id] != undefined}
