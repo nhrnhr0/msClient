@@ -165,6 +165,7 @@ import {Event} from '$lib/utils/js/Event'
     logStore.addLog(
                             {
                                 'a': 'פתיחת קטגוריה ממודל מוצר',
+                                't': 'open category',
                                 'f': {
                                   'type': 'product',
                                   'id': $productData.id,
