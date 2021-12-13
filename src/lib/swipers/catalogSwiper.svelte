@@ -365,11 +365,11 @@ on:change={(event) => {
                                         
                                         <div class="text">
                                             {#if $cartStore[image.id] != undefined}
-                                              נוסף
+                                                נוסף
                                             {:else}
-                                              הוסף
+                                                הוסף
                                             {/if}
-                                          </div>
+                                        </div>
                                         </button>
                                     {/key}
                                   </div>
