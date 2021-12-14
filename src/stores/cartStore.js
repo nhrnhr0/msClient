@@ -25,6 +25,7 @@ const createCartStore = () => {
             if(store[product.id]) {
               exist = true;
             } else {
+              product.amount = 1;
               store[product.id] = product;
               set(store);
             }

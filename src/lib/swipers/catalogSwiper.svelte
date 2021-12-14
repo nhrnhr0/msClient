@@ -157,8 +157,6 @@ import { logStore } from './../../stores/logStore';
                             );
 
                     }else if(target.classList.contains('like-btn-wraper')) {
-                        //$cartStore[target.dataset.productId] = get_product_by_id(target.dataset.productId);
-                        // get the image closest to the target
                         let currentProduct = get_product_by_id(target.dataset.productId);
                         if(cartStore.isInCart(currentProduct) == false) {
                             flyToCart(target.parentElement.querySelector('.product-image'));
@@ -353,25 +351,26 @@ on:change={(event) => {
                                     </div>
                                 </div>
                                 <div  class="like-btn-wraper" data-product-id="{image.id}">
-                                    {#key $cartStore[image.id]}
-                                        <button class:active={$cartStore[image.id] != undefined} class="like-btn">
-                                        <div class="img-wraper">
-                                            {#if $cartStore[image.id] != undefined}
-                                                <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
-                                            {:else}
-                                                <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>
-                                            {/if}
-                                        </div>
-                                        
-                                        <div class="text">
-                                            {#if $cartStore[image.id] != undefined}
-                                                נוסף
-                                            {:else}
+                                    {#if $cartStore[image.id] == undefined}
+                                        <button class="like-btn">
+                                            <div class="img-wraper">
+                                                <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
+                                            </div>
+                                            <div class="text">
                                                 הוסף
-                                            {/if}
-                                        </div>
+                                            </div>
                                         </button>
-                                    {/key}
+                                    {:else}
+                                        
+                                        <button class="like-btn active">
+                                            <div class="img-wraper">
+                                                <img alt="V" src="https://res.cloudinary.com/ms-global/image/upload/v1639463503/msAssets/external-check-mintab-for-ios-becris-lineal-becris-1_dfwd0z.png"/>
+                                            </div>
+                                            <div class="text">
+                                                    נוסף
+                                            </div>
+                                        </button>
+                                    {/if}
                                   </div>
                             <!--</div>-->
                         </SwiperSlide>
@@ -398,42 +397,43 @@ on:change={(event) => {
             .like-btn {
                 &.active {
                     @include bg-gradient();
+
+                }
+                /*&:hover {
+                    &::after {
+                        content: ' להצעת מחיר'
+                    }
+                }*/
+
+                .img-wraper  {
+                    img {
+                        width:40px;
+                    }
                 }
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                    //visibility: visible;
-                    color: white;
-                    width: 100%;
-                    text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
-                    z-index: 2000;
-                    font-size: 1.5em;
-                    font-weight: bold;
-                    pointer-events: none;
-                    text-align: center;
-                    word-break: break-all;
+                //visibility: visible;
+                color: white;
+                width: 100%;
+                text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
+                z-index: 2000;
+                font-size: 1.5em;
+                font-weight: bold;
+                pointer-events: none;
+                text-align: center;
+                word-break: break-all;
 
 
-                    background: #0000007a;
-                    border-radius: 25px;
-                    border-top-right-radius: 0px;
-                    border-top-left-radius: 0;
-                    border: var(--swiper-slide-border) solid black;
-                    border-bottom-width: 0px;
+                background: #0000007a;
+                border-radius: 25px;
+                border-top-right-radius: 0px;
+                border-top-left-radius: 0;
+                border: var(--swiper-slide-border) solid black;
+                border-bottom-width: 0px;
 
-                    &:hover {
-                        border: 1px solid red;
-                        &::after {
-                            content: ' להצעת מחיר'
-                        }
-                    }
-
-                    .img-wraper  {
-                        img {
-                            width:40px;
-                        }
-                    }
-                }
+                
+            }
         }
         
     .loader-wraper {

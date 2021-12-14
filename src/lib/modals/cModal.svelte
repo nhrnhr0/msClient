@@ -26,6 +26,33 @@ CLOUDINARY_URL,
 Spinner
   } from 'sveltestrap';
 
+
+  function remove_from_cart(e)  {
+    debugger;
+    const productId = e.currentTarget.dataset.productId;
+    const imgData = {
+      'id': productId
+    };
+    console.log(e);
+    cartStore.removeFromCart(imgData);
+      logStore.addLog(
+                            {
+                                'a': 'הסר מהעגלה ממודל קטגוריה',
+                                't': 'remove from cart',
+                                'f': {
+                                    'type':'category',
+                                    'id':$current_album.id,
+                                    'ti':$current_album.title
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':imgData.id,
+                                    'ti':imgData.title, 
+                                }
+                            }
+                            );
+  }
+
   let isModalOpen = false;
   export function toggleModal(push_url=true) {
     isModalOpen = !isModalOpen;
@@ -122,6 +149,8 @@ import { logStore } from './../../stores/logStore';
                             );
     }
     else {
+      document.querySelector(`#amount_${imgData.id}`).focus();
+      /*
       cartStore.removeFromCart(imgData);
       logStore.addLog(
                             {
@@ -138,7 +167,7 @@ import { logStore } from './../../stores/logStore';
                                     'ti':imgData.title, 
                                 }
                             }
-                            );
+                            );*/
     }
     
     //flyToCart(img);
@@ -170,6 +199,17 @@ import { logStore } from './../../stores/logStore';
                             }
                             );
     setAlbum(alb);
+  }
+
+  function amount_changed(e) {
+    console.log(e);
+    debugger;
+    let inputField = e.target;
+    let imgId = inputField.id.split('_')[1]
+    let amount = inputField.value;
+    let tmp = $cartStore[imgId];
+    tmp.amount = amount;
+    $cartStore[imgId] = {...tmp};
   }
 </script>
 
@@ -266,6 +306,59 @@ import { logStore } from './../../stores/logStore';
           <div class="img-title">{img.title}</div>
         </div>
         <div  on:click={likeBtnClicked} data-img={JSON.stringify(img)} class="like-btn-wraper">
+          {#if $cartStore[img.id] == undefined}
+          <button  id="categoryModalLikeBtn" class="like-btn">
+            <div class="img-wraper">
+              <div class="btn-product-title">
+                          {img.title}
+              </div>
+              <div class="action">
+                  <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
+                  <div class="text">
+                    הוסף
+                  </div>
+              </div>
+            </div>
+            
+          </button>
+          {:else}
+
+          <button  id="categoryModalLikeBtn" class="like-btn active">
+            <div class="img-wraper">
+              <div class="btn-product-title">
+                          {img.title}
+              </div>
+              <div class="action">
+                  
+
+
+
+                <div class="amount-before">
+                  <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" data-product-id="{img.id}">
+                    <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="24px" height="24px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
+                  </button>
+                    <div class="amount-text">
+                      כמות: 
+                    </div>
+                  </div>
+                  <div class="text">
+                    {#key $cartStore[img.id]}
+                      <input id="amount_{img.id}" class="item-amount" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
+                    {/key}
+                  </div>
+                  
+
+
+
+
+                
+            </div>
+            </div>
+            
+          </button>
+
+          {/if}
+          <!--
           <button  id="categoryModalLikeBtn" class:active={$cartStore[img.id] != undefined} class="like-btn">
             <div class="img-wraper">
               <div class="btn-product-title">
@@ -278,7 +371,7 @@ import { logStore } from './../../stores/logStore';
                     נוסף
                   </div>
                 {:else}
-                  <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>
+                  <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
                   <div class="text">
                     הוסף
                   </div>
@@ -287,6 +380,7 @@ import { logStore } from './../../stores/logStore';
             </div>
             
           </button>
+          -->
         </div>
         <!--
         <div>
@@ -373,8 +467,9 @@ import { logStore } from './../../stores/logStore';
         z-index: 1;
         
         font-weight: bold;
-        pointer-events: none;
+        //pointer-events: none;
         text-align: center;
+        min-height: 40px;
         //word-break: break-all;
 
 
@@ -426,10 +521,56 @@ import { logStore } from './../../stores/logStore';
             
           }
           .action {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
             .text {
               display: inline-block;
               font-size: 1em;
-              
+              input.item-amount {
+                /*width: 120px;
+                @media (max-width: 820px) {
+                  width: auto;
+                }*/
+                text-align: center;
+                border: none;
+                background: transparent;
+                border-radius: 999999px;
+                border-bottom-left-radius: 0px;
+                border-top-left-radius: 0px;
+                padding: 0;
+                
+                margin: 0;
+                margin-left: 5px;
+                
+                font-weight: bold;
+                &:focus {
+                  outline: none;
+                }
+              }
+            }
+
+            .amount-before {
+              font-size: 1.2em;
+              display:flex;
+              flex-direction: row;
+              justify-content: center;
+              align-items: center;
+              .delete-btn {
+                display:flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                background: none;
+                border: none;
+                svg {
+                  fill: black;
+                }
+                &:hover svg {
+                  fill:red;
+                }
+              }
             }
           }
           
