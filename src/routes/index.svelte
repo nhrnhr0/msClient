@@ -158,7 +158,6 @@ import { logStore } from "../stores/logStore";
       for(let i = 1; i < pathArray.length; i+=2) {
         vals[pathArray[i]] = pathArray[i+1];
       }
-      debugger;
       let categoryId, productId;
       if(vals.category) {
         categoryId = vals.category;

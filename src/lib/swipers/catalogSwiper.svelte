@@ -385,6 +385,14 @@ on:change={(event) => {
 <!--</Lazy>-->
 </div>
 <style lang="scss">
+    :global(.swiper) {
+        :global(.swiper-button-next), :global(.swiper-button-prev) {
+            transform: all 250ms ease-in-out;
+            &:hover {
+                --swiper-navigation-size: 99px!important;
+            }
+        }
+    }
     :global(.swiper-wrapper) {
         margin-bottom: 50px;
     }
@@ -399,11 +407,6 @@ on:change={(event) => {
                     @include bg-gradient();
 
                 }
-                /*&:hover {
-                    &::after {
-                        content: ' להצעת מחיר'
-                    }
-                }*/
 
                 .img-wraper  {
                     img {
@@ -544,6 +547,8 @@ on:change={(event) => {
 
             
         }
+
+        
     }
     :global(.swiper-slide-active) {
         .img-title {

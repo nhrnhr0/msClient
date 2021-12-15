@@ -53,7 +53,6 @@ import {Event} from '$lib/utils/js/Event'
 
   let is_image_loaded = false;
   export function isOpen() {
-    debugger;
     return isModalOpen;
   }
 
@@ -61,7 +60,6 @@ import {Event} from '$lib/utils/js/Event'
     return [_catalogId, _productId];
   }
   export function setProduct(catalogId, productId, push_url = true) {
-    debugger;
     isLoaded = false;
     is_image_loaded = false;
     //$stateQuery['product'] = catalogId + ',' + productId;
@@ -149,7 +147,6 @@ import {Event} from '$lib/utils/js/Event'
   }
 
   function open_category() {
-    debugger;
     $categoryModalStore.setAlbum($current_album);
     if ($categoryModalStore.isOpen() == false) {
       $categoryModalStore.toggleModal();
@@ -310,7 +307,6 @@ import {Event} from '$lib/utils/js/Event'
   let is_under_500px = ()=> { return window && window.matchMedia && window.matchMedia("(max-width:500px)").matches;}
 
   function openProductImageModal(e) {
-    debugger;
     console.log('openProductImageModal');
     if(should_use_pImg_modal()) {
       $productImageModalStore.setProduct($productData);
@@ -337,18 +333,6 @@ import {Event} from '$lib/utils/js/Event'
                                 }
                             }
                             );
-  }
-
-
-  function amount_changed(e) {
-    console.log(e);
-    debugger;
-    let inputField = e.target;
-    let imgId = _productId;
-    let amount = inputField.value;
-    let tmp = $cartStore[imgId];
-    tmp.amount = amount;
-    $cartStore[imgId] = {...tmp};
   }
 </script>
 
@@ -380,6 +364,9 @@ import {Event} from '$lib/utils/js/Event'
                             <div class="product-size-wraper">
                                 <div class="product-size">{@html sizeMarkup}</div>
                             </div>
+                            <div class="product-packing-wraper"><b><u>שיטת אריזה: </u>
+                              <span class="product-packing">{$productData.packing_type}</span>
+                            </b></div>
                         </div>
                         <hr>
                         
@@ -436,9 +423,7 @@ import {Event} from '$lib/utils/js/Event'
                         </div>
                       </div>
                       <div class="text">
-                        {#key $cartStore[_productId]}
                           <input class="item-amount" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[_productId].amount} />
-                        {/key}
                       </div>
                     </button>
                 {/if}
@@ -493,6 +478,9 @@ import {Event} from '$lib/utils/js/Event'
                       <div class="product-size-wraper">
                           <div class="product-size">{loadingText}</div>
                       </div>
+                      <div class="product-packing-wraper">
+                          <div class="product-packing">{loadingText}</div>
+                      </div>
                   </div>
                   <hr>
                   
@@ -544,11 +532,11 @@ import {Event} from '$lib/utils/js/Event'
     .like-btn-wraper{
       //cursor: pointer;
       @media (min-width: 820px) {
-        &:hover {
+        //&:hover {
           & .like-btn:not(.active) .text::after {
             content: ' להצעת מחיר'
           }
-        } 
+        //} 
       }
       
       .like-btn {
@@ -725,6 +713,7 @@ import {Event} from '$lib/utils/js/Event'
   display: flex;
   flex-direction: column;
   max-height: fit-content;
+  height: 90vh;
   @media screen and (max-width: 768px) {
     width: 94%;
     height: 85%;
@@ -761,6 +750,7 @@ import {Event} from '$lib/utils/js/Event'
         width: 100%;
         max-width: initial!important;
         position: relative;
+        overflow-y:scroll;
         @media screen and (max-width: 1100px) {
           overflow-y: auto;
           
@@ -842,6 +832,7 @@ import {Event} from '$lib/utils/js/Event'
               display: flex;
               flex-direction: column;
               padding-left: 10px;
+              
               .product-color-wraper {
               .product-color {
                   display: flex;
@@ -869,7 +860,10 @@ import {Event} from '$lib/utils/js/Event'
                   }
               }
               }
-
+              .product-packing-wraper {
+                padding-right: 1%;
+                padding-top:2%;
+              }
               .product-size-wraper {
                   .product-size {
 

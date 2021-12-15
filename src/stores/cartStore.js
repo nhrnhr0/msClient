@@ -12,13 +12,13 @@ const createCartStore = () => {
     const { subscribe, set, update } = writable(initCart);
     return {
         subscribe,
+        set,
         removeFromCart: function(product) {
           let cart = get(this);
           delete cart[product.id];
           set(cart);
         },
         addToCart: function(product) {
-          debugger;
           const store = get(this);
           let exist = false;
           if(product && product.id) {
@@ -41,7 +41,8 @@ const createCartStore = () => {
         },
         clearCart: function() {
           set({});
-        }
+        },
+        
     }
   }
 

@@ -28,7 +28,6 @@ Spinner
 
 
   function remove_from_cart(e)  {
-    debugger;
     const productId = e.currentTarget.dataset.productId;
     const imgData = {
       'id': productId
@@ -201,16 +200,7 @@ import { logStore } from './../../stores/logStore';
     setAlbum(alb);
   }
 
-  function amount_changed(e) {
-    console.log(e);
-    debugger;
-    let inputField = e.target;
-    let imgId = inputField.id.split('_')[1]
-    let amount = inputField.value;
-    let tmp = $cartStore[imgId];
-    tmp.amount = amount;
-    $cartStore[imgId] = {...tmp};
-  }
+
 </script>
 
 
@@ -342,9 +332,7 @@ import { logStore } from './../../stores/logStore';
                     </div>
                   </div>
                   <div class="text">
-                    {#key $cartStore[img.id]}
                       <input id="amount_{img.id}" class="item-amount" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
-                    {/key}
                   </div>
                   
 
@@ -449,11 +437,6 @@ import { logStore } from './../../stores/logStore';
         align-items: center;
         flex:1;
         
-      &:hover {
-          & .like-btn:not(.active) .text::after {
-            //content: ' להצעת מחיר'
-          }
-        } 
       .like-btn {
         display: flex;
         justify-content: center;
