@@ -8,7 +8,7 @@
     import {
 CLOUDINARY_URL
     } from './../../api/consts';
-    let isModalOpen = false;
+    export let isModalOpen = false;
     let modal_zIndex = 0;
     export let product = {'title':'טוען...', 'image': ''};
     //let m, evt;

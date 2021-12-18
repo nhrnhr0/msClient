@@ -102,9 +102,11 @@
 <ProductModal bind:this={$productModalStore}></ProductModal>
 <ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
 <CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
-<CartModal bind:this={$cartModalStore}></CartModal>
+<CartModal2 bind:this={$cartModalStore}></CartModal2>
 <SuccessModal bind:this={$successModalStore}></SuccessModal>
 <UserDetailsModal bind:this={$userDetailModalStore}></UserDetailsModal>
+
+
 {#each albums as album}
 
 		<div class="title-wraper">
@@ -137,6 +139,7 @@ import UserDetailsModal from '$lib/modals/userDetailsModal.svelte';
 import { bind } from 'svelte/internal';
 import { stateQuery} from './../stores/queryStore'
 import { logStore } from "../stores/logStore";
+import CartModal2 from '$lib/modals/cartModal2.svelte';
 
   export let colors;
   export let sizes;
@@ -249,7 +252,7 @@ import { logStore } from "../stores/logStore";
     },500);*/
   });
 
-
+  
   function openCategoryModal(album){
       $categoryModalStore.toggleModal();
       $categoryModalStore.setAlbum(album);

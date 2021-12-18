@@ -48,7 +48,7 @@ import {Event} from '$lib/utils/js/Event'
   let modal_zIndex = 0;
   let _productId, _catalogId;
   let isLoaded = false;
-  let isModalOpen = false;
+  export let isModalOpen = false;
   let loadingText = 'טוען...';
   let m, evt;
 

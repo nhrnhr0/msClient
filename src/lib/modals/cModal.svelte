@@ -53,7 +53,7 @@ Spinner
                             );
   }
 
-  let isModalOpen = false;
+  export let isModalOpen = false;
   export function toggleModal(push_url=true) {
     isModalOpen = !isModalOpen;
     if (isModalOpen == false) {

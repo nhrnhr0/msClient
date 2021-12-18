@@ -3,7 +3,7 @@
         _modal_z_index_incrementor
     } from "./../../stores/stores";
 
-    let isModalOpen = false;
+    export let isModalOpen = false;
     let modal_zIndex = 0;
 
     export function toggleModal() {

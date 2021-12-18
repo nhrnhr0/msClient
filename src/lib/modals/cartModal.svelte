@@ -17,7 +17,7 @@
     import { logStore } from "./../../stores/logStore";
     import { selectTextOnFocus } from '$lib/ui/inputActions';
 
-    let isModalOpen = false;
+    export let isModalOpen = false;
     let modal_zIndex = 0;
 
     export function toggleModal() {
