@@ -38,6 +38,7 @@ import {pushMainPage, pushProductState } from './../../stores/urlManager';
 import { logStore } from './../../stores/logStore';
 import {Event} from '$lib/utils/js/Event'
     import {Magnifier} from '$lib/utils/js/Magnifier.js';
+    import { selectTextOnFocus } from '$lib/ui/inputActions';
 
   let productData = writable();
   let current_album = writable();
@@ -423,7 +424,7 @@ import {Event} from '$lib/utils/js/Event'
                         </div>
                       </div>
                       <div class="text">
-                          <input class="item-amount" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[_productId].amount} />
+                          <input class="item-amount" name="item_amount" use:selectTextOnFocus min="1" max="9999" type="number" bind:value={$cartStore[_productId].amount} />
                       </div>
                     </button>
                 {/if}
@@ -527,22 +528,36 @@ import {Event} from '$lib/utils/js/Event'
 
 <style lang="scss">
     @import '$lib/utils/css/magnifier.css';
-    #preview {
-    }
+
     .like-btn-wraper{
-      //cursor: pointer;
+      
+      width: 300px;
+      height: 69px;
       @media (min-width: 820px) {
-        //&:hover {
           & .like-btn:not(.active) .text::after {
             content: ' להצעת מחיר'
+            
           }
-        //} 
       }
+      @media screen and (max-width: 819px) {
+        width: 200px;
+        .amount-text {
+          display: none;
+        }
+        .like-btn { 
+          height: 50px;
+        }
+      }
+      /*@media screen and (max-width: 819px) {
+        width: 160px;
+        height: 49px;
+        
+        .amount-text {
+          display: none;
+        }
+      }*/
       
       .like-btn {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         &.active {
           //border: 1px solid red;
           background: rgba(255, 255, 255, 0.478);
@@ -586,22 +601,6 @@ import {Event} from '$lib/utils/js/Event'
           justify-content: center;
           align-items: center;
         }
-        margin-top: 10px;
-        margin-bottom: 10px;
-        //visibility: visible;
-        color: white;
-        width: auto;
-        text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
-        z-index: 1;
-        
-        font-weight: bold;
-        //pointer-events: none;
-        text-align: center;
-        //word-break: break-all;
-
-
-        background: #0000007a;
-        border-radius: 25px;
         .amount-before {
           font-size: 1.7em;
           display:flex;
@@ -623,6 +622,21 @@ import {Event} from '$lib/utils/js/Event'
             }
           }
         }
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: white;
+        width: 100%;
+        text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
+        z-index: 1;
+        font-weight: bold;
+        text-align: center;
+        background: #0000007a;
+        border-radius: 25px;
+
+
       }
     }
 

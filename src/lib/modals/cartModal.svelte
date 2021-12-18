@@ -13,8 +13,9 @@
         CardText,
         CardTitle
     } from 'sveltestrap';
-    import { get_user_uuid, submit_cart_form } from "./../../api/api"
+    import { get_user_uuid, submit_cart_form } from "./../../api/api";
     import { logStore } from "./../../stores/logStore";
+    import { selectTextOnFocus } from '$lib/ui/inputActions';
 
     let isModalOpen = false;
     let modal_zIndex = 0;
@@ -211,7 +212,7 @@
                                 <button on:click|preventDefault="{delete_product_from_cart(key)}"class="delete-product">X</button>
                                 <div class="product-amount">
                                     <button on:click|preventDefault="{decrease_product_amount(key)}" class="decrease-amount">-</button>
-                                    <input type="number" min="1" max="9999" class="amount-input" name="product_amount" bind:value="{$cartStore[key].amount}" />
+                                    <input type="number" use:selectTextOnFocus min="1" max="9999" class="amount-input" name="product_amount" bind:value="{$cartStore[key].amount}" />
                                     <button on:click|preventDefault="{increase_product_amount(key)}" class="increase-amount">+</button>
                                 </div>
                                 <div class="modal-open-area" title="{$cartStore[key].title}" on:click={open_product_modal(key)}>

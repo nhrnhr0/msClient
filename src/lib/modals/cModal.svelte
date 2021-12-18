@@ -25,6 +25,7 @@ CLOUDINARY_URL,
     DropdownToggle,
 Spinner
   } from 'sveltestrap';
+  import { selectTextOnFocus } from '$lib/ui/inputActions';
 
 
   function remove_from_cart(e)  {
@@ -328,11 +329,11 @@ import { logStore } from './../../stores/logStore';
                     <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="24px" height="24px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
                   </button>
                     <div class="amount-text">
-                      כמות: 
+                      כמות:
                     </div>
                   </div>
                   <div class="text">
-                      <input id="amount_{img.id}" class="item-amount" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
+                      <input id="amount_{img.id}" use:selectTextOnFocus class="item-amount" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
                   </div>
                   
 
@@ -448,7 +449,7 @@ import { logStore } from './../../stores/logStore';
         color: white;
         text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
         z-index: 1;
-        
+        height: 75px;
         font-weight: bold;
         //pointer-events: none;
         text-align: center;
@@ -491,7 +492,7 @@ import { logStore } from './../../stores/logStore';
             height: 40px;
           }
           .btn-product-title {
-            font-size: 1.5em;
+            font-size: 1.2em;
             //text-overflow: ellipsis;
             overflow: hidden;
             white-space: normal;
@@ -512,10 +513,6 @@ import { logStore } from './../../stores/logStore';
               display: inline-block;
               font-size: 1em;
               input.item-amount {
-                /*width: 120px;
-                @media (max-width: 820px) {
-                  width: auto;
-                }*/
                 text-align: center;
                 border: none;
                 background: transparent;
@@ -523,11 +520,10 @@ import { logStore } from './../../stores/logStore';
                 border-bottom-left-radius: 0px;
                 border-top-left-radius: 0px;
                 padding: 0;
-                
                 margin: 0;
                 margin-left: 5px;
-                
                 font-weight: bold;
+                direction: rtl;
                 &:focus {
                   outline: none;
                 }
@@ -634,15 +630,34 @@ import { logStore } from './../../stores/logStore';
         display: grid;
     grid-column: 1fr 1fr 1fr;
     grid-template-columns: repeat(5, 1fr);
-    @media screen and (max-width: 900px) {
+    @media screen and (max-width: 1040px) {
       grid-template-columns: repeat(4, 1fr);
     }
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 840px) {
       grid-template-columns: repeat(3, 1fr);
+      .amount-text {
+        display: none;
+      }
+      /**
+      color: black;
+      text-shadow: none;
+      font-weight: bold;
+      */
+      .category-item{
+        .like-btn-wraper  {
+          .like-btn {
+            .img-wraper {
+              .btn-product-title {
+                font-size: 1em;
+              }
+            }
+          }
+        }
+      }
     }
-    @media screen and (max-width: 450px) {
+    @media screen and (max-width: 490px) {
       grid-template-columns: repeat(2, 1fr);
-      
+      //max-width: 155px;
     }
     .category-item {
       cursor: pointer;
