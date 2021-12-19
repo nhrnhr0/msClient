@@ -728,9 +728,10 @@ import {Event} from '$lib/utils/js/Event'
   flex-direction: column;
   max-height: fit-content;
   height: 90vh;
+  height: calc(90vh - calc(90vh - 90%));
   @media screen and (max-width: 768px) {
     width: 94%;
-    height: 85%;
+    //height: 85%;
   }
   .modal-header {
     height: 50px;
@@ -877,6 +878,7 @@ import {Event} from '$lib/utils/js/Event'
               .product-packing-wraper {
                 padding-right: 1%;
                 padding-top:2%;
+                font-size: large;
               }
               .product-size-wraper {
                   .product-size {

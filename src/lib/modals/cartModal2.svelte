@@ -257,10 +257,10 @@
 
 <style lang="scss">
     // Brand colors
-$primary: #354165;
-
-$secondary: #4dc0e3;
-
+//$primary: #354165;
+$primary: #3b3b3b;
+//$secondary: #4dc0e3;
+$secondary: #d4af37;
 // Standard colors
 $black: #000;
 $white: #fff;
@@ -321,7 +321,7 @@ $gray-1200: #131314;
 	position: fixed;
 	display: block;
 	width: 320px;
-	height: 100vh;
+	height: calc(100vh - calc(100vh - 100%));
 	z-index: 2;
 	top: 0;
 	//right: -340px;
@@ -334,7 +334,8 @@ $gray-1200: #131314;
 		color:white;
 		direction: rtl;
 		height: calc(100vh - 150px);
-		overflow: scroll;
+		//overflow: scroll;
+		overflow: auto;
 		.info {
 			width:100%;
 			.info-res {
@@ -383,7 +384,7 @@ $gray-1200: #131314;
 
 	h2 {
 		color: $white;
-		font-family: Muli;
+		//font-family: Muli;
 		font-size: 16px;
 		font-weight: 600;
 		letter-spacing: 2px;
@@ -454,6 +455,8 @@ $gray-1200: #131314;
 				span.product-details {
 					h3 {
 						color: $secondary !important;
+						-webkit-text-stroke-width: 0.1px;
+						-webkit-text-stroke-color: $black;
                         
 					}
 				}
@@ -498,7 +501,7 @@ $gray-1200: #131314;
 					h3 {
 						//margin: 3px 5px 5px 0px;
                         margin-bottom: 3px;
-                        margin-left: 5px;
+                        margin-left: 15px;
                         margin-right: 0px;
                         margin-top: 0px;
                         
@@ -563,7 +566,7 @@ $gray-1200: #131314;
 							}
 							
 							input.qty-input {
-								width: 24px;
+								width: 40px;
 								height: 24px;
 								text-align: center;
 								border: 1px solid $gray-400;
@@ -740,14 +743,18 @@ $gray-1200: #131314;
 			border-style: solid;
 			border-radius: 4px;
 			transition: all 0.5s linear;
-			border-color: $secondary;
-			background: $secondary;
+			//border-color: $secondary;
+			//background: $secondary;
 			margin-left: 5px;
 			color: $white;
+			font-weight: bold;
+			font-size: larger;
+			color: $black;
 			width: 60%;
-			
+			@include bg-gradient();
+
 			&:after {
-				content: url("data:image/svg+xml,%3Csvg fill='%23#{str-replace('' + $white + '', '#', '')}' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath d='M311.03 131.515l-7.071 7.07c-4.686 4.686-4.686 12.284 0 16.971L387.887 239H12c-6.627 0-12 5.373-12 12v10c0 6.627 5.373 12 12 12h375.887l-83.928 83.444c-4.686 4.686-4.686 12.284 0 16.971l7.071 7.07c4.686 4.686 12.284 4.686 16.97 0l116.485-116c4.686-4.686 4.686-12.284 0-16.971L328 131.515c-4.686-4.687-12.284-4.687-16.97 0z'/%3E%3C/svg%3E");
+				content: url("data:image/svg+xml,%3Csvg fill='%23#{str-replace('' + $black + '', '#', '')}' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath d='M311.03 131.515l-7.071 7.07c-4.686 4.686-4.686 12.284 0 16.971L387.887 239H12c-6.627 0-12 5.373-12 12v10c0 6.627 5.373 12 12 12h375.887l-83.928 83.444c-4.686 4.686-4.686 12.284 0 16.971l7.071 7.07c4.686 4.686 12.284 4.686 16.97 0l116.485-116c4.686-4.686 4.686-12.284 0-16.971L328 131.515c-4.686-4.687-12.284-4.687-16.97 0z'/%3E%3C/svg%3E");
 				width: 20px;
 				height: 14px;
 				display: inline-block;
@@ -759,8 +766,11 @@ $gray-1200: #131314;
 			}
 
 			@include hover-active() {
-				background: darken($secondary, 10%);
-				border-color: darken($secondary, 10%);
+				//background: darken($secondary, 10%);
+				border-color: darken($secondary, 40%);
+				&:after {
+					margin-left: 0px;
+				}
 			}
 		}
 	}

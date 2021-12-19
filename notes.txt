@@ -7,4 +7,4 @@ Copy-item -Force -Recurse -Verbose .\build\* -Destination .\msClientBuildTest\
 cd msClientBuildTest/
 git add .
 git commit -m "deploy"
-git push
+git push -f

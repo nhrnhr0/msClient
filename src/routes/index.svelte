@@ -7,7 +7,7 @@
 	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL, LOGOS_API_URL } from './../api/consts'
   import { browser } from '$app/env';
   import {getCookie} from '$lib/utils/cookies';
-
+  import {activeModalsStore} from "$lib/modals/modalManager";
   export async function load({fetch, page}) {
     console.log('load: ', page, page.path);
     //const qs = browser ? document.location.search : '';
@@ -231,30 +231,39 @@ import CartModal2 from '$lib/modals/cartModal2.svelte';
       sessionStorage.removeItem('onLoadTask');
     }
     
-    /*if(onLoadCategory != '-1') {
-      for(let i = 0; i < albums.length; i++) {
-        if(albums[i].id == onLoadCategory) {
-          openCategoryModal(albums[i]);
 
-          break;
-        }
-      }
-    }
-    if(onLoadProduct != '-1') {
-      let [prodId, cateId] = onLoadProduct.split(',');
-      $productModalStore.toggleModal()
-      $productModalStore.setProduct(prodId, cateId);
-      
-      //openProductModalFromId(cateId, prodId)
-    }*/
+    window.addEventListener('scroll', () => {
+      document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
+    });
 
-    /*setTimeout(()=> {
-      console.log('y_scroll: ', y_scroll)
-      y_scroll = 0;
-    },500);*/
+
   });
 
-  
+  activeModalsStore.subscribe(modals => {
+    if(browser) {
+      debugger;
+      if(Object.keys(modals).length == 0) {
+        const body = document.body;
+        const scrollY = body.style.top;
+        
+        body.style.position = '';
+        body.style.top = '';
+        if(scrollY != ''){
+          window.scrollTo(0, parseInt(scrollY || '0') * -1,0);
+        }
+        
+      }
+      else {
+        const scrollY = document.documentElement.style.getPropertyValue('--scroll-y');
+        const body = document.body;
+        body.style.position = 'fixed';
+        body.style.top = `-${scrollY}`;
+      }
+      console.log('hey: ', Object.keys(modals).length);
+    }
+  });
+
+
   function openCategoryModal(album){
       $categoryModalStore.toggleModal();
       $categoryModalStore.setAlbum(album);

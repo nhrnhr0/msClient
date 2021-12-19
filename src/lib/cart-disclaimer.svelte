@@ -1,8 +1,9 @@
 <div class="about">
     <div class="container">
-        <div class="hero-description gold-animation">
+        <div class="hero-description">
+            <div class="gold-animation">
             מטיילים באתר • מוסיפים לעגלה • שולחים אלינו
-            <br>
+            </div>
             הוסיפו לעגלה את המוצרים המועדפים עליכם, שלחו אלינו וקבלו הצעת מחיר משתלמת ישירות למייל  
             <br>
             לשירותכים תמיד, 
@@ -40,6 +41,15 @@
                 }
                 @media screen and (max-width: 400px) {
                     font-size: 1.2rem;
+                }
+
+                .gold-animation{
+                    font-size: 32px;
+                    stroke-width: 1.5px;
+                    stroke-color: #000000;
+                    -webkit-text-stroke-width: 1.5px;
+                    -webkit-text-stroke-color: #000000;
+                    padding-bottom: 0px;
                 }
             }
         }

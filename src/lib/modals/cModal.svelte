@@ -3,6 +3,7 @@
   import {
     cartStore
   } from './../../stores/cartStore';
+  import {activeModalsStore } from '$lib/modals/modalManager';
   import {
 CLOUDINARY_URL,
     STATIC_BASE
@@ -56,6 +57,7 @@ Spinner
   export let isModalOpen = false;
   export function toggleModal(push_url=true) {
     isModalOpen = !isModalOpen;
+    activeModalsStore.modalToggle('cmodal', isModalOpen);
     if (isModalOpen == false) {
       //$stateQuery['category'] = '-1';
       if(push_url) {
@@ -463,8 +465,12 @@ import { logStore } from './../../stores/logStore';
         border-top-left-radius: 0;
         border: var(--swiper-slide-border) solid black;
         border-bottom-width: 0px;
-
-
+        .text {
+          display:inline-block;
+          font-size: 1.5em;
+          
+        }
+        
         &.active {
           @include bg-gradient();
           //border: 1px solid red;
@@ -472,10 +478,7 @@ import { logStore } from './../../stores/logStore';
           //color:rgb(70, 70, 70);
 
         }
-        .text {
-          display:inline-block;
-          font-size: 1.5em;
-        }
+        
         .img-wraper {
           
           display: inline-flex;
@@ -552,7 +555,23 @@ import { logStore } from './../../stores/logStore';
               }
             }
           }
-          
+          @media (hover: hover){
+            .action {
+              .text {
+                font-size: 1.34em;
+              }
+            }
+            &.active {
+              .action {
+                .text {
+                  font-size: 1em;
+                }
+              }
+            }
+          }
+          @media (hover: hover) {
+
+          }
         }
         
       }
