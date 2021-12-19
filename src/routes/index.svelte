@@ -1,6 +1,7 @@
 <script context="module">
 	import Header from "$lib/header.svelte"
 	import About from "$lib/about.svelte"
+  import CartDisclaimer from "$lib/cart-disclaimer.svelte"
   import LogoSwiper from "$lib/swipers/logoSwiper.svelte"
 	import {all_swipers,userDetailModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore} from './../stores/stores'
 	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL, LOGOS_API_URL } from './../api/consts'
@@ -96,6 +97,7 @@
 <Header />
 <About />
 <LogoSwiper {logos}/>
+<CartDisclaimer />
 <!--<TempModal bind:this={$tempModalStore}/>
 <button on:click={()=>{$tempModalStore.toggleModal()}}>click me to open modal</button>-->
 <LoginModal bind:this={$loginModalStore}></LoginModal>

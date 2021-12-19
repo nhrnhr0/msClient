@@ -1,14 +1,75 @@
 <script>
-    import {all_swipers, _modal_z_index_incrementor, productModalStore} from "./../../stores/stores";
+    import {all_swipers,cartModalStore, successModalStore, _modal_z_index_incrementor, productModalStore,userInfoStore} from "./../../stores/stores";
     import {fly, fade} from 'svelte/transition';
     import { cartStore } from "./../../stores/cartStore"
     import { CLOUDINARY_URL, STATIC_BASE, SUBMIT_CART_URL } from "./../../api/consts";
     import { selectTextOnFocus } from '$lib/ui/inputActions';
     import { logStore } from "./../../stores/logStore";
     import { flip } from 'svelte/animate';
+	import { get_user_uuid, submit_cart_form } from "./../../api/api";
+
 
     export let isModalOpen = false;
     let modal_zIndex = 0;
+	let state = 0;
+	let form_name, form_email, form_phone, form_message;
+	function checkout_back_click() {
+		if(state > 0) {
+			state = 0;
+		}
+	}
+	function checkout_click() {
+		if(state == 0) {
+			state = 1;
+		}
+		else if(state == 1) {
+			cart_submit();
+		}
+	}
+	function cart_submit() {
+        if(mform.reportValidity()) {
+            let cart_products = [];
+            for(let key in $cartStore) {
+                let product = $cartStore[key];
+                cart_products.push({'id': product.id, 'amount': product.amount});
+            }
+
+            let data = {
+                name: form_name || '',
+                email: form_email || '',
+                phone:form_phone || '',
+                uuid: get_user_uuid() || '',
+                message: form_message || '',
+                products: cart_products,
+            };
+            
+            logStore.addLog(
+                            {
+                                'a': 'שליחת הזמנה',
+                                't': 'submit order',
+                                'f': {
+                                    'type': 'cart',
+                                },
+                                'w':{
+                                    'type':'order',
+                                    'data':data,
+                                }
+                            }
+                            );
+            let response = submit_cart_form(data);
+            response.then((data_json)=> {
+                
+                    if(data_json['status'] == 'success') {
+                        $cartModalStore.toggleModal();
+                        $successModalStore.toggleModal();
+                        //$cartStore = {};
+                        cartStore.clearCart();
+                    }
+                
+            });
+            mform.reset();
+        }
+    }
     function decrease_product_amount(key) {
         console.log('decrease_product_amount: ', key);
         if($cartStore[key].amount > 1) {
@@ -26,12 +87,14 @@
         isModalOpen = !isModalOpen;
         if(isModalOpen) {
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
-        }
+        }else {
+			state = 0;
+		}
     }
     export function isOpen() {
         return isModalOpen;
     }
-    let outro;
+    let mform;
     function delete_product_from_cart(key) {
         debugger;
         let element = document.querySelector(`.product[data-product="${key}"]`).classList.add('deleted')
@@ -57,7 +120,7 @@
                                 }
                             }
                             );
-        }, 500);
+        }, 250);
     }
 
     function open_product_modal(key) {
@@ -88,42 +151,91 @@
             <aside on:click|stopPropagation|preventDefault={()=>{console.log('aside click')}} transition:fly="{{x:340}}" id="sidebar-cart">
                 <main>
                     <button class="close-button" on:click="{()=>{console.log('close click'); toggleModal();}}">X</button>
-                    <h2>Shopping Bag <span class="count">{Object.keys($cartStore).length}</span></h2>
-                    <ul class="products">
-                        {#each Object.keys($cartStore) as key, i (key)}
-                                <li class="product" data-product={key}
-                                animate:flip={{duration:200}}
-                                out:fly={{x:100,duration: 200,}}
-                                in:fly="{{x: 340,duration: 500,delay:i*120 }}" 
-                                >
-                                
-                                    <div class="product-link">
-                                        <span on:click={open_product_modal(key)} class="product-image">
-                                            <img src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[key].cimage}" alt="{$cartStore[key].title}">
-                                        </span>
-                                        <span class="product-details">
-                                            <h3>{$cartStore[key].title}</h3>
-                                            <span class="qty-price">
-                                                <span class="qty">
-                                                    <button on:click|preventDefault="{decrease_product_amount(key)}" class="minus-button">-</button>
-                                                    <input type="number" use:selectTextOnFocus min="1" max="9999" class="qty-input" step="1" name="qty-input" pattern="[0-9]*" title="Quantity" inputmode="numeric" bind:value="{$cartStore[key].amount}" />
-                                                    <button on:click|preventDefault="{increase_product_amount(key)}" class="plus-button">+</button>
-                                                    <input type="hidden" name="item-price" id="item-price-1" value="12.00">
-                                                </span>
-                                                <!--
-                                                <span class="price">$16.00</span>
-                                                -->
-                                            </span>
-                                        </span>
-                                    </div>
-                                    <div class="remove-button" on:click|preventDefault="{delete_product_from_cart(key)}">
-                                            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 36'>
-                                                <path fill='currentColor' d='M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z'/>
-                                            </svg>
-                                    </div>
-                                </li>
-                        {/each}
-                    </ul>
+                    <h2>מוצרים שאהבתי<span class="count">{Object.keys($cartStore).length}</span></h2>
+					{#if state == 0}
+					
+						{#if Object.keys($cartStore).length > 0}
+							<ul class="products">
+								{#each Object.keys($cartStore) as key, i (key)}
+										<li class="product" data-product={key}
+										animate:flip={{duration:200}}
+										out:fly={{x:100,duration: 200,}}
+										in:fly="{{x: 340,duration: 500,delay:i*120 }}" 
+										>
+										
+											<div class="product-link">
+												<span on:click={open_product_modal(key)} class="product-image">
+													<img src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[key].cimage}" alt="{$cartStore[key].title}">
+												</span>
+												<span class="product-details">
+													<h3>{$cartStore[key].title}</h3>
+													<span class="qty-price">
+														<span class="qty">
+															<button on:click|preventDefault="{decrease_product_amount(key)}" class="minus-button">-</button>
+															<input type="number" use:selectTextOnFocus min="1" max="9999" class="qty-input" step="1" name="qty-input" pattern="[0-9]*" title="Quantity" inputmode="numeric" bind:value="{$cartStore[key].amount}" />
+															<button on:click|preventDefault="{increase_product_amount(key)}" class="plus-button">+</button>
+															<input type="hidden" name="item-price" id="item-price-1" value="12.00">
+														</span>
+														<!--
+														<span class="price">$16.00</span>
+														-->
+													</span>
+												</span>
+											</div>
+											<div class="remove-button" on:click|preventDefault="{delete_product_from_cart(key)}">
+													<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 36'>
+														<path fill='currentColor' d='M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z'/>
+													</svg>
+											</div>
+										</li>
+								{/each}
+							</ul>
+						{:else}
+							<div class="empty-cart">
+								<h2>אין מוצרים בעגלת הקניות</h2>
+								<p>נא להוסיף מוצרים לעגלת הקניות</p>
+							</div>
+						{/if}
+					{:else}
+						<div class="cart-info" in:fly="{{x: 340,duration: 500}}">
+							{#if $userInfoStore}
+								{#if $userInfoStore.isLogin}
+									<div class="info">
+										<div class="info-title">שם העסק</div>
+										<div class="info-res">
+											<input disabled value={$userInfoStore.me['businessName']}/>
+										</div>
+									</div>
+									<div class="info">
+										<div class="info-title">אימייל</div>
+										<div class="info-res" style="direction:ltr">
+											<input disabled value={$userInfoStore.me['email']}/>
+										</div>
+									</div>
+									<div class="info">
+										<div class="info-title">ח.פ.</div>
+										<div class="info-res">
+											<input disabled value={$userInfoStore.me['privateCompany']}/>
+										</div>
+									</div>
+								{/if}
+							{/if}
+
+							<form  bind:this={mform} method="POST" action="{SUBMIT_CART_URL}" >
+								<div class="form-control"><input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="שם:" type="text"></div>
+								<div class="form-control"><input bind:value="{form_email}" name="email" placeholder="אימייל:" type="email"></div>
+								<div class="form-control"><input bind:value="{form_phone}" name="tel" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="טלפון:" type="tel"></div>
+								<div class="form-control"><textarea bind:value="{form_message}" name="message" required="{false}" placeholder="הודעה:"/>
+									</div>
+							</form>
+						</div>
+					{/if}
+					<div class="action-buttons">
+						<button class="checkout-back" on:click="{checkout_back_click}" class:active="{state != 0}" >הקודם</button><button class="checkout-button" on:click="{checkout_click}">שלח</button>
+					</div>
+				</main>
+			</aside>
+					
                     <!--
                     <div class="totals">
                         
@@ -138,11 +250,7 @@
                         </div> 
                     </div>
                     -->
-                    <div class="action-buttons">
-                        <a class="view-cart-button" href="#">Cart</a><a class="checkout-button" href="#">Checkout</a>
-                    </div>
-                </main>
-            </aside>
+                    
     </div>
 </div>
 {/if}
@@ -222,6 +330,36 @@ $gray-1200: #131314;
 
     right: 0;
     visibility: visible;
+	.cart-info {
+		color:white;
+		direction: rtl;
+		height: calc(100vh - 150px);
+		overflow: scroll;
+		.info {
+			width:100%;
+			.info-res {
+				
+				input {
+					border-radius: 15px;
+					width:100%;
+					color:white;
+				}
+			}
+		}
+		form {
+			.form-control {
+				padding-top: 15px;
+				margin: 5px;
+				input, textarea {
+					direction: rtl;
+					text-align: right;
+					border:none;
+					border-radius: 15px;
+					width:100%;
+				}
+			}
+		}
+	}
 
 	button.close-button {
 		margin: 0 0 15px 0;
@@ -474,7 +612,7 @@ $gray-1200: #131314;
                 svg {
                     display: block;
                 }
-				span.remove-icon {
+				/*span.remove-icon {
 					width: 15px;
 					height: 16px;
 					//background: rgba($gray-700, 0.5);
@@ -486,7 +624,7 @@ $gray-1200: #131314;
                     }
 					//-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 36'%3E%3Cpath fill='currentColor' d='M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z'/%3E%3C/svg%3E");
 					transition: all 0.5s linear;
-				}
+				}*/
 
 				@include hover-active() {
                     cursor: pointer;
@@ -509,6 +647,12 @@ $gray-1200: #131314;
             transform: translatex(340px);
             opacity: 0;
         }
+	}
+
+	main{
+		.empty-cart {
+			text-align: center;
+		}
 	}
 	/*
 	div.totals {
@@ -558,9 +702,33 @@ $gray-1200: #131314;
 		background: $white;
 		display: block;
 		white-space: nowrap;
-
-		a.view-cart-button,
-		a.checkout-button {
+		//display:flex;
+		display:flex;
+		justify-content: center;
+		align-items: center;
+		button.checkout-back {
+			display:block;
+			visibility: hidden;
+			margin-right: 10px;
+			padding: 10px;
+			border: 1px solid $gray-300;
+			border-radius: 3px;
+			background: $gray-200;
+			color: $gray-900;
+			font-size: 14px;
+			font-weight: 500;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			transition: all 0.5s linear;
+			&.active {
+				visibility: visible;
+			}
+			@include hover-active() {
+				background: $gray-300;
+				color: $gray-900;
+			}
+		}
+		button.checkout-button {
 			display: inline-block;
 			padding: 10px;
 			margin: 20px 15px;
@@ -572,27 +740,11 @@ $gray-1200: #131314;
 			border-style: solid;
 			border-radius: 4px;
 			transition: all 0.5s linear;
-		}
-
-		a.view-cart-button {
-			background: $white;
-			border-color: $secondary;
-			margin-right: 5px;
-			color: $secondary;
-			width: 80px;
-
-			@include hover-active() {
-				background: rgba($secondary, 0.2);
-				color: $secondary;
-			}
-		}
-
-		a.checkout-button {
 			border-color: $secondary;
 			background: $secondary;
 			margin-left: 5px;
 			color: $white;
-			width: 200px;
+			width: 60%;
 			
 			&:after {
 				content: url("data:image/svg+xml,%3Csvg fill='%23#{str-replace('' + $white + '', '#', '')}' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath d='M311.03 131.515l-7.071 7.07c-4.686 4.686-4.686 12.284 0 16.971L387.887 239H12c-6.627 0-12 5.373-12 12v10c0 6.627 5.373 12 12 12h375.887l-83.928 83.444c-4.686 4.686-4.686 12.284 0 16.971l7.071 7.07c4.686 4.686 12.284 4.686 16.97 0l116.485-116c4.686-4.686 4.686-12.284 0-16.971L328 131.515c-4.686-4.687-12.284-4.687-16.97 0z'/%3E%3C/svg%3E");
