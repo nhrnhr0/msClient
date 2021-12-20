@@ -4,7 +4,9 @@ userInfoStore,
         _modal_z_index_incrementor
     } from './../../stores/stores';
     import {Input}  from 'sveltestrap';
-import { request_login, request_whoAmI } from './../../api/auth'
+import { request_login, request_whoAmI } from './../../api/auth';
+import {activeModalsStore } from '$lib/modals/modalManager';
+
     let modal_zIndex = 0;
     let isModalOpen;
     let username, password;
@@ -33,6 +35,7 @@ import { request_login, request_whoAmI } from './../../api/auth'
     }
     export function toggleModal() {
         isModalOpen = !isModalOpen;
+        activeModalsStore.modalToggle('loginModal', isModalOpen);
         if (isModalOpen) {
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
 

@@ -39,6 +39,7 @@ import { logStore } from './../../stores/logStore';
 import {Event} from '$lib/utils/js/Event'
     import {Magnifier} from '$lib/utils/js/Magnifier.js';
     import { selectTextOnFocus } from '$lib/ui/inputActions';
+    import {activeModalsStore } from '$lib/modals/modalManager';
 
   let productData = writable();
   let current_album = writable();
@@ -206,6 +207,7 @@ import {Event} from '$lib/utils/js/Event'
 
     // waiting for isLoaded=true to init magnifier and retry init if fail after timeout
     setTimeout(()=> {
+      
       if (window.matchMedia && !window.matchMedia("(hover: none)").matches) {
         let init_magnifier = ()=> {
           evt = new Event(),
@@ -226,8 +228,8 @@ import {Event} from '$lib/utils/js/Event'
             init_magnifier();
             }, 1000);
         }
-      }
-      
+      }      
+
     },0);
     isLoaded = true;
   });
@@ -246,6 +248,7 @@ import {Event} from '$lib/utils/js/Event'
   export function toggleModal(push_url=true) {
     console.log('product toggleModal');
     isModalOpen = !isModalOpen;
+    activeModalsStore.modalToggle('pModal', isModalOpen);
     if (isModalOpen == false) {
       //$stateQuery['product'] = -1;
       if(push_url) {
@@ -384,11 +387,11 @@ import {Event} from '$lib/utils/js/Event'
                     "
                     >
                       <div class="img-inner-wraper">
-                      <img class:loaded={is_image_loaded} on:load={()=>{is_image_loaded = true}} on:error={()=>{is_image_loaded = false}} class="product-modal-img" on:click={openProductImageModal} alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"
-                        data-large-img-url="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"
-                        data-large-img-wrapper="preview"
-                        />
-                    </div>
+                        <img class:loaded={is_image_loaded} on:load={()=>{is_image_loaded = true}} on:error={()=>{is_image_loaded = false}} class="product-modal-img" on:click={openProductImageModal} alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"
+                          data-large-img-url="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"
+                          data-large-img-wrapper="preview"
+                          />
+                      </div>
                   </div>
                     
                 </div>

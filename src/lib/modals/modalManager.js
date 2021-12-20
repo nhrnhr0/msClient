@@ -14,9 +14,7 @@ const createActiveModals = () => {
         set,
         update, 
         modalToggle: (modal, state) => {
-            debugger;;
             update((curr) => {
-                debugger;
                 if(curr == undefined) {
                     curr= {};
                 }
@@ -29,7 +27,6 @@ const createActiveModals = () => {
                 return curr;
             });
             /*
-            debugger;
             let modals = get(this);
             if(modals == undefined) {
                 modals = {};

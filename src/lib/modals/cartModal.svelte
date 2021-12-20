@@ -16,12 +16,14 @@
     import { get_user_uuid, submit_cart_form } from "./../../api/api";
     import { logStore } from "./../../stores/logStore";
     import { selectTextOnFocus } from '$lib/ui/inputActions';
+    import {activeModalsStore } from '$lib/modals/modalManager';
 
     export let isModalOpen = false;
     let modal_zIndex = 0;
 
     export function toggleModal() {
         isModalOpen = !isModalOpen;
+        activeModalsStore.modalToggle('cartModal', isModalOpen);
         if(isModalOpen) {
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
         }

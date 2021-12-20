@@ -2,6 +2,8 @@
     import {
         _modal_z_index_incrementor
     } from './../../stores/stores';
+    import {activeModalsStore } from '$lib/modals/modalManager';
+
     //import {Event} from '$lib/utils/js/Event'
     //import {Magnifier} from '$lib/utils/js/Magnifier.js';
     
@@ -14,6 +16,7 @@ CLOUDINARY_URL
     //let m, evt;
     export function toggleModal() {
         isModalOpen = !isModalOpen;
+        activeModalsStore.modalToggle('pImgModal', isModalOpen);
         if (isModalOpen) {
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
 

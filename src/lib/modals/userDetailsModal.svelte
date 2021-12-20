@@ -13,6 +13,7 @@
     CardText,
     CardTitle
   } from 'sveltestrap';
+  import {activeModalsStore } from '$lib/modals/modalManager';
 import { request_logout, request_update_user_detail } from './../../api/auth'
 import { onDestroy } from 'svelte';
     let modal_zIndex = 0;
@@ -55,6 +56,7 @@ import { onDestroy } from 'svelte';
 
     export function toggleModal() {
         isModalOpen = !isModalOpen;
+        activeModalsStore.modalToggle('userDetailsModal', isModalOpen);
         if (isModalOpen) {
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
             username = $userInfoStore.me['username'];

@@ -279,6 +279,7 @@ on:change={(event) => {
                 slidesPerView="{'5'}"
                 observer="{true}"
                 observeParents= "{true}"
+                rebuildOnUpdate="{true}"
                 speed= "{50}"
                 loop= "{true}"
                 allowTouchMove="{true}"

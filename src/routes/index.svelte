@@ -241,23 +241,18 @@ import CartModal2 from '$lib/modals/cartModal2.svelte';
 
   activeModalsStore.subscribe(modals => {
     if(browser) {
-      debugger;
       if(Object.keys(modals).length == 0) {
-        const body = document.body;
-        const scrollY = body.style.top;
-        
-        body.style.position = '';
-        body.style.top = '';
-        if(scrollY != ''){
-          window.scrollTo(0, parseInt(scrollY || '0') * -1,0);
-        }
+        /*overflow-y: auto;
+        margin-right: 0px;*/
+        document.body.style.overflowY = 'auto';
+        document.body.style.marginRight = '0px';
         
       }
       else {
-        const scrollY = document.documentElement.style.getPropertyValue('--scroll-y');
-        const body = document.body;
-        body.style.position = 'fixed';
-        body.style.top = `-${scrollY}`;
+        /*overflow-y: hidden;
+        margin-right: 0px;*/
+        document.body.style.overflowY = 'hidden';
+        document.body.style.marginRight = '0px';
       }
       console.log('hey: ', Object.keys(modals).length);
     }

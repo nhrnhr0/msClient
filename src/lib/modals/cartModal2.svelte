@@ -7,6 +7,7 @@
     import { logStore } from "./../../stores/logStore";
     import { flip } from 'svelte/animate';
 	import { get_user_uuid, submit_cart_form } from "./../../api/api";
+	import {activeModalsStore } from '$lib/modals/modalManager';
 
 
     export let isModalOpen = false;
@@ -85,6 +86,7 @@
     }
     export function toggleModal() {
         isModalOpen = !isModalOpen;
+		activeModalsStore.modalToggle('cartModal2', isModalOpen);
         if(isModalOpen) {
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
         }else {
@@ -96,7 +98,6 @@
     }
     let mform;
     function delete_product_from_cart(key) {
-        debugger;
         let element = document.querySelector(`.product[data-product="${key}"]`).classList.add('deleted')
         setTimeout(()=>{
 
