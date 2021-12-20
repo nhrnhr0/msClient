@@ -1,9 +1,11 @@
+
+
 <script>
   import {flyToCart} from './../utils/js/flyToCart';
   import {
     get_album_details
   } from './../../api/api';
-  import SvelteMarkdown from 'svelte-markdown'
+  import SvelteMarkdown from 'svelte-markdown';
 
   import {
     writable
@@ -36,7 +38,7 @@
 import {pushMainPage, pushProductState } from './../../stores/urlManager';
 
 import { logStore } from './../../stores/logStore';
-import {Event} from '$lib/utils/js/Event'
+    import {Event} from '$lib/utils/js/Event'
     import {Magnifier} from '$lib/utils/js/Magnifier.js';
     import { selectTextOnFocus } from '$lib/ui/inputActions';
     import {activeModalsStore } from '$lib/modals/modalManager';
@@ -54,6 +56,7 @@ import {Event} from '$lib/utils/js/Event'
   let m, evt;
 
   let is_image_loaded = false;
+
   export function isOpen() {
     return isModalOpen;
   }
@@ -230,7 +233,7 @@ import {Event} from '$lib/utils/js/Event'
         }
       }      
 
-    },0);
+    },150);
     isLoaded = true;
   });
 
@@ -388,12 +391,12 @@ import {Event} from '$lib/utils/js/Event'
                     >
                       <div class="img-inner-wraper">
                         <img class:loaded={is_image_loaded} on:load={()=>{is_image_loaded = true}} on:error={()=>{is_image_loaded = false}} class="product-modal-img" on:click={openProductImageModal} alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"
-                          data-large-img-url="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"
-                          data-large-img-wrapper="preview"
-                          />
+                        data-large-img-url="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"
+                        data-large-img-wrapper="preview"   
+                        />
                       </div>
                   </div>
-                    
+
                 </div>
                 <div class="magnifier-preview-wraper">
                   <div class="magnifier-preview example heading" id="preview"></div>
@@ -732,6 +735,7 @@ import {Event} from '$lib/utils/js/Event'
   max-height: fit-content;
   height: 90vh;
   height: calc(90vh - calc(90vh - 90%));
+  overflow: hidden;
   @media screen and (max-width: 768px) {
     width: 94%;
     //height: 85%;
@@ -765,10 +769,11 @@ import {Event} from '$lib/utils/js/Event'
       //background-color: rgba(255, 255, 255, 0.6);
       //background-blend-mode: lighten;
         min-height: 63vh;
+        height: 63vh;
         width: 100%;
         max-width: initial!important;
         position: relative;
-        overflow-y:scroll;
+        overflow:auto;
         @media screen and (max-width: 1100px) {
           overflow-y: auto;
           
@@ -956,6 +961,8 @@ import {Event} from '$lib/utils/js/Event'
     }
     .modal-fotter {
       justify-content: space-evenly;
+      height: 69px;
+      overflow: hidden;
 
       .btn {
         padding: 0px;
