@@ -3,6 +3,7 @@
   import {
     cartStore
   } from './../../stores/cartStore';
+  import {activeModalsStore } from '$lib/modals/modalManager';
   import {
 CLOUDINARY_URL,
     STATIC_BASE
@@ -25,13 +26,43 @@ CLOUDINARY_URL,
     DropdownToggle,
 Spinner
   } from 'sveltestrap';
+  import { selectTextOnFocus } from '$lib/ui/inputActions';
 
-  let isModalOpen;
-  export function toggleModal() {
+
+  function remove_from_cart(e)  {
+    const productId = e.currentTarget.dataset.productId;
+    const imgData = {
+      'id': productId
+    };
+    console.log(e);
+    cartStore.removeFromCart(imgData);
+      logStore.addLog(
+                            {
+                                'a': 'הסר מהעגלה ממודל קטגוריה',
+                                't': 'remove from cart',
+                                'f': {
+                                    'type':'category',
+                                    'id':$current_album.id,
+                                    'ti':$current_album.title
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':imgData.id,
+                                    'ti':imgData.title, 
+                                }
+                            }
+                            );
+  }
+
+  export let isModalOpen = false;
+  export function toggleModal(push_url=true) {
     isModalOpen = !isModalOpen;
+    activeModalsStore.modalToggle('cmodal', isModalOpen);
     if (isModalOpen == false) {
       //$stateQuery['category'] = '-1';
-      pushMainPage();
+      if(push_url) {
+        pushMainPage();
+      }
       
     }else {
       
@@ -53,7 +84,7 @@ import { logStore } from './../../stores/logStore';
   let fotter = '';
   let modal_zIndex = 0;
 
-  export function setAlbum(album) {
+  export function setAlbum(album, push_url=true) {
     current_album.set(album);
     desctiption = album.description;
     fotter = album.fotter;
@@ -61,7 +92,9 @@ import { logStore } from './../../stores/logStore';
     title = album.title;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
     //$stateQuery['category'] = album.id;
-    pushCategoryState(album.id);
+    if(push_url) {
+      pushCategoryState(album.id);
+    }
     setTimeout(()=> {
         modal_body.scrollTop = 0;
       },30);
@@ -97,10 +130,10 @@ import { logStore } from './../../stores/logStore';
   function likeBtnClicked(e) {
     let img = e.currentTarget.parentElement.querySelector('.product-image');
     let imgData = JSON.parse(e.currentTarget.dataset["img"]);
-    flyToCart(img);
-    $cartStore[imgData.id] = imgData;
-    
-    logStore.addLog(
+    if(cartStore.isInCart(imgData) == false) {
+      cartStore.addToCart(imgData);
+      flyToCart(img);
+      logStore.addLog(
                             {
                                 'a': 'הוסף לעגלה ממודל קטגוריה',
                                 't': 'add to cart',
@@ -116,6 +149,33 @@ import { logStore } from './../../stores/logStore';
                                 }
                             }
                             );
+    }
+    else {
+      document.querySelector(`#amount_${imgData.id}`).focus();
+      /*
+      cartStore.removeFromCart(imgData);
+      logStore.addLog(
+                            {
+                                'a': 'הסר מהעגלה ממודל קטגוריה',
+                                't': 'remove from cart',
+                                'f': {
+                                    'type':'category',
+                                    'id':$current_album.id,
+                                    'ti':$current_album.title
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':imgData.id,
+                                    'ti':imgData.title, 
+                                }
+                            }
+                            );*/
+    }
+    
+    //flyToCart(img);
+    //$cartStore[imgData.id] = imgData;
+    
+    
   }
 
 
@@ -142,6 +202,8 @@ import { logStore } from './../../stores/logStore';
                             );
     setAlbum(alb);
   }
+
+
 </script>
 
 
@@ -149,6 +211,7 @@ import { logStore } from './../../stores/logStore';
   <div class="overlay" style="z-index: {modal_zIndex+5};" on:click={toggleModal}></div>
   <div class="modal_content" style="z-index: {modal_zIndex+10};">
     <div class="modal-header">
+      <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
       <h5 class="modal-title">{$current_album.title}</h5>
 
       <div class="modal-header-links">
@@ -170,7 +233,7 @@ import { logStore } from './../../stores/logStore';
               </DropdownItem>        
             {/each}
           </DropdownMenu>
-      </Dropdown>
+        </Dropdown>
         <!--
         <nav class="navbar navbar-expand">
           <div class="container-fluid">
@@ -198,6 +261,8 @@ import { logStore } from './../../stores/logStore';
         </nav>
         -->
       </div>
+      
+      <button title="Close" on:click={toggleModal} class="close-btn left">x</button>
     </div>
     <div class="modal-body" bind:this={modal_body}>
 
@@ -234,22 +299,79 @@ import { logStore } from './../../stores/logStore';
           <div class="img-title">{img.title}</div>
         </div>
         <div  on:click={likeBtnClicked} data-img={JSON.stringify(img)} class="like-btn-wraper">
+          {#if $cartStore[img.id] == undefined}
+          <button  id="categoryModalLikeBtn" class="like-btn">
+            <div class="img-wraper">
+              <div class="btn-product-title">
+                          {img.title}
+              </div>
+              <div class="action">
+                  <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
+                  <div class="text">
+                    הוסף
+                  </div>
+              </div>
+            </div>
+            
+          </button>
+          {:else}
+
+          <button  id="categoryModalLikeBtn" class="like-btn active">
+            <div class="img-wraper">
+              <div class="btn-product-title">
+                          {img.title}
+              </div>
+              <div class="action">
+                  
+
+
+
+                <div class="amount-before">
+                  <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" data-product-id="{img.id}">
+                    <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="24px" height="24px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
+                  </button>
+                    <div class="amount-text">
+                      כמות:
+                    </div>
+                  </div>
+                  <div class="text">
+                      <input id="amount_{img.id}" use:selectTextOnFocus class="item-amount" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
+                  </div>
+                  
+
+
+
+
+                
+            </div>
+            </div>
+            
+          </button>
+
+          {/if}
+          <!--
           <button  id="categoryModalLikeBtn" class:active={$cartStore[img.id] != undefined} class="like-btn">
             <div class="img-wraper">
+              <div class="btn-product-title">
+                          {img.title}
+              </div>
+              <div class="action">
               {#if $cartStore[img.id] != undefined}
                   <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
                   <div class="text">
                     נוסף
                   </div>
                 {:else}
-                  <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>
+                  <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
                   <div class="text">
                     הוסף
                   </div>
               {/if}
             </div>
+            </div>
             
           </button>
+          -->
         </div>
         <!--
         <div>
@@ -288,14 +410,13 @@ import { logStore } from './../../stores/logStore';
     </div>
     <div class="modal-footer">
       <img class="header-logo header-logo-r" alt="M.S. Global" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" />
-      <h5 class="modal-title">{$current_album.title}</h5>
+      <h6 class="modal-title">{$current_album.title}</h6>
       <img class="header-logo header-logo-l" alt="M.S. Global" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" />
     </div>
 
     
     <!-- End of Dynamic Section -->
-    <button title="Close" on:click={toggleModal} class="close_modal">x</button>
-    <button title="Close" on:click={toggleModal} class="close_modal left">x</button>
+    
 
   
   
@@ -312,16 +433,13 @@ import { logStore } from './../../stores/logStore';
 
 
 <style lang="scss">
-      
+
       .like-btn-wraper{
         display: flex;
         justify-content: center;
         align-items: center;
-      &:hover {
-          & .like-btn:not(.active) .text::after {
-            //content: ' להצעת מחיר'
-          }
-        } 
+        flex:1;
+        
       .like-btn {
         display: flex;
         justify-content: center;
@@ -333,10 +451,11 @@ import { logStore } from './../../stores/logStore';
         color: white;
         text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
         z-index: 1;
-        
+        height: 75px;
         font-weight: bold;
-        pointer-events: none;
+        //pointer-events: none;
         text-align: center;
+        min-height: 40px;
         //word-break: break-all;
 
 
@@ -346,8 +465,12 @@ import { logStore } from './../../stores/logStore';
         border-top-left-radius: 0;
         border: var(--swiper-slide-border) solid black;
         border-bottom-width: 0px;
-
-
+        .text {
+          display:inline-block;
+          font-size: 1.5em;
+          
+        }
+        
         &.active {
           @include bg-gradient();
           //border: 1px solid red;
@@ -355,18 +478,99 @@ import { logStore } from './../../stores/logStore';
           //color:rgb(70, 70, 70);
 
         }
-        .text {
-          display:inline-block;
-          font-size: 1.5em;
-        }
+        
         .img-wraper {
           
           display: inline-flex;
           justify-content: center;
           align-items: center;
+          flex-direction: column;
+          @media (hover: hover) {
+            .btn-product-title {
+              display:none;
+            }
+          }
           img {
             width:40px;
             height: 40px;
+          }
+          .btn-product-title {
+            font-size: 1.2em;
+            //text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: normal;
+            word-break: break-all;
+            
+            width: auto;
+            height: 1.5em; 
+            
+            
+            
+          }
+          .action {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            .text {
+              display: inline-block;
+              font-size: 1em;
+              input.item-amount {
+                text-align: center;
+                border: none;
+                background: transparent;
+                border-radius: 999999px;
+                border-bottom-left-radius: 0px;
+                border-top-left-radius: 0px;
+                padding: 0;
+                margin: 0;
+                margin-left: 5px;
+                font-weight: bold;
+                direction: rtl;
+                &:focus {
+                  outline: none;
+                }
+              }
+            }
+
+            .amount-before {
+              font-size: 1.2em;
+              display:flex;
+              flex-direction: row;
+              justify-content: center;
+              align-items: center;
+              .delete-btn {
+                display:flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                background: none;
+                border: none;
+                svg {
+                  fill: black;
+                }
+                &:hover svg {
+                  fill:red;
+                }
+              }
+            }
+          }
+          @media (hover: hover){
+            .action {
+              .text {
+                font-size: 1.34em;
+              }
+            }
+            &.active {
+              .action {
+                .text {
+                  font-size: 1em;
+                }
+              }
+            }
+          }
+          @media (hover: hover) {
+
           }
         }
         
@@ -384,10 +588,18 @@ import { logStore } from './../../stores/logStore';
 /* Modal */
 
 .modal .modal_content {
+  .modal-title {
+      font-size: 1.5em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   .modal-header {
-    justify-content: space-around;
+    justify-content: space-between;
+    
     
     .modal-header-links {
+      flex:4;
       
       :global(.category-menu) {
         :global(.dropdown-menu.show) {
@@ -407,6 +619,10 @@ import { logStore } from './../../stores/logStore';
         }
       }
     }
+    h5 {
+      flex:4;
+    }
+
   }
   overscroll-behavior: contain;
   display: flex;
@@ -417,13 +633,13 @@ import { logStore } from './../../stores/logStore';
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  max-height: 99%;
-  height: 99%;
+  max-height: 90%;
+  height: 90%;
   overflow: auto;
   background: #fff;
   box-shadow: 0 1px 5px rgba(0,0,0,0.7);
   border-radius: 4px;
-  width: 99%;
+  width: 90%;
   text-align: center;
   
   .modal-body{
@@ -433,21 +649,44 @@ import { logStore } from './../../stores/logStore';
         display: grid;
     grid-column: 1fr 1fr 1fr;
     grid-template-columns: repeat(5, 1fr);
-    @media screen and (max-width: 900px) {
+    @media screen and (max-width: 1040px) {
       grid-template-columns: repeat(4, 1fr);
     }
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 840px) {
       grid-template-columns: repeat(3, 1fr);
+      .amount-text {
+        display: none;
+      }
+      /**
+      color: black;
+      text-shadow: none;
+      font-weight: bold;
+      */
+      .category-item{
+        .like-btn-wraper  {
+          .like-btn {
+            .img-wraper {
+              .btn-product-title {
+                font-size: 1em;
+              }
+            }
+          }
+        }
+      }
     }
-    @media screen and (max-width: 450px) {
+    @media screen and (max-width: 490px) {
       grid-template-columns: repeat(2, 1fr);
-      
+      //max-width: 155px;
     }
     .category-item {
       cursor: pointer;
       padding: 5px;
-
+      flex:1;
+      flex-grow: 0;
+      flex-shrink: 1;
       .category-item-img-wraper {
+        
+
         &:hover {
           background-color: black;
           transform: scale(1.0);
@@ -492,6 +731,7 @@ import { logStore } from './../../stores/logStore';
             //transform: translate(-50%, -80%);
             font-weight: 700;
           }
+          
         }
       }
 
@@ -520,6 +760,7 @@ import { logStore } from './../../stores/logStore';
         top: 50%;
         text-align: center;
         width: 100%;
+      
       }
     }
   }
@@ -533,13 +774,15 @@ import { logStore } from './../../stores/logStore';
     justify-content: space-between;
     display: flex;
     flex-direction: row;
+    padding: 0px;
     .header-logo {
       height: 35px;
     }
 
     .modal-title {
       font-weight: 700;
-      font-size: xx-large;
+      font-size: x-large;
+      
     }
     @media screen and (max-width: 600px) {
       padding:0px;
@@ -554,19 +797,5 @@ import { logStore } from './../../stores/logStore';
 }
 
 
-.modal .close_modal {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  cursor: pointer;
-  font-size: 18px;
-  opacity: 0.5;
-  background: none;
-  border: none;
-  transition: opacity 0.2s ease;
-}
 
-.modal .close_modal:hover {
-  opacity: 0.9;
-}
 </style>

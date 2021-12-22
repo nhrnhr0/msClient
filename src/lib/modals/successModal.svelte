@@ -2,12 +2,15 @@
     import {
         _modal_z_index_incrementor
     } from "./../../stores/stores";
+    import {activeModalsStore } from '$lib/modals/modalManager';
 
-    let isModalOpen = false;
+
+    export let isModalOpen = false;
     let modal_zIndex = 0;
 
     export function toggleModal() {
         isModalOpen = !isModalOpen;
+        activeModalsStore.modalToggle('successModal', isModalOpen);
         if (isModalOpen) {
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
         }

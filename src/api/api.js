@@ -18,6 +18,7 @@ export function apiSendLogs(logs) {
     })
 }
 export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false) {
+    console.log('fetch_wraper: ', url);
     let headers_json= {
         'Content-Type': 'application/json',
         'Content-Type': 'application/json; charset=UTF-8',

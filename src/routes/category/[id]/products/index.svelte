@@ -5,6 +5,7 @@ import { fetch_wraper } from ".../../../../api/api";
 import { ALL_IMAGE_ID_URL } from ".../../../../api/consts";
 import { get_album_details } from ".../../../../api/api";
 import { ALBUMS_API_URL } from "./../../../../api/consts";
+import { onMount } from "svelte";
 
     export async function load({page, fetch, session, contex}) {
         //console.log(page.params.id);
@@ -23,6 +24,12 @@ import { ALBUMS_API_URL } from "./../../../../api/consts";
 </script>
 <script>
     export let products;
+    onMount(()=> {
+        debugger;
+        var loc = window.location.href;
+        loc = loc.replace('/products', '');
+        window.location.replace(loc);
+    })
 </script>
 
 {#each products as product}

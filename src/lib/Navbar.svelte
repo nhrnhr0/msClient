@@ -133,8 +133,8 @@ import { logStore } from "./../stores/logStore";
 <nav class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
         <!-- svelte-ignore a11y-invalid-attribute -->
-        <a class="navbar-logo" href="javascript:window.location.href=window.location.href" aria-label="logo" role="button"><img class="nav-logo" width="100px" height="40px"
-                src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
+        <a class="navbar-logo" href="javascript:window.location.href=window.location.href" aria-label="logo" role="button"><img class="nav-logo" width="98.7064676px" height="40px"
+                src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1634457672/msAssets/favicon_rza3n9"
                 alt=""></a>
 
                 
@@ -291,7 +291,7 @@ import { logStore } from "./../stores/logStore";
     .logo {
       //display: inline-block;
       height: 20px;
-      transform: translate(0, 25%);
+      //transform: translate(0, 25%);
       float: left;
     }
   }
@@ -325,9 +325,9 @@ import { logStore } from "./../stores/logStore";
         z-index: 1000;
 
         .nav-logo {
-            width: auto;
-            height: 40px;
-            @media screen and (max-width: 768px) {
+            //width: auto;
+            //height: 40px;
+            @media screen and (max-width: 800px) {
                 display: none;
             }
         }

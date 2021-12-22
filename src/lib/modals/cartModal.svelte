@@ -1,27 +1,29 @@
 <script>
+    import {all_swipers, cartModalStore, productModalStore, successModalStore, userInfoStore, _modal_z_index_incrementor} from "./../../stores/stores";
+    import { cartStore } from "./../../stores/cartStore"
+    import { CLOUDINARY_URL, STATIC_BASE, SUBMIT_CART_URL } from "./../../api/consts";
+    import { subscribe } from "svelte/internal";
+    import {
+        Button,
+        Card,
+        CardBody,
+        CardFooter,
+        CardHeader,
+        CardSubtitle,
+        CardText,
+        CardTitle
+    } from 'sveltestrap';
+    import { get_user_uuid, submit_cart_form } from "./../../api/api";
+    import { logStore } from "./../../stores/logStore";
+    import { selectTextOnFocus } from '$lib/ui/inputActions';
+    import {activeModalsStore } from '$lib/modals/modalManager';
 
-import {all_swipers, cartModalStore, productModalStore, successModalStore, userInfoStore, _modal_z_index_incrementor} from "./../../stores/stores";
-import { cartStore } from "./../../stores/cartStore"
-import { CLOUDINARY_URL, STATIC_BASE, SUBMIT_CART_URL } from "./../../api/consts";
-import { subscribe } from "svelte/internal";
-import {
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    CardSubtitle,
-    CardText,
-    CardTitle
-  } from 'sveltestrap';
-import { get_user_uuid, submit_cart_form } from "./../../api/api"
-import { logStore } from "./../../stores/logStore";
-
-    let isModalOpen = false;
+    export let isModalOpen = false;
     let modal_zIndex = 0;
 
     export function toggleModal() {
         isModalOpen = !isModalOpen;
+        activeModalsStore.modalToggle('cartModal', isModalOpen);
         if(isModalOpen) {
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
         }
@@ -34,8 +36,9 @@ import { logStore } from "./../../stores/logStore";
         
         let item = $cartStore[key];
         let swiper = $all_swipers[item.albums[0]];
-        delete $cartStore[key];
-        $cartStore =$cartStore;
+        //delete $cartStore[key];
+        cartStore.removeFromCart(item);
+        //$cartStore =$cartStore;
         swiper.fixDups();
         logStore.addLog(
                             {
@@ -77,15 +80,24 @@ import { logStore } from "./../../stores/logStore";
     let form_name;
     let form_email;
     let form_phone;
+    let form_message;
     function cart_submit() {
         if(mform.reportValidity()) {
+            let cart_products = [];
+            for(let key in $cartStore) {
+                let product = $cartStore[key];
+                cart_products.push({'id': product.id, 'amount': product.amount});
+            }
+
             let data = {
                 name: form_name || '',
                 email: form_email || '',
                 phone:form_phone || '',
                 uuid: get_user_uuid() || '',
-                products: Object.keys($cartStore),
+                message: form_message || '',
+                products: cart_products,
             };
+            
             logStore.addLog(
                             {
                                 'a': 'שליחת הזמנה',
@@ -105,20 +117,39 @@ import { logStore } from "./../../stores/logStore";
                     if(data_json['status'] == 'success') {
                         $cartModalStore.toggleModal();
                         $successModalStore.toggleModal();
-                        $cartStore = {};
+                        //$cartStore = {};
+                        cartStore.clearCart();
                     }
                 
             });
             mform.reset();
         }
     }
+
+    function decrease_product_amount(key) {
+        console.log('decrease_product_amount: ', key);
+        if($cartStore[key].amount > 1) {
+            $cartStore[key].amount--;
+        }
+    }
+
+    function increase_product_amount(key) {
+        console.log('increase_product_amount: ', key);
+        if ($cartStore[key].amount < 9999) {
+            $cartStore[key].amount++;
+        }
+    }
+
+    let cart_modal_height = '465'
 </script>
 
 <div id="cartModal" style="z-index: {modal_zIndex};" class="modal" class:active={isModalOpen}>
     <div class="overlay" style="z-index: {modal_zIndex+5};" on:click={toggleModal}></div>
     <div class="modal_content" style="z-index: {modal_zIndex+10};">
         <div class="modal-header">
+            <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
             <h1>מוצרים שאהבתי</h1>
+            <button title="Close" on:click={toggleModal} class="close-btn left">x</button>
         </div>
         
         <div class="modal-body">
@@ -166,6 +197,9 @@ import { logStore } from "./../../stores/logStore";
                                 <div class="form-control"><input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="שם:" type="text"></div>
                                 <div class="form-control"><input bind:value="{form_email}" name="email" placeholder="אימייל:" type="email"></div>
                                 <div class="form-control"><input bind:value="{form_phone}" name="tel" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="טלפון:" type="tel"></div>
+                                <div class="form-control"><textarea bind:value="{form_message}" name="message" required="{false}" placeholder="הודעה:"/>
+                                
+                                </div>
                                 <div class="form-control">
                                     <button class="send-btn" on:click|preventDefault="{cart_submit}">שלח</button>
                                 </div>
@@ -178,7 +212,12 @@ import { logStore } from "./../../stores/logStore";
                         {#each Object.keys($cartStore) as key}
                             <div class="product">
                                 <button on:click|preventDefault="{delete_product_from_cart(key)}"class="delete-product">X</button>
-                                <div class="modal-open-area" on:click={open_product_modal(key)}>
+                                <div class="product-amount">
+                                    <button on:click|preventDefault="{decrease_product_amount(key)}" class="decrease-amount">-</button>
+                                    <input type="number" use:selectTextOnFocus min="1" max="9999" class="amount-input" name="product_amount" bind:value="{$cartStore[key].amount}" />
+                                    <button on:click|preventDefault="{increase_product_amount(key)}" class="increase-amount">+</button>
+                                </div>
+                                <div class="modal-open-area" title="{$cartStore[key].title}" on:click={open_product_modal(key)}>
                                     <div class="title">{$cartStore[key].title}</div>
                                     <div class="img-wraper">
                                         <img src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[key].cimage}" alt="{$cartStore[key].title}">
@@ -201,8 +240,6 @@ import { logStore } from "./../../stores/logStore";
         </div>
         <div class="modal-footer"></div>
         <!-- End of Dynamic Section -->
-        <button title="Close" on:click={toggleModal} class="close_modal">x</button>
-        <button title="Close" on:click={toggleModal} class="close_modal left">x</button>
 
     </div>
 </div>
@@ -258,7 +295,14 @@ import { logStore } from "./../../stores/logStore";
     }
     #cartModal {
         .modal_content {
+            height: 70vh;
+            display:flex;
+            flex-direction: column;
             .modal-header {
+                padding:0px;
+                .close-btn {
+
+                }
                 h1 {
                     text-align: center;
                     margin: auto;
@@ -266,6 +310,8 @@ import { logStore } from "./../../stores/logStore";
             }
 
             .modal-body {
+                flex:1;
+                overflow-y: scroll;
                 //height: 70vh;
                 .inner-body {
                     display:flex;
@@ -296,7 +342,7 @@ import { logStore } from "./../../stores/logStore";
                             flex-direction: row;
                             width: 100%;
                         }
-                        @media screen and (max-width: 870px) {
+                        @media screen and (max-width: 1000px) {
                             flex-direction: column;
                             
                         }
@@ -304,12 +350,15 @@ import { logStore } from "./../../stores/logStore";
                             display: flex;
                             justify-content: center;
                             align-items: center;
-                            input {
+                            input,textarea {
                                 width: 90%;
                                 font-size: x-large;
                                 border: none;
                                 border-radius: 25px;
                                 margin-bottom: 10px;
+                            }
+                            textarea {
+                                font-size: 1em;
                             }
                         }
 
@@ -351,42 +400,166 @@ import { logStore } from "./../../stores/logStore";
                             &:hover, &:focus {
                                 background-color: rgb(204, 204, 204);
                             }
+                            > * {
+                                height: 50px;
+                                //border:1px solid red!important;
+                            }
 
                             .modal-open-area {
-                                width: 100%;
+                                flex: 1;
                                 display: flex;
                                 justify-content: flex-end;
                                 flex-direction: row-reverse;
                                 align-items: center;
+                                flex-grow: 1;
+                                flex-shrink: 0;
+                                ;
+                                width: 60%;
+                                .title {
+                                    flex-grow: 0;
+                                    flex-shrink: 1;
+                                    flex:1;
+                                    font-size: large;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                }
+                                .img-wraper {
+                                    
+                                    margin-left: 10px;
+                                    margin-right: 10px;
+                                    width: 50px;
+                                    height: 50px;
+                                    img {
+                                        width: 100%;
+                                        height: 100%;
+                                    }
+                                }
                             }
 
-                            .title {
-                                font-size: x-large;
-                            }
-                            .img-wraper {
-                                margin-left: 30px;
-                                margin-right: 10px;
-                                width: 50px;
-                                height: 50px;
-                                img {
-                                    width: 100%;
-                                    height: 100%;
-                                }
-                            }
+                            
                             .delete-product {
-                                margin-left: 15px;
-                                margin-right: auto;
+                                //margin-left: 15px;
+                                margin-right: 10px;
                                 border: none;
                                 background: none;
-                                &:hover {
-                                    border-radius: 9999px;
+                                
+                                height: 50px;
+                                width: 20%;
+                                flex:1;
+                                min-width: 35px;
+                                flex-grow: 0;
+                                flex-shrink: 1;
+                                &:hover, &:focus {
+                                    border-bottom-left-radius: 25px;
+                                    border-top-left-radius: 25px;
                                     background-color: red;
                                     color: white;
-                                    transform: scale(1.5)
                                 }
+                            }
+
+                            .product-amount {
+                                
+                                //width: 50px;
+                                height: 50px;
+                                border: none;
+                                border-radius: 25px;
+                                background-color: #faf8e1;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                font-size: x-large;
+                                font-weight: bold;
+                                transition: all 250ms;
+                                //flex:1;
+                                
+                                &:hover, &:focus {
+                                    background-color: #faf8e1;
+                                    color: black;
+                                    transform: scale(1.5);
+                                    width: fit-content;
+                                    .amount-input {
+                                        width: 70px!important;;
+                                    }
+                                }
+                                .decrease-amount, .increase-amount {
+                                    border: none;
+                                    background: none;
+                                    font-size: x-large;
+                                    font-weight: bold;
+                                    transition: all 50ms;
+                                    &:hover {
+                                        //background-color: #faf8e1;
+                                        color: black;
+                                        transform: scale(1.3)
+                                    }
+                                }
+                                .decrease-amount {
+                                    margin-right: 10px;
+                                }
+                                .increase-amount {
+                                    margin-left: 10px;
+                                }
+                                @media screen and (max-width: 700px) {
+                                    .decrease-amount, .increase-amount {
+                                        display: none;
+                                    }
+                                    &:hover, &:focus {
+                                        .decrease-amount, .increase-amount {
+                                            display:block;
+                                        }
+                                    }
+                                    .modal-open-area {
+                                    }
+                                }
+                                    
+                                
+                                .amount-input {
+                                    width: 60px;
+                                    height: 30px;
+                                    border: none;
+                                    border-radius: 25px;
+                                    background-color: #faf8e1;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    font-size: x-large;
+                                    font-weight: bold;
+                                    //transition: all 1s;
+                                    flex:1;
+                                    text-align: center;
+                                    &:hover {
+                                        //background-color: #faf8e1;
+                                        //color: black;
+                                        //transform: scale(1.1);
+                                        
+                                    }
+                                    /* Chrome, Safari, Edge, Opera */
+                                    &::-webkit-outer-spin-button,
+                                    &::-webkit-inner-spin-button {
+                                        -webkit-appearance: none;
+                                        margin: 0;
+                                    }
+
+                                    /* Firefox */
+                                    &[type=number] {
+                                        -moz-appearance: textfield;
+                                    }
+                                }
+
+                                
                             }
                             
 
+                        }
+
+                        @media screen and (max-width: 1000px) {
+                            width: 90%;
+                            margin:auto;
+                            .product  {
+                                margin-left:auto;
+                                margin-right:auto;
+                            }
                         }
                     }
                 }

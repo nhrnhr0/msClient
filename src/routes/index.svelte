@@ -1,18 +1,20 @@
 <script context="module">
 	import Header from "$lib/header.svelte"
 	import About from "$lib/about.svelte"
+  import CartDisclaimer from "$lib/cart-disclaimer.svelte"
   import LogoSwiper from "$lib/swipers/logoSwiper.svelte"
 	import {all_swipers,userDetailModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore} from './../stores/stores'
 	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL, LOGOS_API_URL } from './../api/consts'
   import { browser } from '$app/env';
   import {getCookie} from '$lib/utils/cookies';
-
+  import {activeModalsStore} from "$lib/modals/modalManager";
   export async function load({fetch, page}) {
     console.log('load: ', page, page.path);
     //const qs = browser ? document.location.search : '';
     //const query = new URLSearchParams(qs);
     //const productQuery = (query.get('product') || '-1');
     //const categoryQuery = query.get('category');
+    console.log('getting: ', ALBUMS_API_URL);
     let albums_response = await fetch(ALBUMS_API_URL, { method: 'GET', redirect: 'follow'});
     let albums_json = await albums_response.json();
     albums_json = albums_json.filter(album => album.is_public)
@@ -95,15 +97,18 @@
 <Header />
 <About />
 <LogoSwiper {logos}/>
+<CartDisclaimer />
 <!--<TempModal bind:this={$tempModalStore}/>
 <button on:click={()=>{$tempModalStore.toggleModal()}}>click me to open modal</button>-->
 <LoginModal bind:this={$loginModalStore}></LoginModal>
 <ProductModal bind:this={$productModalStore}></ProductModal>
 <ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
 <CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
-<CartModal bind:this={$cartModalStore}></CartModal>
+<CartModal2 bind:this={$cartModalStore}></CartModal2>
 <SuccessModal bind:this={$successModalStore}></SuccessModal>
 <UserDetailsModal bind:this={$userDetailModalStore}></UserDetailsModal>
+
+
 {#each albums as album}
 
 		<div class="title-wraper">
@@ -118,6 +123,7 @@
 
 <ContentForm></ContentForm>
 
+<link rel="preload" as="image" href="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png">
 
 <script>
 
@@ -135,6 +141,7 @@ import UserDetailsModal from '$lib/modals/userDetailsModal.svelte';
 import { bind } from 'svelte/internal';
 import { stateQuery} from './../stores/queryStore'
 import { logStore } from "../stores/logStore";
+import CartModal2 from '$lib/modals/cartModal2.svelte';
 
   export let colors;
   export let sizes;
@@ -149,16 +156,40 @@ import { logStore } from "../stores/logStore";
   
 
   onMount(()=> {
-    debugger;
     console.log('protocol: ', location.protocol);
-    if (location.protocol !== 'https:' && import.meta.env.PROD) {
-      // page is secure
-      //location.replace(`https:${location.href.substring(location.protocol.length)}`);
+    window.onpopstate = function(event) {
+      var pathArray = window.location.pathname.split('/');
+      let vals = {}
+      for(let i = 1; i < pathArray.length; i+=2) {
+        vals[pathArray[i]] = pathArray[i+1];
+      }
+      let categoryId, productId;
+      if(vals.category) {
+        categoryId = vals.category;
+        let album = albums.filter(album => album.id == categoryId)[0];
+        $categoryModalStore.setAlbum(album,false);
+        if($categoryModalStore.isOpen() == false) {
+          $categoryModalStore.toggleModal(false);
+        }
+        if(vals.products) {
+          productId = vals.products;
+          $productModalStore.setProduct(categoryId, productId,false);
+          if($productModalStore.isOpen() == false) {
+            $productModalStore.toggleModal(false);
+          }
+        }
+      }
+      
 
-    }
-    /*window.onpopstate = function(event) {
-      alert("location: " + document.location + ", state: " + JSON.stringify(event.state));
-    };*/
+      if(productId == undefined && categoryId == undefined) {
+        if($categoryModalStore.isOpen()) {
+          $categoryModalStore.toggleModal(false);
+        }
+        if($productModalStore.isOpen()) {
+          $productModalStore.toggleModal(false);
+        }
+      }
+    };
     let csrf_response = request_csrf_token();
     /*csrf_response.then(response => {
       if($userInfoStore.isLogin == false && $userInfoStore.refresh != null) {
@@ -178,9 +209,20 @@ import { logStore } from "../stores/logStore";
       onLoadTask = JSON.parse(onLoadTask);
       if (onLoadTask.type == 'product') {
         let prodId = onLoadTask.data.id;
-        let cateId = onLoadTask.data.albums[0];;
-        $productModalStore.toggleModal()
-        $productModalStore.setProduct(cateId, prodId);
+        let cateId = onLoadTask.data.albums[0];
+        
+
+
+        $categoryModalStore.setAlbum(albums.filter(album => album.id == cateId)[0]);
+        
+        $categoryModalStore.toggleModal();
+        setTimeout(()=> {
+          $productModalStore.toggleModal()
+          $productModalStore.setProduct(cateId, prodId);
+        },1);
+
+
+        
       }else if(onLoadTask.type == 'category') {
         let album = onLoadTask.data;
         $categoryModalStore.toggleModal();
@@ -189,27 +231,31 @@ import { logStore } from "../stores/logStore";
       sessionStorage.removeItem('onLoadTask');
     }
     
-    /*if(onLoadCategory != '-1') {
-      for(let i = 0; i < albums.length; i++) {
-        if(albums[i].id == onLoadCategory) {
-          openCategoryModal(albums[i]);
 
-          break;
-        }
+    window.addEventListener('scroll', () => {
+      document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
+    });
+
+
+  });
+
+  activeModalsStore.subscribe(modals => {
+    if(browser) {
+      if(Object.keys(modals).length == 0) {
+        /*overflow-y: auto;
+        margin-right: 0px;*/
+        document.body.style.overflowY = 'auto';
+        document.body.style.marginRight = '0px';
+        
       }
+      else {
+        /*overflow-y: hidden;
+        margin-right: 0px;*/
+        document.body.style.overflowY = 'hidden';
+        document.body.style.marginRight = '0px';
+      }
+      console.log('hey: ', Object.keys(modals).length);
     }
-    if(onLoadProduct != '-1') {
-      let [prodId, cateId] = onLoadProduct.split(',');
-      $productModalStore.toggleModal()
-      $productModalStore.setProduct(prodId, cateId);
-      
-      //openProductModalFromId(cateId, prodId)
-    }*/
-
-    /*setTimeout(()=> {
-      console.log('y_scroll: ', y_scroll)
-      y_scroll = 0;
-    },500);*/
   });
 
 

@@ -15,6 +15,7 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
         if(isNumeric(page.params.id)) {
             let response = await fetch_wraper(url , {"method":"GET"}, fetch);
             //console.log(response);
+            response.description = response.description.replace(/(\r\n|\n|\r)/gm, "");
             return {
                 props: {
                     data: response,

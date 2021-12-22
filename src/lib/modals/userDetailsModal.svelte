@@ -13,6 +13,7 @@
     CardText,
     CardTitle
   } from 'sveltestrap';
+  import {activeModalsStore } from '$lib/modals/modalManager';
 import { request_logout, request_update_user_detail } from './../../api/auth'
 import { onDestroy } from 'svelte';
     let modal_zIndex = 0;
@@ -55,6 +56,7 @@ import { onDestroy } from 'svelte';
 
     export function toggleModal() {
         isModalOpen = !isModalOpen;
+        activeModalsStore.modalToggle('userDetailsModal', isModalOpen);
         if (isModalOpen) {
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
             username = $userInfoStore.me['username'];
@@ -92,9 +94,11 @@ import { onDestroy } from 'svelte';
     <div style="z-index: {modal_zIndex+10};" class="modal_content">
         {#if $userInfoStore.isLogin }
             <div class="modal-header">
+                <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
                 <h1> 
                     שלום {$userInfoStore.me['businessName']}
                 </h1>
+                <button title="Close" on:click={toggleModal} class="close-btn left">x</button>
             </div>
 
             <div class="modal-body">
@@ -189,8 +193,6 @@ import { onDestroy } from 'svelte';
             <div class="modal-fotter">
 
             </div>
-            <button title="Close" on:click={toggleModal} class="close_modal">x</button>
-            <button title="Close" on:click={toggleModal} class="close_modal left">x</button>
         {/if}
 
     </div>

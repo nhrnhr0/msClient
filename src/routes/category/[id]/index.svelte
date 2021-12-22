@@ -14,6 +14,7 @@ import { isNumeric } from "$lib/utils/utils";
             if(isNumeric(page.params.id)) {
                 let response = await fetch_wraper(url , {"method":"GET"}, fetch);
                 //console.log(response);
+                response.fotter = response.fotter.replace(/(\r\n|\n|\r)/gm, "");
                 return {
                     props: {
                         data: response,
@@ -40,13 +41,13 @@ import { isNumeric } from "$lib/utils/utils";
     </script>
     <svelte:head>
         <title>{data?.title}</title>
-        <meta name="description" content={data?.description} />
+        <meta name="description" content={data?.fotter} />
         <meta name="keywords" content={data?.keywords} />
         <meta name="title" content="{data?.title}">
 
 
         <meta property="og:title" content={data?.title} />
-        <meta property="og:description" content={data?.description} />
+        <meta property="og:description" content={data?.fotter} />
         <meta property="og:image" content={CLOUDINARY_URL + 'f_auto,w_auto/' + data?.first_image?.cimage} />
         <meta property="og:type" content="category" />
         <meta property="og:site_name" content="M.S. Global" />

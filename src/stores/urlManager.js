@@ -9,5 +9,14 @@ export function pushMainPage() {
 }
 
 export function pushState(url) {
-    //window.history.pushState(null, null, url);
+    console.log('pushState: ', url);
+    window.history.pushState(null, null, url);
+
+    if(ga == undefined) {
+        ga = window.ga;
+    }
+    if(ga != undefined) {
+        ga('set', 'page', url);
+        ga('send', 'pageview', url);
+    }
 }

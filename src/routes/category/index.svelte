@@ -18,7 +18,12 @@
         
     </script>
     <script>
+import { onMount } from "svelte";
+
         export let data;
+        onMount(()=> {
+            window.location.replace("/");
+        })
     </script>
     
     {#each data as d}

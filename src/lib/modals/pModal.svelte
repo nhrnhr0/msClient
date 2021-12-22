@@ -1,9 +1,11 @@
+
+
 <script>
   import {flyToCart} from './../utils/js/flyToCart';
   import {
     get_album_details
   } from './../../api/api';
-  import SvelteMarkdown from 'svelte-markdown'
+  import SvelteMarkdown from 'svelte-markdown';
 
   import {
     writable
@@ -36,8 +38,10 @@
 import {pushMainPage, pushProductState } from './../../stores/urlManager';
 
 import { logStore } from './../../stores/logStore';
-import {Event} from '$lib/utils/js/Event'
+    import {Event} from '$lib/utils/js/Event'
     import {Magnifier} from '$lib/utils/js/Magnifier.js';
+    import { selectTextOnFocus } from '$lib/ui/inputActions';
+    import {activeModalsStore } from '$lib/modals/modalManager';
 
   let productData = writable();
   let current_album = writable();
@@ -47,11 +51,12 @@ import {Event} from '$lib/utils/js/Event'
   let modal_zIndex = 0;
   let _productId, _catalogId;
   let isLoaded = false;
-  let isModalOpen = false;
+  export let isModalOpen = false;
   let loadingText = 'טוען...';
   let m, evt;
 
   let is_image_loaded = false;
+
   export function isOpen() {
     return isModalOpen;
   }
@@ -59,12 +64,14 @@ import {Event} from '$lib/utils/js/Event'
   function getProduct() {
     return [_catalogId, _productId];
   }
-  export function setProduct(catalogId, productId) {
+  export function setProduct(catalogId, productId, push_url = true) {
     isLoaded = false;
     is_image_loaded = false;
     //$stateQuery['product'] = catalogId + ',' + productId;
     
-    pushProductState(catalogId, productId);
+    if(push_url) {
+      pushProductState(catalogId, productId);
+    }
     _productId = productId;
     _catalogId = catalogId;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
@@ -145,20 +152,22 @@ import {Event} from '$lib/utils/js/Event'
   }
 
   function open_category() {
-
-    if ($categoryModalStore.isOpen()) {
+    $categoryModalStore.setAlbum($current_album);
+    if ($categoryModalStore.isOpen() == false) {
       $categoryModalStore.toggleModal();
     }
-    $categoryModalStore.toggleModal();
-    $categoryModalStore.setAlbum($current_album);
-    /*if ($productModalStore.isOpen()) {
-      $productModalStore.toggleModal();
-    }*/
+    
+    
+
+    if ($productModalStore.isOpen()) {
+      $productModalStore.toggleModal(false);
+    }
     
 
     logStore.addLog(
                             {
                                 'a': 'פתיחת קטגוריה ממודל מוצר',
+                                't': 'open category',
                                 'f': {
                                   'type': 'product',
                                   'id': $productData.id,
@@ -201,6 +210,7 @@ import {Event} from '$lib/utils/js/Event'
 
     // waiting for isLoaded=true to init magnifier and retry init if fail after timeout
     setTimeout(()=> {
+      
       if (window.matchMedia && !window.matchMedia("(hover: none)").matches) {
         let init_magnifier = ()=> {
           evt = new Event(),
@@ -221,9 +231,9 @@ import {Event} from '$lib/utils/js/Event'
             init_magnifier();
             }, 1000);
         }
-      }
-      
-    },0);
+      }      
+
+    },150);
     isLoaded = true;
   });
 
@@ -238,13 +248,15 @@ import {Event} from '$lib/utils/js/Event'
   }
 
 
-  export function toggleModal() {
+  export function toggleModal(push_url=true) {
     console.log('product toggleModal');
     isModalOpen = !isModalOpen;
+    activeModalsStore.modalToggle('pModal', isModalOpen);
     if (isModalOpen == false) {
       //$stateQuery['product'] = -1;
-      
-      pushMainPage();
+      if(push_url) {
+        pushMainPage();
+      }
     }
 
   }
@@ -252,13 +264,70 @@ import {Event} from '$lib/utils/js/Event'
 
   function likeBtnClicked() {
     console.log('like btn clicked');
-    flyToCart(document.querySelector('.product-modal-img'))
-    $cartStore[_productId] = $productData;
-    
-    
-    logStore.addLog(
+    if(cartStore.isInCart($productData) == false) {
+      flyToCart(document.querySelector('.product-modal-img'));
+      logStore.addLog(
                             {
                                 'a': 'הוסף לעגלה ממודל מוצר',
+                                't': 'add to cart',
+                                'f': {
+                                  'type':'product',
+                                    'id':$productData.id,
+                                    'ti':$productData.title, 
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':$productData.id,
+                                    'ti':$productData.title, 
+                                }
+                            }
+                            );
+      cartStore.addToCart($productData);
+    }else {
+      document.querySelector('#productModalLikeBtn .text .item-amount').focus();
+      /*
+      cartStore.removeFromCart($productData);
+      logStore.addLog(
+                            {
+                                'a': 'הסר מעגל ממודל מוצר',
+                                't': 'remove from cart',
+                                'f': {
+                                  'type':'product',
+                                    'id':$productData.id,
+                                    'ti':$productData.title, 
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':$productData.id,
+                                    'ti':$productData.title, 
+                                }
+                            }
+                            );
+                            */
+    }
+    
+    //$cartStore[_productId] = $productData;
+    
+    
+    
+  }
+  let is_under_500px = ()=> { return window && window.matchMedia && window.matchMedia("(max-width:500px)").matches;}
+
+  function openProductImageModal(e) {
+    console.log('openProductImageModal');
+    if(should_use_pImg_modal()) {
+      $productImageModalStore.setProduct($productData);
+      $productImageModalStore.toggleModal();
+    }
+
+  }
+
+  function remove_from_cart()  {
+    cartStore.removeFromCart($productData);
+      logStore.addLog(
+                            {
+                                'a': 'הסר מעגל ממודל מוצר',
+                                't': 'remove from cart',
                                 'f': {
                                   'type':'product',
                                     'id':$productData.id,
@@ -272,16 +341,6 @@ import {Event} from '$lib/utils/js/Event'
                             }
                             );
   }
-  let is_under_500px = ()=> { return window && window.matchMedia && window.matchMedia("(max-width:500px)").matches;}
-
-  function openProductImageModal(e) {
-    
-    if(should_use_pImg_modal()) {
-      $productImageModalStore.setProduct($productData);
-      $productImageModalStore.toggleModal();
-    }
-
-  }
 </script>
 
 
@@ -293,9 +352,11 @@ import {Event} from '$lib/utils/js/Event'
   {#if isLoaded && isModalOpen && $productData && $productData.cimage}
         <div style="z-index: {modal_zIndex+10};" class="modal_content">
             <div class="modal-header">
+              <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
                 <button id="category-open-btn-{$current_album.id}" on:click={open_category}
                         class="title btn btn-outline-dark">{$current_album.title}
                     </button>
+                    <button title="Close" on:click={toggleModal} class="close-btn left">x</button>
             </div>
 
             <div class="modal-body">
@@ -310,6 +371,9 @@ import {Event} from '$lib/utils/js/Event'
                             <div class="product-size-wraper">
                                 <div class="product-size">{@html sizeMarkup}</div>
                             </div>
+                            <div class="product-packing-wraper"><b><u>שיטת אריזה: </u>
+                              <span class="product-packing">{$productData.packing_type}</span>
+                            </b></div>
                         </div>
                         <hr>
                         
@@ -326,13 +390,13 @@ import {Event} from '$lib/utils/js/Event'
                     "
                     >
                       <div class="img-inner-wraper">
-                      <img class:loaded={is_image_loaded} on:load={()=>{is_image_loaded = true}} on:error={()=>{is_image_loaded = false}} class="product-modal-img" on:click={openProductImageModal} alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
-                        data-large-img-url="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
-                        data-large-img-wrapper="preview"
+                        <img class:loaded={is_image_loaded} on:load={()=>{is_image_loaded = true}} on:error={()=>{is_image_loaded = false}} class="product-modal-img" on:click={openProductImageModal} alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"
+                        data-large-img-url="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"
+                        data-large-img-wrapper="preview"   
                         />
-                    </div>
+                      </div>
                   </div>
-                    
+
                 </div>
                 <div class="magnifier-preview-wraper">
                   <div class="magnifier-preview example heading" id="preview"></div>
@@ -344,6 +408,34 @@ import {Event} from '$lib/utils/js/Event'
                 <button id="modal-prev-btn" class="btn modal-nav-btn" on:click={prevClick}>
                     <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="prev">
                 </button>
+
+                <div  on:click={likeBtnClicked} class="like-btn-wraper">
+                {#if $cartStore[_productId] == undefined}
+                    <button  id="productModalLikeBtn" class="like-btn">
+                      <div class="img-wraper">
+                        <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
+                      </div>
+                      <div class="text">
+                          הוסף
+                      </div>
+                    </button>
+                {:else}
+                    <button  id="productModalLikeBtn" class="like-btn active">
+                      <div class="amount-before">
+                        <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" >
+                          <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="32px" height="32px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
+                        </button>
+                        <div class="amount-text">
+                          כמות: 
+                        </div>
+                      </div>
+                      <div class="text">
+                          <input class="item-amount" name="item_amount" use:selectTextOnFocus min="1" max="9999" type="number" bind:value={$cartStore[_productId].amount} />
+                      </div>
+                    </button>
+                {/if}
+                </div> 
+                <!--
                 <div  on:click={likeBtnClicked} class="like-btn-wraper">
                     <button  id="productModalLikeBtn" class:active={$cartStore[_productId] != undefined} class="like-btn">
                       <div class="img-wraper">
@@ -354,6 +446,7 @@ import {Event} from '$lib/utils/js/Event'
                         {/if}
                       </div>
                       <div class="text">
+                        
                         {#if $cartStore[_productId] != undefined}
                           נוסף
                         {:else}
@@ -362,6 +455,8 @@ import {Event} from '$lib/utils/js/Event'
                       </div>
                     </button>
                   </div>
+                -->
+
                 <button id="modal-next-btn" class="btn modal-nav-btn" on:click={nextClick}>
                     <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="next">
                 </button>
@@ -370,9 +465,12 @@ import {Event} from '$lib/utils/js/Event'
     {:else}
     <div style="z-index: {modal_zIndex+10};" class="modal_content">
       <div class="modal-header">
+        <button title="Close" on:click={toggleModal} class="close-btn">x</button>
           <button
                   class="title btn btn-outline-dark">{loadingText}
               </button>
+          <button title="Close" on:click={toggleModal} class="close-btn">x</button>
+            
       </div>
 
       <div class="modal-body">
@@ -386,6 +484,9 @@ import {Event} from '$lib/utils/js/Event'
                       </div>
                       <div class="product-size-wraper">
                           <div class="product-size">{loadingText}</div>
+                      </div>
+                      <div class="product-packing-wraper">
+                          <div class="product-packing">{loadingText}</div>
                       </div>
                   </div>
                   <hr>
@@ -414,7 +515,7 @@ import {Event} from '$lib/utils/js/Event'
           <div  on:click={likeBtnClicked} class="like-btn-wraper">
               <button  id="productModalLikeBtn" class="like-btn">
                 <div class="img-wraper">
-                      <img alt="plus" src="https://img.icons8.com/android/48/000000/plus.png"/>
+                  <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
                 </div>
                 <div class="text">
                   {loadingText}
@@ -433,31 +534,71 @@ import {Event} from '$lib/utils/js/Event'
 
 <style lang="scss">
     @import '$lib/utils/css/magnifier.css';
-    #preview {
-    }
+
     .like-btn-wraper{
-      cursor: pointer;
+      
+      width: 300px;
+      height: 69px;
       @media (min-width: 820px) {
-        &:hover {
           & .like-btn:not(.active) .text::after {
             content: ' להצעת מחיר'
+            
           }
-        } 
       }
+      @media screen and (max-width: 819px) {
+        width: 200px;
+        .amount-text {
+          display: none;
+        }
+        .like-btn { 
+          height: 50px;
+        }
+      }
+      /*@media screen and (max-width: 819px) {
+        width: 160px;
+        height: 49px;
+        
+        .amount-text {
+          display: none;
+        }
+      }*/
       
       .like-btn {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         &.active {
           //border: 1px solid red;
           background: rgba(255, 255, 255, 0.478);
           color:rgb(70, 70, 70);
 
         }
+        @media screen and (max-width: 450px) {
+          font-size: 0.8em;
+        }
         .text {
           display:inline-block;
           font-size: 1.7em;
+          input.item-amount {
+            //width: 40px;
+            //height: 40px;
+            width: 120px;
+            @media (max-width: 820px) {
+              width: auto;
+            }
+            text-align: center;
+            border: none;
+            background: transparent;
+            border-radius: 999999px;
+            border-bottom-left-radius: 0px;
+            border-top-left-radius: 0px;
+            padding: 0;
+            
+            margin: 0;
+            margin-left: 5px;
+            
+            font-weight: bold;
+            &:focus {
+              outline: none;
+            }
+          }
         }
         .img-wraper {
           width:43px;
@@ -466,27 +607,42 @@ import {Event} from '$lib/utils/js/Event'
           justify-content: center;
           align-items: center;
         }
+        .amount-before {
+          font-size: 1.7em;
+          display:flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          .delete-btn {
+            display:flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            background: none;
+            border: none;
+            svg {
+              fill: black;
+            }
+            &:hover svg {
+              fill:red;
+            }
+          }
+        }
+        display: flex;
+        justify-content: center;
+        align-items: center;
         margin-top: 10px;
         margin-bottom: 10px;
-        //visibility: visible;
         color: white;
-        width: auto;
+        width: 100%;
         text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
         z-index: 1;
-        
         font-weight: bold;
-        pointer-events: none;
         text-align: center;
-        //word-break: break-all;
-
-
         background: #0000007a;
         border-radius: 25px;
-        //border-top-right-radius: 0px;
-        //border-top-left-radius: 0;
-        //border: var(--swiper-slide-border) solid black;
-        //border-bottom-width: 0px;
-   
+
+
       }
     }
 
@@ -577,20 +733,47 @@ import {Event} from '$lib/utils/js/Event'
   display: flex;
   flex-direction: column;
   max-height: fit-content;
+  height: 90vh;
+  height: calc(90vh - calc(90vh - 90%));
+  overflow: hidden;
   @media screen and (max-width: 768px) {
     width: 94%;
-    height: 85%;
+    //height: 85%;
   }
   .modal-header {
     height: 50px;
+    padding:0px;
+    .close-btn {
+      flex:1;
+      
+      flex-grow: 0;
+      flex-shrink: 1;
+      font-weight: bolder;
+      border: none;
+      background: none;
+      font-size: 2rem;
+      &:hover,&:focus {
+        color:red;
+      }
+      &.left {
+        padding-right:4%;
+        padding-left: 2%;
+      }
+      &.right {
+        padding-left:4%;
+        padding-right: 2%;
+      }
+    }
   }
   .modal-body {
       //background-color: rgba(255, 255, 255, 0.6);
       //background-blend-mode: lighten;
         min-height: 63vh;
+        height: 63vh;
         width: 100%;
         max-width: initial!important;
         position: relative;
+        overflow:auto;
         @media screen and (max-width: 1100px) {
           overflow-y: auto;
           
@@ -672,6 +855,7 @@ import {Event} from '$lib/utils/js/Event'
               display: flex;
               flex-direction: column;
               padding-left: 10px;
+              
               .product-color-wraper {
               .product-color {
                   display: flex;
@@ -699,7 +883,11 @@ import {Event} from '$lib/utils/js/Event'
                   }
               }
               }
-
+              .product-packing-wraper {
+                padding-right: 1%;
+                padding-top:2%;
+                font-size: large;
+              }
               .product-size-wraper {
                   .product-size {
 
@@ -773,6 +961,8 @@ import {Event} from '$lib/utils/js/Event'
     }
     .modal-fotter {
       justify-content: space-evenly;
+      height: 69px;
+      overflow: hidden;
 
       .btn {
         padding: 0px;
@@ -783,6 +973,9 @@ import {Event} from '$lib/utils/js/Event'
       .modal-nav-btn {
         img {
           width: 60px;
+          @media screen and (max-width: 450px) {
+            width: auto;
+          }
         }
       }
 

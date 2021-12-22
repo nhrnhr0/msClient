@@ -4,7 +4,9 @@ userInfoStore,
         _modal_z_index_incrementor
     } from './../../stores/stores';
     import {Input}  from 'sveltestrap';
-import { request_login, request_whoAmI } from './../../api/auth'
+import { request_login, request_whoAmI } from './../../api/auth';
+import {activeModalsStore } from '$lib/modals/modalManager';
+
     let modal_zIndex = 0;
     let isModalOpen;
     let username, password;
@@ -33,6 +35,7 @@ import { request_login, request_whoAmI } from './../../api/auth'
     }
     export function toggleModal() {
         isModalOpen = !isModalOpen;
+        activeModalsStore.modalToggle('loginModal', isModalOpen);
         if (isModalOpen) {
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
 
@@ -42,7 +45,7 @@ import { request_login, request_whoAmI } from './../../api/auth'
     export function isOpen() {
         return isModalOpen;
     }
-
+    let show_password = false;
 </script>
 
 
@@ -50,13 +53,23 @@ import { request_login, request_whoAmI } from './../../api/auth'
     <div style="z-index: {modal_zIndex+5};" class="overlay" on:click={toggleModal}></div>
     <div style="z-index: {modal_zIndex+10};" class="modal_content">
         <div class="modal-header">
+            <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
             <h1>התחברות</h1>
+            <button title="Close" on:click={toggleModal} class="close-btn left">x</button>
         </div>
 
         <div class="modal-body">
             <form action="" method="POST">
                 <Input name="username" bind:value={username} placeholder="שם משתמש" type="text" />
-                <Input name="password" data="current-password" bind:value={password} placeholder="סיסמא" type="password" />
+                <Input name="password" data="current-password" bind:value={password} placeholder="סיסמא" type="{show_password?'text': 'password'}" />                 
+                <!-- checkbox to show password when typing -->
+                
+                <div class="checkbox form-control">
+                    <label>
+                        הצג סיסמא
+                        <input type="checkbox" style="width: 20px;height: 20px;" bind:checked="{show_password}" />
+                    </label>
+                </div>
                 <button class="btn btn-dark" on:click|preventDefault={login}>התחבר</button>
                 <div>{error_detail}</div>
             </form>
@@ -66,37 +79,59 @@ import { request_login, request_whoAmI } from './../../api/auth'
         <div class="modal-fotter">
 
         </div>
-        <button title="Close" on:click={toggleModal} class="close_modal">x</button>
-        <button title="Close" on:click={toggleModal} class="close_modal left">x</button>
-
 
     </div>
 </div>
 
 <style lang="scss">
     #loginModal {
+        
         .modal_content {
-            width: auto;
+            max-width: 876px;
+            //width: auto;
             .modal-header {
                 h1 {
                     margin: auto;
                 }
             }
             .modal-body {
+                min-height: 40vh;
                 width: auto;
+                
+                
+                display:flex;
+                justify-content: center;
+                align-items: center;
+                direction: ltr;
                 form {
+                    
                     width:100%;
-                    min-width: 40vw;
+                    font-weight: 2rem;
+                    //min-width: 40vw;
                     display: flex;
                     flex-direction: column;
+                    
                     margin:auto;
                     :global(.form-control) { 
                         line-height: 2;
-                        margin-bottom: 15px;
+                        margin-bottom: 25px;
+                        font-size: 2rem;
+                        &::-webKit-input-placeholder { /* WebKit browsers */
+                            text-align: center;
+                        }
+                        &::-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+                            text-align: center;
+                        }
+                        &::-moz-placeholder { /* Mozilla Firefox 19+ but I'm not sure about working */
+                            text-align: center;
+                        }
+                        &:-ms-input-placeholder { /* Internet Explorer 10+ */
+                            direction: rtl;
+                        }
                     }
                     .btn {
                         line-height: 1;
-                        font-size: xx-large;
+                        font-size: 3rem;
                     }
                 }
             }
