@@ -2,7 +2,7 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL, GET_CSRF_TOKEN_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL} from "./consts";
+import { BASE_URL, GET_CSRF_TOKEN_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
@@ -143,4 +143,10 @@ export function submit_contact_form(data) {
     let response 
     response = fetch_wraper(CONTACT_FORM_URL, requestOptions);
     return response;
+}
+
+export async function adming_get_campains() {
+    let response = await fetch_wraper(ADMIN_GET_ALL_CAMPAINS_URL);
+    let json_response = response;
+    return json_response;
 }

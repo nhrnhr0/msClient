@@ -98,15 +98,7 @@
 <About />
 <LogoSwiper {logos}/>
 <CartDisclaimer />
-<!--<TempModal bind:this={$tempModalStore}/>
-<button on:click={()=>{$tempModalStore.toggleModal()}}>click me to open modal</button>-->
-<LoginModal bind:this={$loginModalStore}></LoginModal>
-<ProductModal bind:this={$productModalStore}></ProductModal>
-<ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
-<CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
-<CartModal2 bind:this={$cartModalStore}></CartModal2>
-<SuccessModal bind:this={$successModalStore}></SuccessModal>
-<UserDetailsModal bind:this={$userDetailModalStore}></UserDetailsModal>
+
 
 
 {#each albums as album}
@@ -128,20 +120,13 @@
 <script>
 
   import CatalogSwiper from '$lib/swipers/catalogSwiper.svelte';
-  import CategoryModal from "$lib/modals/cModal.svelte";
-  import ProductModal from "$lib/modals/pModal.svelte";
-  import ProductImageModal from "$lib/modals/pImgModal.svelte";
-  import CartModal from "$lib/modals/cartModal.svelte"
+  
   import { onMount } from "svelte";
 import { get_album_details, request_csrf_token  } from "./../api/api";
 import ContentForm from '$lib/contentForm.svelte';
-import SuccessModal from '$lib/modals/successModal.svelte';
-import LoginModal from '$lib/modals/loginModal.svelte';
-import UserDetailsModal from '$lib/modals/userDetailsModal.svelte';
 import { bind } from 'svelte/internal';
 import { stateQuery} from './../stores/queryStore'
 import { logStore } from "../stores/logStore";
-import CartModal2 from '$lib/modals/cartModal2.svelte';
 
   export let colors;
   export let sizes;
