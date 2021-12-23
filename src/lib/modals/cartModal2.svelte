@@ -14,6 +14,8 @@
     let modal_zIndex = 0;
 	let state = 0;
 	let form_name, form_email, form_phone, form_message;
+	let error_found = false;
+	let error_message = '';
 	function checkout_back_click() {
 		if(state > 0) {
 			state = 0;
@@ -21,7 +23,20 @@
 	}
 	function checkout_click() {
 		if(state == 0) {
-			state = 1;
+			error_found = false;
+			debugger;
+			for (const [key, value] of Object.entries($cartStore)) {
+				console.log(`${key}: ${value}`);
+				if(value == undefined || value.amount == undefined || value.amount < 0) {
+					error_found = true;
+					error_message = 'שדה כמות חסר או שגוי';
+
+					break;
+				}
+			}
+			if(error_found == false) {
+				state = 1;
+			}
 		}
 		else if(state == 1) {
 			cart_submit();
@@ -153,6 +168,11 @@
                 <main>
                     <button class="close-button" on:click="{()=>{console.log('close click'); toggleModal();}}">X</button>
                     <h2>מוצרים שאהבתי<span class="count">{Object.keys($cartStore).length}</span></h2>
+					{#if error_found }
+						{#key error_found}
+							<h4 class="error-msg">{error_message}</h4>
+						{/key}
+					{/if}
 					{#if state == 0}
 					
 						{#if Object.keys($cartStore).length > 0}
@@ -308,6 +328,12 @@ $gray-1200: #131314;
 		color: $secondary;
 		text-decoration: none;
 	}
+}
+
+.error-msg {
+	color: $red;
+	font-size: 0.8em;
+	margin-top: 0.5em;
 }
 .modal_content {
     top:0px;

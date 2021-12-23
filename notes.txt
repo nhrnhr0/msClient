@@ -3,6 +3,8 @@
 Copy-item -Force -Recurse -Verbose .\build\* -Destination .\msClientBuild\
 
 # STAGE SETUP - copy from build to msClientBuildTest
+npm run sbuild
+npm run prebuild
 Copy-item -Force -Recurse -Verbose .\build\* -Destination .\msClientBuildTest\
 cd msClientBuildTest/
 git add .
