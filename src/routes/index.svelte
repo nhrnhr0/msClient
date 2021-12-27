@@ -4,7 +4,8 @@
   import CartDisclaimer from "$lib/cart-disclaimer.svelte"
   import LogoSwiper from "$lib/swipers/logoSwiper.svelte"
 	import {all_swipers,userDetailModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore} from './../stores/stores'
-	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL, LOGOS_API_URL } from './../api/consts'
+	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL, LOGOS_API_URL } from './../api/consts';
+  import {api_get_user_campains} from './../api/api'
   import { browser } from '$app/env';
   import {getCookie} from '$lib/utils/cookies';
   import {activeModalsStore} from "$lib/modals/modalManager";
@@ -98,8 +99,20 @@
 <About />
 <LogoSwiper {logos}/>
 <CartDisclaimer />
+<h1>{JSON.stringify(campains)}</h1>
+{#if campains}
+  {#each campains as campain}
+    <div class="title-wraper">
+      <button class="title btn">
+        {campain.name}
+      </button>
+    </div>
 
+    <PricesSwiper data={campain}/>
+  {/each}
 
+  
+{/if}
 
 {#each albums as album}
 
@@ -120,7 +133,7 @@
 <script>
 
   import CatalogSwiper from '$lib/swipers/catalogSwiper.svelte';
-  
+  import PricesSwiper from '$lib/swipers/pricesSwiper.svelte';
   import { onMount } from "svelte";
 import { get_album_details, request_csrf_token  } from "./../api/api";
 import ContentForm from '$lib/contentForm.svelte';
@@ -134,6 +147,7 @@ import { logStore } from "../stores/logStore";
   export let logos;
   export let all_products;
   let y_scroll;
+  let campains;
 
   
   //export let onLoadCategory;
@@ -176,6 +190,19 @@ import { logStore } from "../stores/logStore";
       }
     };
     let csrf_response = request_csrf_token();
+    csrf_response.then(csrf_response => {
+      debugger;
+      if($userInfoStore && $userInfoStore.isLogin) {
+        api_get_user_campains().then(campains_response => {
+          debugger;
+          campains = campains_response
+        });
+
+      }else {
+        console.log('user is not loged in');
+      }
+      
+    });
     /*csrf_response.then(response => {
       if($userInfoStore.isLogin == false && $userInfoStore.refresh != null) {
         request_refresh_token().then(response => {
