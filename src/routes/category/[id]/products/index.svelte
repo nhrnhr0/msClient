@@ -25,7 +25,6 @@ import { onMount } from "svelte";
 <script>
     export let products;
     onMount(()=> {
-        debugger;
         var loc = window.location.href;
         loc = loc.replace('/products', '');
         window.location.replace(loc);

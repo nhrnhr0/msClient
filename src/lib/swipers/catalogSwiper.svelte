@@ -19,18 +19,19 @@
     import "swiper/css/pagination"
     import "swiper/css/navigation";
     import "swiper/css/lazy"
-
-    import {cartStore} from './../../stores/cartStore'
-    import LazyImage from 'svelte-lazy-image';
-
-
-    // import Swiper core and required modules
     import SwiperCore, {
         EffectCoverflow,
         Pagination,
         Navigation
     } from 'swiper';
     import Spinner from 'svelte-spinner';
+    import {cartStore} from './../../stores/cartStore'
+    import LazyImage from 'svelte-lazy-image';
+
+
+    // import Swiper core and required modules
+    
+    
     export let loaded_data;
     import {productModalStore} from './../../stores/stores'
 import { onDestroy, onMount } from 'svelte';

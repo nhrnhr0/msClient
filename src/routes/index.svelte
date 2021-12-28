@@ -3,7 +3,7 @@
 	import About from "$lib/about.svelte"
   import CartDisclaimer from "$lib/cart-disclaimer.svelte"
   import LogoSwiper from "$lib/swipers/logoSwiper.svelte"
-	import {all_swipers,userDetailModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore} from './../stores/stores'
+	import {campainsStore,all_swipers,userDetailModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore} from './../stores/stores'
 	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL, LOGOS_API_URL } from './../api/consts';
   import {api_get_user_campains} from './../api/api'
   import { browser } from '$app/env';
@@ -99,9 +99,8 @@
 <About />
 <LogoSwiper {logos}/>
 <CartDisclaimer />
-<h1>{JSON.stringify(campains)}</h1>
-{#if campains}
-  {#each campains as campain}
+{#if $campainsStore}
+  {#each $campainsStore as campain}
     <div class="title-wraper">
       <button class="title btn">
         {campain.name}
@@ -147,7 +146,7 @@ import { logStore } from "../stores/logStore";
   export let logos;
   export let all_products;
   let y_scroll;
-  let campains;
+  //let campains;
 
   
   //export let onLoadCategory;
@@ -191,11 +190,9 @@ import { logStore } from "../stores/logStore";
     };
     let csrf_response = request_csrf_token();
     csrf_response.then(csrf_response => {
-      debugger;
       if($userInfoStore && $userInfoStore.isLogin) {
         api_get_user_campains().then(campains_response => {
-          debugger;
-          campains = campains_response
+          campainsStore.set(campains_response);
         });
 
       }else {

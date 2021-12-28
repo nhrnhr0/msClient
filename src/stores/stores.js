@@ -13,7 +13,7 @@ export let _modal_z_index_incrementor = writable(0);
 
 export let sizesJsonStore = writable([]);
 export let colorsJsonStore = writable([]);
-
+export let campainsStore = writable([]);
 export let all_swipers = writable([]);
 
 export let successModalStore = writable();

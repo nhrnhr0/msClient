@@ -13,11 +13,13 @@
 
   import {
     albumsJsonStore,
+    campainsStore,
     categoryModalStore,
     colorsJsonStore,
     productImageModalStore,
     productModalStore,
-    sizesJsonStore
+    sizesJsonStore,
+userInfoStore
   } from './../../stores/stores'
   import {
     _modal_z_index_incrementor
@@ -51,6 +53,11 @@ import { logStore } from './../../stores/logStore';
   let modal_zIndex = 0;
   let _productId, _catalogId;
   let isLoaded = false;
+  let is_in_campain = undefined;
+  let campain_id = undefined;
+  let campain_title = undefined;
+  let campain;
+  let priceTable = undefined;
   export let isModalOpen = false;
   let loadingText = 'טוען...';
   let m, evt;
@@ -187,6 +194,11 @@ import { logStore } from './../../stores/logStore';
     sizeMarkup = '';
     let colorMarkupLocal = '';
     let sizeMarkupLocal = '';
+    is_in_campain = false;
+    campain_id = '';
+    campain_title = '';
+    campain = undefined;
+    
     if (data == undefined) {
       return;
     }
@@ -234,8 +246,32 @@ import { logStore } from './../../stores/logStore';
       }      
 
     },150);
+    setTimeout(()=>{check_if_product_in_any_campain(data);}, 10);
     isLoaded = true;
   });
+
+  function check_if_product_in_any_campain(data) {
+    console.log('check_if_product_in_any_campain: ', data);
+    debugger;
+    if($campainsStore) {
+      for(let i = 0; i < $campainsStore.length; i++) {
+        let camp = $campainsStore[i];
+        let info;
+        if(info = camp.products.find(val => val.catalogImage.id == data.id)) {
+          is_in_campain = true;
+          campain = camp;
+          priceTable = info.priceTable;
+          console.log(info);
+          campain_title = camp.name;
+          campain_id = camp.id;
+          break;
+        }
+      }
+    }else {
+      console.log('no campainsStore');
+      return false;
+    }
+  }
 
 
   function should_use_pImg_modal() {
@@ -371,9 +407,37 @@ import { logStore } from './../../stores/logStore';
                             <div class="product-size-wraper">
                                 <div class="product-size">{@html sizeMarkup}</div>
                             </div>
-                            <div class="product-packing-wraper"><b><u>שיטת אריזה: </u>
+                            <!--
+                              <div class="product-packing-wraper"><b><u>שיטת אריזה: </u>
                               <span class="product-packing">{$productData.packing_type}</span>
                             </b></div>
+                            -->
+                            {#if is_in_campain}
+                              <div class="product-campains">
+                                <table class="campain-table">
+                                  <thead>
+                                  <tr class="main-title">
+                                    <th colspan="3">{campain_title}</th>
+                                  </tr>
+                                  <tr class="headers">
+                                    <th>כמות</th>
+                                    <th>מחיר למזומן</th>
+                                    <th>מחיר לשוטף</th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                    {#each priceTable as price}
+                                      <tr>
+                                        <td>{price.amount}</td>
+                                        <td>{price.cach_price}</td>
+                                        <td>{price.credit_price}</td>
+                                      </tr>
+                                    {/each}
+                                  </tbody>
+                                </table>
+
+                              </div>
+                            {/if}
                         </div>
                         <hr>
                         
@@ -485,9 +549,11 @@ import { logStore } from './../../stores/logStore';
                       <div class="product-size-wraper">
                           <div class="product-size">{loadingText}</div>
                       </div>
+                      <!--
                       <div class="product-packing-wraper">
                           <div class="product-packing">{loadingText}</div>
                       </div>
+                      -->
                   </div>
                   <hr>
                   
@@ -781,16 +847,17 @@ import { logStore } from './../../stores/logStore';
 
         .magnifier-preview-wraper {
           position: absolute;
-          position: absolute;
           width: 100%;
           top: 0px;
           height: 100%;
           width: 50%;
+          pointer-events: none;
           
           .magnifier-preview {
             width: 100%;
             height: 100%;
             line-height: 30px;
+            pointer-events: none;
           }
         }
 
@@ -883,10 +950,60 @@ import { logStore } from './../../stores/logStore';
                   }
               }
               }
-              .product-packing-wraper {
+              /*.product-packing-wraper {
                 padding-right: 1%;
                 padding-top:2%;
                 font-size: large;
+              }*/
+              .product-campains {
+                table.campain-table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  border-spacing: 0;
+                  font-size: 1.2em;
+                  font-weight: bold;
+                  --main-txt-clr: #000;
+                  --main-bg-clr: #fff;
+                  thead {
+                    tr.main-title{
+                      @include bg-gradient();
+                      th {
+                        font-size: xx-large;
+                        text-align: center;
+                        border-bottom: 1px solid black;
+                      }
+                    }
+                    tr.headers{
+                      @include bg-gradient();
+                      th {
+                        text-align: center;
+                        border: 1px solid #444;
+                      }
+                    }
+                  }
+                  tbody {
+                    text-align: center;
+                    
+                    // diffrent background color to odd and even rows
+                    tr:nth-child(even) {
+                      background-color: rgb(195, 195, 195);
+                    }tr:nth-child(odd) {
+                      background-color: rgb(139, 139, 139);
+                    }
+                    tr{
+                      
+                      td {
+                        padding: 10px;
+                        text-align: center;
+                        border-bottom: 1px solid var(--main-txt-clr);
+                        transition: all 1s ease;
+                        :hover {
+                          background-color: wheat;
+                        }
+                      }
+                    }
+                  }
+                }
               }
               .product-size-wraper {
                   .product-size {

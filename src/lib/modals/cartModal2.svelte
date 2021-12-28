@@ -24,7 +24,6 @@
 	function checkout_click() {
 		if(state == 0) {
 			error_found = false;
-			debugger;
 			for (const [key, value] of Object.entries($cartStore)) {
 				console.log(`${key}: ${value}`);
 				if(value == undefined || value.amount == undefined || value.amount < 0) {
