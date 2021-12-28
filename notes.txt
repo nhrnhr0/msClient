@@ -12,3 +12,9 @@ git commit -m "deploy"
 git push -f
 
 cp -rfv ./build msClientBuildText
+
+
+# deploy on boost-pop
+npm run tbuild
+cp -vr ./build/* ../msClientBuildTest/
+sudo service nginx restart
