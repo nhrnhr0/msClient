@@ -32,22 +32,24 @@
 
     function dateDiff(timestamp, structure = dateDiff.structure) {
         let delta = timestamp - new Date().getTime();
-        if(delta < 0) {
+        console.log(delta);
+
+        /*if(delta < 0) {
             return {
-                days: 0,
-                hours: 0,
-                minutes: 0,
-                seconds: 0,
-                miliseconds: 0
+                'days': 0,
+                'hours': 0,
+                'minutes': 0,
+                'seconds': 0,
+                'miliseconds': 0
             };
-        }
+        }*/
         let res = {};
 
         for (let key in structure) {
             res[key] = Math.floor(delta / structure[key]);
             delta -= res[key] * structure[key];
         }
-
+        console.log('res: ',res);
         return res;
     }
 
