@@ -15,6 +15,7 @@ cp -rfv ./build msClientBuildText
 
 
 # deploy on boost-pop
+git pull
 npm run tbuild
 cp -vr ./build/* ../msClientBuildTest/
 sudo service nginx restart

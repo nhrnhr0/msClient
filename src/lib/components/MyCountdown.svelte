@@ -15,7 +15,8 @@
 
         update_timer()
         is_running = true;
-        window.requestAnimationFrame(update_timer);
+        //window.requestAnimationFrame(update_timer);
+        update_timer();
     });
     onDestroy((() => {
         is_running = false;
@@ -30,7 +31,7 @@
     };
 
     function dateDiff(timestamp, structure = dateDiff.structure) {
-        let delta = Math.abs(timestamp - new Date().getTime());
+        let delta = timestamp - new Date().getTime();
         if(delta < 0) {
             return {
                 days: 0,
@@ -53,7 +54,8 @@
     function update_timer() {
         remining_time = dateDiff(new Date(date));
         if (is_running) {
-            window.requestAnimationFrame(update_timer);
+            //window.requestAnimationFrame(update_timer);
+            setTimeout(update_timer, 1000);
         }
     }
 
@@ -69,7 +71,7 @@
 <div class="timer-container" style="--main-clr-text: {mainTextClr};--border-clr: {borderClr};">
     <div class="timer">
         <div class="timer-item secs">
-            <span class="num">{remining_time.second}<div class="hide-500">.{('' + remining_time.milisecond).padEnd(3, '0')}</div>
+            <span class="num">{remining_time.second}
                 </span>
             <span class="label">שניות</span>
         </div>

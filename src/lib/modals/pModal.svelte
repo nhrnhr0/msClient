@@ -428,14 +428,14 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                                   </tr>
                                   <tr class="headers">
                                     <th>כמות</th>
-                                    <th>מחיר למזומן</th>
-                                    <th>מחיר לשוטף</th>
+                                    <th>מחיר</th>
+                                    <th>מחיר לצרכן</th>
                                   </tr>
                                   </thead>
                                   <tbody>
                                     {#each priceTable as price}
                                       <tr>
-                                        <td>{price.amount}₪</td>
+                                        <td>{price.amount}</td>
                                         <td>{price.cach_price}₪</td>
                                         <td>{price.credit_price}₪</td>
                                       </tr>
@@ -888,7 +888,8 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
             font-size: 2em;
             font-weight: bolder;
             }
-          overflow-y: scroll;
+            overflow-y: auto;
+            
             //padding-right: 5px;
             flex: 1;
             min-width: 35%;
@@ -896,12 +897,12 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
             @media screen and (max-width: 1100px) {
               flex:3;
               padding-left: 10px;
-              overflow-y: scroll;
+              overflow-y: auto;
             }
             @media screen and (max-width: 550px) {
               flex:2;
               padding-left: 10px;
-              overflow-y: scroll; 
+              overflow-y: auto;
               .product-title {
                 font-size: 1.7em;
               }
