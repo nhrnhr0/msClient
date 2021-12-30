@@ -118,14 +118,13 @@
 
 {#each albums as album}
 
-		<div class="title-wraper">
-			<button class="title btn" on:click={openCategoryModal(album)}>
+		<div class="title-wraper" class:campain={album.is_campain}>
+			<button class="title btn"  on:click={openCategoryModal(album)}>
 				{album.title}
 			</button>
 		</div>
 
 	<CatalogSwiper album={album} bind:this={$all_swipers[album.id]} loaded_data={all_products[album.id]}/>
-	
 {/each}
 
 <ContentForm></ContentForm>
@@ -135,7 +134,6 @@
 <script>
 
   import CatalogSwiper from '$lib/swipers/catalogSwiper.svelte';
-  import PricesSwiper from '$lib/swipers/pricesSwiper.svelte';
   import { onMount } from "svelte";
 import { get_album_details, request_csrf_token  } from "./../api/api";
 import ContentForm from '$lib/contentForm.svelte';
@@ -271,9 +269,10 @@ import { logStore } from "../stores/logStore";
     campainsStore.set(campains_response);
     let campain_album = campains_response[0].album;
     debugger;
-
-    console.log($albumsJsonStore);
-    $albumsJsonStore.unshift(campain_album);
+    for(let i = 0; i < campains_response.length; i++) {
+      let campain_album = campains_response[i].album;
+      $albumsJsonStore.unshift(campain_album);
+    }
     albums = $albumsJsonStore;
     /*$albumsJsonStore
     albumsJsonStore.set(v => {
@@ -345,6 +344,24 @@ import { logStore } from "../stores/logStore";
       opacity: 0.8;
       //font-size: 2.2rem;
 
+    }
+  }
+  &.campain {
+    
+    .title {
+      @media (min-width: 820px) {
+          &::before {
+          content: '>> למעבר ל';
+          opacity: 1;
+          font-size: 1.4rem;
+        }
+
+        &::after {
+          content: ' לחץ כאן <<';
+          opacity: 1;
+          font-size: 1.4rem;
+        }
+      }
     }
   }
 }
