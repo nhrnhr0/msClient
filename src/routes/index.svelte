@@ -3,12 +3,13 @@
 	import About from "$lib/about.svelte"
   import CartDisclaimer from "$lib/cart-disclaimer.svelte"
   import LogoSwiper from "$lib/swipers/logoSwiper.svelte"
-	import {campainsStore,all_swipers,userDetailModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore} from './../stores/stores'
+	import {all_swipers,userDetailModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore} from './../stores/stores'
 	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL, LOGOS_API_URL } from './../api/consts';
   import {api_get_user_campains} from './../api/api'
   import { browser } from '$app/env';
   import {getCookie} from '$lib/utils/cookies';
   import {activeModalsStore} from "$lib/modals/modalManager";
+
   export async function load({fetch, page}) {
     console.log('load: ', page, page.path);
     //const qs = browser ? document.location.search : '';
@@ -121,6 +122,28 @@
 		<div class="title-wraper" class:campain={album.is_campain}>
 			<button class="title btn"  on:click={openCategoryModal(album)}>
 				{album.title}
+        
+        {#if album.is_campain}
+          <MyCountdown date={$campainsStore.find(v => v.album.id == album.id).endTime}/>
+        {/if}
+        <!--
+            <Countdown from="2023-11-09 09:30:00" dateFormat="YYYY-MM-DD H:m:s" zone="Europe/Athens" let:remaining>
+              <div class="whatever">
+                  {#if remaining.done === false}5
+                  <span>{remaining.years} years</span>
+                  <span>{remaining.months} months</span>
+                  <span>{remaining.weeks} weeks</span>
+                  <span>{remaining.days} days</span>
+                  <span>{remaining.hours} hours</span>
+                  <span>{remaining.minutes} minutes</span>
+                  <span>{remaining.seconds} seconds</span>
+                  {:else}
+                  <h2>The time has come!</h2>
+                  {/if}
+              </div>
+          </Countdown>
+        -->
+        
 			</button>
 		</div>
 
@@ -140,6 +163,8 @@ import ContentForm from '$lib/contentForm.svelte';
 import { bind } from 'svelte/internal';
 import { stateQuery} from './../stores/queryStore'
 import { logStore } from "../stores/logStore";
+import { campainsStore } from '../stores/stores';
+import MyCountdown from "$lib/components/MyCountdown.svelte";
 
   export let colors;
   export let sizes;
@@ -351,13 +376,13 @@ import { logStore } from "../stores/logStore";
     .title {
       @media (min-width: 820px) {
           &::before {
-          content: '>> למעבר ל';
+          content: '';
           opacity: 1;
           font-size: 1.4rem;
         }
 
         &::after {
-          content: ' לחץ כאן <<';
+          content: '';
           opacity: 1;
           font-size: 1.4rem;
         }

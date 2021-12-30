@@ -44,6 +44,7 @@ import { logStore } from './../../stores/logStore';
     import {Magnifier} from '$lib/utils/js/Magnifier.js';
     import { selectTextOnFocus } from '$lib/ui/inputActions';
     import {activeModalsStore } from '$lib/modals/modalManager';
+import MyCountdown from '$lib/components/MyCountdown.svelte';
 
   let productData = writable();
   let current_album = writable();
@@ -417,7 +418,12 @@ import { logStore } from './../../stores/logStore';
                                 <table class="campain-table">
                                   <thead>
                                   <tr class="main-title">
-                                    <th colspan="3">{campain_title}</th>
+                                    <th colspan="3">
+                                      {campain_title}
+                                      <br>
+                                      <MyCountdown mainTextClr="black" borderClr='transperent' date={campain.endTime} />
+                                    </th>
+                                    
                                   </tr>
                                   <tr class="headers">
                                     <th>כמות</th>
@@ -428,9 +434,9 @@ import { logStore } from './../../stores/logStore';
                                   <tbody>
                                     {#each priceTable as price}
                                       <tr>
-                                        <td>{price.amount}</td>
-                                        <td>{price.cach_price}</td>
-                                        <td>{price.credit_price}</td>
+                                        <td>{price.amount}₪</td>
+                                        <td>{price.cach_price}₪</td>
+                                        <td>{price.credit_price}₪</td>
                                       </tr>
                                     {/each}
                                   </tbody>
@@ -971,7 +977,9 @@ import { logStore } from './../../stores/logStore';
                         font-size: xx-large;
                         text-align: center;
                         border-bottom: 1px solid black;
+                        padding-bottom: 20px;
                       }
+                      
                     }
                     tr.headers{
                       @include bg-gradient();
