@@ -167,6 +167,8 @@
                 <main>
                     <button class="close-button" on:click="{()=>{console.log('close click'); toggleModal();}}">X</button>
                     <h2>מוצרים שאהבתי<span class="count">{Object.keys($cartStore).length}</span></h2>
+					<h2 class="sub-title">הוסיפו מוצרים
+						וקבלו הצעת מחיר משתלמת ללא עלות וללא התחייבות</h2>
 					{#if error_found }
 						{#key error_found}
 							<h4 class="error-msg">{error_message}</h4>
@@ -212,8 +214,8 @@
 							</ul>
 						{:else}
 							<div class="empty-cart">
-								<h2>אין מוצרים בעגלת הקניות</h2>
-								<p>נא להוסיף מוצרים לעגלת הקניות</p>
+								<h2>אין מוצרים בהצעת מחיר</h2>
+								
 							</div>
 						{/if}
 					{:else}
@@ -406,6 +408,9 @@ $gray-1200: #131314;
                 transform: scale(1.4);
                 color: $red;
 		}
+	}
+	h2.sub-title {
+		text-align: center;
 	}
 
 	h2 {
@@ -681,6 +686,9 @@ $gray-1200: #131314;
 	main{
 		.empty-cart {
 			text-align: center;
+			h2 {
+				color: #75757a;
+			}
 		}
 	}
 	/*

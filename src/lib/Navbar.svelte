@@ -157,7 +157,7 @@ import { logStore } from "./../stores/logStore";
 
 
         <form class="d-flex" id="search_form">
-            <AutoComplete id="search_input" on:focus loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:value={searchValue}  >
+            <AutoComplete id="search_input" on:focus loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש מוצרים..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:value={searchValue}  >
 
                 <div slot="item" let:item={item} let:label={label}>
                 {#if item.item_count}
@@ -196,7 +196,9 @@ import { logStore } from "./../stores/logStore";
                         <rect y="60" width="100" height="20"></rect>
                     </svg>
                 </DropdownToggle>
+                
                 <DropdownMenu>                    
+                    <h1 class="drop-title"> מחלקות מוצרים</h1>
                     {#if $albumsJsonStore }
                         {#each $albumsJsonStore as  album}
                             <DropdownItem>
@@ -238,6 +240,13 @@ import { logStore } from "./../stores/logStore";
           max-height: 80vh;
           overflow-y: auto;
           left: 0%!important;
+          padding-top: 50px;
+          .drop-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            
+          }
           @media screen and (max-width: 900px) {
             grid-template-columns: repeat(3, auto);
           }
