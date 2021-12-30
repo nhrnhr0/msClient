@@ -408,11 +408,12 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                             <div class="product-size-wraper">
                                 <div class="product-size">{@html sizeMarkup}</div>
                             </div>
-                            <!--
+                            {#if $userInfoStore.isLogin}
+                            
                               <div class="product-packing-wraper"><b><u>שיטת אריזה: </u>
                               <span class="product-packing">{$productData.packing_type}</span>
                             </b></div>
-                            -->
+                            {/if}
                             {#if is_in_campain}
                               <div class="product-campains">
                                 <table class="campain-table">
