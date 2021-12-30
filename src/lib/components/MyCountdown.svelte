@@ -34,15 +34,15 @@
         let delta = timestamp - new Date().getTime();
         console.log(delta);
 
-        /*if(delta < 0) {
+        if(delta < 0) {
             return {
-                'days': 0,
-                'hours': 0,
-                'minutes': 0,
-                'seconds': 0,
-                'miliseconds': 0
+                day: 0,
+                hour: 0,
+                minute: 0,
+                second: 0,
+                milisecond: 0
             };
-        }*/
+        }
         let res = {};
 
         for (let key in structure) {
@@ -113,11 +113,7 @@
             
             // change to 2 by 2 grid for mobile
             @media screen and (max-width: 500px) {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                grid-template-rows: 1fr 1fr;
-                //reverse the order of the grid
-                grid-template-areas: "days hours" "mins secs";
+                
             }
 
             .timer-item {
