@@ -29,6 +29,7 @@ import {activeModalsStore } from '$lib/modals/modalManager';
                     $userInfoStore.isLogin=true;
                 })
                 toggleModal();
+                window.location.reload();
             }
         }).catch(error => console.log('error', error));
 

@@ -99,6 +99,8 @@
 <About />
 <LogoSwiper {logos}/>
 <CartDisclaimer />
+
+<!--
 {#if $campainsStore}
   {#each $campainsStore as campain}
     <div class="title-wraper">
@@ -112,6 +114,7 @@
 
   
 {/if}
+-->
 
 {#each albums as album}
 
@@ -191,10 +194,7 @@ import { logStore } from "../stores/logStore";
     let csrf_response = request_csrf_token();
     csrf_response.then(csrf_response => {
       if($userInfoStore && $userInfoStore.isLogin) {
-        api_get_user_campains().then(campains_response => {
-          campainsStore.set(campains_response);
-        });
-
+        update_campains_albums();
       }else {
         console.log('user is not loged in');
       }
@@ -208,8 +208,8 @@ import { logStore } from "../stores/logStore";
       }
     });*/
       
-    
     albumsJsonStore.set(albums);
+    console.log('albums: ', albums);
     sizesJsonStore.set(sizes);
     colorsJsonStore.set(colors);
     
@@ -247,7 +247,6 @@ import { logStore } from "../stores/logStore";
 
 
   });
-
   activeModalsStore.subscribe(modals => {
     if(browser) {
       if(Object.keys(modals).length == 0) {
@@ -267,7 +266,23 @@ import { logStore } from "../stores/logStore";
     }
   });
 
+  async function update_campains_albums() {
+    let campains_response = await api_get_user_campains();
+    campainsStore.set(campains_response);
+    let campain_album = campains_response[0].album;
+    debugger;
 
+    console.log($albumsJsonStore);
+    $albumsJsonStore.unshift(campain_album);
+    albums = $albumsJsonStore;
+    /*$albumsJsonStore
+    albumsJsonStore.set(v => {
+        v.unshift(campain_album);
+        let new_v = v;
+        return new_v;
+    });*/
+    console.log($albumsJsonStore);
+  }
   function openCategoryModal(album){
       $categoryModalStore.toggleModal();
       $categoryModalStore.setAlbum(album);

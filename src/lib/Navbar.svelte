@@ -49,10 +49,24 @@ import { logStore } from "./../stores/logStore";
             let json = await apiSearchProducts(keyword);
             let data = json;
             let albums = [];
+            debugger;
+            let album = undefined;
             // get all the albums from the products and count how much products from each album
             for(let i = 0; i < data.all.length; i++) {
                 let my_item = data.all[i];
-                let album = my_item.albums[0];
+                album = undefined;
+                for(let alb_iter = 0; alb_iter < my_item.albums.length; alb_iter++) {
+                    if(my_item.albums[alb_iter].is_campain == false) {
+                        album = my_item.albums[alb_iter];
+                        break;
+                    }
+                }
+                // the product is only visible in campain, so hide from search
+                if(album == undefined) {
+                    // remove item i from data.all
+                    data.all.splice(i, 1);
+                    continue;
+                }
                 var album_index = albums.findIndex(a => a.id == album.id);
                 if(album_index == -1) {
                     album.item_count = 1;
