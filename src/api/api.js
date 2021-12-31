@@ -116,6 +116,7 @@ export async function request_csrf_token() {
     let response = await fetch_wraper(GET_CSRF_TOKEN_URL + extra);
     let json_response = response;
     set_user_uuid(json_response['uid']);
+    return json_response;
 }
 
 function set_user_uuid(newUid) {

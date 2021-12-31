@@ -179,7 +179,7 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
   //export let onLoadProduct;
   
 
-  onMount(()=> {
+  onMount(async()=> {
     console.log('protocol: ', location.protocol);
     window.onpopstate = function(event) {
       var pathArray = window.location.pathname.split('/');
@@ -214,23 +214,31 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
         }
       }
     };
-    let csrf_response = request_csrf_token();
-    csrf_response.then(csrf_response => {
+    
+    /*csrf_response.then(csrf_response => {
       if($userInfoStore && $userInfoStore.isLogin) {
         update_campains_albums();
       }else {
         console.log('user is not loged in');
       }
       
-    });
-    /*csrf_response.then(response => {
-      if($userInfoStore.isLogin == false && $userInfoStore.refresh != null) {
-        request_refresh_token().then(response => {
-          $userInfoStore.refresh = response.refresh;
-        })
-      }
     });*/
-      
+    debugger;
+    let csrf_response = await request_csrf_token();
+    debugger;
+    if(csrf_response.whoAmI && Object.keys(csrf_response.whoAmI).length != 0) {
+      $userInfoStore.me = csrf_response.whoAmI;
+      $userInfoStore.isLogin = true;
+      console.log('user is loged in, updating campains');
+      await update_campains_albums(csrf_response.campains);
+    }else {
+      console.log('user is not loged in');
+      $userInfoStore = {
+        isLogin: false,
+        me: {}
+      }
+    } 
+    debugger;
     albumsJsonStore.set(albums);
     console.log('albums: ', albums);
     sizesJsonStore.set(sizes);
@@ -241,24 +249,26 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
       onLoadTask = JSON.parse(onLoadTask);
       if (onLoadTask.type == 'product') {
         let prodId = onLoadTask.data.id;
-        let cateId = onLoadTask.data.albums[0];
+        let cateId = onLoadTask.album;
         
 
-
-        $categoryModalStore.setAlbum(albums.filter(album => album.id == cateId)[0]);
-        
-        $categoryModalStore.toggleModal();
-        setTimeout(()=> {
-          $productModalStore.toggleModal()
-          $productModalStore.setProduct(cateId, prodId);
-        },1);
-
-
+        let albumObj = albums.filter(album => album.id == cateId)[0];
+        if (albumObj) {
+        $categoryModalStore.setAlbum(albumObj);
+          $categoryModalStore.toggleModal();
+          setTimeout(()=> {
+            $productModalStore.toggleModal()
+            $productModalStore.setProduct(cateId, prodId);
+          },1);
+        }
         
       }else if(onLoadTask.type == 'category') {
-        let album = onLoadTask.data;
-        $categoryModalStore.toggleModal();
-        $categoryModalStore.setAlbum(album);
+        let task_album = onLoadTask.data;
+        let albumObj = albums.filter(album => album.id == task_album.id)[0];
+        if(albumObj) {
+          $categoryModalStore.toggleModal();
+          $categoryModalStore.setAlbum(task_album);
+        }
       }
       sessionStorage.removeItem('onLoadTask');
     }
@@ -289,23 +299,29 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
     }
   });
 
-  async function update_campains_albums() {
-    let campains_response = await api_get_user_campains();
+  async function update_campains_albums(campains = undefined) {
+    let campains_response = undefined;
+    if(campains) {
+      campains_response = campains;
+    }
+    else {
+      campains_response = await api_get_user_campains();
+    }
     campainsStore.set(campains_response);
-    let campain_album = campains_response[0].album;
+    //let campain_album = campains_response[0].album;
     debugger;
     for(let i = 0; i < campains_response.length; i++) {
       let campain_album = campains_response[i].album;
-      $albumsJsonStore.unshift(campain_album);
+      albums.unshift(campain_album);
     }
-    albums = $albumsJsonStore;
+    //albums = $albumsJsonStore;
+    //$albumsJsonStore  = albums;
     /*$albumsJsonStore
     albumsJsonStore.set(v => {
         v.unshift(campain_album);
         let new_v = v;
         return new_v;
     });*/
-    console.log($albumsJsonStore);
   }
   function openCategoryModal(album){
       $categoryModalStore.toggleModal();

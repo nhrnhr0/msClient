@@ -23,11 +23,11 @@ export let successModalStore = writable();
 
 
 // browser storage - userInfoStore
-let initUserData = {'isLogin': false};
+let initUserData = {'isLogin': undefined};
 if(browser) {
     initUserData=JSON.parse(localStorage.getItem('user'));
     if(!initUserData) {
-        initUserData={'isLogin': false}   
+        initUserData={'isLogin': undefined}
     }
 }
 export let userInfoStore = writable(initUserData);

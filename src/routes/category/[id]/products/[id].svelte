@@ -9,16 +9,21 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
 
     export async function load({page, fetch, session, contex}) {
         //console.log(page);
-        //console.log("load", page.params);
+        debugger;
+        console.log("load", page.params);
         let url = PRODUCTS_API_URL + page.params.id + "/";
         //console.log(url);
         if(isNumeric(page.params.id)) {
             let response = await fetch_wraper(url , {"method":"GET"}, fetch);
             //console.log(response);
             response.description = response.description.replace(/(\r\n|\n|\r)/gm, "");
+            let category_regex = '\/category\/(.+)\/products';
+            let category = page.path.match(category_regex);
+            debugger;
             return {
                 props: {
                     data: response,
+                    album: category[1]
                 }
             }
         }
@@ -33,8 +38,9 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
 </script>
 <script>
     export let data;
+    export let album;
     onMount(()=> {
-        sessionStorage.setItem("onLoadTask",JSON.stringify({type: 'product', data: data}));
+        sessionStorage.setItem("onLoadTask",JSON.stringify({type: 'product', data: data, album: album}));
         window.location.replace("/"); 
     })
     

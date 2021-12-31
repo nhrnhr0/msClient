@@ -27,8 +27,12 @@ import {activeModalsStore } from '$lib/modals/modalManager';
                 whoAmI.then(me=> {
                     $userInfoStore.me=me;
                     $userInfoStore.isLogin=true;
+                    setTimeout(()=> {
+                        toggleModal();
+                        window.location.reload();
+                    },1);
                 })
-                toggleModal();
+                
             }
         }).catch(error => console.log('error', error));
 
