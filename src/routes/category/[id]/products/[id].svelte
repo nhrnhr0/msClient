@@ -9,7 +9,6 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
 
     export async function load({page, fetch, session, contex}) {
         //console.log(page);
-        debugger;
         console.log("load", page.params);
         let url = PRODUCTS_API_URL + page.params.id + "/";
         //console.log(url);
@@ -19,7 +18,6 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
             response.description = response.description.replace(/(\r\n|\n|\r)/gm, "");
             let category_regex = '\/category\/(.+)\/products';
             let category = page.path.match(category_regex);
-            debugger;
             return {
                 props: {
                     data: response,

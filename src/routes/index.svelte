@@ -223,14 +223,14 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
       }
       
     });*/
-    debugger;
     let csrf_response = await request_csrf_token();
     debugger;
     if(csrf_response.whoAmI && Object.keys(csrf_response.whoAmI).length != 0) {
       $userInfoStore.me = csrf_response.whoAmI;
       $userInfoStore.isLogin = true;
       console.log('user is loged in, updating campains');
-      await update_campains_albums(csrf_response.campains);
+      
+      update_campains_with_local_data(csrf_response.campains);
     }else {
       console.log('user is not loged in');
       $userInfoStore = {
@@ -238,7 +238,6 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
         me: {}
       }
     } 
-    debugger;
     albumsJsonStore.set(albums);
     console.log('albums: ', albums);
     sizesJsonStore.set(sizes);
@@ -280,49 +279,41 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
 
 
   });
+
   activeModalsStore.subscribe(modals => {
     if(browser) {
+
       if(Object.keys(modals).length == 0) {
         /*overflow-y: auto;
         margin-right: 0px;*/
-        document.body.style.overflowY = 'auto';
-        document.body.style.marginRight = '0px';
-        
+        document.body.classList.remove('my-modal-open');
       }
       else {
         /*overflow-y: hidden;
         margin-right: 0px;*/
-        document.body.style.overflowY = 'hidden';
-        document.body.style.marginRight = '0px';
+        document.body.classList.add('my-modal-open');
       }
       console.log('hey: ', Object.keys(modals).length);
     }
   });
-
-  async function update_campains_albums(campains = undefined) {
-    let campains_response = undefined;
-    if(campains) {
-      campains_response = campains;
-    }
-    else {
-      campains_response = await api_get_user_campains();
-    }
+  function update_campains_with_local_data(campains) {
+    let campains_response = campains;
     campainsStore.set(campains_response);
     //let campain_album = campains_response[0].album;
-    debugger;
     for(let i = 0; i < campains_response.length; i++) {
       let campain_album = campains_response[i].album;
       albums.unshift(campain_album);
     }
-    //albums = $albumsJsonStore;
-    //$albumsJsonStore  = albums;
-    /*$albumsJsonStore
-    albumsJsonStore.set(v => {
-        v.unshift(campain_album);
-        let new_v = v;
-        return new_v;
-    });*/
   }
+  /*async function update_campains_albums() {
+    let campains_response = undefined;
+    campains_response = await api_get_user_campains();
+    campainsStore.set(campains_response);
+    for(let i = 0; i < campains_response.length; i++) {
+      let campain_album = campains_response[i].album;
+      albums.unshift(campain_album);
+    }
+  }*/
   function openCategoryModal(album){
       $categoryModalStore.toggleModal();
       $categoryModalStore.setAlbum(album);
@@ -348,6 +339,8 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
 </script>
 
 <style lang="scss">
+
+
 .title-wraper {
   display: flex;
   justify-content: center;

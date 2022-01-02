@@ -64,6 +64,16 @@
   --column-width: 42rem;
   --column-margin-top: 4rem;*/
 }
+
+body{
+    overflow-y: auto;
+    margin-right: 0px;
+      &.my-modal-open {
+        overflow-y: hidden;
+        position:relative;
+        margin-right: 16px;
+      }
+  }
 /*
 body {
   min-height: 100vh;

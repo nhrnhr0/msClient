@@ -15,7 +15,6 @@ CLOUDINARY_URL
     export let product = {'title':'טוען...', 'image': ''};
     //let m, evt;
     export function toggleModal() {
-        debugger;
         isModalOpen = !isModalOpen;
         activeModalsStore.modalToggle('pImgModal', isModalOpen);
         if (isModalOpen) {
@@ -29,7 +28,6 @@ CLOUDINARY_URL
     }
 
     export function setProduct(p) {
-        debugger;
         product = p
         /*setTimeout(()=> {
             evt = new Event(),

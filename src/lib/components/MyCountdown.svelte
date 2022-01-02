@@ -11,7 +11,6 @@
     let remining_time;
     let is_running = false;
     onMount(() => {
-        debugger;
 
         update_timer()
         is_running = true;

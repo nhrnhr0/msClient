@@ -49,7 +49,6 @@ import { logStore } from "./../stores/logStore";
             let json = await apiSearchProducts(keyword);
             let data = json;
             let albums = [];
-            debugger;
             let album = undefined;
             // get all the albums from the products and count how much products from each album
             for(let i = 0; i < data.all.length; i++) {

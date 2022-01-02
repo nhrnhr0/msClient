@@ -253,7 +253,6 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 
   function check_if_product_in_any_campain(data) {
     console.log('check_if_product_in_any_campain: ', data);
-    debugger;
     if($campainsStore) {
       for(let i = 0; i < $campainsStore.length; i++) {
         let camp = $campainsStore[i];
