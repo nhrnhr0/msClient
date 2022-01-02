@@ -180,10 +180,9 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
   
 
   onMount(async()=> {
-    alert('localStorage: ', window.localStorage);
-    alert('sessionStorage: ', window.sessionStorage);
-    alert('typeof(Storage): ', typeof(Storage));
-    console.log('protocol: ', location.protocol);
+    alert('localStorage: ' +  window.localStorage);
+    alert('sessionStorage: ' +  window.sessionStorage);
+    alert('typeof(Storage): ' +  typeof(Storage));
     window.onpopstate = function(event) {
       var pathArray = window.location.pathname.split('/');
       let vals = {}
