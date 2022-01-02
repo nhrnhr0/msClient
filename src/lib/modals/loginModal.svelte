@@ -29,7 +29,6 @@ import {activeModalsStore } from '$lib/modals/modalManager';
                     $userInfoStore.isLogin=true;
                     setTimeout(()=> {
                         toggleModal();
-                        window.location.reload();
                     },1);
                 })
                 
