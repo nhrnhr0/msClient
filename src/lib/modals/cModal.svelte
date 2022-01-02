@@ -3,9 +3,11 @@
   import {
     cartStore
   } from './../../stores/cartStore';
-  import {activeModalsStore } from '$lib/modals/modalManager';
   import {
-CLOUDINARY_URL,
+    activeModalsStore
+  } from '$lib/modals/modalManager';
+  import {
+    CLOUDINARY_URL,
     STATIC_BASE
   } from '../../api/consts'
   import {
@@ -16,6 +18,7 @@ CLOUDINARY_URL,
   } from 'svelte/store';
   import {
     albumsJsonStore,
+    campainsStore,
     productModalStore,
     _modal_z_index_incrementor
   } from './../../stores/stores';
@@ -24,48 +27,48 @@ CLOUDINARY_URL,
     DropdownItem,
     DropdownMenu,
     DropdownToggle,
-Spinner
+    Spinner
   } from 'sveltestrap';
-  import { selectTextOnFocus } from '$lib/ui/inputActions';
+  import {
+    selectTextOnFocus
+  } from '$lib/ui/inputActions';
 
 
-  function remove_from_cart(e)  {
+  function remove_from_cart(e) {
     const productId = e.currentTarget.dataset.productId;
     const imgData = {
       'id': productId
     };
     console.log(e);
     cartStore.removeFromCart(imgData);
-      logStore.addLog(
-                            {
-                                'a': 'הסר מהעגלה ממודל קטגוריה',
-                                't': 'remove from cart',
-                                'f': {
-                                    'type':'category',
-                                    'id':$current_album.id,
-                                    'ti':$current_album.title
-                                },
-                                'w':{
-                                    'type':'product',
-                                    'id':imgData.id,
-                                    'ti':imgData.title, 
-                                }
-                            }
-                            );
+    logStore.addLog({
+      'a': 'הסר מהעגלה ממודל קטגוריה',
+      't': 'remove from cart',
+      'f': {
+        'type': 'category',
+        'id': $current_album.id,
+        'ti': $current_album.title
+      },
+      'w': {
+        'type': 'product',
+        'id': imgData.id,
+        'ti': imgData.title,
+      }
+    });
   }
 
   export let isModalOpen = false;
-  export function toggleModal(push_url=true) {
+  export function toggleModal(push_url = true) {
     isModalOpen = !isModalOpen;
     activeModalsStore.modalToggle('cmodal', isModalOpen);
     if (isModalOpen == false) {
       //$stateQuery['category'] = '-1';
-      if(push_url) {
+      if (push_url) {
         pushMainPage();
       }
-      
-    }else {
-      
+
+    } else {
+
     }
   }
   export function isOpen() {
@@ -74,30 +77,49 @@ Spinner
   /*import {
     stateQuery
   } from './../../stores/queryStore';*/
-import { flyToCart } from '$lib/utils/js/flyToCart';
-import { pushCategoryState, pushMainPage } from './../../stores/urlManager';
-import { logStore } from './../../stores/logStore';
+  import {
+    flyToCart
+  } from '$lib/utils/js/flyToCart';
+  import {
+    pushCategoryState,
+    pushMainPage
+  } from './../../stores/urlManager';
+  import {
+    logStore
+  } from './../../stores/logStore';
+  import MyCountdown from '$lib/components/MyCountdown.svelte';
   let products = [];
   let current_album = new writable({});
   let title = 'loading'
   let desctiption = '';
   let fotter = '';
   let modal_zIndex = 0;
-
-  export function setAlbum(album, push_url=true) {
+  let is_campain = false;
+  let campain;
+  export function setAlbum(album, push_url = true) {
     current_album.set(album);
     desctiption = album.description;
     fotter = album.fotter;
     products = get_album_details(album.id);
     title = album.title;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
+    if (album.is_campain) {
+      for (let i = 0; i < $campainsStore.length; i++) {
+        if ($campainsStore[i].album.id == album.id) {
+          is_campain = true;
+          campain = $campainsStore[i];
+          break;
+        }
+      }
+    }
+    is_campain = album.is_campain;
     //$stateQuery['category'] = album.id;
-    if(push_url) {
+    if (push_url) {
       pushCategoryState(album.id);
     }
-    setTimeout(()=> {
-        modal_body.scrollTop = 0;
-      },30);
+    setTimeout(() => {
+      modal_body.scrollTop = 0;
+    }, 30);
   }
 
   function open_product(img) {
@@ -109,48 +131,43 @@ import { logStore } from './../../stores/logStore';
     $productModalStore.toggleModal();
     $productModalStore.setProduct(catalogId, img.id);
 
-    logStore.addLog(
-                            {
-                                'a': 'פתיחת מוצר ממודל קטגוריה',
-                                't': 'open product',
-                                'f':{
-                                    'type':'category',
-                                    'id':$current_album.id,
-                                    'ti':$current_album.title,
-                                },
-                                'w':{
-                                    'type':'product',
-                                    'id':img.id,
-                                    'ti':img.title, 
-                                }
-                            }
-                            );
+    logStore.addLog({
+      'a': 'פתיחת מוצר ממודל קטגוריה',
+      't': 'open product',
+      'f': {
+        'type': 'category',
+        'id': $current_album.id,
+        'ti': $current_album.title,
+      },
+      'w': {
+        'type': 'product',
+        'id': img.id,
+        'ti': img.title,
+      }
+    });
   }
 
   function likeBtnClicked(e) {
     let img = e.currentTarget.parentElement.querySelector('.product-image');
     let imgData = JSON.parse(e.currentTarget.dataset["img"]);
-    if(cartStore.isInCart(imgData) == false) {
+    if (cartStore.isInCart(imgData) == false) {
       cartStore.addToCart(imgData);
       flyToCart(img);
-      logStore.addLog(
-                            {
-                                'a': 'הוסף לעגלה ממודל קטגוריה',
-                                't': 'add to cart',
-                                'f': {
-                                    'type':'category',
-                                    'id':$current_album.id,
-                                    'ti':$current_album.title
-                                },
-                                'w':{
-                                    'type':'product',
-                                    'id':imgData.id,
-                                    'ti':imgData.title, 
-                                }
-                            }
-                            );
-    }
-    else {
+      logStore.addLog({
+        'a': 'הוסף לעגלה ממודל קטגוריה',
+        't': 'add to cart',
+        'f': {
+          'type': 'category',
+          'id': $current_album.id,
+          'ti': $current_album.title
+        },
+        'w': {
+          'type': 'product',
+          'id': imgData.id,
+          'ti': imgData.title,
+        }
+      });
+    } else {
       document.querySelector(`#amount_${imgData.id}`).focus();
       /*
       cartStore.removeFromCart(imgData);
@@ -171,39 +188,35 @@ import { logStore } from './../../stores/logStore';
                             }
                             );*/
     }
-    
+
     //flyToCart(img);
     //$cartStore[imgData.id] = imgData;
-    
-    
+
+
   }
 
 
   let modal_body;
 
   function changeCategory(alb) {
-    
 
-    logStore.addLog(
-                            {
-                                'a': 'פתיחת קטגוריה ממודל קטגוריה',
-                                't': 'open category',
-                                'f':{
-                                    'type':'category',
-                                    'id':$current_album.id,
-                                    'ti':$current_album.title,
-                                },
-                                'w':{
-                                    'type':'category',
-                                    'id':alb.id,
-                                    'ti':alb.title, 
-                                }
-                            }
-                            );
+
+    logStore.addLog({
+      'a': 'פתיחת קטגוריה ממודל קטגוריה',
+      't': 'open category',
+      'f': {
+        'type': 'category',
+        'id': $current_album.id,
+        'ti': $current_album.title,
+      },
+      'w': {
+        'type': 'category',
+        'id': alb.id,
+        'ti': alb.title,
+      }
+    });
     setAlbum(alb);
   }
-
-
 </script>
 
 
@@ -274,8 +287,14 @@ import { logStore } from './../../stores/logStore';
         <SvelteMarkdown source={desctiption} />
         {/key}
       </h4>  
+      
     {/if}
-    
+    {#if is_campain}
+      <div class="timer">
+        <h1 class="timer-title">{campain.name}</h1>
+        <MyCountdown mainTextClr="black" borderClr='transperent' date={campain.endTime} />
+      </div>
+    {/if}
   
   {#await products}
   <Spinner
@@ -644,7 +663,19 @@ import { logStore } from './../../stores/logStore';
   
   .modal-body{
     overflow-y: scroll;
-
+    
+    .timer {
+        
+      padding-top:15px;
+      padding-bottom: 15px;
+      margin-bottom: 5px;
+      @include bg-gradient();
+      .timer-title {
+        text-align: center;
+        padding:0px;
+        margin: 0px;
+      }
+    }
   .category-items {
         display: grid;
     grid-column: 1fr 1fr 1fr;
