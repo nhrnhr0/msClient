@@ -25,7 +25,11 @@ export let successModalStore = writable();
 // browser storage - userInfoStore
 let initUserData = {'isLogin': undefined};
 if(browser) {
-    initUserData=JSON.parse(localStorage.getItem('user'));
+    if(typeof(Storage) !== "undefined") {
+        initUserData=JSON.parse(localStorage.getItem('user'));
+    }else{
+        initUserData=JSON.parse(sessionStorage.getItem('user'));
+    }
     if(!initUserData) {
         initUserData={'isLogin': undefined}
     }
@@ -34,7 +38,11 @@ export let userInfoStore = writable(initUserData);
 
 userInfoStore.subscribe((value) => {
     if (browser) {
-        window.localStorage.setItem('user', JSON.stringify(value));
+        if(typeof(Storage) !== "undefined") {
+            window.localStorage.setItem('user', JSON.stringify(value));
+        }else {
+            window.sessionStorage.setItem('user', JSON.stringify(value));
+        }
     }
 });
 
