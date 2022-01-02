@@ -29,6 +29,7 @@ import {activeModalsStore } from '$lib/modals/modalManager';
                     $userInfoStore.isLogin=true;
                     setTimeout(()=> {
                         toggleModal();
+                        alert('Login Successful:' + JSON.stringify($userInfoStore));
                     },1);
                 })
                 

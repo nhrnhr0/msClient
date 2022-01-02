@@ -189,8 +189,8 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
     }
 }
   onMount(async()=> {
-    alert('localStorage.length: ' +  window.localStorage.length);
-    alert('lsTest: ' + lsTest());
+    alert('userInfoStore: ' +  JSON.stringify($userInfoStore));
+    
     window.onpopstate = function(event) {
       var pathArray = window.location.pathname.split('/');
       let vals = {}
@@ -234,6 +234,7 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
       
     });*/
     let csrf_response = await request_csrf_token();
+    alert('csrf_response: ' +  JSON.stringify(csrf_response));
     debugger;
     if(csrf_response.whoAmI && Object.keys(csrf_response.whoAmI).length != 0) {
       $userInfoStore.me = csrf_response.whoAmI;
@@ -248,6 +249,7 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
         me: {}
       }
     } 
+    alert('userInfoStore: ' +  JSON.stringify($userInfoStore));
     albumsJsonStore.set(albums);
     console.log('albums: ', albums);
     sizesJsonStore.set(sizes);
