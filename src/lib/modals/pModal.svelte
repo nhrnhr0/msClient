@@ -427,8 +427,8 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                                   </tr>
                                   <tr class="headers">
                                     <th>כמות</th>
-                                    <th>מחיר</th>
-                                    <th>מחיר לצרכן</th>
+                                    <th>מחיר ליח'</th>
+                                    <th>מחיר ממולץ לצרכן</th>
                                   </tr>
                                   </thead>
                                   <tbody>
