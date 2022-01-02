@@ -177,12 +177,20 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
   
   //export let onLoadCategory;
   //export let onLoadProduct;
-  
 
+  function lsTest(){
+    var test = 'test';
+    try {
+        localStorage.setItem(test, test);
+        localStorage.removeItem(test);
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
   onMount(async()=> {
-    alert('localStorage: ' +  window.localStorage);
-    alert('sessionStorage: ' +  window.sessionStorage);
-    alert('typeof(Storage): ' +  typeof(Storage));
+    alert('localStorage.length: ' +  window.localStorage.length);
+    alert('lsTest: ' + lsTest());
     window.onpopstate = function(event) {
       var pathArray = window.location.pathname.split('/');
       let vals = {}
