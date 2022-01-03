@@ -215,13 +215,7 @@ import { logStore } from './../../stores/logStore';
     }*/
 
     export function update_swiper() {
-        if(mswiper) {
-            setTimeout(() => {
-                mswiper.swiper().reInit();
-                fixDups();
-            }, 0);
-            
-        }
+        //TODO: update swipers
     }
     export function fixDups() {
         setTimeout(()=>{

@@ -69,7 +69,7 @@
     title: 'M.S. Global',
     description: `מתמחה באספקת מגוון רחב של מוצרים למוסדות ולחנויות ברחבי הארץביגוד • הנעלה • הלבשה תחתונה • טקסטיל לבית • תיקים ופאוצ'ים • משק בית • חשמל לבית • כלי מטבח • משחקים וצעצועים • תחזוקה לבית • ספורט • גאדג'טים ועוד...`,
     keywords: `ביגוד • הנעלה • הלבשה תחתונה • טקסטיל לבית • תיקים ופאוצ'ים • משק בית • חשמל לבית • כלי מטבח • משחקים וצעצועים • תחזוקה לבית • ספורט • גאדג'טים ועוד...`,
-    image: 'https://res.cloudinary.com/ms-global/image/upload/v1635432768/msAssets/global_favicon_mtnlkz.png',
+    image: 'https://res.cloudinary.com/ms-global/image/upload/v1641224100/msAssets/favicon_hbwcui.jpg',
   }
 </script>
 
@@ -78,7 +78,7 @@
 
 <svelte:head>
         <title>{meta_data.title}</title>
-        <link rel="icon" href="https://res.cloudinary.com/ms-global/image/upload/v1635432768/msAssets/global_favicon_mtnlkz.png" />
+        <link rel="icon" href="{meta_data.image}" />
         <meta name="title" content="{meta_data.title}">
         <meta name="description" content="{meta_data.description}">
         <meta name="keywords" content="{meta_data.keywords}" />

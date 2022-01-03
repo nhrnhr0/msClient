@@ -31,8 +31,6 @@
 
     function dateDiff(timestamp, structure = dateDiff.structure) {
         let delta = timestamp - new Date().getTime();
-        console.log(delta);
-
         if(delta < 0) {
             return {
                 day: 0,
