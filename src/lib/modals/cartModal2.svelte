@@ -13,7 +13,7 @@
     export let isModalOpen = false;
     let modal_zIndex = 0;
 	let state = 0;
-	let form_name, form_email, form_phone, form_message;
+	let form_name, form_email, form_phone, form_message,form_business_name;
 	let error_found = false;
 	let error_message = '';
 	function checkout_back_click() {
@@ -53,6 +53,7 @@
                 name: form_name || '',
                 email: form_email || '',
                 phone:form_phone || '',
+				business_name: form_business_name || '',
                 uuid: get_user_uuid() || '',
                 message: form_message || '',
                 products: cart_products,
@@ -247,6 +248,7 @@
 								<div class="form-control"><input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="שם:" type="text"></div>
 								<div class="form-control"><input bind:value="{form_email}" name="email" placeholder="אימייל:" type="email"></div>
 								<div class="form-control"><input bind:value="{form_phone}" name="tel" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="טלפון:" type="tel"></div>
+								<div class="form-control"><input bind:value="{form_business_name}" name="buissness name" required="{false}" placeholder="שם העסק:" type="text" /></div>
 								<div class="form-control"><textarea bind:value="{form_message}" name="message" required="{false}" placeholder="הודעה:"/>
 									</div>
 							</form>

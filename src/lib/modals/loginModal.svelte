@@ -1,5 +1,7 @@
 <script>    
     import {
+albumsJsonStore,
+campainsStore,
 userInfoStore,
         _modal_z_index_incrementor
     } from './../../stores/stores';
@@ -27,15 +29,27 @@ import {activeModalsStore } from '$lib/modals/modalManager';
                 whoAmI.then(me=> {
                     $userInfoStore.me=me;
                     $userInfoStore.isLogin=true;
+                    update_campains_with_local_data(me.campains)
                     setTimeout(()=> {
                         toggleModal();
-                        alert('Login Successful:' + JSON.stringify($userInfoStore));
                     },1);
                 })
                 
             }
         }).catch(error => console.log('error', error));
 
+    }
+
+    function update_campains_with_local_data(campains) {
+        let campains_response = campains;
+        campainsStore.set(campains_response);
+        //let campain_album = campains_response[0].album;
+        let temp_albums = $albumsJsonStore;
+        for(let i = 0; i < campains_response.length; i++) {
+        let campain_album = campains_response[i].album;
+        temp_albums.unshift(campain_album);
+        }
+        albumsJsonStore.set(temp_albums);
     }
     export function toggleModal() {
         isModalOpen = !isModalOpen;

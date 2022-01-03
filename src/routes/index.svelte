@@ -9,7 +9,6 @@
   import { browser } from '$app/env';
   import {getCookie} from '$lib/utils/cookies';
   import {activeModalsStore} from "$lib/modals/modalManager";
-
   export async function load({fetch, page}) {
     console.log('load: ', page, page.path);
     //const qs = browser ? document.location.search : '';
@@ -177,19 +176,8 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
   
   //export let onLoadCategory;
   //export let onLoadProduct;
-
-  function lsTest(){
-    var test = 'test';
-    try {
-        localStorage.setItem(test, test);
-        localStorage.removeItem(test);
-        return true;
-    } catch(e) {
-        return false;
-    }
-}
+  
   onMount(async()=> {
-    alert('userInfoStore: ' +  JSON.stringify($userInfoStore));
     
     window.onpopstate = function(event) {
       var pathArray = window.location.pathname.split('/');
@@ -234,7 +222,6 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
       
     });*/
     let csrf_response = await request_csrf_token();
-    alert('csrf_response: ' +  JSON.stringify(csrf_response));
     debugger;
     if(csrf_response.whoAmI && Object.keys(csrf_response.whoAmI).length != 0) {
       $userInfoStore.me = csrf_response.whoAmI;
@@ -249,7 +236,6 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
         me: {}
       }
     } 
-    alert('userInfoStore: ' +  JSON.stringify($userInfoStore));
     albumsJsonStore.set(albums);
     console.log('albums: ', albums);
     sizesJsonStore.set(sizes);
@@ -292,6 +278,13 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
 
   });
 
+  albumsJsonStore.subscribe(new_albums => {
+    if(new_albums.length > 0) {
+      albums = new_albums;
+    }
+    console.log('albums: ', new_albums);
+  });
+
   activeModalsStore.subscribe(modals => {
     if(browser) {
 
@@ -312,10 +305,12 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
     let campains_response = campains;
     campainsStore.set(campains_response);
     //let campain_album = campains_response[0].album;
+    let temp_albums = albums;
     for(let i = 0; i < campains_response.length; i++) {
       let campain_album = campains_response[i].album;
-      albums.unshift(campain_album);
+      temp_albums.unshift(campain_album);
     }
+    albumsJsonStore.set(temp_albums);
   }
   /*async function update_campains_albums() {
     let campains_response = undefined;
