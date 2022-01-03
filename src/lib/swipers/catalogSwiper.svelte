@@ -213,6 +213,16 @@ import { logStore } from './../../stores/logStore';
         $productModalStore.setProduct(catalogId, productId);
         $productModalStore.open();
     }*/
+
+    export function update_swiper() {
+        if(mswiper) {
+            setTimeout(() => {
+                mswiper.swiper().reInit();
+                fixDups();
+            }, 0);
+            
+        }
+    }
     export function fixDups() {
         setTimeout(()=>{
             mswiper.swiper().loopDestroy();
@@ -275,6 +285,7 @@ on:change={(event) => {
         {:else}
                 <Swiper
                 bind:this={mswiper}
+                resizeReInit={true},
                 effect="{'coverflow'}"
                 centeredSlides="{true}"
                 slidesPerView="{'5'}"

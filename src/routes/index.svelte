@@ -62,6 +62,9 @@
 			}
 		};
   }
+
+
+
   const meta_data = {
     title: 'M.S. Global',
     description: `מתמחה באספקת מגוון רחב של מוצרים למוסדות ולחנויות ברחבי הארץביגוד • הנעלה • הלבשה תחתונה • טקסטיל לבית • תיקים ופאוצ'ים • משק בית • חשמל לבית • כלי מטבח • משחקים וצעצועים • תחזוקה לבית • ספורט • גאדג'טים ועוד...`,
@@ -94,7 +97,7 @@
     <meta property="twitter:description" content="{meta_data.description}">
     <meta property="twitter:image" content="{meta_data.image}">
 </svelte:head>
-<svelte:window bind:scrollY={y_scroll}/>
+<svelte:window on:resize="{window_resize}" bind:scrollY={y_scroll}/>
 <Header />
 <About />
 <LogoSwiper {logos}/>
@@ -164,6 +167,7 @@ import { stateQuery} from './../stores/queryStore'
 import { logStore } from "../stores/logStore";
 import { campainsStore } from '../stores/stores';
 import MyCountdown from "$lib/components/MyCountdown.svelte";
+import {sl_disable, sl_enable} from "$lib/utils/scroll-lock";
 
   export let colors;
   export let sizes;
@@ -222,7 +226,6 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
       
     });*/
     let csrf_response = await request_csrf_token();
-    debugger;
     if(csrf_response.whoAmI && Object.keys(csrf_response.whoAmI).length != 0) {
       $userInfoStore.me = csrf_response.whoAmI;
       $userInfoStore.isLogin = true;
@@ -291,12 +294,17 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
       if(Object.keys(modals).length == 0) {
         /*overflow-y: auto;
         margin-right: 0px;*/
-        document.body.classList.remove('my-modal-open');
+
+        //document.body.classList.remove('my-modal-open');
+        sl_disable();
+        
       }
       else {
         /*overflow-y: hidden;
         margin-right: 0px;*/
-        document.body.classList.add('my-modal-open');
+
+        //document.body.classList.add('my-modal-open');
+        sl_enable();
       }
       console.log('hey: ', Object.keys(modals).length);
     }
@@ -311,6 +319,14 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
       temp_albums.unshift(campain_album);
     }
     albumsJsonStore.set(temp_albums);
+  }
+
+  function window_resize(e) {
+    console.log('window_resize');
+    let swipers = $all_swipers;
+    for( const[key, value] of Object.entries(swipers)) {
+        value.update_swiper();
+    };
   }
   /*async function update_campains_albums() {
     let campains_response = undefined;

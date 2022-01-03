@@ -48,7 +48,6 @@
             res[key] = Math.floor(delta / structure[key]);
             delta -= res[key] * structure[key];
         }
-        console.log('res: ',res);
         return res;
     }
 
@@ -93,7 +92,6 @@
 {/if}
 <style lang="scss">
     .timer-container {
-        
         .timer {
 
             display: flex;
@@ -130,12 +128,13 @@
                 }
 
                 flex: 1;
-                min-width: 100px;
+                //min-width: 100px;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                
+                padding-left: 10%;
+                padding-right: 10%;
 
                 .num {
                     font-size: 2rem;
@@ -165,8 +164,8 @@
                     border-top-right-radius: 25px;
                     border-bottom-right-radius: 25px;
                 }
-                @media screen and (max-width: 500px) {
-                    min-width: 80px;
+                @media screen and (max-width: 800px) {
+                    //min-width: 80px;
                     
                     .num {
                         font-size: 1.5rem;

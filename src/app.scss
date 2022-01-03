@@ -66,6 +66,7 @@
 }
 
 body{
+    scroll-behavior: unset;
     overflow-y: auto;
     margin-right: 0px;
       &.my-modal-open {

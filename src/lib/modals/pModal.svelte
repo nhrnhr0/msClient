@@ -426,9 +426,12 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                                     
                                   </tr>
                                   <tr class="headers">
-                                    <th>כמות</th>
-                                    <th>מחיר ליח'</th>
-                                    <th>מחיר ממולץ לצרכן</th>
+                                    <td>כמות
+                                      </td>
+                                    <td>מחיר ליח'
+                                      </td>
+                                    <td>מחיר ממולץ לצרכן
+                                      </td>
                                   </tr>
                                   </thead>
                                   <tbody>
@@ -984,7 +987,9 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                     }
                     tr.headers{
                       @include bg-gradient();
-                      th {
+                      td {
+                        word-wrap: break-word;
+                        white-space: normal;
                         text-align: center;
                         border: 1px solid #444;
                       }
