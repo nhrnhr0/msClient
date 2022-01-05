@@ -363,7 +363,7 @@ $gray-1200: #131314;
 	.cart-info {
 		color:white;
 		direction: rtl;
-		height: calc(100vh - 150px);
+		height: calc(100vh - 230px);
 		//overflow: scroll;
 		overflow: auto;
 		.info {
@@ -449,7 +449,7 @@ $gray-1200: #131314;
 		margin: 0;
 		padding: 0 0 15px 0;
 		list-style: none;
-		height: calc(100vh - 150px);
+		height: calc(100vh - 230px);
 		overflow-x: hidden;
 		overflow-y: auto;
 		display: block;
