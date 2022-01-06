@@ -120,7 +120,7 @@
 {/if}
 -->
 
-{#each albums as album}
+{#each albums as album, i(album.id)}
 
 		<div class="title-wraper" class:campain={album.is_campain}>
 			<button class="title btn"  on:click={openCategoryModal(album)}>
@@ -151,10 +151,15 @@
 		</div>
 
 	<CatalogSwiper album={album} bind:this={$all_swipers[album.id]} loaded_data={all_products[album.id]}/>
+
+  {#if i == 5}
+    <CallToActionForm/>
+  {/if}
+
 {/each}
 
 <ContentForm></ContentForm>
-
+<BusinessOwnerPopup/>
 <link rel="preload" as="image" href="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png">
 
 <script>
@@ -169,6 +174,8 @@ import { logStore } from "../stores/logStore";
 import { campainsStore } from '../stores/stores';
 import MyCountdown from "$lib/components/MyCountdown.svelte";
 import {sl_disable, sl_enable} from "$lib/utils/scroll-lock";
+import CallToActionForm from '$lib/components/CallToActionForm.svelte';
+import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
 
   export let colors;
   export let sizes;

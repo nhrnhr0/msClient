@@ -240,7 +240,7 @@
           <DropdownMenu>
             {#each $albumsJsonStore as alb}
               <DropdownItem>
-                <button on:click={changeCategory(alb)} class="btn btn-dark">
+                <button on:click={changeCategory(alb)} class="btn btn-dark" class:selected={$current_album.id==alb.id}>
                   {alb.title}
                 </button>
               </DropdownItem>        
@@ -635,6 +635,14 @@
           @media screen and (max-width: 400px) {
             grid-template-columns: repeat(1, 1fr);
           }
+
+          :global(.dropdown-item) {
+            :global(.btn-dark.selected) {
+              background-color: rgb(223, 223, 223);
+              color: black;
+              box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+            }
+          }
         }
       }
     }
@@ -669,7 +677,9 @@
       padding-top:15px;
       padding-bottom: 15px;
       margin-bottom: 5px;
-      @include bg-gradient();
+      //@include bg-gradient();
+      @include bg-image();
+      //@include bg-image-vars(rgb(253, 253, 253), rgba(218, 218, 218, 0.5));
       .timer-title {
         text-align: center;
         padding:0px;

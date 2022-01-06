@@ -13,7 +13,8 @@
             Dropdown,
             DropdownItem,
             DropdownMenu,
-            DropdownToggle
+            DropdownToggle,
+Spinner
         } from 'sveltestrap';
         import {categoryModalStore} from './../stores/stores'
         import { cartStore } from './../stores/cartStore';
@@ -157,24 +158,34 @@ import { logStore } from "./../stores/logStore";
 
         <form class="d-flex" id="search_form">
             <AutoComplete id="search_input" on:focus loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש מוצרים..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:value={searchValue}  >
-
+                <div slot="loading" let:loadingText={loadingText}>
+                    <Spinner
+                        size="sm"
+                        speed="750"
+                        unit="em"
+                        color="#A82124"
+                        thickness="2"
+                    />
+                    <span>{loadingText}</span>
+                    <!-- spinner -->
+                    
+                </div>
                 <div slot="item" let:item={item} let:label={label}>
-                {#if item.item_count}
-                    <div class="list-category">
-                        <div class="search-item">
-                            {item.title} ({item.item_count})
-                            <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
+                    {#if item.item_count}
+                        <div class="list-category">
+                            <div class="search-item">
+                                {item.title} ({item.item_count})
+                                <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
+                            </div>
                         </div>
-                    </div>
-                {:else}
-                    <div class="search-item">
-                        <img alt="{item.title}" style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
-                        <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
-                        {@html label}
-                    </div>
-                {/if}
-
-                  </div>
+                    {:else}
+                        <div class="search-item">
+                            <img alt="{item.title}" style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
+                            <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
+                            {@html label}
+                        </div>
+                    {/if}
+                </div>
             </AutoComplete>
             <!--
             <input class="form-control" id="search" autocomplete="on" type="search" placeholder="חיפוש..."
