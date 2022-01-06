@@ -152,7 +152,7 @@
 
 	<CatalogSwiper album={album} bind:this={$all_swipers[album.id]} loaded_data={all_products[album.id]}/>
 
-  {#if i == 5}
+  {#if i == 5 && ($userInfoStore == undefined || $userInfoStore.isLogin == false)}
     <CallToActionForm/>
   {/if}
 

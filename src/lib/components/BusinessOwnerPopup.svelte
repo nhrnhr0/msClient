@@ -37,8 +37,10 @@ import { userInfoStore } from './../../stores/stores';
         }
     }
     function popup_clicked(e) {
-        // redirect to /business-owner
-        window.location.href = "business-owner";
+        // open in new tab business-owner
+        //window.location.href = "business-owner";
+        // open in new tab business-owner
+        window.open("business-owner", '_blank').focus();
     }
 </script>
 <svelte:window bind:scrollY={y}/>
