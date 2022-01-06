@@ -393,7 +393,7 @@ import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
     &:hover,&:focus {
       @media (min-width: 820px) {
           &::before {
-          content: '>> למעבר לקטגוריית ';
+          content: '>> לקטגוריית ';
           opacity: 1;
           font-size: 1.4rem;
         }
