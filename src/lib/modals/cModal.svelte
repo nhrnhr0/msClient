@@ -291,7 +291,7 @@
     {/if}
     {#if is_campain}
       <div class="timer">
-        <h1 class="timer-title">{campain.name}</h1>
+        <h1 class="timer-title">{campain.album.title}</h1>
         <MyCountdown mainTextClr="black" borderClr='transperent' date={campain.endTime} />
       </div>
     {/if}

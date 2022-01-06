@@ -262,7 +262,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
           campain = camp;
           priceTable = info.priceTable;
           console.log(info);
-          campain_title = camp.name;
+          campain_title = camp.album.title;
           campain_id = camp.id;
           break;
         }
