@@ -136,7 +136,7 @@
                                 }
                             }
                             );
-        }, 250);
+        }, 0);
     }
 
     function open_product_modal(key) {

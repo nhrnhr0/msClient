@@ -82,7 +82,7 @@ import { userInfoStore } from './../../stores/stores';
         .fixed-from {
             display: block;
             cursor: pointer;
-            background-color: rgb(209, 49, 209);
+            background-color: #F25050;
             //192 × 256 px
             width: 192px;
             position: fixed;
