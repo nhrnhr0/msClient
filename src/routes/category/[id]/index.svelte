@@ -6,13 +6,14 @@ import { isNumeric } from "$lib/utils/utils";
     import { ALBUMS_API_URL, CLOUDINARY_URL } from "./../../../api/consts";
     
     
-        export async function load({page, fetch, session, contex}) {
+        export async function load({url, params, fetch, session, contex}) {
             //console.log(page);
             //console.log("load", page.params);
-            let url = ALBUMS_API_URL + page.params.id + "/";
+            //let url = ALBUMS_API_URL + page.params.id + "/";
+            let server_url = ALBUMS_API_URL + params.id + '/';
             //console.log(url);
-            if(isNumeric(page.params.id)) {
-                let response = await fetch_wraper(url , {"method":"GET"}, fetch);
+            if(isNumeric(params.id)) {
+                let response = await fetch_wraper(server_url , {"method":"GET"}, fetch);
                 //console.log(response);
                 response.fotter = response.fotter.replace(/(\r\n|\n|\r)/gm, "");
                 return {

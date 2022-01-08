@@ -9,8 +9,8 @@
   import { browser } from '$app/env';
   import {getCookie} from '$lib/utils/cookies';
   import {activeModalsStore} from "$lib/modals/modalManager";
-  export async function load({fetch, page}) {
-    console.log('load: ', page, page.path);
+  export async function load({fetch, url, params}) {
+    console.log('load: ', url, params);
     //const qs = browser ? document.location.search : '';
     //const query = new URLSearchParams(qs);
     //const productQuery = (query.get('product') || '-1');
@@ -40,18 +40,14 @@
     }
     let products = {};
 
-    //TODO: remove the !browser on production build
-    //if (!browser) {
+    //only on server
+    if (!browser) {
       for(let i = 0; i < albums_json.length; i++) {
         let productResponse = await get_album_details(albums_json[i].id, fetch)
         
         products[albums_json[i].id] = productResponse;
       }
-    //}
-
-    
-    /*
-*/
+    }
     return {
 			props: {
         colors: colors_ret,
@@ -64,11 +60,42 @@
   }
 
 
+  function roughSizeOfObject( object ) {
 
+var objectList = [];
+var stack = [ object ];
+var bytes = 0;
+
+while ( stack.length ) {
+    var value = stack.pop();
+
+    if ( typeof value === 'boolean' ) {
+        bytes += 4;
+    }
+    else if ( typeof value === 'string' ) {
+        bytes += value.length * 2;
+    }
+    else if ( typeof value === 'number' ) {
+        bytes += 8;
+    }
+    else if
+    (
+        typeof value === 'object'
+        && objectList.indexOf( value ) === -1
+    )
+    {
+        objectList.push( value );
+
+        for( var i in value ) {
+            stack.push( value[ i ] );
+        }
+    }
+}
+return bytes;
+}
   const meta_data = {
     title: 'M.S. Global',
-    description: `מתמחה באספקת מגוון רחב של מוצרים למוסדות ולחנויות ברחבי הארץ
-    ביגוד • הנעלה • הלבשה תחתונה • טקסטיל לבית • תיקים ופאוצ'ים • משק בית • חשמל לבית • כלי מטבח • משחקים וצעצועים • תחזוקה לבית • ספורט • גאדג'טים ועוד...`,
+    description: `מתמחה באספקת מגוון רחב של מוצרים למוסדות ולחנויות ברחבי הארץ    ביגוד • הנעלה • הלבשה תחתונה • טקסטיל לבית • תיקים ופאוצ'ים • משק בית • חשמל לבית • כלי מטבח • משחקים וצעצועים • תחזוקה לבית • ספורט • גאדג'טים ועוד...`,
     keywords: `ביגוד • הנעלה • הלבשה תחתונה • טקסטיל לבית • תיקים ופאוצ'ים • משק בית • חשמל לבית • כלי מטבח • משחקים וצעצועים • תחזוקה לבית • ספורט • גאדג'טים ועוד...`,
     image: 'https://res.cloudinary.com/ms-global/image/upload/v1641224100/msAssets/favicon_hbwcui.jpg',
   }

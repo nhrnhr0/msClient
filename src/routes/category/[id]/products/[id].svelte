@@ -7,17 +7,18 @@ import { fetch_wraper } from "../../../../api/api";
 import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
 
 
-    export async function load({page, fetch, session, contex}) {
+    export async function load({url, params, fetch, session, contex}) {
         //console.log(page);
-        console.log("load", page.params);
-        let url = PRODUCTS_API_URL + page.params.id + "/";
+        console.log("load", url);
+        //let url = PRODUCTS_API_URL + page.params.id + "/";
+        let server_url = PRODUCTS_API_URL + params.id + "/";
         //console.log(url);
-        if(isNumeric(page.params.id)) {
-            let response = await fetch_wraper(url , {"method":"GET"}, fetch);
+        if(isNumeric(params.id)) {
+            let response = await fetch_wraper(server_url , {"method":"GET"}, fetch);
             //console.log(response);
             response.description = response.description.replace(/(\r\n|\n|\r)/gm, "");
             let category_regex = '\/category\/(.+)\/products';
-            let category = page.path.match(category_regex);
+            let category = url.href.match(category_regex);
             return {
                 props: {
                     data: response,
