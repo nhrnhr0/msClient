@@ -21,7 +21,7 @@ const config = {
       assets: '', //process.env['GITHUB_REPO_ABS']
     }, 
     target: "#svelte",
-    
+    adapter: adapter({}),
 
     /*adapter: adapter({ out: 'my-output-directory' }),*/
     
