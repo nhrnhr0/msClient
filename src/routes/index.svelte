@@ -245,6 +245,7 @@ import MyCountdown from "$lib/components/MyCountdown.svelte";
 import {sl_disable, sl_enable} from "$lib/utils/scroll-lock";
 import CallToActionForm from '$lib/components/CallToActionForm.svelte';
 import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
+import { flashy_page_view } from "$lib/flashy";
 
   export let colors;
   export let sizes;
@@ -259,7 +260,7 @@ import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
   //export let onLoadProduct;
   
   onMount(async()=> {
-    
+    flashy_page_view();
     window.onpopstate = function(event) {
       var pathArray = window.location.pathname.split('/');
       let vals = {}

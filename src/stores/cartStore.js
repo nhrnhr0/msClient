@@ -1,4 +1,5 @@
 import { browser } from "$app/env";
+import { flashy_update_cart } from "$lib/flashy";
 import { writable, get } from "svelte/store";
 let initCart = {};
 if(browser) {
@@ -50,6 +51,7 @@ export const cartStore = createCartStore();//writable(initCart);
 cartStore.subscribe((value) => {
     if (browser) {
       window.localStorage.setItem('cart', JSON.stringify(value));
+      flashy_update_cart(value);
     }
   });
 

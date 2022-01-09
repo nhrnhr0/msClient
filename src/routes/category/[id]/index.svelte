@@ -15,7 +15,6 @@ import { isNumeric } from "$lib/utils/utils";
             if(isNumeric(params.id)) {
                 let response = await fetch_wraper(server_url , {"method":"GET"}, fetch);
                 //console.log(response);
-                debugger;
                 response.fotter = response.fotter.replace(/(\r\n|\n|\r)/gm, "");
                 return {
                     props: {
@@ -33,8 +32,11 @@ import { isNumeric } from "$lib/utils/utils";
         
     </script>
     <script>
+import { flashy_page_view } from "$lib/flashy";
+
         export let data;
         onMount(()=> {
+            flashy_page_view();
             sessionStorage.setItem("onLoadTask",JSON.stringify({type: 'category', data: data}));
             window.location.replace("/"); 
         })

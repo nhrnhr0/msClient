@@ -19,9 +19,11 @@
     </script>
     <script>
 import { onMount } from "svelte";
+import { flashy_page_view } from "$lib/flashy";
 
         export let data;
         onMount(()=> {
+            flashy_page_view();
             window.location.replace("/");
         })
     </script>

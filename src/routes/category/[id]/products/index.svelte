@@ -6,6 +6,7 @@ import { ALL_IMAGE_ID_URL } from ".../../../../api/consts";
 import { get_album_details } from ".../../../../api/api";
 import { ALBUMS_API_URL } from "./../../../../api/consts";
 import { onMount } from "svelte";
+import { flashy_page_view } from "$lib/flashy";
 
     export async function load({url, params, fetch, session, contex}) {
         //console.log(page.params.id);
@@ -25,6 +26,7 @@ import { onMount } from "svelte";
 <script>
     export let products;
     onMount(()=> {
+        flashy_page_view();
         var loc = window.location.href;
         loc = loc.replace('/products', '');
         window.location.replace(loc);

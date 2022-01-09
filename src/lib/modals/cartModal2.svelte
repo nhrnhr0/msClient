@@ -8,6 +8,7 @@
     import { flip } from 'svelte/animate';
 	import { get_user_uuid, submit_cart_form } from "./../../api/api";
 	import {activeModalsStore } from '$lib/modals/modalManager';
+import { flashy_purchase } from "$lib/flashy";
 
 
     export let isModalOpen = false;
@@ -74,7 +75,9 @@
                             );
             let response = submit_cart_form(data);
             response.then((data_json)=> {
-                
+				let cart_id = data_json['cart_id'];
+				let product_ids = data_json['product_ids'];
+                flashy_purchase(cart_id,product_ids)
                     if(data_json['status'] == 'success') {
                         $cartModalStore.toggleModal();
                         $successModalStore.toggleModal();

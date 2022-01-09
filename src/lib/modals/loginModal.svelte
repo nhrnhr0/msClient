@@ -27,7 +27,6 @@ import {activeModalsStore } from '$lib/modals/modalManager';
             }else {
                 //localStorage.setItem('refresh', data.refresh);
                 $userInfoStore.access = data.token;
-                debugger;
                 let me = data.me;
                 $userInfoStore.me=me;
                 $userInfoStore.isLogin=true;

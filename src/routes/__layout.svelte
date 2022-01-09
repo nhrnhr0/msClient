@@ -5,7 +5,6 @@
 import { onMount } from "svelte";
   import {all_swipers,userDetailModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore} from './../stores/stores'
     
-  
 </script>
 
 
