@@ -1,5 +1,5 @@
 import preprocess from "svelte-preprocess";
-import adapter from '@sveltejs/adapter-node';
+import adapter from '@sveltejs/adapter-static';
 import { terser } from 'rollup-plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 
@@ -15,15 +15,15 @@ console.log('===================================================================
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   kit: {
-    /*appDir: "app",
+    appDir: "app",
     paths: { 
       base: process.env['GITHUB_REPO'],//process.env.NODE_ENV === "production" ? "/msClientBuild" : "",
       assets: '', //process.env['GITHUB_REPO_ABS']
     }, 
     target: "#svelte",
-    */
+    
 
-    adapter: adapter({ out: 'my-output-directory' }),
+    /*adapter: adapter({ out: 'my-output-directory' }),*/
     
 
     vite: {
