@@ -18,6 +18,4 @@ cp -rfv ./build msClientBuildText
 git pull
 npm run tbuild
 cp -vr ./build/* ../msClientBuildTest/
-cp -vr ./my-output-directory/* ../msClientBuildTest2/
-
 sudo service nginx restart

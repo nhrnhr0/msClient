@@ -4,7 +4,7 @@
   //import { stateQuery} from './../stores/stores'
 import { onMount } from "svelte";
   import {all_swipers,userDetailModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore} from './../stores/stores'
-    
+  
 </script>
 
 
@@ -35,7 +35,7 @@ import { onMount } from "svelte";
   import SuccessModal from '$lib/modals/successModal.svelte';
   import LoginModal from '$lib/modals/loginModal.svelte';
   import UserDetailsModal from '$lib/modals/userDetailsModal.svelte';
-
+  export const prerender = false;
 </script>
 
 <div id="main_wraper" class="bg-wraper">

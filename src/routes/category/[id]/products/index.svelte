@@ -8,7 +8,7 @@ import { ALBUMS_API_URL } from "./../../../../api/consts";
 import { onMount } from "svelte";
 import { flashy_page_view } from "$lib/flashy";
 
-    export async function load({url, params, fetch, session, contex}) {
+    export async function load({params, fetch, session, contex}) {
         //console.log(page.params.id);
         if(isNumeric(params.id)) {
             let response = await get_album_details(params.id, fetch)

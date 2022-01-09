@@ -38,10 +38,9 @@
   } from "$lib/modals/modalManager";
   export async function load({
     fetch,
-    url,
     params
   }) {
-    console.log('load: ', url, params);
+    console.log('load: ', params);
     /*
     console.log('getting: ', ALBUMS_API_URL);
     let albums_response = await fetch(ALBUMS_API_URL, { method: 'GET', redirect: 'follow'});
@@ -246,7 +245,7 @@ import {sl_disable, sl_enable} from "$lib/utils/scroll-lock";
 import CallToActionForm from '$lib/components/CallToActionForm.svelte';
 import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
 import { flashy_page_view } from "$lib/flashy";
-
+  
   export let colors;
   export let sizes;
   export let albums;
