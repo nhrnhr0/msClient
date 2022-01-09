@@ -15,6 +15,7 @@ import { isNumeric } from "$lib/utils/utils";
             if(isNumeric(params.id)) {
                 let response = await fetch_wraper(server_url , {"method":"GET"}, fetch);
                 //console.log(response);
+                debugger;
                 response.fotter = response.fotter.replace(/(\r\n|\n|\r)/gm, "");
                 return {
                     props: {
@@ -49,7 +50,7 @@ import { isNumeric } from "$lib/utils/utils";
 
         <meta property="og:title" content={data?.title} />
         <meta property="og:description" content={data?.fotter} />
-        <meta property="og:image" content={CLOUDINARY_URL + 'f_auto,w_auto/' + data?.first_image?.cimage} />
+        <meta property="og:image" content={CLOUDINARY_URL + 'f_auto,w_auto/' + data?.cimage} />
         <meta property="og:type" content="category" />
         <meta property="og:site_name" content="M.S. Global" />
         <meta property="og:locale" content="IL" />
