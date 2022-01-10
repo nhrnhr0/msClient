@@ -1,6 +1,5 @@
 <script>
         import {loginModalStore, userDetailModalStore, userInfoStore} from './../../stores/stores';
-        import {request_logout} from './../../api/auth'
 import { Spinner } from 'sveltestrap';
         function open_login_modal() {
             $loginModalStore.toggleModal();

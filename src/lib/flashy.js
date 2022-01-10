@@ -13,6 +13,15 @@ export function flashy_add_to_cart(content_ids) {
     });
 }
 
+export function flashy_create_contact(name, email, phone) {
+    debugger;
+    window.flashy.contacts.create({
+		"email": email,
+		"first_name": name,
+		"phone": phone,
+	},);
+}
+
 export function flashy_update_cart(cart) {
     console.log('flashy_update_cart: ', cart);
     

@@ -25,7 +25,7 @@
     MAIN_PAGE_API
   } from './../api/consts';
   import {
-    api_get_user_campains
+    api_get_user_campains, fetch_wraper
   } from './../api/api'
   import {
     browser
@@ -66,11 +66,11 @@
       colors_ret[colors_json[i].id] =  colors_json[i];
     }*/
     //MAIN_PAGE_API
-    let response = await fetch(MAIN_PAGE_API, {
+    let response = await fetch_wraper(MAIN_PAGE_API, {
       method: 'GET',
       redirect: 'follow'
-    })
-    let json = await response.json();
+    }, fetch)
+    let json = await response
     let logos_json = json.logos
     let albums_json = json.albums
     albums_json = albums_json.filter(album => album.is_public)
