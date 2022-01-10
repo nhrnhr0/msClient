@@ -45,7 +45,6 @@ export function sl_enable() {
     }
   }
   export function sl_disable() {
-    debugger;
     console.log('disable scroll lock',scrollPosition);
     $body.style.removeProperty('overflow');
     $body.style.removeProperty('position');

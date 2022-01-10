@@ -1,5 +1,6 @@
 import preprocess from "svelte-preprocess";
-import adapter from '@sveltejs/adapter-static';
+import static_adapter from '@sveltejs/adapter-static';
+import node_adapter from '@sveltejs/adapter-node';
 import { terser } from 'rollup-plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 
@@ -21,9 +22,9 @@ const config = {
       assets: '', //process.env['GITHUB_REPO_ABS']
     }, 
     target: "#svelte",
-    adapter: adapter({}),
+    /*adapter: static_adapter({}),*/
 
-    /*adapter: adapter({ out: 'my-output-directory' }),*/
+    adapter: node_adapter({ out: 'build' }),
     
 
     vite: {

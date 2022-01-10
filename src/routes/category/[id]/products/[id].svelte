@@ -17,9 +17,9 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
             //console.log(response);
             response.description = response.description.replace(/(\r\n|\n|\r)/gm, "");
             let category_regex = '\/category\/(.+)\/products';
-            let category = '1';
+            let category = ['0','1']
             if(browser) {
-            let category = window.location.href.match(category_regex);
+                category = window.location.href.match(category_regex);
             }
             return {
                 props: {
