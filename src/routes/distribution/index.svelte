@@ -1,14 +1,31 @@
 <script>
-    import AutoComplete from "simple-svelte-autocomplete";
+import { submit_distribution_lead } from "./../../api/api";
 
-    const business_types = ['אבטחה','הייטק','הפקות/ חיי לילה','חברות ניקיון וכוח אדם ','חקלאים/ גדש','לולים','מוסכים','מטבחים/ מסעדות','מלונאות','מנהל חינוך','מנהל תרבות','מנהל קורונה','מסגריות/ רתכים','מפעל/ תעשייה ','נגריות','נוי/ גננים','רפתות','אחר'];
+
+
+    const business_types = ['אבטחה','הייטק','הפקות/ חיי לילה','חברות ניקיון וכוח אדם ','חקלאים/ גדש','לולים','מוסכים','מטבחים/ מסעדות','מלונאות','מנהל חינוך','מנהל תרבות','מנהל קורונה','מסגריות/ רתכים','מפעל/ תעשייה ','נגריות','נוי/ גננים','רפתות','אחר - פרט למטה'];
     let _i_want_emails = true;
     let _i_want_wantsapp = true;
+    let submited = false;
+    let mform;
+    let selected_business_type;
+    function submit_form(e) {
+        submited = true;
+        if(mform.reportValidity()) {
+            console.log('submit=', submited);
+            let fields = mform.querySelectorAll('input')
+            let data = {};
+            for(let i = 0; i < fields.length; i++) {
+                data[fields[i].name] = fields[i].value;
+            }
+            submit_distribution_lead(data);
+        }
+    }
 </script>
 
 <div class="bg-wraper">
     <main>
-        <form class="distribution-form  bg-color-primary">
+        <form bind:this="{mform}"  class="distribution-form  bg-color-primary" class:submited={submited}>
             <div class="vip-text">
                 <div>כל הלקוחות שלנו הם V.I.P אבל יש כאלה שמרוויחים <span class="mark-strong">יותר</span>...</div>
         
@@ -34,23 +51,30 @@
                 <div class="form-fields">
                     <fieldset>
                         <input required="{true}" type="text" name="business-name" id="business_name" placeholder="שם העסק">
-                        <AutoComplete items="{business_types}" id="business_type" name="business type" placeholder="סוג העסק"></AutoComplete>
+                        <input bind:value={selected_business_type} required={true} pattern="{business_types.join('|')}" type="text" name="business_type" id="business_type" list="business_types" placeholder="סוג העסק - בחר (אחר) אם העסק שלך לא נמצא">
+                        <datalist id="business_types">
+                            {#each business_types as business_type}
+                                <option value="{business_type}">
+                            {/each}
+                        </datalist>
+                    {#if selected_business_type == 'אחר - פרט למטה'}
+                        <input required="{true}" type="text" name="business-type-other" id="business_type_other" placeholder="סוג העסק שלך">
+                    {/if}
                     </fieldset>
                     <fieldset>
-                        <input required="{true}" type="text" name="שם" id="name" placeholder="שם איש קשר">
-                        <input required="{_i_want_wantsapp}" type="tel" name="טלפון" id="tel" placeholder="טלפון">
-                        <input required="{_i_want_emails}" type="email" name="אימייל" id="email" placeholder="אימייל">
+                        <input required="{true}" type="text" name="name" id="name" placeholder="שם איש קשר">
+                        <input required="{_i_want_wantsapp}" type="tel" name="phone" minlength="10" id="tel" placeholder="טלפון">
+                        <input required="{_i_want_emails}" type="email" name="email" id="email" placeholder="אימייל">
                         <div class="mailing-list-register">
-                            <input type="checkbox" name="mailing-list" id="mailing-list" checked={_i_want_emails}>
+                            <input type="checkbox" name="mailing-list" id="mailing-list" bind:checked={_i_want_emails}>
                             <label for="mailing-list">
                                 אני מעוניין בדיוור למייל
                             </label>
                             <br>
-                            <input type="checkbox" name="whatsapp-list" id="whatsapp-list" checked={_i_want_wantsapp}>
+                            <input type="checkbox" name="whatsapp-list" id="whatsapp-list" bind:checked={_i_want_wantsapp}>
                             <label for="whatsapp-list">
                                 אני מעוניין בדיוור לוואטסאפ
                             </label>
-
                         </div>
                     </fieldset>
                     <!--
@@ -60,17 +84,12 @@
                     </div>
                     -->
                 </div>
-                <button class="sub-btn" type="submit">רוצה הצעה משתלמת!</button>
+                <button class="sub-btn" on:click|preventDefault="{submit_form}" type="submit">רוצה הצעה משתלמת!</button>
         </form>
     </main>
 </div>
 
 <style lang="scss">
-    :global(.input-container) {
-        :global(.autocomplete-input) {
-            //border: none;
-        }
-    }
     .mark-strong {
         font-weight: bolder;
     }
@@ -153,6 +172,23 @@
                 flex-direction: column;
                 gap: 15px;
                 
+            }
+        }
+
+        .distribution-form.submited {
+            .form-fields {
+                input:invalid{
+                    border: 1px solid #c00;
+                }
+                input:focus:invalid{
+                    outline: 1px solid #c00;
+                }
+                input:valid {
+                    border: 1px solid rgb(31, 204, 0);
+                }
+                input:focus:valid {
+                    outline: 1px solid rgb(31, 204, 0);
+                }
             }
         }
         

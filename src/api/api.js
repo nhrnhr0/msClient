@@ -2,7 +2,7 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL, GET_CSRF_TOKEN_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL} from "./consts";
+import { BASE_URL, GET_CSRF_TOKEN_URL,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
@@ -153,4 +153,15 @@ export async function adming_get_campains() {
     let response = await fetch_wraper(ADMIN_GET_ALL_CAMPAINS_URL);
     let json_response = response;
     return json_response;
+}
+
+
+export function submit_distribution_lead(data){
+    var requestOptions = {
+        method:"POST",
+        body: JSON.stringify(data),
+    };
+    let response 
+    response = fetch_wraper(LEAD_DISTRIBUTION_URL, requestOptions);
+    return response;
 }
