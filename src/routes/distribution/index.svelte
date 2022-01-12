@@ -21,6 +21,17 @@ import { submit_distribution_lead } from "./../../api/api";
             submit_distribution_lead(data);
         }
     }
+
+    function checkbox_state_change(e) {
+        debugger;
+        let checkbox = e.target;
+        console.log(checkbox.name);
+        if(checkbox.name === 'mailing-list' && !checkbox.checked && !_i_want_wantsapp) {
+            _i_want_wantsapp = true;
+        }else if(checkbox.name === 'whatsapp-list' && !checkbox.checked && !_i_want_emails) {
+            _i_want_emails = true;
+        }
+    }
 </script>
 
 <div class="bg-wraper">
@@ -66,12 +77,12 @@ import { submit_distribution_lead } from "./../../api/api";
                         <input required="{_i_want_wantsapp}" type="tel" name="phone" minlength="10" id="tel" placeholder="טלפון">
                         <input required="{_i_want_emails}" type="email" name="email" id="email" placeholder="אימייל">
                         <div class="mailing-list-register">
-                            <input type="checkbox" name="mailing-list" id="mailing-list" bind:checked={_i_want_emails}>
+                            <input type="checkbox" name="mailing-list" id="mailing-list" on:click={checkbox_state_change} bind:checked={_i_want_emails}>
                             <label for="mailing-list">
                                 אני מעוניין בדיוור למייל
                             </label>
                             <br>
-                            <input type="checkbox" name="whatsapp-list" id="whatsapp-list" bind:checked={_i_want_wantsapp}>
+                            <input type="checkbox" name="whatsapp-list" id="whatsapp-list" on:click={checkbox_state_change} bind:checked={_i_want_wantsapp}>
                             <label for="whatsapp-list">
                                 אני מעוניין בדיוור לוואטסאפ
                             </label>
