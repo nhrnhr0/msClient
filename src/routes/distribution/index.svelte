@@ -13,12 +13,25 @@ import { submit_distribution_lead } from "./../../api/api";
         submited = true;
         if(mform.reportValidity()) {
             console.log('submit=', submited);
-            let fields = mform.querySelectorAll('input')
+            const formData = new FormData(mform);
+            const data = {};
+            for (let field of formData) {
+                const [key, value] = field;
+                data[key] = value;
+            }
+            /*let fields = mform.querySelectorAll('input')
             let data = {};
             for(let i = 0; i < fields.length; i++) {
                 data[fields[i].name] = fields[i].value;
-            }
-            submit_distribution_lead(data);
+            }*/
+            submit_distribution_lead(data).then(res => {
+                debugger;
+                console.log('res=', res);
+                if(res.status === 200) {
+                    alert('הפרטים נשלחו בהצלחה');
+                    window.location.href = '/';
+                }
+            });
         }
     }
 
@@ -62,12 +75,20 @@ import { submit_distribution_lead } from "./../../api/api";
                 <div class="form-fields">
                     <fieldset>
                         <input required="{true}" type="text" name="business-name" id="business_name" placeholder="שם העסק">
+                        <select required="{true}" title="סוג עסק" bind:value={selected_business_type} name="business-type" id="business_type" placeholder="סוג העסק">
+                            <option value="" disabled selected>סוג עסק שלך</option>
+                            {#each business_types as business_type}
+                                <option value="{business_type}">{business_type}</option>
+                            {/each}
+                        </select>
+                        <!--
                         <input bind:value={selected_business_type} required={true} pattern="{business_types.join('|')}" type="text" name="business_type" id="business_type" list="business_types" placeholder="סוג העסק - בחר (אחר) אם העסק שלך לא נמצא">
                         <datalist id="business_types">
                             {#each business_types as business_type}
                                 <option value="{business_type}">
                             {/each}
                         </datalist>
+                        -->
                     {#if selected_business_type == 'אחר - פרט למטה'}
                         <input required="{true}" type="text" name="business-type-other" id="business_type_other" placeholder="סוג העסק שלך">
                     {/if}
@@ -188,16 +209,16 @@ import { submit_distribution_lead } from "./../../api/api";
 
         .distribution-form.submited {
             .form-fields {
-                input:invalid{
+                input:invalid, select:invalid{
                     border: 1px solid #c00;
                 }
-                input:focus:invalid{
+                input:focus:invalid, select:focus:invalid{
                     outline: 1px solid #c00;
                 }
-                input:valid {
+                input:valid , select:valid {
                     border: 1px solid rgb(31, 204, 0);
                 }
-                input:focus:valid {
+                input:focus:valid , select:focus:valid {
                     outline: 1px solid rgb(31, 204, 0);
                 }
             }
