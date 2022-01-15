@@ -28,7 +28,6 @@ CLOUDINARY_URL
     }
 
     export function setProduct(p) {
-        
         product = p
         /*setTimeout(()=> {
             evt = new Event(),

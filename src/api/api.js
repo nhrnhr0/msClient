@@ -2,7 +2,7 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL, GET_CSRF_TOKEN_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL} from "./consts";
+import { BASE_URL, GET_CSRF_TOKEN_URL,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
@@ -88,6 +88,9 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
     });
 //    return response;
 }
+export function api_get_user_campains() {
+    return fetch_wraper(USER_GET_CAMPAINS_URL);
+}
 export function apiSearchProducts(keyword) {
     const url = SEARCH_API_URL + '?q=' + encodeURIComponent(keyword);
     return fetch_wraper(url);
@@ -113,6 +116,7 @@ export async function request_csrf_token() {
     let response = await fetch_wraper(GET_CSRF_TOKEN_URL + extra);
     let json_response = response;
     set_user_uuid(json_response['uid']);
+    return json_response;
 }
 
 function set_user_uuid(newUid) {
@@ -149,4 +153,15 @@ export async function adming_get_campains() {
     let response = await fetch_wraper(ADMIN_GET_ALL_CAMPAINS_URL);
     let json_response = response;
     return json_response;
+}
+
+
+export function submit_distribution_lead(data){
+    var requestOptions = {
+        method:"POST",
+        body: JSON.stringify(data),
+    };
+    let response 
+    response = fetch_wraper(LEAD_DISTRIBUTION_URL, requestOptions);
+    return response;
 }

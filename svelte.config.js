@@ -1,8 +1,10 @@
 import preprocess from "svelte-preprocess";
-import adapter from '@sveltejs/adapter-static';
+import static_adapter from '@sveltejs/adapter-static';
+import node_adapter from '@sveltejs/adapter-node';
 import { terser } from 'rollup-plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
-
+import { babel } from '@rollup/plugin-babel';
+//import commonjs from '@rollup/plugin-commonjs';
 const production = process.env['NODE_ENV'] == 'production';
 console.log('======================================================================================');
 console.log('======================================================================================');
@@ -21,14 +23,15 @@ const config = {
       assets: '', //process.env['GITHUB_REPO_ABS']
     }, 
     target: "#svelte",
-    
+    /*adapter: static_adapter({}),*/
 
-    adapter: adapter({
-    }),
+    adapter: node_adapter({ out: 'build' }),
     
 
     vite: {
       plugins: [
+        //commonjs(),
+        babel({ babelHelpers: 'bundled' }),
         production && terser(),
         resolve({
           // Below is the important line!

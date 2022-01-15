@@ -1,9 +1,12 @@
 <script>    
     import {
+albumsJsonStore,
+campainsStore,
 userInfoStore,
         _modal_z_index_incrementor
     } from './../../stores/stores';
     import {Input}  from 'sveltestrap';
+    import Spinner from 'svelte-spinner';
 import { request_login, request_whoAmI } from './../../api/auth';
 import {activeModalsStore } from '$lib/modals/modalManager';
 
@@ -11,7 +14,9 @@ import {activeModalsStore } from '$lib/modals/modalManager';
     let isModalOpen;
     let username, password;
     let error_detail = '';
+    let is_requesting = false;
     function login() {
+        is_requesting = true;
         error_detail = '';
         let response = request_login(username, password);
         response.then(data=> {
@@ -22,16 +27,41 @@ import {activeModalsStore } from '$lib/modals/modalManager';
             }else {
                 //localStorage.setItem('refresh', data.refresh);
                 $userInfoStore.access = data.token;
-                
+                let me = data.me;
+                $userInfoStore.me=me;
+                $userInfoStore.isLogin=true;
+                update_campains_with_local_data(me.campains)
+                setTimeout(()=> {
+                        toggleModal();
+                    },1);
+                /*
                 let whoAmI = request_whoAmI();
                 whoAmI.then(me=> {
-                    $userInfoStore.me=me;
-                    $userInfoStore.isLogin=true;
+                    
+                    setTimeout(()=> {
+                        toggleModal();
+                    },1);
+                    is_requesting = false;
                 })
-                toggleModal();
+                */
             }
-        }).catch(error => console.log('error', error));
+        }).catch(error => console.log('error', error))
+        .finally(()=> {
+            is_requesting = false;
+        });
 
+    }
+
+    function update_campains_with_local_data(campains) {
+        let campains_response = campains;
+        campainsStore.set(campains_response);
+        //let campain_album = campains_response[0].album;
+        let temp_albums = $albumsJsonStore;
+        for(let i = 0; i < campains_response.length; i++) {
+        let campain_album = campains_response[i].album;
+        temp_albums.unshift(campain_album);
+        }
+        albumsJsonStore.set(temp_albums);
     }
     export function toggleModal() {
         isModalOpen = !isModalOpen;
@@ -70,7 +100,26 @@ import {activeModalsStore } from '$lib/modals/modalManager';
                         <input type="checkbox" style="width: 20px;height: 20px;" bind:checked="{show_password}" />
                     </label>
                 </div>
-                <button class="btn btn-dark" on:click|preventDefault={login}>התחבר</button>
+                
+                    <button class="btn btn-dark submit-btn" on:click|preventDefault={login}>
+                        {#if is_requesting}
+                        <div class="loader-wraper">
+                            <Spinner
+                                size="40"
+                                speed="750"
+                                color="#A82124"
+                                thickness="2"
+                                gap="40"
+                            />
+                        </div>
+                        
+                        {/if}
+                        <div class="text">
+                            התחבר
+                        </div>  
+
+                    </button>
+                
                 <div>{error_detail}</div>
             </form>
         </div>
@@ -110,6 +159,14 @@ import {activeModalsStore } from '$lib/modals/modalManager';
                     //min-width: 40vw;
                     display: flex;
                     flex-direction: column;
+
+                    .submit-btn {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        flex-direction: row-reverse;
+
+                    }
                     
                     margin:auto;
                     :global(.form-control) { 

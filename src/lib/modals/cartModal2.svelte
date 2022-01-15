@@ -8,12 +8,13 @@
     import { flip } from 'svelte/animate';
 	import { get_user_uuid, submit_cart_form } from "./../../api/api";
 	import {activeModalsStore } from '$lib/modals/modalManager';
+import { flashy_purchase } from "$lib/flashy";
 
 
     export let isModalOpen = false;
     let modal_zIndex = 0;
 	let state = 0;
-	let form_name, form_email, form_phone, form_message;
+	let form_name, form_email, form_phone, form_message,form_business_name;
 	let error_found = false;
 	let error_message = '';
 	function checkout_back_click() {
@@ -24,7 +25,6 @@
 	function checkout_click() {
 		if(state == 0) {
 			error_found = false;
-			debugger;
 			for (const [key, value] of Object.entries($cartStore)) {
 				console.log(`${key}: ${value}`);
 				if(value == undefined || value.amount == undefined || value.amount < 0) {
@@ -54,6 +54,7 @@
                 name: form_name || '',
                 email: form_email || '',
                 phone:form_phone || '',
+				business_name: form_business_name || '',
                 uuid: get_user_uuid() || '',
                 message: form_message || '',
                 products: cart_products,
@@ -74,7 +75,9 @@
                             );
             let response = submit_cart_form(data);
             response.then((data_json)=> {
-                
+				let cart_id = data_json['cart_id'];
+				let product_ids = data_json['product_ids'];
+                flashy_purchase(cart_id,product_ids)
                     if(data_json['status'] == 'success') {
                         $cartModalStore.toggleModal();
                         $successModalStore.toggleModal();
@@ -136,7 +139,7 @@
                                 }
                             }
                             );
-        }, 250);
+        }, 0);
     }
 
     function open_product_modal(key) {
@@ -168,6 +171,8 @@
                 <main>
                     <button class="close-button" on:click="{()=>{console.log('close click'); toggleModal();}}">X</button>
                     <h2>מוצרים שאהבתי<span class="count">{Object.keys($cartStore).length}</span></h2>
+					<h2 class="sub-title">הוסיפו מוצרים
+						וקבלו הצעת מחיר משתלמת ללא עלות וללא התחייבות</h2>
 					{#if error_found }
 						{#key error_found}
 							<h4 class="error-msg">{error_message}</h4>
@@ -204,17 +209,15 @@
 												</span>
 											</div>
 											<div class="remove-button" on:click|preventDefault="{delete_product_from_cart(key)}">
-													<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 36'>
-														<path fill='currentColor' d='M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z'/>
-													</svg>
+												<svg xmlns="http://www.w3.org/2000/svg"  width="16px" height="16px" viewBox="0 0 32 36"><path fill="currentColor" d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"/></svg>
 											</div>
 										</li>
 								{/each}
 							</ul>
 						{:else}
 							<div class="empty-cart">
-								<h2>אין מוצרים בעגלת הקניות</h2>
-								<p>נא להוסיף מוצרים לעגלת הקניות</p>
+								<h2>אין מוצרים בהצעת מחיר</h2>
+								
 							</div>
 						{/if}
 					{:else}
@@ -246,6 +249,7 @@
 								<div class="form-control"><input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="שם:" type="text"></div>
 								<div class="form-control"><input bind:value="{form_email}" name="email" placeholder="אימייל:" type="email"></div>
 								<div class="form-control"><input bind:value="{form_phone}" name="tel" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="טלפון:" type="tel"></div>
+								<div class="form-control"><input bind:value="{form_business_name}" name="buissness name" required="{false}" placeholder="שם העסק:" type="text" /></div>
 								<div class="form-control"><textarea bind:value="{form_message}" name="message" required="{false}" placeholder="הודעה:"/>
 									</div>
 							</form>
@@ -360,7 +364,7 @@ $gray-1200: #131314;
 	.cart-info {
 		color:white;
 		direction: rtl;
-		height: calc(100vh - 150px);
+		height: calc(100vh - 230px);
 		//overflow: scroll;
 		overflow: auto;
 		.info {
@@ -408,6 +412,9 @@ $gray-1200: #131314;
                 color: $red;
 		}
 	}
+	h2.sub-title {
+		text-align: center;
+	}
 
 	h2 {
 		color: $white;
@@ -443,7 +450,7 @@ $gray-1200: #131314;
 		margin: 0;
 		padding: 0 0 15px 0;
 		list-style: none;
-		height: calc(100vh - 150px);
+		height: calc(100vh - 230px);
 		overflow-x: hidden;
 		overflow-y: auto;
 		display: block;
@@ -682,6 +689,9 @@ $gray-1200: #131314;
 	main{
 		.empty-cart {
 			text-align: center;
+			h2 {
+				color: #75757a;
+			}
 		}
 	}
 	/*

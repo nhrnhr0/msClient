@@ -1,19 +1,47 @@
 <script context="module">
-	import Header from "$lib/header.svelte"
-	import About from "$lib/about.svelte"
+  import Header from "$lib/header.svelte"
+  import About from "$lib/about.svelte"
   import CartDisclaimer from "$lib/cart-disclaimer.svelte"
   import LogoSwiper from "$lib/swipers/logoSwiper.svelte"
-	import {all_swipers,userDetailModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore} from './../stores/stores'
-	import {ALBUMS_API_URL, SIZES_API_URL, COLORS_API_URL, LOGOS_API_URL } from './../api/consts'
-  import { browser } from '$app/env';
-  import {getCookie} from '$lib/utils/cookies';
-  import {activeModalsStore} from "$lib/modals/modalManager";
-  export async function load({fetch, page}) {
-    console.log('load: ', page, page.path);
-    //const qs = browser ? document.location.search : '';
-    //const query = new URLSearchParams(qs);
-    //const productQuery = (query.get('product') || '-1');
-    //const categoryQuery = query.get('category');
+  import {
+    all_swipers,
+    userDetailModalStore,
+    albumsJsonStore,
+    cartModalStore,
+    successModalStore,
+    productModalStore,
+    categoryModalStore,
+    productImageModalStore,
+    loginModalStore,
+    sizesJsonStore,
+    colorsJsonStore,
+    userInfoStore
+  } from './../stores/stores'
+  import {
+    ALBUMS_API_URL,
+    SIZES_API_URL,
+    COLORS_API_URL,
+    LOGOS_API_URL,
+    MAIN_PAGE_API
+  } from './../api/consts';
+  import {
+    api_get_user_campains, fetch_wraper
+  } from './../api/api'
+  import {
+    browser
+  } from '$app/env';
+  import {
+    getCookie
+  } from '$lib/utils/cookies';
+  import {
+    activeModalsStore
+  } from "$lib/modals/modalManager";
+  export async function load({
+    fetch,
+    params
+  }) {
+    console.log('load: ', params);
+    /*
     console.log('getting: ', ALBUMS_API_URL);
     let albums_response = await fetch(ALBUMS_API_URL, { method: 'GET', redirect: 'follow'});
     let albums_json = await albums_response.json();
@@ -36,36 +64,81 @@
     let colors_ret = {};
     for(let i = 0; i < colors_json.length; i++) {
       colors_ret[colors_json[i].id] =  colors_json[i];
+    }*/
+    //MAIN_PAGE_API
+    let response = await fetch_wraper(MAIN_PAGE_API, {
+      method: 'GET',
+      redirect: 'follow'
+    }, fetch)
+    let json = await response
+    let logos_json = json.logos
+    let albums_json = json.albums
+    albums_json = albums_json.filter(album => album.is_public)
+    let colors_json = json.colors
+    let sizes_json = json.sizes
+    let sizes_ret = {};
+    for (let i = 0; i < sizes_json.length; i++) {
+      sizes_ret[sizes_json[i].id] = sizes_json[i];
+    }
+
+    let colors_ret = {};
+    for (let i = 0; i < colors_json.length; i++) {
+      colors_ret[colors_json[i].id] = colors_json[i];
     }
     let products = {};
-
-    //TODO: remove the !browser on production build
-    //if (!browser) {
-      for(let i = 0; i < albums_json.length; i++) {
+    //only on server
+    if (!browser) {
+      for (let i = 0; i < albums_json.length; i++) {
         let productResponse = await get_album_details(albums_json[i].id, fetch)
-        
+
         products[albums_json[i].id] = productResponse;
       }
-    //}
-
-    
-    /*
-*/
+    }
     return {
-			props: {
+      props: {
         colors: colors_ret,
         sizes: sizes_ret,
         albums: albums_json,
         logos: logos_json,
         all_products: products
-			}
-		};
+      }
+    };
+  }
+
+
+  function roughSizeOfObject(object) {
+
+    var objectList = [];
+    var stack = [object];
+    var bytes = 0;
+
+    while (stack.length) {
+      var value = stack.pop();
+
+      if (typeof value === 'boolean') {
+        bytes += 4;
+      } else if (typeof value === 'string') {
+        bytes += value.length * 2;
+      } else if (typeof value === 'number') {
+        bytes += 8;
+      } else if (
+        typeof value === 'object' &&
+        objectList.indexOf(value) === -1
+      ) {
+        objectList.push(value);
+
+        for (var i in value) {
+          stack.push(value[i]);
+        }
+      }
+    }
+    return bytes;
   }
   const meta_data = {
     title: 'M.S. Global',
-    description: `מתמחה באספקת מגוון רחב של מוצרים למוסדות ולחנויות ברחבי הארץביגוד • הנעלה • הלבשה תחתונה • טקסטיל לבית • תיקים ופאוצ'ים • משק בית • חשמל לבית • כלי מטבח • משחקים וצעצועים • תחזוקה לבית • ספורט • גאדג'טים ועוד...`,
+    description: `מתמחה באספקת מגוון רחב של מוצרים למוסדות ולחנויות ברחבי הארץ    ביגוד • הנעלה • הלבשה תחתונה • טקסטיל לבית • תיקים ופאוצ'ים • משק בית • חשמל לבית • כלי מטבח • משחקים וצעצועים • תחזוקה לבית • ספורט • גאדג'טים ועוד...`,
     keywords: `ביגוד • הנעלה • הלבשה תחתונה • טקסטיל לבית • תיקים ופאוצ'ים • משק בית • חשמל לבית • כלי מטבח • משחקים וצעצועים • תחזוקה לבית • ספורט • גאדג'טים ועוד...`,
-    image: 'https://res.cloudinary.com/ms-global/image/upload/v1635432768/msAssets/global_favicon_mtnlkz.png',
+    image: 'https://res.cloudinary.com/ms-global/image/upload/v1641224100/msAssets/favicon_hbwcui.jpg',
   }
 </script>
 
@@ -73,75 +146,120 @@
 
 
 <svelte:head>
-        <title>{meta_data.title}</title>
-        <link rel="icon" href="https://res.cloudinary.com/ms-global/image/upload/v1635432768/msAssets/global_favicon_mtnlkz.png" />
-        <meta name="title" content="{meta_data.title}">
-        <meta name="description" content="{meta_data.description}">
-        <meta name="keywords" content="{meta_data.keywords}" />
+  <title>{meta_data.title}</title>
+  <link rel="icon" href="{meta_data.image}" />
+  <meta name="title" content="{meta_data.title}">
+  <meta name="description" content="{meta_data.description}">
+  <meta name="keywords" content="{meta_data.keywords}" />
 
 
-        <meta property="og:title" content="{meta_data.title}" />
-        <meta property="og:description" content={meta_data.description} />
-        <meta property="og:image" content={meta_data.image} />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="M.S. Global" />
-        <meta property="og:locale" content="IL" />
+  <meta property="og:title" content="{meta_data.title}" />
+  <meta property="og:description" content={meta_data.description} />
+  <meta property="og:image" content={meta_data.image} />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="M.S. Global" />
+  <meta property="og:locale" content="IL" />
 
-            <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="{meta_data.title}">
-    <meta property="twitter:description" content="{meta_data.description}">
-    <meta property="twitter:image" content="{meta_data.image}">
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="{meta_data.title}">
+  <meta property="twitter:description" content="{meta_data.description}">
+  <meta property="twitter:image" content="{meta_data.image}">
 </svelte:head>
-<svelte:window bind:scrollY={y_scroll}/>
+<svelte:window on:resize="{window_resize}" bind:scrollY={y_scroll} />
 <Header />
 <About />
-<LogoSwiper {logos}/>
+<LogoSwiper {logos} />
 <CartDisclaimer />
 
+<!--
+{#if $campainsStore}
+  {#each $campainsStore as campain}
+    <div class="title-wraper">
+      <button class="title btn">
+        {campain.name}
+      </button>
+    </div>
 
+    <PricesSwiper data={campain}/>
+  {/each}
 
-{#each albums as album}
+  
+{/if}
+-->
 
-		<div class="title-wraper">
-			<button class="title btn" on:click={openCategoryModal(album)}>
+{#each albums as album, i(album.id)}
+
+		<div class="title-wraper" class:campain={album.is_campain}>
+			<button class="title btn"  on:click={openCategoryModal(album)}>
 				{album.title}
+        
+        {#if album.is_campain}
+          <MyCountdown date={$campainsStore.find(v => v.album.id == album.id)?.endTime}/>
+        {/if}
+        <!--
+            <Countdown from="2023-11-09 09:30:00" dateFormat="YYYY-MM-DD H:m:s" zone="Europe/Athens" let:remaining>
+              <div class="whatever">
+                  {#if remaining.done === false}5
+                  <span>{remaining.years} years</span>
+                  <span>{remaining.months} months</span>
+                  <span>{remaining.weeks} weeks</span>
+                  <span>{remaining.days} days</span>
+                  <span>{remaining.hours} hours</span>
+                  <span>{remaining.minutes} minutes</span>
+                  <span>{remaining.seconds} seconds</span>
+                  {:else}
+                  <h2>The time has come!</h2>
+                  {/if}
+              </div>
+          </Countdown>
+        -->
+        
 			</button>
 		</div>
 
 	<CatalogSwiper album={album} bind:this={$all_swipers[album.id]} loaded_data={all_products[album.id]}/>
-	
+
+  {#if i == 5 && ($userInfoStore == undefined || $userInfoStore.isLogin == false)}
+    <CallToActionForm/>
+  {/if}
+
 {/each}
 
 <ContentForm></ContentForm>
-
+<BusinessOwnerPopup/>
 <link rel="preload" as="image" href="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png">
 
 <script>
 
   import CatalogSwiper from '$lib/swipers/catalogSwiper.svelte';
-  
   import { onMount } from "svelte";
 import { get_album_details, request_csrf_token  } from "./../api/api";
 import ContentForm from '$lib/contentForm.svelte';
 import { bind } from 'svelte/internal';
 import { stateQuery} from './../stores/queryStore'
 import { logStore } from "../stores/logStore";
-
+import { campainsStore } from '../stores/stores';
+import MyCountdown from "$lib/components/MyCountdown.svelte";
+import {sl_disable, sl_enable} from "$lib/utils/scroll-lock";
+import CallToActionForm from '$lib/components/CallToActionForm.svelte';
+import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
+import { flashy_page_view } from "$lib/flashy";
+  
   export let colors;
   export let sizes;
   export let albums;
   export let logos;
   export let all_products;
   let y_scroll;
+  //let campains;
 
   
   //export let onLoadCategory;
   //export let onLoadProduct;
   
-
-  onMount(()=> {
-    console.log('protocol: ', location.protocol);
+  onMount(async()=> {
+    flashy_page_view();
     window.onpopstate = function(event) {
       var pathArray = window.location.pathname.split('/');
       let vals = {}
@@ -175,17 +293,31 @@ import { logStore } from "../stores/logStore";
         }
       }
     };
-    let csrf_response = request_csrf_token();
-    /*csrf_response.then(response => {
-      if($userInfoStore.isLogin == false && $userInfoStore.refresh != null) {
-        request_refresh_token().then(response => {
-          $userInfoStore.refresh = response.refresh;
-        })
-      }
-    });*/
-      
     
+    /*csrf_response.then(csrf_response => {
+      if($userInfoStore && $userInfoStore.isLogin) {
+        update_campains_albums();
+      }else {
+        console.log('user is not loged in');
+      }
+      
+    });*/
+    let csrf_response = await request_csrf_token();
+    if(csrf_response.whoAmI && Object.keys(csrf_response.whoAmI).length != 0) {
+      $userInfoStore.me = csrf_response.whoAmI;
+      $userInfoStore.isLogin = true;
+      console.log('user is loged in, updating campains');
+      
+      update_campains_with_local_data(csrf_response.campains);
+    }else {
+      console.log('user is not loged in');
+      $userInfoStore = {
+        isLogin: false,
+        me: {}
+      }
+    } 
     albumsJsonStore.set(albums);
+    console.log('albums: ', albums);
     sizesJsonStore.set(sizes);
     colorsJsonStore.set(colors);
     
@@ -194,24 +326,26 @@ import { logStore } from "../stores/logStore";
       onLoadTask = JSON.parse(onLoadTask);
       if (onLoadTask.type == 'product') {
         let prodId = onLoadTask.data.id;
-        let cateId = onLoadTask.data.albums[0];
+        let cateId = onLoadTask.album;
         
 
-
-        $categoryModalStore.setAlbum(albums.filter(album => album.id == cateId)[0]);
-        
-        $categoryModalStore.toggleModal();
-        setTimeout(()=> {
-          $productModalStore.toggleModal()
-          $productModalStore.setProduct(cateId, prodId);
-        },1);
-
-
+        let albumObj = albums.filter(album => album.id == cateId)[0];
+        if (albumObj) {
+        $categoryModalStore.setAlbum(albumObj);
+          $categoryModalStore.toggleModal();
+          setTimeout(()=> {
+            $productModalStore.toggleModal()
+            $productModalStore.setProduct(cateId, prodId);
+          },1);
+        }
         
       }else if(onLoadTask.type == 'category') {
-        let album = onLoadTask.data;
-        $categoryModalStore.toggleModal();
-        $categoryModalStore.setAlbum(album);
+        let task_album = onLoadTask.data;
+        let albumObj = albums.filter(album => album.id == task_album.id)[0];
+        if(albumObj) {
+          $categoryModalStore.toggleModal();
+          $categoryModalStore.setAlbum(task_album);
+        }
       }
       sessionStorage.removeItem('onLoadTask');
     }
@@ -224,26 +358,62 @@ import { logStore } from "../stores/logStore";
 
   });
 
+  albumsJsonStore.subscribe(new_albums => {
+    if(new_albums.length > 0) {
+      albums = new_albums;
+    }
+    console.log('albums: ', new_albums);
+  });
+
   activeModalsStore.subscribe(modals => {
     if(browser) {
+
       if(Object.keys(modals).length == 0) {
         /*overflow-y: auto;
         margin-right: 0px;*/
-        document.body.style.overflowY = 'auto';
-        document.body.style.marginRight = '0px';
+
+        //document.body.classList.remove('my-modal-open');
+        sl_disable();
         
       }
       else {
         /*overflow-y: hidden;
         margin-right: 0px;*/
-        document.body.style.overflowY = 'hidden';
-        document.body.style.marginRight = '0px';
+
+        //document.body.classList.add('my-modal-open');
+        sl_enable();
       }
       console.log('hey: ', Object.keys(modals).length);
     }
   });
+  function update_campains_with_local_data(campains) {
+    let campains_response = campains;
+    campainsStore.set(campains_response);
+    //let campain_album = campains_response[0].album;
+    let temp_albums = albums;
+    for(let i = 0; i < campains_response.length; i++) {
+      let campain_album = campains_response[i].album;
+      temp_albums.unshift(campain_album);
+    }
+    albumsJsonStore.set(temp_albums);
+  }
 
-
+  function window_resize(e) {
+    console.log('window_resize');
+    let swipers = $all_swipers;
+    for( const[key, value] of Object.entries(swipers)) {
+        value.update_swiper();
+    };
+  }
+  /*async function update_campains_albums() {
+    let campains_response = undefined;
+    campains_response = await api_get_user_campains();
+    campainsStore.set(campains_response);
+    for(let i = 0; i < campains_response.length; i++) {
+      let campain_album = campains_response[i].album;
+      albums.unshift(campain_album);
+    }
+  }*/
   function openCategoryModal(album){
       $categoryModalStore.toggleModal();
       $categoryModalStore.setAlbum(album);
@@ -269,11 +439,13 @@ import { logStore } from "../stores/logStore";
 </script>
 
 <style lang="scss">
+
+
 .title-wraper {
   display: flex;
   justify-content: center;
   padding-bottom: 50px;
-
+  
   .title {
     opacity: 0.5;
     background-color: black;
@@ -286,11 +458,15 @@ import { logStore } from "../stores/logStore";
     width: 100%;
     margin-right: 20px;
     margin-left: 20px;
-
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    
     &:hover,&:focus {
+      box-shadow: 0px 15px 20px black;
+    transform: translateY(-7px);
       @media (min-width: 820px) {
           &::before {
-          content: '>> למעבר לקטגוריית ';
+          content: '>> לקטגוריית ';
           opacity: 1;
           font-size: 1.4rem;
         }
@@ -306,6 +482,24 @@ import { logStore } from "../stores/logStore";
       opacity: 0.8;
       //font-size: 2.2rem;
 
+    }
+  }
+  &.campain {
+    
+    .title {
+      @media (min-width: 820px) {
+          &::before {
+          content: '';
+          opacity: 1;
+          font-size: 1.4rem;
+        }
+
+        &::after {
+          content: '';
+          opacity: 1;
+          font-size: 1.4rem;
+        }
+      }
     }
   }
 }

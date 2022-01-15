@@ -13,7 +13,8 @@
             Dropdown,
             DropdownItem,
             DropdownMenu,
-            DropdownToggle
+            DropdownToggle,
+Spinner
         } from 'sveltestrap';
         import {categoryModalStore} from './../stores/stores'
         import { cartStore } from './../stores/cartStore';
@@ -49,10 +50,23 @@ import { logStore } from "./../stores/logStore";
             let json = await apiSearchProducts(keyword);
             let data = json;
             let albums = [];
+            let album = undefined;
             // get all the albums from the products and count how much products from each album
             for(let i = 0; i < data.all.length; i++) {
                 let my_item = data.all[i];
-                let album = my_item.albums[0];
+                album = undefined;
+                for(let alb_iter = 0; alb_iter < my_item.albums.length; alb_iter++) {
+                    if(my_item.albums[alb_iter].is_campain == false) {
+                        album = my_item.albums[alb_iter];
+                        break;
+                    }
+                }
+                // the product is only visible in campain, so hide from search
+                if(album == undefined) {
+                    // remove item i from data.all
+                    data.all.splice(i, 1);
+                    continue;
+                }
                 var album_index = albums.findIndex(a => a.id == album.id);
                 if(album_index == -1) {
                     album.item_count = 1;
@@ -143,25 +157,35 @@ import { logStore } from "./../stores/logStore";
 
 
         <form class="d-flex" id="search_form">
-            <AutoComplete id="search_input" on:focus loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:value={searchValue}  >
-
+            <AutoComplete id="search_input" on:focus loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש מוצרים..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:value={searchValue}  >
+                <div slot="loading" let:loadingText={loadingText}>
+                    <Spinner
+                        size="sm"
+                        speed="750"
+                        unit="em"
+                        color="#A82124"
+                        thickness="2"
+                    />
+                    <span>{loadingText}</span>
+                    <!-- spinner -->
+                    
+                </div>
                 <div slot="item" let:item={item} let:label={label}>
-                {#if item.item_count}
-                    <div class="list-category">
-                        <div class="search-item">
-                            {item.title} ({item.item_count})
-                            <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
+                    {#if item.item_count}
+                        <div class="list-category">
+                            <div class="search-item">
+                                {item.title} ({item.item_count})
+                                <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
+                            </div>
                         </div>
-                    </div>
-                {:else}
-                    <div class="search-item">
-                        <img alt="{item.title}" style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
-                        <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
-                        {@html label}
-                    </div>
-                {/if}
-
-                  </div>
+                    {:else}
+                        <div class="search-item">
+                            <img alt="{item.title}" style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
+                            <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
+                            {@html label}
+                        </div>
+                    {/if}
+                </div>
             </AutoComplete>
             <!--
             <input class="form-control" id="search" autocomplete="on" type="search" placeholder="חיפוש..."
@@ -182,7 +206,9 @@ import { logStore } from "./../stores/logStore";
                         <rect y="60" width="100" height="20"></rect>
                     </svg>
                 </DropdownToggle>
+                
                 <DropdownMenu>                    
+                    <h1 class="drop-title"> מחלקות מוצרים</h1>
                     {#if $albumsJsonStore }
                         {#each $albumsJsonStore as  album}
                             <DropdownItem>
@@ -219,11 +245,19 @@ import { logStore } from "./../stores/logStore";
 
 
 <style lang="scss">
+
 :global(#navCategoryList) {
         :global(.dropdown-menu.show) {
           max-height: 80vh;
           overflow-y: auto;
           left: 0%!important;
+          padding-top: 50px;
+          .drop-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            
+          }
           @media screen and (max-width: 900px) {
             grid-template-columns: repeat(3, auto);
           }
@@ -233,6 +267,11 @@ import { logStore } from "./../stores/logStore";
           }
           @media screen and (max-width: 400px) {
             grid-template-columns: repeat(1, 1fr);
+            :global(.drop-title) {
+                text-align: center;
+                width: 100%;
+                padding-top: 5px;
+            }
           }
         }
       }

@@ -6,11 +6,12 @@ import { ALL_IMAGE_ID_URL } from ".../../../../api/consts";
 import { get_album_details } from ".../../../../api/api";
 import { ALBUMS_API_URL } from "./../../../../api/consts";
 import { onMount } from "svelte";
+import { flashy_page_view } from "$lib/flashy";
 
-    export async function load({page, fetch, session, contex}) {
+    export async function load({params, fetch, session, contex}) {
         //console.log(page.params.id);
-        if(isNumeric(page.params.id)) {
-            let response = await get_album_details(page.params.id, fetch)
+        if(isNumeric(params.id)) {
+            let response = await get_album_details(params.id, fetch)
             //console.log(response);
             return {
                 props: {
@@ -25,7 +26,7 @@ import { onMount } from "svelte";
 <script>
     export let products;
     onMount(()=> {
-        debugger;
+        flashy_page_view();
         var loc = window.location.href;
         loc = loc.replace('/products', '');
         window.location.replace(loc);

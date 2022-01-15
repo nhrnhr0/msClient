@@ -19,18 +19,19 @@
     import "swiper/css/pagination"
     import "swiper/css/navigation";
     import "swiper/css/lazy"
-
-    import {cartStore} from './../../stores/cartStore'
-    import LazyImage from 'svelte-lazy-image';
-
-
-    // import Swiper core and required modules
     import SwiperCore, {
         EffectCoverflow,
         Pagination,
         Navigation
     } from 'swiper';
     import Spinner from 'svelte-spinner';
+    import {cartStore} from './../../stores/cartStore'
+    import LazyImage from 'svelte-lazy-image';
+
+
+    // import Swiper core and required modules
+    
+    
     export let loaded_data;
     import {productModalStore} from './../../stores/stores'
 import { onDestroy, onMount } from 'svelte';
@@ -212,6 +213,10 @@ import { logStore } from './../../stores/logStore';
         $productModalStore.setProduct(catalogId, productId);
         $productModalStore.open();
     }*/
+
+    export function update_swiper() {
+        //TODO: update swipers
+    }
     export function fixDups() {
         setTimeout(()=>{
             mswiper.swiper().loopDestroy();
@@ -274,6 +279,7 @@ on:change={(event) => {
         {:else}
                 <Swiper
                 bind:this={mswiper}
+                resizeReInit={true},
                 effect="{'coverflow'}"
                 centeredSlides="{true}"
                 slidesPerView="{'5'}"

@@ -7,18 +7,24 @@ import { fetch_wraper } from "../../../../api/api";
 import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
 
 
-    export async function load({page, fetch, session, contex}) {
+    export async function load({params, fetch, session, contex}) {
         //console.log(page);
-        //console.log("load", page.params);
-        let url = PRODUCTS_API_URL + page.params.id + "/";
+        //let url = PRODUCTS_API_URL + page.params.id + "/";
+        let server_url = PRODUCTS_API_URL + params.id + "/";
         //console.log(url);
-        if(isNumeric(page.params.id)) {
-            let response = await fetch_wraper(url , {"method":"GET"}, fetch);
+        if(isNumeric(params.id)) {
+            let response = await fetch_wraper(server_url , {"method":"GET"}, fetch);
             //console.log(response);
             response.description = response.description.replace(/(\r\n|\n|\r)/gm, "");
+            let category_regex = '\/category\/(.+)\/products';
+            let category = ['0','1']
+            if(browser) {
+                category = window.location.href.match(category_regex);
+            }
             return {
                 props: {
                     data: response,
+                    album: category[1]
                 }
             }
         }
@@ -33,8 +39,9 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
 </script>
 <script>
     export let data;
+    export let album;
     onMount(()=> {
-        sessionStorage.setItem("onLoadTask",JSON.stringify({type: 'product', data: data}));
+        sessionStorage.setItem("onLoadTask",JSON.stringify({type: 'product', data: data, album: album}));
         window.location.replace("/"); 
     })
     

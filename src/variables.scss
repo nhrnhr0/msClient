@@ -30,7 +30,14 @@ $gold-animation-text-color: rgba(255, 255, 255, 0.3);
 @mixin bg-image {
     background: rgb(255, 255, 255);
     background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 32%, rgba(199, 199, 199, 1) 84%);
-  }
+}
+
+
+// same as bg-image, but with 2 colors as mixin parameters
+@mixin bg-image-vars($color1, $color2) {
+    background: $color1;
+    background: radial-gradient(circle, $color1 0%, $color1 32%, $color2 84%);
+}
 
 :global(.gold-animation) {
     @include gold-animation-mix;

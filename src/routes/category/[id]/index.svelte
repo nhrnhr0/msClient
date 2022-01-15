@@ -6,13 +6,14 @@ import { isNumeric } from "$lib/utils/utils";
     import { ALBUMS_API_URL, CLOUDINARY_URL } from "./../../../api/consts";
     
     
-        export async function load({page, fetch, session, contex}) {
+        export async function load({ params, fetch, session, contex}) {
             //console.log(page);
             //console.log("load", page.params);
-            let url = ALBUMS_API_URL + page.params.id + "/";
+            //let url = ALBUMS_API_URL + page.params.id + "/";
+            let server_url = ALBUMS_API_URL + params.id + '/';
             //console.log(url);
-            if(isNumeric(page.params.id)) {
-                let response = await fetch_wraper(url , {"method":"GET"}, fetch);
+            if(isNumeric(params.id)) {
+                let response = await fetch_wraper(server_url , {"method":"GET"}, fetch);
                 //console.log(response);
                 response.fotter = response.fotter.replace(/(\r\n|\n|\r)/gm, "");
                 return {
@@ -31,8 +32,11 @@ import { isNumeric } from "$lib/utils/utils";
         
     </script>
     <script>
+import { flashy_page_view } from "$lib/flashy";
+
         export let data;
         onMount(()=> {
+            flashy_page_view();
             sessionStorage.setItem("onLoadTask",JSON.stringify({type: 'category', data: data}));
             window.location.replace("/"); 
         })
@@ -48,7 +52,7 @@ import { isNumeric } from "$lib/utils/utils";
 
         <meta property="og:title" content={data?.title} />
         <meta property="og:description" content={data?.fotter} />
-        <meta property="og:image" content={CLOUDINARY_URL + 'f_auto,w_auto/' + data?.first_image?.cimage} />
+        <meta property="og:image" content={CLOUDINARY_URL + 'f_auto,w_auto/' + data?.cimage} />
         <meta property="og:type" content="category" />
         <meta property="og:site_name" content="M.S. Global" />
         <meta property="og:locale" content="IL" />

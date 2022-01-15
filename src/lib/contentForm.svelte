@@ -4,6 +4,7 @@ import { successModalStore, userInfoStore } from './../stores/stores';
 import { get_csrf_token, get_user_uuid, submit_contact_form } from './../api/api';
 
     import {BASE_URL, CONTACT_FORM_URL} from './../api/consts';
+import { flashy_create_contact } from './flashy';
     let form_name, form_phone,form_email, form_message;
     let mform;
     function contact_submit() {
@@ -16,6 +17,8 @@ import { get_csrf_token, get_user_uuid, submit_contact_form } from './../api/api
           message: form_message || '',
           uuid: get_user_uuid() || ''
         };
+        
+        flashy_create_contact(data.name, data.email, data.phone)
         if($userInfoStore.isLogin) {
           data.name = $userInfoStore.me['businessName']
           data.email = $userInfoStore.me['email']

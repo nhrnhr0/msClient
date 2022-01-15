@@ -1,3 +1,5 @@
+import { flashy_page_view } from "$lib/flashy";
+
 export function pushProductState(categoryId, productId) {
     pushState(`/category/${categoryId}/products/${productId}`);
 }
@@ -9,14 +11,11 @@ export function pushMainPage() {
 }
 
 export function pushState(url) {
+    
     console.log('pushState: ', url);
     window.history.pushState(null, null, url);
 
-    if(ga == undefined) {
-        ga = window.ga;
-    }
-    if(ga != undefined) {
-        ga('set', 'page', url);
-        ga('send', 'pageview', url);
-    }
+    window.ga('set', 'page', url);
+    window.ga('send', 'pageview', url);
+    flashy_page_view();
 }
