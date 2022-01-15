@@ -34,7 +34,8 @@ import { submit_distribution_lead } from "./../../api/api";
             });
         }
     }
-
+    const PHONE_PATTERN = '^(?:(?:(\\+?972|\\(\\+?972\\)|\\+?\\(972\\))(?:\\s|\\.|-)?([1-9]\\d?))|(0[23489]{1})|(0[57]{1}[0-9]))(?:\\s|\\.|-)?([^0\\D]{1}\\d{2}(?:\\s|\\.|-)?\\d{4})$'
+    const EMAIL_PATTERN = `/^[a-zA-Z0-9.!#$%&'*+/=?^_\`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$/`
     function checkbox_state_change(e) {
         debugger;
         let checkbox = e.target;
@@ -43,6 +44,15 @@ import { submit_distribution_lead } from "./../../api/api";
             _i_want_wantsapp = true;
         }else if(checkbox.name === 'whatsapp-list' && !checkbox.checked && !_i_want_emails) {
             _i_want_emails = true;
+        }
+    }
+
+    function validate_numbers(e) {
+        var chr = String.fromCharCode(e.which);
+        
+        if(!(/[0-9]/.test(chr))) {
+            e.preventDefault();
+            return false;
         }
     }
 </script>
@@ -95,7 +105,8 @@ import { submit_distribution_lead } from "./../../api/api";
                     </fieldset>
                     <fieldset>
                         <input required="{true}" type="text" name="name" id="name" placeholder="שם איש קשר">
-                        <input required="{_i_want_wantsapp}" type="tel" name="phone" minlength="10" id="tel" placeholder="טלפון">
+                        <!--https://stackoverflow.com/questions/34556308/how-to-validate-israeli-phone-number-->
+                        <input required="{_i_want_wantsapp}" type="tel" name="phone" on:keypress="{validate_numbers}" pattern="{PHONE_PATTERN}" minlength="10" id="tel" placeholder="טלפון">
                         <input required="{_i_want_emails}" type="email" name="email" id="email" placeholder="אימייל">
                         <div class="mailing-list-register">
                             <input type="checkbox" name="mailing-list" id="mailing-list" on:click={checkbox_state_change} bind:checked={_i_want_emails}>
@@ -139,13 +150,13 @@ import { submit_distribution_lead } from "./../../api/api";
     background-position: center;
     overflow:hidden;
     width: 100%;
-    height: 100vh;
     min-height: -webkit-fill-available;
+    height: 100vh;
+    overflow-y: auto;
     main {
         display: flex;
         justify-content: center;
         align-items: center;
-        
         height: 100%;
         .distribution-form {
             border-radius: 25px;
@@ -223,7 +234,42 @@ import { submit_distribution_lead } from "./../../api/api";
                 }
             }
         }
-        
+        @media screen and (max-width: 768px) {
+            .distribution-form {
+                width: 90%;
+            }
+            
+        }
+        @media screen and (max-width: 576px) {
+            .distribution-form {
+                width: 100%;
+                font-size: 1.2rem;
+                .sub-btn {
+                    font-size: 1.5rem;
+                }
+            }
+        }
+        @media screen and (max-width: 380px ) {
+            .distribution-form {
+                width: 100%;
+                font-size: 1.1rem;
+                .sub-btn {
+                    font-size: 1.3rem;
+                }
+            }
+        }
+
+        @media screen and (max-height: 675px) {
+                .distribution-form{
+                    margin-top: 250px;
+                }
+        }
+        @media screen and (max-height: 462px) {
+                .distribution-form{
+                    margin-top: 350px;
+                }
+            
+        }
     }
     
 }

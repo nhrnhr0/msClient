@@ -1000,9 +1000,9 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                     text-align: center;
                     
                     // diffrent background color to odd and even rows
-                    tr:nth-child(even) {
+                    tr:nth-child(odd) {
                       background-color: rgb(195, 195, 195);
-                    }tr:nth-child(odd) {
+                    }tr:nth-child(even) {
                       background-color: rgb(139, 139, 139);
                     }
                     tr{

@@ -245,6 +245,7 @@ import { logStore } from "./../stores/logStore";
 
 
 <style lang="scss">
+
 :global(#navCategoryList) {
         :global(.dropdown-menu.show) {
           max-height: 80vh;
@@ -266,6 +267,11 @@ import { logStore } from "./../stores/logStore";
           }
           @media screen and (max-width: 400px) {
             grid-template-columns: repeat(1, 1fr);
+            :global(.drop-title) {
+                text-align: center;
+                width: 100%;
+                padding-top: 5px;
+            }
           }
         }
       }
