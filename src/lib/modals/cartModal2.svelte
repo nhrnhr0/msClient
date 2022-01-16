@@ -198,7 +198,7 @@ import { flashy_purchase } from "$lib/flashy";
 													<span class="qty-price">
 														<span class="qty">
 															<button on:click|preventDefault="{decrease_product_amount(key)}" class="minus-button">-</button>
-															<input type="number" use:selectTextOnFocus min="1" max="9999" class="qty-input" step="1" name="qty-input" pattern="[0-9]*" title="Quantity" inputmode="numeric" bind:value="{$cartStore[key].amount}" />
+															<input type="number" min="1" max="9999" class="qty-input" step="1" name="qty-input" pattern="[0-9]*" title="Quantity" inputmode="numeric" bind:value="{$cartStore[key].amount}" />
 															<button on:click|preventDefault="{increase_product_amount(key)}" class="plus-button">+</button>
 															<input type="hidden" name="item-price" id="item-price-1" value="12.00">
 														</span>

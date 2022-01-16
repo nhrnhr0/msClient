@@ -407,6 +407,18 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                             <div class="product-size-wraper">
                                 <div class="product-size">{@html sizeMarkup}</div>
                             </div>
+                            {#if $productData.amountSinglePack != 0}
+                              <div class="product-single-amount">
+                                כמות במארז: {$productData.amountSinglePack}
+                              </div>
+                            {/if}
+                            {#if $productData.amountCarton != 0}
+                              <div class="product-carton-amount">
+                                כמות בקרטון: {$productData.amountCarton}
+                              </div>
+                            {/if}
+
+
                             <!--
                             {#if $userInfoStore.isLogin}
                               <div class="product-packing-wraper"><b><u>שיטת אריזה: </u>
@@ -504,7 +516,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                         </div>
                       </div>
                       <div class="text">
-                          <input class="item-amount" name="item_amount" use:selectTextOnFocus min="1" max="9999" type="number" bind:value={$cartStore[_productId].amount} />
+                          <input class="item-amount" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[_productId].amount} />
                       </div>
                     </button>
                 {/if}
@@ -924,7 +936,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
             }
             @media screen and (max-width: 800px) {
               font-size: 1.3em;
-              position: absolute;
+              //position: absolute;
               top:100%;
             }
             }
