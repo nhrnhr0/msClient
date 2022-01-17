@@ -1,10 +1,8 @@
 <script>
     import {faShoppingCart} from '$lib/my-font-awsome';
     import { cartStore } from './../../../stores/cartStore'
-    
     import Fa from 'svelte-fa/src/fa.svelte'
-	import boop from '$lib/components/boop/boop'
-import { onDestroy } from 'svelte';
+    import { onDestroy } from 'svelte';
     //import CartModal from '$lib/modals/cartModal.svelte';
     import {cartModalStore} from "./../../../stores/stores"
 	let isBooped = false;
@@ -25,8 +23,7 @@ import { onDestroy } from 'svelte';
     }
 </script>
 
-<div id="cart-btn" class="cart" on:click={open_cart} on:mouseenter={() => isBooped = true} use:boop={{isBooped, scale:1.2, timing: 200, setter: setIsBooped}}>
-
+<div id="cart-btn" class="cart" on:click={open_cart}>
     <Fa size="2x" icon={faShoppingCart} />
     {#if Object.keys($cartStore).length > 0}
             <div class="items-counter">
@@ -41,6 +38,7 @@ import { onDestroy } from 'svelte';
 
     #cart-btn {
         position: relative;
+        cursor: pointer;
         //.items-counter-wraper {
             
             .items-counter {

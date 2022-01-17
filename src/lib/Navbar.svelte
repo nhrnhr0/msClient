@@ -19,7 +19,7 @@ Spinner
         import {categoryModalStore} from './../stores/stores'
         import { cartStore } from './../stores/cartStore';
         import { onDestroy } from "svelte";
-        import boop from '$lib/components/boop/boop'
+        //import boop from '$lib/components/boop/boop'
         import Cart from '$lib/components/cart/cart.svelte'
 import NavLoginManager from "./components/navLoginManager.svelte";
 import { apiSearchProducts } from "./../api/api";
@@ -223,7 +223,7 @@ import { logStore } from "./../stores/logStore";
             
                 
             <Cart bind:this={$cartObjStore}></Cart>
-            <div   on:mouseenter={() => isBooped = true} use:boop={{isBooped, scale:1.2, timing: 200, setter: setIsBooped}}>
+            <div>
             <a rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
                 <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
             </a>

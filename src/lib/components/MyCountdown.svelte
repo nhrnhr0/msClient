@@ -105,7 +105,7 @@
             
             
             width: fit-content;
-            
+            max-width: 100%;;
             // change to 2 by 2 grid for mobile
             @media screen and (max-width: 500px) {
                 
@@ -133,6 +133,10 @@
                 align-items: center;
                 padding-left: 10%;
                 padding-right: 10%;
+                @media screen and (max-width: 500px) {
+                    padding-left: 5%;
+                    padding-right: 5%;
+                }
 
                 .num {
                     font-size: 2rem;
