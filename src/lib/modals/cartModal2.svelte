@@ -8,6 +8,7 @@
     import { flip } from 'svelte/animate';
 	import { get_user_uuid, submit_cart_form } from "./../../api/api";
 	import {activeModalsStore } from '$lib/modals/modalManager';
+	import {scrollFix} from '$lib/ui/scrollFix';
 import { flashy_purchase } from "$lib/flashy";
 
 
@@ -181,7 +182,7 @@ import { flashy_purchase } from "$lib/flashy";
 					{#if state == 0}
 					
 						{#if Object.keys($cartStore).length > 0}
-							<ul class="products">
+							<ul class="products" use:scrollFix>
 								{#each Object.keys($cartStore) as key, i (key)}
 										<li class="product" data-product={key}
 										animate:flip={{duration:200}}

@@ -352,7 +352,7 @@
                     </div>
                   </div>
                   <div class="text">
-                      <input id="amount_{img.id}" class="item-amount" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
+                      <input id="amount_{img.id}" class="item-amount" pattern="[0-9]*" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
                   </div>
                   
 
@@ -671,7 +671,6 @@
     overflow-y: scroll;
     
     .timer {
-        
       padding-top:15px;
       padding-bottom: 15px;
       margin-bottom: 5px;
