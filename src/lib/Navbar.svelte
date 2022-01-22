@@ -61,7 +61,7 @@ import { logStore } from "./../stores/logStore";
                         break;
                     }*/
                     let alb = $albumsJsonStore.find(album => album.id == my_item.albums[item_album_iter]);
-                    if(alb && alb.is_campain == false) {
+                    if(alb && alb.is_campain == false && alb.is_public == true) {
                         album = alb;
                         break;
                     }
