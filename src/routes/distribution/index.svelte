@@ -25,7 +25,6 @@ import { submit_distribution_lead } from "./../../api/api";
                 data[fields[i].name] = fields[i].value;
             }*/
             submit_distribution_lead(data).then(res => {
-                debugger;
                 console.log('res=', res);
                 if(res.status === 200) {
                     alert('הפרטים נשלחו בהצלחה');
@@ -37,7 +36,6 @@ import { submit_distribution_lead } from "./../../api/api";
     const PHONE_PATTERN = '^(?:(?:(\\+?972|\\(\\+?972\\)|\\+?\\(972\\))(?:\\s|\\.|-)?([1-9]\\d?))|(0[23489]{1})|(0[57]{1}[0-9]))(?:\\s|\\.|-)?([^0\\D]{1}\\d{2}(?:\\s|\\.|-)?\\d{4})$'
     const EMAIL_PATTERN = `/^[a-zA-Z0-9.!#$%&'*+/=?^_\`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$/`
     function checkbox_state_change(e) {
-        debugger;
         let checkbox = e.target;
         console.log(checkbox.name);
         if(checkbox.name === 'mailing-list' && !checkbox.checked && !_i_want_wantsapp) {

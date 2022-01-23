@@ -33,7 +33,7 @@
     
     
     export let loaded_data;
-    import {productModalStore} from './../../stores/stores'
+    import {productModalStore, productCartModalStore} from './../../stores/stores';
 import { onDestroy, onMount } from 'svelte';
 
 import { flyToCart } from '$lib/utils/js/flyToCart';
@@ -161,7 +161,9 @@ import { logStore } from './../../stores/logStore';
                         let currentProduct = get_product_by_id(target.dataset.productId);
                         if(cartStore.isInCart(currentProduct) == false) {
                             flyToCart(target.parentElement.querySelector('.product-image'));
-                            cartStore.addToCart(currentProduct);
+                            //cartStore.addToCart(currentProduct);
+                            $productCartModalStore.toggleModal();
+                            $productCartModalStore.set_product(currentProduct.id, album.id);
                             logStore.addLog(
                             {
                                 'a': 'הוסף לעגלה מסליידר',

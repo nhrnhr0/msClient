@@ -19,6 +19,10 @@ const createCartStore = () => {
           delete cart[product.id];
           set(cart);
         },
+        getProduct: function(productId) {
+            let cart = get(this);
+            return cart[productId];
+        },
         addToCart: function(product) {
           const store = get(this);
           let exist = false;

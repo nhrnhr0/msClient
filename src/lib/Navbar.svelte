@@ -99,7 +99,6 @@ import { logStore } from "./../stores/logStore";
         }
 
         function autocompleteItemSelected(item) {
-            debugger;
 
             if(item == undefined) {
                 return;

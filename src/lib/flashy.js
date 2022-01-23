@@ -14,7 +14,6 @@ export function flashy_add_to_cart(content_ids) {
 }
 
 export function flashy_create_contact(name, email, phone) {
-    debugger;
     window.flashy.contacts.create({
 		"email": email,
 		"first_name": name,
