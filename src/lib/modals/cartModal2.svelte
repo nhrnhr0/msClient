@@ -8,6 +8,7 @@
     import { flip } from 'svelte/animate';
 	import { get_user_uuid, submit_cart_form } from "./../../api/api";
 	import {activeModalsStore } from '$lib/modals/modalManager';
+	import {scrollFix} from '$lib/ui/scrollFix';
 import { flashy_purchase } from "$lib/flashy";
 
 
@@ -181,7 +182,7 @@ import { flashy_purchase } from "$lib/flashy";
 					{#if state == 0}
 					
 						{#if Object.keys($cartStore).length > 0}
-							<ul class="products">
+							<ul class="products" use:scrollFix>
 								{#each Object.keys($cartStore) as key, i (key)}
 										<li class="product" data-product={key}
 										animate:flip={{duration:200}}
@@ -198,7 +199,7 @@ import { flashy_purchase } from "$lib/flashy";
 													<span class="qty-price">
 														<span class="qty">
 															<button on:click|preventDefault="{decrease_product_amount(key)}" class="minus-button">-</button>
-															<input type="number" use:selectTextOnFocus min="1" max="9999" class="qty-input" step="1" name="qty-input" pattern="[0-9]*" title="Quantity" inputmode="numeric" bind:value="{$cartStore[key].amount}" />
+															<input type="number" min="1" max="9999" class="qty-input" step="1" name="qty-input" pattern="[0-9]*" title="Quantity" inputmode="numeric" bind:value="{$cartStore[key].amount}" />
 															<button on:click|preventDefault="{increase_product_amount(key)}" class="plus-button">+</button>
 															<input type="hidden" name="item-price" id="item-price-1" value="12.00">
 														</span>

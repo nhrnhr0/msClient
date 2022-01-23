@@ -407,6 +407,20 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                             <div class="product-size-wraper">
                                 <div class="product-size">{@html sizeMarkup}</div>
                             </div>
+                            <div class="product-packing-types">
+                              {#if $productData.amountSinglePack != 0}
+                                <div class="product-single-amount">
+                                  כמות במארז: {$productData.amountSinglePack}
+                                </div>
+                              {/if}
+                              {#if $productData.amountCarton != 0}
+                                <div class="product-carton-amount">
+                                  כמות בקרטון: {$productData.amountCarton}
+                                </div>
+                              {/if}
+                            </div>
+
+
                             <!--
                             {#if $userInfoStore.isLogin}
                               <div class="product-packing-wraper"><b><u>שיטת אריזה: </u>
@@ -504,7 +518,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                         </div>
                       </div>
                       <div class="text">
-                          <input class="item-amount" name="item_amount" use:selectTextOnFocus min="1" max="9999" type="number" bind:value={$cartStore[_productId].amount} />
+                          <input class="item-amount" name="item_amount" pattern="[0-9]*" min="1" max="9999" type="number" bind:value={$cartStore[_productId].amount} />
                       </div>
                     </button>
                 {/if}
@@ -614,7 +628,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
     .like-btn-wraper{
       
       width: 300px;
-      height: 69px;
+      height: auto;
       @media (min-width: 820px) {
           & .like-btn:not(.active) .text::after {
             content: ' להצעת מחיר'
@@ -719,6 +733,20 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
         border-radius: 25px;
 
 
+      }
+
+
+      @media screen and (max-height: 450px) {
+        .like-btn {
+          .img-wraper{
+            width: 35px;
+            height: 35px;
+            img {
+              width: 35px;
+              height: 35px;
+            }
+          }
+        }
       }
     }
 
@@ -850,9 +878,12 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
         max-width: initial!important;
         position: relative;
         overflow:auto;
+        @media screen and (max-height: 450px) {
+          min-height: 50vh;
+          height: 50vh;
+        }
         @media screen and (max-width: 1100px) {
           overflow-y: auto;
-          
         }
 
         .magnifier-preview-wraper {
@@ -873,15 +904,15 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 
         .inner-body {
           height: auto;
-        display: flex;
-        flex-direction: row;
-        @media screen and (max-width: 1100px) {
-          position: relative;
-          overflow: unset;
-        }
-        @media screen and (max-width: 500px) {
-          flex-direction: column-reverse;
-        }
+          display: flex;
+          flex-direction: row;
+          @media screen and (max-width: 1100px) {
+            position: relative;
+            overflow: unset;
+          }
+          @media screen and (max-width: 500px) {
+            flex-direction: column-reverse;
+          }
           
         
 
@@ -924,7 +955,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
             }
             @media screen and (max-width: 800px) {
               font-size: 1.3em;
-              position: absolute;
+              //position: absolute;
               top:100%;
             }
             }
@@ -1047,7 +1078,24 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                   }
               }
               }
-
+              .product-packing-types {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                & > div {
+                  flex: 1;
+                  padding: 1%;
+                  text-align: center;
+                  border: 1px black solid;
+                  font-weight: bold;
+                  font-size: 1.2em;
+                    &:hover {
+                      background-color: #3D3D3D;
+                      color: white
+                    }
+                }
+                
+              }
         }
 
         .img-wraper {
@@ -1095,7 +1143,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
       justify-content: space-evenly;
       height: 69px;
       overflow: hidden;
-
+      align-items: center;
       .btn {
         padding: 0px;
         //outline: none;

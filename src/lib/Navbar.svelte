@@ -19,7 +19,7 @@ Spinner
         import {categoryModalStore} from './../stores/stores'
         import { cartStore } from './../stores/cartStore';
         import { onDestroy } from "svelte";
-        import boop from '$lib/components/boop/boop'
+        //import boop from '$lib/components/boop/boop'
         import Cart from '$lib/components/cart/cart.svelte'
 import NavLoginManager from "./components/navLoginManager.svelte";
 import { apiSearchProducts } from "./../api/api";
@@ -55,9 +55,14 @@ import { logStore } from "./../stores/logStore";
             for(let i = 0; i < data.all.length; i++) {
                 let my_item = data.all[i];
                 album = undefined;
-                for(let alb_iter = 0; alb_iter < my_item.albums.length; alb_iter++) {
-                    if(my_item.albums[alb_iter].is_campain == false) {
+                for(let item_album_iter = 0; item_album_iter < my_item.albums.length; item_album_iter++) {
+                    /*if(my_item.albums[alb_iter].is_campain == false) {
                         album = my_item.albums[alb_iter];
+                        break;
+                    }*/
+                    let alb = $albumsJsonStore.find(album => album.id == my_item.albums[item_album_iter]);
+                    if(alb && alb.is_campain == false && alb.is_public == true) {
+                        album = alb;
                         break;
                     }
                 }
@@ -66,6 +71,8 @@ import { logStore } from "./../stores/logStore";
                     // remove item i from data.all
                     data.all.splice(i, 1);
                     continue;
+                }else {
+                    my_item.albumId = album.id;
                 }
                 var album_index = albums.findIndex(a => a.id == album.id);
                 if(album_index == -1) {
@@ -92,6 +99,8 @@ import { logStore } from "./../stores/logStore";
         }
 
         function autocompleteItemSelected(item) {
+            debugger;
+
             if(item == undefined) {
                 return;
             }
@@ -116,7 +125,7 @@ import { logStore } from "./../stores/logStore";
                             }
                             );
             }else {
-                $productModalStore.setProduct(item.albums[0].id, item.id);
+                $productModalStore.setProduct(item.albumId, item.id);
                 $productModalStore.toggleModal();
                 logStore.addLog(
                             {
@@ -223,7 +232,7 @@ import { logStore } from "./../stores/logStore";
             
                 
             <Cart bind:this={$cartObjStore}></Cart>
-            <div   on:mouseenter={() => isBooped = true} use:boop={{isBooped, scale:1.2, timing: 200, setter: setIsBooped}}>
+            <div>
             <a rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
                 <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
             </a>
