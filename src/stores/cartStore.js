@@ -20,8 +20,15 @@ const createCartStore = () => {
           set(cart);
         },
         getProduct: function(productId) {
+          debugger;
             let cart = get(this);
             return cart[productId];
+        },
+        setProduct: function(product) {
+          const store = get(this);
+          store[product.id] = product;
+          set(store);
+          return store[product.id];
         },
         addToCart: function(product) {
           const store = get(this);

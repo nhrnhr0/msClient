@@ -2,6 +2,7 @@
 
 <script>
   import {flyToCart} from './../utils/js/flyToCart';
+  import {productCartModalStore} from './../../stores/stores';
   import {
     get_album_details
   } from './../../api/api';
@@ -73,6 +74,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
     return [_catalogId, _productId];
   }
   export function setProduct(catalogId, productId, push_url = true) {
+    debugger;
     isLoaded = false;
     is_image_loaded = false;
     //$stateQuery['product'] = catalogId + ',' + productId;
@@ -319,27 +321,11 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                             }
                             );
       cartStore.addToCart($productData);
-    }else {
+      open_edit_amount_dialog();
+    /*}else {
       document.querySelector('#productModalLikeBtn .text .item-amount').focus();
-      /*
-      cartStore.removeFromCart($productData);
-      logStore.addLog(
-                            {
-                                'a': 'הסר מעגל ממודל מוצר',
-                                't': 'remove from cart',
-                                'f': {
-                                  'type':'product',
-                                    'id':$productData.id,
-                                    'ti':$productData.title, 
-                                },
-                                'w':{
-                                    'type':'product',
-                                    'id':$productData.id,
-                                    'ti':$productData.title, 
-                                }
-                            }
-                            );
-                            */
+      
+    }*/
     }
     
     //$cartStore[_productId] = $productData;
@@ -377,6 +363,16 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                             }
                             );
   }
+
+  function open_edit_amount_dialog() {
+    if(cartStore.isInCart($productData) == false) {
+      return false;
+    }
+    $productCartModalStore.set_product($productData.id);
+    setTimeout(()=> {
+        $productCartModalStore.toggleModal();
+    }, 5);
+  }
 </script>
 
 
@@ -385,7 +381,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 <div style="z-index: {modal_zIndex};" id="productModal" class="modal" class:active={isModalOpen}>
   <div style="z-index: {modal_zIndex+5};" class="overlay" on:click={toggleModal}></div>
 
-  {#if isLoaded && isModalOpen && $productData && $productData.cimage}
+  {#if isLoaded && isModalOpen && $productData && $productData.cimage && $current_album}
         <div style="z-index: {modal_zIndex+10};" class="modal_content">
             <div class="modal-header">
               <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
@@ -508,18 +504,21 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                       </div>
                     </button>
                 {:else}
-                    <button  id="productModalLikeBtn" class="like-btn active">
+                    <button on:click|preventDefault="{open_edit_amount_dialog}"  id="productModalLikeBtn" class="like-btn active">
                       <div class="amount-before">
                         <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" >
                           <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="32px" height="32px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
                         </button>
                         <div class="amount-text">
-                          כמות: 
+                          <div class="text">
+                            סה"כ: 
+                          </div>
+                          <div class="edit-amount-btn">
+                            {$cartStore[_productId].amount}
+                          </div>
                         </div>
                       </div>
-                      <div class="text">
-                          <input class="item-amount" name="item_amount" pattern="[0-9]*" min="1" max="9999" type="number" bind:value={$cartStore[_productId].amount} />
-                      </div>
+                      
                     </button>
                 {/if}
                 </div> 
@@ -658,37 +657,41 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
           //border: 1px solid red;
           background: rgba(255, 255, 255, 0.478);
           color:rgb(70, 70, 70);
-
+          .amount-before {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            
+            .amount-text {
+              height: 100%;
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              align-items: center;
+              .text {
+                font-size: 0.8em;
+                color: rgb(70, 70, 70);
+                font-weight: bold;
+              }
+              .edit-amount-btn {
+                font-size: 0.8em;
+                padding-right: 10%;
+                padding-left: 10%;
+                color: rgb(70, 70, 70);
+                font-weight: bold;
+              }
+            }
+          }
         }
         @media screen and (max-width: 450px) {
           font-size: 0.8em;
         }
+        
         .text {
+          
           display:inline-block;
           font-size: 1.7em;
-          input.item-amount {
-            //width: 40px;
-            //height: 40px;
-            width: 120px;
-            @media (max-width: 820px) {
-              width: auto;
-            }
-            text-align: center;
-            border: none;
-            background: transparent;
-            border-radius: 999999px;
-            border-bottom-left-radius: 0px;
-            border-top-left-radius: 0px;
-            padding: 0;
-            
-            margin: 0;
-            margin-left: 5px;
-            
-            font-weight: bold;
-            &:focus {
-              outline: none;
-            }
-          }
         }
         .img-wraper {
           width:43px;

@@ -116,6 +116,8 @@ import { logStore } from './../../stores/logStore';
     }
 
     function swiperSlideClicked(E) {
+        E.stopPropagation();
+        E.preventDefault();
         let dont_open_modal = false;
         // don't open the modal if the user use 2 fingers to zoom on slider
         for(let i = 0; i < E.detail[0].length;i++) {
@@ -160,10 +162,15 @@ import { logStore } from './../../stores/logStore';
                     }else if(target.classList.contains('like-btn-wraper')) {
                         let currentProduct = get_product_by_id(target.dataset.productId);
                         if(cartStore.isInCart(currentProduct) == false) {
-                            flyToCart(target.parentElement.querySelector('.product-image'));
-                            //cartStore.addToCart(currentProduct);
-                            $productCartModalStore.toggleModal();
-                            $productCartModalStore.set_product(currentProduct.id, album.id);
+                            //flyToCart(target.parentElement.querySelector('.product-image'));
+                            cartStore.addToCart(currentProduct);
+                            }
+                            $productCartModalStore.set_product(currentProduct.id);
+                            setTimeout(()=> {
+                                $productCartModalStore.toggleModal();
+                            }, 5);
+                            
+                            
                             logStore.addLog(
                             {
                                 'a': 'הוסף לעגלה מסליידר',
@@ -180,25 +187,6 @@ import { logStore } from './../../stores/logStore';
                                 }
                             }
                             );
-                        }else {
-                            cartStore.removeFromCart(currentProduct);
-                            logStore.addLog(
-                            {
-                                'a': 'הסר מהעגלה מסליידר',
-                                't': 'remove from cart',
-                                'f': {
-                                    'type':'slider',
-                                    'id':album.id,
-                                    'ti':album.title
-                                },
-                                'w':{
-                                    'type':'product',
-                                    'id':target.dataset.productId,
-                                    'ti':currentProduct.title, 
-                                }
-                            }
-                            );
-                        }
                         copySwiperduplicates(E);
                         
                         //$cart = $cart;
@@ -376,7 +364,10 @@ on:change={(event) => {
                                                 <img alt="V" src="https://res.cloudinary.com/ms-global/image/upload/v1639463503/msAssets/external-check-mintab-for-ios-becris-lineal-becris-1_dfwd0z.png"/>
                                             </div>
                                             <div class="text">
-                                                    נוסף
+                                                    סה"כ
+                                                    <span class="text">
+                                                        {$cartStore[image.id].amount}
+                                                    </span>
                                             </div>
                                         </button>
                                     {/if}

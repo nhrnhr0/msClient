@@ -85,6 +85,8 @@
   import {
     logStore
   } from './../../stores/logStore';
+  import {productCartModalStore} from './../../stores/stores';
+
   import MyCountdown from '$lib/components/MyCountdown.svelte';
   let products = [];
   let current_album = new writable({});
@@ -150,7 +152,7 @@
     let imgData = JSON.parse(e.currentTarget.dataset["img"]);
     if (cartStore.isInCart(imgData) == false) {
       cartStore.addToCart(imgData);
-      flyToCart(img);
+      //flyToCart(img);
       logStore.addLog({
         'a': 'הוסף לעגלה ממודל קטגוריה',
         't': 'add to cart',
@@ -165,34 +167,20 @@
           'ti': imgData.title,
         }
       });
-    } else {
-      document.querySelector(`#amount_${imgData.id}`).focus();
-      /*
-      cartStore.removeFromCart(imgData);
-      logStore.addLog(
-                            {
-                                'a': 'הסר מהעגלה ממודל קטגוריה',
-                                't': 'remove from cart',
-                                'f': {
-                                    'type':'category',
-                                    'id':$current_album.id,
-                                    'ti':$current_album.title
-                                },
-                                'w':{
-                                    'type':'product',
-                                    'id':imgData.id,
-                                    'ti':imgData.title, 
-                                }
-                            }
-                            );*/
     }
+    open_edit_amount_dialog(imgData.id);
 
     //flyToCart(img);
     //$cartStore[imgData.id] = imgData;
 
 
   }
-
+  function open_edit_amount_dialog(product_id) {
+    $productCartModalStore.set_product(product_id);
+    setTimeout(()=> {
+        $productCartModalStore.toggleModal();
+    }, 5);
+  }
 
   let modal_body;
 
@@ -339,27 +327,20 @@
                           {img.title}
               </div>
               <div class="action">
-                  
-
-
-
                 <div class="amount-before">
                   <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" data-product-id="{img.id}">
-                    <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="24px" height="24px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
+                    <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="32px" height="32px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
                   </button>
-                    <div class="amount-text">
-                      כמות:
+                  <div class="amount-text">
+                    <div class="text">
+                      סה"כ: 
+                    </div>
+                    <div class="edit-amount-btn">
+                      {$cartStore[img.id].amount}
                     </div>
                   </div>
-                  <div class="text">
-                      <input id="amount_{img.id}" class="item-amount" pattern="[0-9]*" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
-                  </div>
-                  
+                </div>
 
-
-
-
-                
             </div>
             </div>
             
@@ -525,52 +506,41 @@
             
           }
           .action {
+            .amount-before {
+            width: 100%;
             display: flex;
-            flex-direction: row;
-            justify-content: center;
+            justify-content: space-around;
             align-items: center;
-            .text {
-              display: inline-block;
-              font-size: 1em;
-              input.item-amount {
-                text-align: center;
-                border: none;
-                background: transparent;
-                border-radius: 999999px;
-                border-bottom-left-radius: 0px;
-                border-top-left-radius: 0px;
-                padding: 0;
-                margin: 0;
-                margin-left: 5px;
-                font-weight: bold;
-                direction: rtl;
-                &:focus {
-                  outline: none;
+            .delete-btn {
+              border: none;
+              background: none;
+              &:hover {
+                svg {
+                  fill: red;
+                
                 }
               }
             }
-
-            .amount-before {
-              font-size: 1.2em;
-              display:flex;
+            
+            .amount-text {
+              height: 100%;
+              display: flex;
               flex-direction: row;
               justify-content: center;
               align-items: center;
-              .delete-btn {
-                display:flex;
-                flex-direction: row;
-                justify-content: center;
-                align-items: center;
-                background: none;
-                border: none;
-                svg {
-                  fill: black;
-                }
-                &:hover svg {
-                  fill:red;
-                }
+              color: white;
+              .text {
+                font-size: 1.2em;
+                font-weight: bold;
+              }
+              .edit-amount-btn {
+                font-size: 1.2em;
+                padding-right: 10%;
+                padding-left: 10%;
+                font-weight: bold;
               }
             }
+          }
           }
           @media (hover: hover){
             .action {

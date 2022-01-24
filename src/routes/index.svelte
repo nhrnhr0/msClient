@@ -230,6 +230,7 @@ import { flashy_page_view } from "$lib/flashy";
   //export let onLoadProduct;
   
   onMount(async()=> {
+
     flashy_page_view();
     window.onpopstate = function(event) {
       var pathArray = window.location.pathname.split('/');
@@ -273,7 +274,10 @@ import { flashy_page_view } from "$lib/flashy";
       }
       
     });*/
+    sizesJsonStore.set(sizes);
+    colorsJsonStore.set(colors);
     let csrf_response = await request_csrf_token();
+    
     if(csrf_response.whoAmI && Object.keys(csrf_response.whoAmI).length != 0) {
       $userInfoStore.me = csrf_response.whoAmI;
       $userInfoStore.isLogin = true;
@@ -289,8 +293,7 @@ import { flashy_page_view } from "$lib/flashy";
     } 
     albumsJsonStore.set(albums);
     console.log('albums: ', albums);
-    sizesJsonStore.set(sizes);
-    colorsJsonStore.set(colors);
+    
     
     let onLoadTask = sessionStorage.getItem('onLoadTask');
     if(onLoadTask) {

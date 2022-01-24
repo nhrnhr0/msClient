@@ -1,5 +1,5 @@
 <script>
-    import {all_swipers,cartModalStore, successModalStore, _modal_z_index_incrementor, productModalStore,userInfoStore} from "./../../stores/stores";
+    import {all_swipers,cartModalStore, successModalStore, _modal_z_index_incrementor, productModalStore,userInfoStore, sizesJsonStore} from "./../../stores/stores";
     import {fly, fade} from 'svelte/transition';
     import { cartStore } from "./../../stores/cartStore"
     import { CLOUDINARY_URL, STATIC_BASE, SUBMIT_CART_URL } from "./../../api/consts";
@@ -9,6 +9,7 @@
 	import { get_user_uuid, submit_cart_form } from "./../../api/api";
 	import {activeModalsStore } from '$lib/modals/modalManager';
 	import {scrollFix} from '$lib/ui/scrollFix';
+	import { productCartModalStore} from './../../stores/stores';
 import { flashy_purchase } from "$lib/flashy";
 
 
@@ -48,7 +49,22 @@ import { flashy_purchase } from "$lib/flashy";
             let cart_products = [];
             for(let key in $cartStore) {
                 let product = $cartStore[key];
-                cart_products.push({'id': product.id, 'amount': product.amount});
+				// prep mentries
+				// input: {"77": [{}, {}, {"quantity": 5}, {"quantity": 1}, {}, {}, {}, {}], "80": [{}, {}, {"quantity": 2}, {}, {"quantity": 5}, {}, {}, {}], "82": [{}, {},
+				let mentries = [];
+				Object.keys(product.mentries).forEach(function(color_id) {
+					let mentry = product.mentries[color_id];
+					for(let size_idx = 0; size_idx < mentry.length; size_idx++) {
+						if('quantity' in product.mentries[color_id][size_idx]) {
+							mentries.push({
+								"color_id": color_id,
+								"size_id": product.sizes[size_idx],
+								"quantity": product.mentries[color_id][size_idx].quantity
+							});
+						}
+					}
+				});
+                cart_products.push({'id': product.id, 'amount': product.amount, 'mentries': mentries});
             }
 
             let data = {
@@ -142,7 +158,12 @@ import { flashy_purchase } from "$lib/flashy";
                             );
         }, 0);
     }
-
+	function open_edit_amount_dialog(product_id) {
+		$productCartModalStore.set_product(product_id);
+		setTimeout(()=> {
+			$productCartModalStore.toggleModal();
+		}, 5);
+	}
     function open_product_modal(key) {
         let product = $cartStore[key];
         $productModalStore.setProduct(product.albums[0], product.id);
@@ -196,17 +217,22 @@ import { flashy_purchase } from "$lib/flashy";
 												</span>
 												<span class="product-details">
 													<h3>{$cartStore[key].title}</h3>
+													<hr>
 													<span class="qty-price">
+														סה"כ
 														<span class="qty">
-															<button on:click|preventDefault="{decrease_product_amount(key)}" class="minus-button">-</button>
-															<input type="number" min="1" max="9999" class="qty-input" step="1" name="qty-input" pattern="[0-9]*" title="Quantity" inputmode="numeric" bind:value="{$cartStore[key].amount}" />
-															<button on:click|preventDefault="{increase_product_amount(key)}" class="plus-button">+</button>
-															<input type="hidden" name="item-price" id="item-price-1" value="12.00">
+															<div class="total-amount">{$cartStore[key].amount}</div>
 														</span>
 														<!--
 														<span class="price">$16.00</span>
 														-->
+														<button class="edit-btn" on:click={open_edit_amount_dialog(key)}>
+															ערוך
+															<svg enable-background="new 0 0 45 45" height="25px" id="Layer_1" version="1.1" viewBox="0 0 45 45" width="25px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><rect height="23" transform="matrix(-0.7071 -0.7072 0.7072 -0.7071 38.2666 48.6029)" width="11" x="23.7" y="4.875"/><path d="M44.087,3.686l-2.494-2.494c-1.377-1.377-3.61-1.377-4.987,0L34.856,2.94l7.778,7.778l1.749-1.749   C45.761,7.593,45.465,5.063,44.087,3.686z" /><polygon points="16,22.229 16,30 23.246,30  "/><path d="M29,40H5V16h12.555l5-5H3.5C1.843,11,0,11.843,0,13.5v28C0,43.156,1.843,45,3.5,45h28   c1.656,0,2.5-1.844,2.5-3.5V23.596l-5,5V40z"/></g></svg>
+															
+														</button>
 													</span>
+													
 												</span>
 											</div>
 											<div class="remove-button" on:click|preventDefault="{delete_product_from_cart(key)}">
@@ -550,14 +576,22 @@ $gray-1200: #131314;
 						display: flex;
                         flex-direction: row-reverse;
 						flex-wrap: nowrap;
-						align-content: center;
 						align-items: center;
 						justify-content: space-between;
 						width: 100%;
 						position: relative;
 						z-index: 5px;
 						margin-top: 8px;
-						
+						.edit-btn {
+								background: none;
+								border: none;
+								&:hover {
+									color: $secondary;
+									svg {
+										fill: $secondary;
+									}
+								}
+							}
 						span.qty,
 						span.price {
 							display: flex;
@@ -573,57 +607,7 @@ $gray-1200: #131314;
 							align-items: center;
 							justify-content: flex-start;
 							
-							button.minus-button,
-							button.plus-button {
-								width: 25px;
-								height: 24px;
-								border-radius: 3px;
-								border: 1px solid $gray-400;
-								background: $gray-100;
-								color: $gray-700;
-								font-size: 18px;
-								text-align: center;
-								vertical-align: middle;
-								line-height: 20px;
-								transition: all 0.3s linear;
-								
-								@include hover-active() {
-									color: $white;
-									background: $secondary;
-									border-color: $secondary;
-									cursor: pointer;
-									outline: none;
-								}
-								
-								&:focus {
-									outline: none;
-								}
-							}
 							
-							input.qty-input {
-								width: 40px;
-								height: 24px;
-								text-align: center;
-								border: 1px solid $gray-400;
-								border-radius: 3px;
-								margin: 0 2px;
-								transition: all 0.5s linear;
-								
-								@include hover-active() {
-									border: 1px solid $secondary;
-								}
-								
-								&:focus {
-									outline: none;
-									border: 1px solid $secondary;
-								}
-								
-								&::-webkit-inner-spin-button,
-								&::-webkit-outer-spin-button {
-									appearance: none;
-									margin: 0;
-								}
-							}
 						}
 
 						span.price {
