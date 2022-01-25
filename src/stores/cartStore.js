@@ -2,8 +2,9 @@ import { browser } from "$app/env";
 import { flashy_update_cart } from "$lib/flashy";
 import { writable, get } from "svelte/store";
 let initCart = {};
+const LOCAL_STORE_NAME = "cart2";
 if(browser) {
-    initCart=JSON.parse(localStorage.getItem('cart'));
+    initCart=JSON.parse(localStorage.getItem(LOCAL_STORE_NAME));
     if(!initCart) {
         initCart={}   
     }
@@ -61,7 +62,7 @@ const createCartStore = () => {
 export const cartStore = createCartStore();//writable(initCart);
 cartStore.subscribe((value) => {
     if (browser) {
-      window.localStorage.setItem('cart', JSON.stringify(value));
+      window.localStorage.setItem(LOCAL_STORE_NAME, JSON.stringify(value));
       flashy_update_cart(value);
     }
   });
