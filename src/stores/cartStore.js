@@ -16,8 +16,11 @@ const createCartStore = () => {
         subscribe,
         set,
         removeFromCart: function(product) {
+          this.removeFromCartById(product.id);
+        },
+        removeFromCartById: function(id) {
           let cart = get(this);
-          delete cart[product.id];
+          delete cart[id];
           set(cart);
         },
         getProduct: function(productId) {
@@ -38,7 +41,7 @@ const createCartStore = () => {
             if(store[product.id]) {
               exist = true;
             } else {
-              product.amount = 1;
+              product.amount = 0;
               store[product.id] = product;
               set(store);
             }
@@ -48,7 +51,9 @@ const createCartStore = () => {
         isInCart: function(product) {
           const store = get(this);
           if(product && product.id) {
-            return store[product.id] ? true : false;
+            let ret = store[product.id] != undefined? true : false;
+            console.log(ret);
+            return ret;
           }
           return false;
         },

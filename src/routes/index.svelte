@@ -283,7 +283,7 @@ import { flashy_page_view } from "$lib/flashy";
       $userInfoStore.isLogin = true;
       console.log('user is loged in, updating campains');
       
-      update_campains_with_local_data(csrf_response.campains);
+      update_campains_with_local_data(csrf_response.whoAmI.campains);
     }else {
       console.log('user is not loged in');
       $userInfoStore = {

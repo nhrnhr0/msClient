@@ -63,6 +63,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
   export let isModalOpen = false;
   let loadingText = 'טוען...';
   let m, evt;
+  let amount_input;
 
   let is_image_loaded = false;
 
@@ -321,12 +322,12 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                             }
                             );
       cartStore.addToCart($productData);
-      open_edit_amount_dialog();
+    }
+      //
     /*}else {
       document.querySelector('#productModalLikeBtn .text .item-amount').focus();
       
     }*/
-    }
     
     //$cartStore[_productId] = $productData;
     
@@ -365,7 +366,13 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
   }
 
   function open_edit_amount_dialog() {
+    debugger;
     if(cartStore.isInCart($productData) == false) {
+      return false;
+    }
+    if(cartStore.getProduct(_productId).show_sizes_popup == false) {
+      
+      amount_input.focus();
       return false;
     }
     $productCartModalStore.set_product($productData.id);
@@ -514,7 +521,11 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                             סה"כ: 
                           </div>
                           <div class="edit-amount-btn">
-                            {$cartStore[_productId].amount}
+                            {#if $cartStore[_productId].show_sizes_popup}
+                              {$cartStore[_productId].amount}
+                            {:else}
+                              <input class="amount-input" bind:this={amount_input} type="number" min="1" max="9999" bind:value="{$cartStore[_productId].amount}"/>
+                            {/if}
                           </div>
                         </div>
                       </div>
@@ -680,6 +691,14 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                 padding-left: 10%;
                 color: rgb(70, 70, 70);
                 font-weight: bold;
+                .amount-input {
+                  width: 100%;
+                  height: 100%;
+                  border: none;
+                  text-align: center;
+                  font-weight: bold;
+                  background: none;
+                }
               }
             }
           }

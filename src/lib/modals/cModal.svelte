@@ -148,6 +148,7 @@
   }
 
   function likeBtnClicked(e) {
+    console.log('likeBtnClicked', e);
     let img = e.currentTarget.parentElement.querySelector('.product-image');
     let imgData = JSON.parse(e.currentTarget.dataset["img"]);
     if (cartStore.isInCart(imgData) == false) {
@@ -167,8 +168,16 @@
           'ti': imgData.title,
         }
       });
+    } else {
+      if($cartStore[imgData.id].show_sizes_popup) {
+        open_edit_amount_dialog(imgData.id);
+      }else {
+        let itm = document.querySelector('input#amount_' + imgData.id); 
+        itm.focus();
+      }
+      
     }
-    open_edit_amount_dialog(imgData.id);
+    //open_edit_amount_dialog(imgData.id);
 
     //flyToCart(img);
     //$cartStore[imgData.id] = imgData;
@@ -329,15 +338,22 @@
               <div class="action">
                 <div class="amount-before">
                   <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" data-product-id="{img.id}">
-                    <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="32px" height="32px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
+                    <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="25px" height="25px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
                   </button>
                   <div class="amount-text">
                     <div class="text">
                       סה"כ: 
                     </div>
-                    <div class="edit-amount-btn">
-                      {$cartStore[img.id].amount}
-                    </div>
+                    {#if $cartStore[img.id].show_sizes_popup}
+                      <div class="edit-amount-btn">
+                        {$cartStore[img.id].amount}
+                      </div>
+                    {:else}
+                        <div class="text">
+                          <input id="amount_{img.id}" class="amount-input" pattern="[0-9]*" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
+                        </div>
+                    {/if}
+                    
                   </div>
                 </div>
 
@@ -530,8 +546,27 @@
               align-items: center;
               color: white;
               .text {
-                font-size: 1.2em;
+                font-size: 1em;
                 font-weight: bold;
+                input.amount-input {
+                  height: 1.5em;
+                  width: 1.5em;
+                  border: none;
+                  text-align: center;
+                  background: none;
+                  font-weight: bold;
+                  outline: none;
+
+                  /** remove arrows https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp*/
+                  /* Chrome, Safari, Edge, Opera */
+                  &::-webkit-outer-spin-button,
+                  &::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                  }
+                  /* Firefox */
+                    -moz-appearance: textfield;
+                }
               }
               .edit-amount-btn {
                 font-size: 1.2em;
@@ -575,6 +610,9 @@
 /* Modal */
 
 .modal .modal_content {
+  @media screen and (max-width: 400px) {
+    width: 95%;
+  }
   .modal-title {
       font-size: 1.5em;
       overflow: hidden;
@@ -639,7 +677,10 @@
   
   .modal-body{
     overflow-y: scroll;
-    
+    @media screen and (max-width: 420px) {
+      padding:0.25em;
+      
+    }
     .timer {
       padding-top:15px;
       padding-bottom: 15px;
@@ -654,8 +695,9 @@
       }
     }
   .category-items {
-        display: grid;
-    grid-column: 1fr 1fr 1fr;
+    display: grid;
+    grid-auto-rows: 1fr;
+    grid-auto-flow: row;
     grid-template-columns: repeat(5, 1fr);
     @media screen and (max-width: 1040px) {
       grid-template-columns: repeat(4, 1fr);
@@ -686,12 +728,18 @@
       grid-template-columns: repeat(2, 1fr);
       //max-width: 155px;
     }
+    @media screen and (max-width:330px){
+      grid-template-columns: repeat(1, 1fr);
+      .category-item{
+        padding: 25px!important;
+      }
+    }
     .category-item {
       cursor: pointer;
       padding: 5px;
       flex:1;
-      flex-grow: 0;
-      flex-shrink: 1;
+      height: 100%;
+      width: 100%;
       .category-item-img-wraper {
         
 

@@ -135,6 +135,7 @@ import { logStore } from './../../stores/logStore';
                 let target = detail[i].target;
                 //console.log('>> \t', target);
                 if(target) {
+                    debugger;
                     //console.log('>>>>> class list: >> \t', target.classList);
 
                     if(target.classList.contains('product-image') && dont_open_modal == false) {
@@ -164,13 +165,6 @@ import { logStore } from './../../stores/logStore';
                         if(cartStore.isInCart(currentProduct) == false) {
                             //flyToCart(target.parentElement.querySelector('.product-image'));
                             cartStore.addToCart(currentProduct);
-                            }
-                            $productCartModalStore.set_product(currentProduct.id);
-                            setTimeout(()=> {
-                                $productCartModalStore.toggleModal();
-                            }, 5);
-                            
-                            
                             logStore.addLog(
                             {
                                 'a': 'הוסף לעגלה מסליידר',
@@ -187,11 +181,17 @@ import { logStore } from './../../stores/logStore';
                                 }
                             }
                             );
-                        copySwiperduplicates(E);
+                            copySwiperduplicates(E);
+                        } else {
+                            if(currentProduct.show_sizes_popup) {
+                                open_edit_amount_dialog(currentProduct.id);
+                            }else {
+                                document.querySelector('#slider_amount_input_'+currentProduct.id).focus();
+                            }
+                        }
                         
-                        //$cart = $cart;
-                        //console.log('cart: ', $cartStore);
-                    }
+                    }  
+                    
                 }
             }
         }
@@ -204,6 +204,16 @@ import { logStore } from './../../stores/logStore';
         $productModalStore.open();
     }*/
 
+    function remove_from_cart(productId) {
+        debugger;
+        cartStore.removeFromCartById(productId);
+    }
+    function open_edit_amount_dialog(product_id) {
+        $productCartModalStore.set_product(product_id);
+        setTimeout(()=> {
+            $productCartModalStore.toggleModal();
+        }, 5);
+    }
     export function update_swiper() {
         //TODO: update swipers
     }
@@ -232,9 +242,12 @@ import { logStore } from './../../stores/logStore';
         });
 
     }
+    const inview_options = {
+        rootMargin: '450px',
+    }
 </script>
 <div class="lazy-swiper-wraper" class:active="{isInView}" class:loaded="{isLoaded}"
-use:inview
+use:inview="{inview_options}"
 
 on:change={(event) => {
     //const { inview, entry, scrollDirection, observe, unobserve } = event.detail;
@@ -366,12 +379,16 @@ on:change={(event) => {
                                             <div class="text">
                                                     סה"כ
                                                     <span class="text">
-                                                        {$cartStore[image.id].amount}
+                                                        {#if $cartStore[image.id].show_sizes_popup}
+                                                            {$cartStore[image.id].amount}
+                                                        {:else}
+                                                            <input type="number" id="slider_amount_input_{image.id}" class="cart-amount" bind:value="{$cartStore[image.id].amount}" min="1" max="9999" data-product-id="{image.id}">
+                                                        {/if}
                                                     </span>
                                             </div>
                                         </button>
                                     {/if}
-                                  </div>
+                                </div>
                             <!--</div>-->
                         </SwiperSlide>
                     {/each}
@@ -405,13 +422,26 @@ on:change={(event) => {
             .like-btn {
                 &.active {
                     @include bg-gradient();
+                    div.text {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
 
+                        span.text {
+                            input.cart-amount {
+                                background: none;
+                                border: none;
+                                text-align: center;
+                            }
+                        }
+                    }
                 }
 
                 .img-wraper  {
                     img {
                         width:40px;
                     }
+
                 }
                 display: flex;
                 justify-content: center;
