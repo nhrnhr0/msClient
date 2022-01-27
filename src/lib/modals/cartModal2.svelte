@@ -90,7 +90,9 @@ import { flashy_purchase } from "$lib/flashy";
                                 }
                             }
                             );
+			
             let response = submit_cart_form(data);
+			
             response.then((data_json)=> {
 				let cart_id = data_json['cart_id'];
 				let product_ids = data_json['product_ids'];
@@ -101,9 +103,11 @@ import { flashy_purchase } from "$lib/flashy";
                         //$cartStore = {};
                         cartStore.clearCart();
                     }
-                
+				mform.reset();
             });
-            mform.reset();
+			response.catch(function(error) {
+				alert(error.toString());
+			});
         }
     }
     function decrease_product_amount(key) {
