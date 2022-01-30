@@ -259,8 +259,9 @@ import { logStore } from "./../stores/logStore";
           max-height: 80vh;
           overflow-y: auto;
           left: 0%!important;
-          padding-top: 50px;
+          padding-top: 40px;
           .drop-title {
+            font-size: 2rem;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
@@ -401,6 +402,10 @@ import { logStore } from "./../stores/logStore";
                         position: absolute;
                     }
                     
+                }
+                :global(.autocomplete-input) {
+                    border-radius: 25px;
+                    border: 1px solid #ccc;
                 }
                 /*:global(.autocomplete-input) {
                     border: none;

@@ -374,15 +374,27 @@ on:change={(event) => {
                                         
                                         <button class="like-btn active">
                                             <div class="img-wraper">
-                                                <img alt="V" src="https://res.cloudinary.com/ms-global/image/upload/v1639463503/msAssets/external-check-mintab-for-ios-becris-lineal-becris-1_dfwd0z.png"/>
+                                                <!--<img alt="V" src="https://res.cloudinary.com/ms-global/image/upload/v1639463503/msAssets/external-check-mintab-for-ios-becris-lineal-becris-1_dfwd0z.png"/>-->
                                             </div>
                                             <div class="text">
-                                                    סה"כ
                                                     <span class="text">
+                                                        
                                                         {#if $cartStore[image.id].show_sizes_popup}
-                                                            {$cartStore[image.id].amount}
+                                                            <div class="sizes-popup-btn">
+                                                                <div class="amount">
+                                                                    {$cartStore[image.id].amount}
+                                                                </div>
+                                                                <div class="sizes-popup-pre-text">
+                                                                    לחץ לבחירת מידות
+                                                                </div>
+                                                            </div>
                                                         {:else}
-                                                            <input type="number" id="slider_amount_input_{image.id}" class="cart-amount" bind:value="{$cartStore[image.id].amount}" min="1" max="9999" data-product-id="{image.id}">
+                                                            <div class="amount-input-wraper">
+                                                                <div class="amount-input-pre-text">
+                                                                    כמות בסל:
+                                                                </div>
+                                                                <input type="number" id="slider_amount_input_{image.id}" class="cart-amount" bind:value="{$cartStore[image.id].amount}" min="1" max="9999" data-product-id="{image.id}">
+                                                            </div>
                                                         {/if}
                                                     </span>
                                             </div>
@@ -405,9 +417,21 @@ on:change={(event) => {
     :global(.swiper) {
         :global(.swiper-button-next), :global(.swiper-button-prev) {
             transform: all 250ms ease-in-out;
+            position: absolute;
+            top: 100%;
+            transform: translateY(-50%);
+            overflow: visible;
+            border-radius: 50%;
+            
             &:hover {
                 --swiper-navigation-size: 99px!important;
             }
+        }
+        :global(.swiper-button-next) {
+            left: 80px;
+        }
+        :global(.swiper-button-prev) {
+            right: 80px;
         }
     }
     :global(.swiper-wrapper) {
@@ -421,17 +445,55 @@ on:change={(event) => {
             width:100%;
             .like-btn {
                 &.active {
+                    width: 100%;
                     @include bg-gradient();
                     div.text {
+                        width: 100%;
                         display: flex;
                         justify-content: center;
                         align-items: center;
 
                         span.text {
-                            input.cart-amount {
+                            width: 100%;
+                            .sizes-popup-btn {
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                font-size: large;
+                                width: 100%;
+                                height: 45px;
+                                .sizes-popup-pre-text {
+                                    display: inline-block;
+                                    flex-grow: 1;
+                                    flex:1;
+                                }
+                                .amount {
+                                    display: inline;
+                                    padding-right: 5%;
+                                }
+                            }
+
+                            /*input.cart-amount {
                                 background: none;
                                 border: none;
                                 text-align: center;
+                            }*/
+                            .amount-input-wraper {
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                width: 100%;
+                                height: 45px;
+                                .amount-input-pre-text {
+                                    display: inline-block;
+                                    flex-grow: 1;
+                                    flex:1;
+                                }
+                                input.cart-amount {
+                                    background: none;
+                                    border: none;
+                                    text-align: center;
+                                }
                             }
                         }
                     }

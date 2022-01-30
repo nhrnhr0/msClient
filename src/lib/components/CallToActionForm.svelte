@@ -109,7 +109,7 @@
                 border-radius: .25rem;
                 margin-bottom: 5px;
                 transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-
+                border-radius: 25px;
                 &:hover {
                     color: #fff;
                     background-color: #218838;
@@ -133,6 +133,8 @@
                     font-size: 1.4rem;
                     width: 80%;
                     margin-bottom: 5px;
+                    border-radius: 25px;
+                    border: 1px solid rgb(124, 124, 124);
 
                     &::placeholder {
                         text-align: center;
