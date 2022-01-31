@@ -518,7 +518,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                         </button>
                         <div class="amount-text">
                           <div class="text">
-                            סה"כ: 
+                            לחץ לבחירת מידות
                           </div>
                           <div class="edit-amount-btn">
                             {#if $cartStore[_productId].show_sizes_popup}
@@ -699,6 +699,8 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                   font-weight: bold;
                   background: none;
                 }
+
+                
               }
             }
           }
