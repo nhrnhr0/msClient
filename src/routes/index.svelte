@@ -434,28 +434,47 @@ import { flashy_page_view } from "$lib/flashy";
     margin-left: 20px;
     box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease 0s;
-    
+    &::before {
+      content: '>> לקטגוריית ';
+      opacity: 1;
+      font-size: 1.4rem;
+    }
+
+    &::after {
+      content: ' לחץ כאן <<';
+      opacity: 1;
+      font-size: 1.4rem;
+    }
     &:hover,&:focus {
       box-shadow: 0px 15px 20px black;
-    transform: translateY(-7px);
-      @media (min-width: 820px) {
-          &::before {
-          content: '>> לקטגוריית ';
-          opacity: 1;
-          font-size: 1.4rem;
-        }
-
-        &::after {
-          content: ' לחץ כאן <<';
-          opacity: 1;
-          font-size: 1.4rem;
-        }
-      }
-      
-
+      transform: translateY(-7px);
       opacity: 0.8;
       //font-size: 2.2rem;
+    }
 
+    @media screen and (max-width: 685px) {
+      &:before {
+        content: 'לקטגוריית ';
+        opacity: 1;
+        font-size: 1.4rem;
+      }
+      &::after {
+        content: ' לחץ כאן';
+        opacity: 1;
+        font-size: 1.4rem;
+      }
+    }
+  @media screen and (max-width: 610px) {
+      &:before {
+        content: '';
+        opacity: 1;
+        font-size: 1.4rem;
+      }
+      &::after {
+        content: '';
+        opacity: 1;
+        font-size: 1.4rem;
+      }
     }
   }
   &.campain {
