@@ -1,4 +1,6 @@
 <script context="module">
+  import { writable } from "svelte/store";
+
   import "../app.scss";
   import Navbar from "$lib/Navbar.svelte";
   //import { stateQuery} from './../stores/stores'
@@ -19,7 +21,7 @@ import { onMount } from "svelte";
 <ProductModal bind:this={$productModalStore}></ProductModal>
 <ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
 <CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
-<CartModal2 bind:this={$cartModalStore}></CartModal2>
+<CartModal2 bind:this={$cartModalStore} main_wraper={main_wraper}></CartModal2>
 <SuccessModal bind:this={$successModalStore}></SuccessModal>
 <UserDetailsModal bind:this={$userDetailModalStore}></UserDetailsModal>
 <ProductCartModal bind:this={$productCartModalStore}></ProductCartModal>
@@ -39,9 +41,10 @@ import { onMount } from "svelte";
 import ProductCart from '$lib/modals/productCartModal.svelte';
 import ProductCartModal from '$lib/modals/productCartModal.svelte';
   export const prerender = false;
+  let main_wraper = writable();
 </script>
 
-<div id="main_wraper" class="bg-wraper">
+<div id="main_wraper" bind:this={$main_wraper} class="bg-wraper">
   <slot />
       <footer id="footer">
         <div class="footer-top">

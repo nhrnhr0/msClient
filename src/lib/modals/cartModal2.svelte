@@ -13,8 +13,9 @@
 import { flashy_purchase } from "$lib/flashy";
 import { Spinner } from "sveltestrap";
 
-
+	export let main_wraper;
     export let isModalOpen = false;
+	let is_cart_locked = false;
     let modal_zIndex = 0;
 	let state = 0;
 	let form_name, form_email, form_phone, form_message,form_business_name;
@@ -203,7 +204,13 @@ import { Spinner } from "sveltestrap";
                             }
                             );
     }
-
+	function lock_cart_modal() {
+		const cart_modal_width = 320;
+		is_cart_locked = !is_cart_locked;
+		if(is_cart_locked) {
+			$main_wraper.style.width= '100vw - calc(100vw - '+cart_modal_width+'px)';
+		}
+	}
 </script>
 {#if isModalOpen}
 <div id="cartModal" style="z-index: {modal_zIndex};" class="modal" class:active={isModalOpen}>
@@ -212,6 +219,7 @@ import { Spinner } from "sveltestrap";
                 <main>
                     <button class="close-button" on:click="{()=>{console.log('close click'); toggleModal();}}">X</button>
                     <h2>מוצרים שאהבתי<span class="count">{Object.keys($cartStore).length}</span></h2>
+					<button on:click={lock_cart_modal}>lock</button>
 					<h2 class="sub-title">הוסיפו מוצרים
 						וקבלו הצעת מחיר משתלמת ללא עלות וללא התחייבות</h2>
 					{#if error_found }
