@@ -169,14 +169,13 @@
         }
       });
     } else {
-      if($cartStore[imgData.id].show_sizes_popup) {
+    }
+    if($cartStore[imgData.id].show_sizes_popup) {
         open_edit_amount_dialog(imgData.id);
       }else {
         let itm = document.querySelector('input#amount_' + imgData.id); 
         itm.focus();
       }
-      
-    }
     //open_edit_amount_dialog(imgData.id);
 
     //flyToCart(img);
@@ -335,25 +334,26 @@
               <div class="btn-product-title">
                           {img.title}
               </div>
+              <hr>
               <div class="action">
                 <div class="amount-before">
                   <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" data-product-id="{img.id}">
                     <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="25px" height="25px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
                   </button>
                   <div class="amount-text">
-                    <div class="text">
-                      סה"כ: 
-                    </div>
                     {#if $cartStore[img.id].show_sizes_popup}
+                      <div class="text">
+                        לחץ לבחירת מידות
+                      </div>
                       <div class="edit-amount-btn">
                         {$cartStore[img.id].amount}
                       </div>
                     {:else}
-                        <div class="text">
-                          <input id="amount_{img.id}" class="amount-input" pattern="[0-9]*" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
-                        </div>
+                      כמות בסל:
+                      <div class="text">
+                        <input id="amount_{img.id}" class="amount-input" pattern="[0-9]*" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
+                      </div>
                     {/if}
-                    
                   </div>
                 </div>
 
@@ -499,8 +499,18 @@
           justify-content: center;
           align-items: center;
           flex-direction: column;
+          width: 100%;
+          hr {
+            height: 0px;
+            border: 1px solid black;
+            width: 100%;
+            margin: 0px;
+          }
           @media (hover: hover) {
             .btn-product-title {
+              display:none;
+            }
+            hr {
               display:none;
             }
           }
@@ -522,14 +532,22 @@
             
           }
           .action {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             .amount-before {
             width: 100%;
             display: flex;
             justify-content: space-around;
             align-items: center;
+            flex: 1;
             .delete-btn {
               border: none;
               background: none;
+              @media screen and (max-width: 357px) and (min-width: 330px){
+                padding: 0px;
+              }
               &:hover {
                 svg {
                   fill: red;
@@ -545,9 +563,48 @@
               justify-content: center;
               align-items: center;
               color: white;
+              
+              flex-direction: column;
               .text {
                 font-size: 1em;
                 font-weight: bold;
+                
+                @media screen and (max-width: 1115px) {
+                  font-size: 0.9em;
+                }
+                @media screen and (max-width: 1040) {
+                  font-size: 1em;
+                }
+                
+                @media screen and (max-width: 902px){
+                  font-size: 0.8em;
+                
+                }
+                @media screen and (max-width: 840px){
+                  font-size: 1em;
+                  
+                }
+                @media screen and (max-width: 690px) {
+                  font-size: 0.8em;
+                }
+                @media screen and (max-width: 600px) {
+                  font-size: 0.75em;
+                  font-weight: normal;
+                }
+                @media screen and (max-width: 555px) {
+                  font-size: 1em;
+                  font-weight: bold;
+                }
+                @media screen and (max-width: 469px) {
+                  font-size: 0.9em;
+                }
+                @media screen and (max-width: 439px) {
+                  font-size: 0.75em;
+                }
+                @media screen and (max-width: 330px) {
+                  font-size: 1em;
+                }
+
                 input.amount-input {
                   height: 1.5em;
                   width: 1.5em;
@@ -724,7 +781,7 @@
         }
       }
     }
-    @media screen and (max-width: 490px) {
+    @media screen and (max-width: 555px) {
       grid-template-columns: repeat(2, 1fr);
       //max-width: 155px;
     }

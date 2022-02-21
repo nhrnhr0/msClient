@@ -22,7 +22,7 @@ export function flashy_create_contact(name, email, phone) {
 }
 
 export function flashy_update_cart(cart) {
-    console.log('flashy_update_cart: ', cart);
+    /*console.log('flashy_update_cart: ', cart);
     
     if(Object.keys(cart).length != 0) {
         window.flashy('UpdateCart', {
@@ -30,7 +30,7 @@ export function flashy_update_cart(cart) {
             'value': 0,
             'currency': 'USD'
         });
-    }
+    }*/
     
 }
 function uuidv4() {

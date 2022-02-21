@@ -135,7 +135,6 @@ import { logStore } from './../../stores/logStore';
                 let target = detail[i].target;
                 //console.log('>> \t', target);
                 if(target) {
-                    debugger;
                     //console.log('>>>>> class list: >> \t', target.classList);
 
                     if(target.classList.contains('product-image') && dont_open_modal == false) {
@@ -183,12 +182,14 @@ import { logStore } from './../../stores/logStore';
                             );
                             copySwiperduplicates(E);
                         } else {
-                            if(currentProduct.show_sizes_popup) {
+                            
+                        }
+
+                        if(currentProduct.show_sizes_popup) {
                                 open_edit_amount_dialog(currentProduct.id);
                             }else {
                                 document.querySelector('#slider_amount_input_'+currentProduct.id).focus();
                             }
-                        }
                         
                     }  
                     
@@ -205,7 +206,6 @@ import { logStore } from './../../stores/logStore';
     }*/
 
     function remove_from_cart(productId) {
-        debugger;
         cartStore.removeFromCartById(productId);
     }
     function open_edit_amount_dialog(product_id) {
@@ -240,7 +240,19 @@ import { logStore } from './../../stores/logStore';
             e.detail[0][0].loopDestroy();
             e.detail[0][0].loopCreate();
         });
+    }
+    function validate_input_value_change(e, mod) {
+        debugger;
+        
+            let num = parseInt(e.target.value);
+            let newNum = round(num, mod, 0);
+            e.target.value = newNum;
+            console.log('validate_input_value_change: ', num, newNum);
 
+        
+    }
+    function round(number, increment) {
+        return Math.ceil((number) / increment ) * increment;
     }
     const inview_options = {
         rootMargin: '450px',
@@ -250,7 +262,7 @@ import { logStore } from './../../stores/logStore';
 use:inview="{inview_options}"
 
 on:change={(event) => {
-    //const { inview, entry, scrollDirection, observe, unobserve } = event.detail;
+    const { inview, entry, scrollDirection, observe, unobserve } = event.detail;
     isInView = event.detail.inView;
   }}
 >
@@ -393,7 +405,7 @@ on:change={(event) => {
                                                                 <div class="amount-input-pre-text">
                                                                     כמות בסל:
                                                                 </div>
-                                                                <input type="number" id="slider_amount_input_{image.id}" class="cart-amount" bind:value="{$cartStore[image.id].amount}" min="1" max="9999" data-product-id="{image.id}">
+                                                                <input type="number" id="slider_amount_input_{image.id}" class="cart-amount" bind:value="{$cartStore[image.id].amount}" min="1" max="9999"  data-product-id="{image.id}">
                                                             </div>
                                                         {/if}
                                                     </span>

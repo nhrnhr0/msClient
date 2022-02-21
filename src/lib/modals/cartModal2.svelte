@@ -11,6 +11,7 @@
 	import {scrollFix} from '$lib/ui/scrollFix';
 	import { productCartModalStore} from './../../stores/stores';
 import { flashy_purchase } from "$lib/flashy";
+import { Spinner } from "sveltestrap";
 
 
     export let isModalOpen = false;
@@ -41,6 +42,7 @@ import { flashy_purchase } from "$lib/flashy";
 			}
 		}
 		else if(state == 1) {
+			state = 2;
 			cart_submit();
 		}
 	}
@@ -107,11 +109,17 @@ import { flashy_purchase } from "$lib/flashy";
                         cartStore.clearCart();
                     }
 				mform.reset();
+				state = 0;
             });
 			response.catch(function(error) {
 				alert(error.toString());
+				state = 0;
 			});
-        }
+			
+        }else {
+			alert('נא למלא את כל השדות');
+			state = 1;
+		}
     }
     function decrease_product_amount(key) {
         console.log('decrease_product_amount: ', key);
@@ -299,7 +307,20 @@ import { flashy_purchase } from "$lib/flashy";
 						</div>
 					{/if}
 					<div class="action-buttons">
-						<button class="checkout-back" on:click="{checkout_back_click}" class:active="{state != 0}" >הקודם</button><button class="checkout-button" on:click="{checkout_click}">שלח</button>
+						<button class="checkout-back" on:click="{checkout_back_click}" class:active="{state != 0}" >הקודם</button>
+						<button class="checkout-button" on:click="{checkout_click}" disabled={state == 2}>
+							{#if state == 0}
+								המשך
+							{/if}
+							{#if state == 1}
+								שלח
+							{/if}
+							{#if state == 2}
+								<Spinner
+								style="width: 1rem; height: 1rem;"
+								/>
+							{/if}
+						</button>
 					</div>
 				</main>
 			</aside>
@@ -776,6 +797,7 @@ $gray-1200: #131314;
 		}
 		button.checkout-button {
 			display: inline-block;
+			
 			padding: 10px;
 			margin: 20px 15px;
 			text-align: center;
@@ -795,6 +817,7 @@ $gray-1200: #131314;
 			color: $black;
 			width: 60%;
 			@include bg-gradient();
+			
 
 			&:after {
 				content: url("data:image/svg+xml,%3Csvg fill='%23#{str-replace('' + $black + '', '#', '')}' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath d='M311.03 131.515l-7.071 7.07c-4.686 4.686-4.686 12.284 0 16.971L387.887 239H12c-6.627 0-12 5.373-12 12v10c0 6.627 5.373 12 12 12h375.887l-83.928 83.444c-4.686 4.686-4.686 12.284 0 16.971l7.071 7.07c4.686 4.686 12.284 4.686 16.97 0l116.485-116c4.686-4.686 4.686-12.284 0-16.971L328 131.515c-4.686-4.687-12.284-4.687-16.97 0z'/%3E%3C/svg%3E");
