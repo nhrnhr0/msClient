@@ -13,17 +13,30 @@ import { isNumeric } from "$lib/utils/utils";
             let server_url = ALBUMS_API_URL + params.id + '/';
             //console.log(url);
             if(isNumeric(params.id)) {
-                let response = await fetch_wraper(server_url , {"method":"GET"}, fetch);
-                //console.log(response);
-                response.fotter = response.fotter.replace(/(\r\n|\n|\r)/gm, "");
-                return {
-                    props: {
-                        data: response,
+                try {
+                    let response = await fetch_wraper(server_url , {"method":"GET"}, fetch);
+                    //console.log(response);
+                    response.fotter = response.fotter.replace(/(\r\n|\n|\r)/gm, "");
+                    return {
+                        props: {
+                            data: response,
+                        }
                     }
+                } catch (error) {
+                    console.log(error);
+                    return {
+                        props: {
+
+                        }
+                    };
                 }
             }
             else {
-                
+                return {
+                        props: {
+
+                        }
+                    };
             }
             
             
@@ -36,6 +49,7 @@ import { flashy_page_view } from "$lib/flashy";
 
         export let data;
         onMount(()=> {
+            debugger;
             flashy_page_view();
             sessionStorage.setItem("onLoadTask",JSON.stringify({type: 'category', data: data}));
             window.location.replace("/"); 
@@ -64,5 +78,5 @@ import { flashy_page_view } from "$lib/flashy";
         <meta property="twitter:image" content="{CLOUDINARY_URL + 'f_auto,w_auto/' + data?.cimage}">
         
     </svelte:head>
-
+{@debug}
 <a href="./{data.id}/products/">products</a>

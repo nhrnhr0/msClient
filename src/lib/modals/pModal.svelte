@@ -161,6 +161,11 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
     
   }
 
+  let show_prices;
+  $: {
+    show_prices =  ($userInfoStore['me'] && Object.keys($userInfoStore['me']) != 0 && $userInfoStore['me'].show_prices == true)? true : false;
+  }
+
   function open_category() {
     $categoryModalStore.setAlbum($current_album);
     if ($categoryModalStore.isOpen() == false) {
@@ -500,6 +505,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                           src="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
                           data-large-img-url="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
                           />
+                          <div class="price-tag" class:active={show_prices} >{$productData.client_price + '₪'}</div>
                       </div>
                   </div>
                   <div class="magnifier-preview-wraper">
@@ -1150,12 +1156,25 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
               //padding-bottom: 100%;
               
             }
-            cursor: pointer;
+            //cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             .img-inner-wraper{
               position: relative;
+              .price-tag {
+                    position: absolute;
+                    top:5px;
+                    left:5px;
+                    padding: 5px;
+                    font-weight: bold;
+                    border-radius: 999px;
+                    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+                    display: none;
+                    &.active {
+                        display: block;
+                    }
+                }
             }
             img {
               @include bg-image;

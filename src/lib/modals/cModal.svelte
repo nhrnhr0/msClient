@@ -20,6 +20,7 @@
     albumsJsonStore,
     campainsStore,
     productModalStore,
+    userInfoStore,
     _modal_z_index_incrementor
   } from './../../stores/stores';
   import {
@@ -54,7 +55,10 @@
       }
     });
   }
-
+  let show_prices;
+  $: {
+    show_prices =  ($userInfoStore['me'] && Object.keys($userInfoStore['me']) != 0 && $userInfoStore['me'].show_prices == true)? true : false;
+  }
   export let isModalOpen = false;
   export function toggleModal(push_url = true) {
     isModalOpen = !isModalOpen;
@@ -309,6 +313,8 @@
       <div class="category-item" data-category-prod-id="{img.id}">
         <div class="category-item-img-wraper" on:click="{open_product(img)}" >
           <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
+          <div class="price-tag" class:active={show_prices} >{img.client_price + '₪'}</div>
+
           <div class="img-title">{img.title}</div>
         </div>
         <div  on:click={likeBtnClicked} data-img={JSON.stringify(img)} class="like-btn-wraper">
@@ -798,7 +804,20 @@
       height: 100%;
       width: 100%;
       .category-item-img-wraper {
-        
+        position: relative;
+        .price-tag {
+                    position: absolute;
+                    top:5px;
+                    left:5px;
+                    padding: 5px;
+                    font-weight: bold;
+                    border-radius: 999px;
+                    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+                    display: none;
+                    &.active {
+                        display: block;
+                    }
+                }
 
         &:hover {
           background-color: black;

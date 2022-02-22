@@ -33,7 +33,7 @@
     
     
     export let loaded_data;
-    import {productModalStore, productCartModalStore} from './../../stores/stores';
+    import {productModalStore, productCartModalStore, userInfoStore} from './../../stores/stores';
 import { onDestroy, onMount } from 'svelte';
 
 import { flyToCart } from '$lib/utils/js/flyToCart';
@@ -187,10 +187,20 @@ import { logStore } from './../../stores/logStore';
 
                         if(currentProduct.show_sizes_popup) {
                                 open_edit_amount_dialog(currentProduct.id);
+                        }else {
+                            const selector = '#slider_amount_input_'+currentProduct.id;
+                            const query = document.querySelectorAll(selector);
+                            if(query.length == 0) {
+                                setTimeout(()=> {
+                                    const query2 = document.querySelectorAll(selector);
+                                    if(query2.length > 0) {
+                                        query2[0].focus();
+                                    }
+                                },5);
                             }else {
-                                document.querySelector('#slider_amount_input_'+currentProduct.id).focus();
+                                query[0].focus();
                             }
-                        
+                        }
                     }  
                     
                 }
@@ -257,6 +267,8 @@ import { logStore } from './../../stores/logStore';
     const inview_options = {
         rootMargin: '450px',
     }
+
+    const show_prices = ($userInfoStore['me'] && Object.keys($userInfoStore['me']) != 0 && $userInfoStore['me'].show_prices == true)? true : false;
 </script>
 <div class="lazy-swiper-wraper" class:active="{isInView}" class:loaded="{isLoaded}"
 use:inview="{inview_options}"
@@ -369,7 +381,7 @@ on:change={(event) => {
                                     <div class="img-wraper">
                                         
                                         <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{image.cimage}" alt="{image.title}">
-                                        
+                                        <div class="price-tag" class:active={show_prices} >{image.client_price + '₪'}</div>
                                     </div>
                                 </div>
                                 <div  class="like-btn-wraper" data-product-id="{image.id}">
@@ -635,6 +647,19 @@ on:change={(event) => {
                 width: 100%;
                 height: 0;
                 padding-bottom: 100%;
+                .price-tag {
+                    position: absolute;
+                    top:5px;
+                    left:5px;
+                    padding: 5px;
+                    font-weight: bold;
+                    border-radius: 25px;
+                    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+                    display: none;
+                    &.active {
+                        display: block;
+                    }
+                }
                 .product-image {
                     cursor: pointer;
                     border-top-width: 0px;

@@ -204,13 +204,7 @@ import { Spinner } from "sveltestrap";
                             }
                             );
     }
-	function lock_cart_modal() {
-		const cart_modal_width = 320;
-		is_cart_locked = !is_cart_locked;
-		if(is_cart_locked) {
-			$main_wraper.style.width= '100vw - calc(100vw - '+cart_modal_width+'px)';
-		}
-	}
+	let show_prices = true;
 </script>
 {#if isModalOpen}
 <div id="cartModal" style="z-index: {modal_zIndex};" class="modal" class:active={isModalOpen}>
@@ -219,7 +213,6 @@ import { Spinner } from "sveltestrap";
                 <main>
                     <button class="close-button" on:click="{()=>{console.log('close click'); toggleModal();}}">X</button>
                     <h2>מוצרים שאהבתי<span class="count">{Object.keys($cartStore).length}</span></h2>
-					<button on:click={lock_cart_modal}>lock</button>
 					<h2 class="sub-title">הוסיפו מוצרים
 						וקבלו הצעת מחיר משתלמת ללא עלות וללא התחייבות</h2>
 					{#if error_found }
@@ -245,25 +238,38 @@ import { Spinner } from "sveltestrap";
 												<span class="product-details">
 													<h3>{$cartStore[key].title}</h3>
 													<hr>
-													<span class="qty-price"  on:click={open_edit_amount_dialog(key)}>
-														סה"כ
-														<span class="qty">
-															{#if $cartStore[key].show_sizes_popup}
-																<div class="total-amount">{$cartStore[key].amount}</div>
-															{:else}
-																<input type="text" class="amount-input" id="cart_amount_{key}" bind:value={$cartStore[key].amount}>
-															{/if}
+													<div class="qty-price"  on:click={open_edit_amount_dialog(key)}>
+														<div class="table">
+															<div class="table-row">
+																<div class="table-cell table-cell-title">
+																	:כמות
+																</div>
+																<div class="table-cell qty">
+																	{#if $cartStore[key].show_sizes_popup}
+																		<div class="total-amount">{$cartStore[key].amount}</div>
+																	{:else}
+																		<input type="text" class="amount-input" id="cart_amount_{key}" bind:value={$cartStore[key].amount}>
+																	{/if}
+																</div>
+															</div>
+														{#if show_prices}
+															<div class="table-row">
+																<div class="table-cell table-cell-title">
+																	:מחיר
+																</div>
+																<div class="table-cell">
+																		<span class="">{$cartStore[key].client_price}₪</span>
+																</div>
+															</div>
+														{/if}
 
-														</span>
-														<!--
-														<span class="price">$16.00</span>
-														-->
+														
 														<button class="edit-btn">
 															ערוך
 															<svg enable-background="new 0 0 45 45" height="25px" id="Layer_1" version="1.1" viewBox="0 0 45 45" width="25px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g><rect height="23" transform="matrix(-0.7071 -0.7072 0.7072 -0.7071 38.2666 48.6029)" width="11" x="23.7" y="4.875"/><path d="M44.087,3.686l-2.494-2.494c-1.377-1.377-3.61-1.377-4.987,0L34.856,2.94l7.778,7.778l1.749-1.749   C45.761,7.593,45.465,5.063,44.087,3.686z" /><polygon points="16,22.229 16,30 23.246,30  "/><path d="M29,40H5V16h12.555l5-5H3.5C1.843,11,0,11.843,0,13.5v28C0,43.156,1.843,45,3.5,45h28   c1.656,0,2.5-1.844,2.5-3.5V23.596l-5,5V40z"/></g></svg>
 															
 														</button>
-													</span>
+													</div>
 													
 												</span>
 											</div>
@@ -589,6 +595,8 @@ $gray-1200: #131314;
 					height: 50px;
 					padding-left: 10px;
                     cursor: pointer;
+					flex-shrink: 1;
+					flex-grow: 0;
 
 					img {
 						width: 60px;
@@ -617,7 +625,7 @@ $gray-1200: #131314;
 						transition: all 0.5s linear;
 					}
 
-					span.qty-price {
+					div.qty-price {
 						display: flex;
                         flex-direction: row-reverse;
 						flex-wrap: nowrap;
@@ -627,6 +635,25 @@ $gray-1200: #131314;
 						position: relative;
 						z-index: 5px;
 						margin-top: 8px;
+
+						.table {
+							display: flex;
+							flex-direction: row-reverse;
+							justify-content: space-between;
+							width: 100%;
+							.table-row {
+
+								.table-cell {
+									&.table-cell-title {
+										font-size: 12px;
+										text-align: center;
+										width: 100%;
+										font-weight: 500;
+									}
+
+								}
+							}
+						}
 						.edit-btn {
 								background: none;
 								border: none;
@@ -637,21 +664,23 @@ $gray-1200: #131314;
 									}
 								}
 							}
-						span.qty,
-						span.price {
+						div.qty,
+						div.price {
 							display: flex;
 							flex-direction: row;
 							flex-wrap: nowrap;
 						}
 						
-						span.qty {
+						div.qty {
 							display: flex;
 							flex-direction: row;
 							flex-wrap: nowrap;
 							align-content: center;
 							align-items: center;
 							justify-content: flex-start;
-							
+							.total-amount {
+								margin: auto;
+							}
 							input.amount-input {
 								border: none;
 								background: none;
@@ -660,7 +689,7 @@ $gray-1200: #131314;
 							}
 						}
 
-						span.price {
+						div.price {
 							color: $secondary;
 							font-weight: 500;
 							font-size: 13px;

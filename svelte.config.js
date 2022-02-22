@@ -22,7 +22,7 @@ const config = {
       base: process.env['GITHUB_REPO'],//process.env.NODE_ENV === "production" ? "/msClientBuild" : "",
       assets: '', //process.env['GITHUB_REPO_ABS']
     }, 
-    target: "#svelte",
+    //target: "#svelte",
     /*adapter: static_adapter({}),*/
 
     adapter: node_adapter({ out: 'build' }),

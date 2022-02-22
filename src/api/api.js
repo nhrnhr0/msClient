@@ -69,7 +69,8 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
             }
         }
         console.log(url, ' ==> ', data.status);
-        return data.json()
+        let json = data.json();
+        return json;
     }).then((info)=> {
         /*if(info.code === "token_not_valid") {
             
@@ -84,6 +85,7 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
             });
             
         }*/
+        console.log('info: ', info);
         return info;
     });
 //    return response;
