@@ -1,8 +1,10 @@
 import { browser } from "$app/env";
-import { flashy_update_cart } from "$lib/flashy";
+import { update_cart_to_server } from "$lib/flashy";
 import { writable, get } from "svelte/store";
+import debounce from 'lodash/debounce';
+
 let initCart = {};
-const LOCAL_STORE_NAME = "cart2";
+const LOCAL_STORE_NAME = "cart3";
 if(browser) {
     initCart=JSON.parse(localStorage.getItem(LOCAL_STORE_NAME));
     if(!initCart) {
@@ -24,7 +26,6 @@ const createCartStore = () => {
           set(cart);
         },
         getProduct: function(productId) {
-          debugger;
             let cart = get(this);
             return cart[productId];
         },
@@ -65,10 +66,15 @@ const createCartStore = () => {
   }
 
 export const cartStore = createCartStore();//writable(initCart);
+let throut_to_server = debounce((value)=>{
+  console.log('updateing cart to server');
+  update_cart_to_server(value)
+}, 2500);
 cartStore.subscribe((value) => {
     if (browser) {
       window.localStorage.setItem(LOCAL_STORE_NAME, JSON.stringify(value));
-      flashy_update_cart(value);
+      
+      throut_to_server(value);
     }
   });
 
@@ -76,4 +82,4 @@ cartStore.subscribe((value) => {
 
 
 
-export const cartObjStore = writable({});
+export const cartDomElementStore = writable({});

@@ -25,6 +25,7 @@ export const LOGOS_API_URL = BASE_API_URL + 'logos/';
 export const GET_CSRF_TOKEN_URL = BASE_URL + '/api/set_csrf_token';
 export const CONTACT_FORM_URL = BASE_URL + '/contact-form';
 export const SUBMIT_CART_URL = BASE_URL + '/cart-form';
+export const TRACK_CART_URL = BASE_URL + '/track-cart';
 export const MAIN_PAGE_API = BASE_URL + '/main_page_api/';
 //export const AUTH_TOKEN_URL = BASE_URL + '/api/token/';
 //export const REFRESH_TOKEN_URL = BASE_URL + '/api/token/refresh/';

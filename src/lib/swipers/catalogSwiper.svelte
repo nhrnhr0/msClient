@@ -649,7 +649,7 @@ on:change={(event) => {
                 padding-bottom: 100%;
                 .price-tag {
                     position: absolute;
-                    top:5px;
+                    bottom: 5px;
                     left:5px;
                     padding: 5px;
                     font-weight: bold;

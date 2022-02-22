@@ -1,6 +1,6 @@
 <script>
     import AutoComplete from "simple-svelte-autocomplete";
-    import {cartObjStore} from './../stores/cartStore';
+    import {cartDomElementStore} from './../stores/cartStore';
     import {albumsJsonStore, loginModalStore, productModalStore, userInfoStore} from './../stores/stores'
     import {CLOUDINARY_URL, SEARCH_API_URL} from './../api/consts';
 
@@ -230,7 +230,7 @@ import { logStore } from "./../stores/logStore";
             </Dropdown>
             
                 
-            <Cart bind:this={$cartObjStore}></Cart>
+            <Cart bind:this={$cartDomElementStore}></Cart>
             <div>
             <a rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
                 <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">

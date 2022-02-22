@@ -1,4 +1,4 @@
-
+import { track_cart_to_server } from "./../api/api";
 
 
 export function flashy_page_view() {
@@ -21,7 +21,8 @@ export function flashy_create_contact(name, email, phone) {
 	},);
 }
 
-export function flashy_update_cart(cart) {
+export function update_cart_to_server(cart) {
+    track_cart_to_server(cart);
     /*console.log('flashy_update_cart: ', cart);
     
     if(Object.keys(cart).length != 0) {
