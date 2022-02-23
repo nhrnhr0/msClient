@@ -21,7 +21,7 @@ import { onMount } from "svelte";
 <ProductModal bind:this={$productModalStore}></ProductModal>
 <ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
 <CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
-<CartModal2 bind:this={$cartModalStore} main_wraper={main_wraper}></CartModal2>
+<CartModal2 bind:this={$cartModalStore}></CartModal2>
 <SuccessModal bind:this={$successModalStore}></SuccessModal>
 <UserDetailsModal bind:this={$userDetailModalStore}></UserDetailsModal>
 <ProductCartModal bind:this={$productCartModalStore}></ProductCartModal>

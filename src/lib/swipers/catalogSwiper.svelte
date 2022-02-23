@@ -39,6 +39,8 @@ import { onDestroy, onMount } from 'svelte';
 import { flyToCart } from '$lib/utils/js/flyToCart';
 
 import { logStore } from './../../stores/logStore';
+import FaveIcon from '$lib/components/faveIcon.svelte';
+import { fave_list } from './../../stores/faveStore';
 
     
 
@@ -379,10 +381,13 @@ on:change={(event) => {
                                 </div>
                                 <div class="slide-content" >
                                     <div class="img-wraper">
+                                        <button class="swiper-star-btn" on:click={(e)=>{fave_list.addToFaveList(image.id)}}>
+                                            <FaveIcon class="swiper-star" name={$fave_list.isInList(image.id) ? 'star-full': 'star'} />
+                                        </button>
                                         
                                         <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{image.cimage}" alt="{image.title}">
                                         <div class="price-tag" class:active={show_prices} >{image.client_price + '₪'}</div>
-                                    </div>
+                                    </div> 
                                 </div>
                                 <div  class="like-btn-wraper" data-product-id="{image.id}">
                                     {#if $cartStore[image.id] == undefined}
@@ -429,7 +434,7 @@ on:change={(event) => {
                         </SwiperSlide>
                     {/each}
                     
-              </Swiper>
+            </Swiper>
         {/if}
     <!--
         {/await}
@@ -438,6 +443,21 @@ on:change={(event) => {
 <!--</Lazy>-->
 </div>
 <style lang="scss">
+    .swiper-star-btn{
+        background:none;
+        border: none;
+        position: absolute;
+        top: 10px;
+        right: 5px;
+    }
+    :global(.swiper-star) {
+        z-index: 1;
+        border:1px solid blue;
+        &.active {
+
+            
+        }
+    }
     :global(.swiper) {
         :global(.swiper-button-next), :global(.swiper-button-prev) {
             transform: all 250ms ease-in-out;
@@ -656,6 +676,7 @@ on:change={(event) => {
                     border-radius: 25px;
                     background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
                     display: none;
+                    font-size: x-large;
                     &.active {
                         display: block;
                     }

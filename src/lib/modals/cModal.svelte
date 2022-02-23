@@ -814,6 +814,8 @@
                     border-radius: 999px;
                     background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
                     display: none;
+                    font-size: x-large;
+                    
                     &.active {
                         display: block;
                     }
