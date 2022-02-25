@@ -142,7 +142,9 @@
 <About />
 <LogoSwiper {logos} />
 <CartDisclaimer />
+<!--
 <FavoritesSidePopup />
+-->
 
 <!--
 {#if $campainsStore}
@@ -217,7 +219,7 @@ import {sl_disable, sl_enable} from "$lib/utils/scroll-lock";
 import CallToActionForm from '$lib/components/CallToActionForm.svelte';
 import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
 import { flashy_page_view } from "$lib/flashy";
-import FavoritesSidePopup from '$lib/components/FavoritesSidePopup.svelte';
+//import FavoritesSidePopup from '$lib/components/FavoritesSidePopup.svelte';
   
   export let colors;
   export let sizes;

@@ -39,8 +39,8 @@ import { onDestroy, onMount } from 'svelte';
 import { flyToCart } from '$lib/utils/js/flyToCart';
 
 import { logStore } from './../../stores/logStore';
-import FaveIcon from '$lib/components/faveIcon.svelte';
-import { fave_list } from './../../stores/faveStore';
+//import FaveIcon from '$lib/components/faveIcon.svelte';
+//import { fave_list } from './../../stores/faveStore';
 
     
 
@@ -164,7 +164,7 @@ import { fave_list } from './../../stores/faveStore';
                     }else if(target.classList.contains('like-btn-wraper')) {
                         let currentProduct = get_product_by_id(target.dataset.productId);
                         if(cartStore.isInCart(currentProduct) == false) {
-                            //flyToCart(target.parentElement.querySelector('.product-image'));
+                            flyToCart(target.parentElement.querySelector('.product-image'));
                             cartStore.addToCart(currentProduct);
                             logStore.addLog(
                             {
@@ -381,10 +381,11 @@ on:change={(event) => {
                                 </div>
                                 <div class="slide-content" >
                                     <div class="img-wraper">
+                                        <!--
                                         <button class="swiper-star-btn" on:click={(e)=>{fave_list.addToFaveList(image.id)}}>
                                             <FaveIcon class="swiper-star" name={$fave_list.isInList(image.id) ? 'star-full': 'star'} />
                                         </button>
-                                        
+                                        -->
                                         <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{image.cimage}" alt="{image.title}">
                                         <div class="price-tag" class:active={show_prices} >{image.client_price + '₪'}</div>
                                     </div> 

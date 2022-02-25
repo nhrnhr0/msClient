@@ -85,7 +85,7 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
             });
             
         }*/
-        console.log('info: ', info);
+        //console.log('info: ', info);
         return info;
     });
 //    return response;
