@@ -1,7 +1,6 @@
 import { browser } from "$app/env";
 import { update_cart_to_server } from "$lib/flashy";
 import { writable, get } from "svelte/store";
-import debounce from 'lodash/debounce';
 
 let initCart = {};
 const LOCAL_STORE_NAME = "cart3";
@@ -66,15 +65,17 @@ const createCartStore = () => {
   }
 
 export const cartStore = createCartStore();//writable(initCart);
-let throut_to_server = debounce((value)=>{
-  console.log('updateing cart to server');
-  update_cart_to_server(value)
-}, 2500);
+let _updated_to_server = false;
 cartStore.subscribe((value) => {
     if (browser) {
       window.localStorage.setItem(LOCAL_STORE_NAME, JSON.stringify(value));
-      
-      throut_to_server(value);
+      if(_updated_to_server == false) {
+        _updated_to_server = true;
+        setTimeout(() => {
+          update_cart_to_server(get(cartStore));
+          _updated_to_server = false;
+        }, 3000);
+      }
     }
   });
 

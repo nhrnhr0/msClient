@@ -254,8 +254,6 @@ import { logStore } from './../../stores/logStore';
         });
     }
     function validate_input_value_change(e, mod) {
-        debugger;
-        
             let num = parseInt(e.target.value);
             let newNum = round(num, mod, 0);
             e.target.value = newNum;
