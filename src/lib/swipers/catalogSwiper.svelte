@@ -39,6 +39,7 @@ import { onDestroy, onMount } from 'svelte';
 import { flyToCart } from '$lib/utils/js/flyToCart';
 
 import { logStore } from './../../stores/logStore';
+import { selectTextOnFocus } from '$lib/ui/inputActions';
 //import FaveIcon from '$lib/components/faveIcon.svelte';
 //import { fave_list } from './../../stores/faveStore';
 
@@ -211,6 +212,12 @@ import { logStore } from './../../stores/logStore';
         
 
     }
+
+    $: {
+        if (mswiper) {
+            fixDups();
+        }
+    }
     /*function swiperSlideClicked(catalogId, productId) {
         //console.log('swiperClicked2: ', catalogId, productId);
         $productModalStore.setProduct(catalogId, productId);
@@ -267,6 +274,7 @@ import { logStore } from './../../stores/logStore';
     const inview_options = {
         rootMargin: '450px',
     }
+
 
     const show_prices = ($userInfoStore['me'] && Object.keys($userInfoStore['me']) != 0 && $userInfoStore['me'].show_prices == true)? true : false;
 </script>
@@ -421,7 +429,7 @@ on:change={(event) => {
                                                                 <div class="amount-input-pre-text">
                                                                     כמות בסל:
                                                                 </div>
-                                                                <input type="number" id="slider_amount_input_{image.id}" class="cart-amount" bind:value="{$cartStore[image.id].amount}" min="1" max="9999"  data-product-id="{image.id}">
+                                                                <input type="number" id="slider_amount_input_{image.id}" class="cart-amount" use:selectTextOnFocus bind:value="{$cartStore[image.id].amount}" min="1" max="9999"  data-product-id="{image.id}">
                                                             </div>
                                                         {/if}
                                                     </span>
@@ -513,6 +521,18 @@ on:change={(event) => {
                                 .amount {
                                     display: inline;
                                     padding-right: 5%;
+                                    padding-top: 8px;
+                                    position: relative;
+                                    &::before {
+                                        content: "כמות בסל: ";
+                                        position: absolute;
+                                        left: 0;
+                                        top: 0;
+
+                                        width: 100px;
+                                        
+                                        transform: translate(-50%, -50%);
+                                    }
                                 }
                             }
 
@@ -536,6 +556,11 @@ on:change={(event) => {
                                     background: none;
                                     border: none;
                                     text-align: center;
+                                    border: 1px solid #777;
+                                    margin-bottom: 10px;
+                                    border-radius: 25px;
+                                    margin-top: 10px;
+
                                 }
                             }
                         }
@@ -593,6 +618,9 @@ on:change={(event) => {
     &.loaded:not(&.active) {
         //height: auto!important;
     }
+}
+:global(.swiper-slide-prev .slide-content .img-wraper .price-tag) {
+    left: 30px !important;;
 }
 
     :global(.swiper-slide) {

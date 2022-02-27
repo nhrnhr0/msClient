@@ -248,14 +248,14 @@ import { Spinner } from "sveltestrap";
 																	{#if $cartStore[key].show_sizes_popup}
 																		<div class="total-amount">{$cartStore[key].amount}</div>
 																	{:else}
-																		<input type="text" class="amount-input" id="cart_amount_{key}" bind:value={$cartStore[key].amount}>
+																		<input type="text" class="amount-input" id="cart_amount_{key}" use:selectTextOnFocus bind:value={$cartStore[key].amount}>
 																	{/if}
 																</div>
 															</div>
 														{#if show_prices}
 															<div class="table-row">
 																<div class="table-cell table-cell-title">
-																	:מחיר
+																	:'מחיר ליח
 																</div>
 																<div class="table-cell">
 																		<span class="">{$cartStore[key].client_price}₪</span>
@@ -644,6 +644,7 @@ $gray-1200: #131314;
 							.table-row {
 
 								.table-cell {
+									text-align: center;
 									&.table-cell-title {
 										font-size: 12px;
 										text-align: center;

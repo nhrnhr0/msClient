@@ -22,7 +22,6 @@ export function flashy_create_contact(name, email, phone) {
 }
 
 export function update_cart_to_server(cart) {
-    debugger;
     let tempCart = {...cart};
     tempCart['active_cart_id'] = localStorage.getItem('active_cart_id');
     track_cart_to_server(tempCart).then(result => {

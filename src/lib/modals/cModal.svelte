@@ -357,7 +357,7 @@
                     {:else}
                       כמות בסל:
                       <div class="text">
-                        <input id="amount_{img.id}" class="amount-input" pattern="[0-9]*" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
+                        <input id="amount_{img.id}" class="amount-input" pattern="[0-9]*" name="item_amount" min="1" max="9999" type="number" use:selectTextOnFocus bind:value={$cartStore[img.id].amount} />
                       </div>
                     {/if}
                   </div>
@@ -569,12 +569,15 @@
               justify-content: center;
               align-items: center;
               color: white;
+              //width: 100%;
+              
               
               flex-direction: column;
               .text {
                 font-size: 1em;
                 font-weight: bold;
                 
+                width: 100%;
                 @media screen and (max-width: 1115px) {
                   font-size: 0.9em;
                 }

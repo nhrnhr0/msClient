@@ -468,7 +468,18 @@ import { flashy_page_view } from "$lib/flashy";
         font-size: 1.4rem;
       }
     }
-  @media screen and (max-width: 610px) {
+    @media screen and (max-width: 610px) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      &::before, &::after {
+        //flex:1;
+        line-height: 0.8;
+      }
+
+    }
+  /*@media screen and (max-width: 610px) {
       &:before {
         content: '';
         opacity: 1;
@@ -479,7 +490,7 @@ import { flashy_page_view } from "$lib/flashy";
         opacity: 1;
         font-size: 1.4rem;
       }
-    }
+    }*/
   }
   &.campain {
     

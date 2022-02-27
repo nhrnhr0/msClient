@@ -551,7 +551,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                               כמות בסל
                             </div>
                             <div class="edit-amount-btn">
-                              <input class="amount-input" bind:this={amount_input} type="number" min="1" max="9999" bind:value="{$cartStore[_productId].amount}"/>
+                              <input class="amount-input" use:selectTextOnFocus bind:this={amount_input} type="number" min="1" max="9999" bind:value="{$cartStore[_productId].amount}"/>
                             </div>
                           </div>
                         {/if}
