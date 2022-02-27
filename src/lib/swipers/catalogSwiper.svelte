@@ -40,6 +40,8 @@ import { flyToCart } from '$lib/utils/js/flyToCart';
 
 import { logStore } from './../../stores/logStore';
 import { selectTextOnFocus } from '$lib/ui/inputActions';
+import {tooltip} from '$lib/ui/tooltip';
+import QuestionLabel from '$lib/components/questionLabel.svelte';
 //import FaveIcon from '$lib/components/faveIcon.svelte';
 //import { fave_list } from './../../stores/faveStore';
 
@@ -392,6 +394,9 @@ on:change={(event) => {
                                             <FaveIcon class="swiper-star" name={$fave_list.isInList(image.id) ? 'star-full': 'star'} />
                                         </button>
                                         -->
+                                        <div title="this is a greeting from action" use:tooltip class="question-wraper">
+                                            <QuestionLabel  title="שאל על המוצר" class="swiper-question" product_id={image.id} product_name={image.title} width='35px'  />
+                                        </div>
                                         <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{image.cimage}" alt="{image.title}">
                                         <div class="price-tag" class:active={show_prices} >{image.client_price + '₪'}</div>
                                     </div> 
@@ -450,6 +455,16 @@ on:change={(event) => {
 <!--</Lazy>-->
 </div>
 <style lang="scss">
+    :global(.swiper-question) {
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        
+        &:hover {
+            cursor: pointer;
+            background-color: rgba(87, 87, 87, 0.3);
+        }
+    }
     .swiper-star-btn{
         background:none;
         border: none;
