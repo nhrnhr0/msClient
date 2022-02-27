@@ -40,7 +40,7 @@ import { flyToCart } from '$lib/utils/js/flyToCart';
 
 import { logStore } from './../../stores/logStore';
 import { selectTextOnFocus } from '$lib/ui/inputActions';
-import {tooltip} from '$lib/ui/tooltip';
+import SvelteTooltip from 'svelte-tooltip';
 import QuestionLabel from '$lib/components/questionLabel.svelte';
 //import FaveIcon from '$lib/components/faveIcon.svelte';
 //import { fave_list } from './../../stores/faveStore';
@@ -394,8 +394,10 @@ on:change={(event) => {
                                             <FaveIcon class="swiper-star" name={$fave_list.isInList(image.id) ? 'star-full': 'star'} />
                                         </button>
                                         -->
-                                        <div title="this is a greeting from action" use:tooltip class="question-wraper">
-                                            <QuestionLabel  title="שאל על המוצר" class="swiper-question" product_id={image.id} product_name={image.title} width='35px'  />
+                                        <div class="question-wraper">
+                                            <SvelteTooltip tip="שאלה על המוצר" left>
+                                                <QuestionLabel class="swiper-question" product_id={image.id} product_name={image.title} width='35px'  />
+                                            </SvelteTooltip>
                                         </div>
                                         <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{image.cimage}" alt="{image.title}">
                                         <div class="price-tag" class:active={show_prices} >{image.client_price + '₪'}</div>
@@ -455,10 +457,13 @@ on:change={(event) => {
 <!--</Lazy>-->
 </div>
 <style lang="scss">
-    :global(.swiper-question) {
+    :global(.question-wraper) {
         position: absolute;
-        top: 3px;
-        right: 3px;
+        top: 0;
+        right: 0;
+        z-index: 1;
+    }
+    :global(.swiper-question) {
         
         &:hover {
             cursor: pointer;
@@ -481,6 +486,10 @@ on:change={(event) => {
         }
     }
     :global(.swiper) {
+        :global(.default-tip) {
+            
+            transform: translate(0%, 15%);
+        }
         :global(.swiper-button-next), :global(.swiper-button-prev) {
             transform: all 250ms ease-in-out;
             position: absolute;
@@ -698,6 +707,8 @@ on:change={(event) => {
             .img-wraper{
                 //min-height: 200px;
                 //min-width: 200px;
+                color: white;
+
                 background: rgb(170, 170, 170);
                 background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
                 background: linear-gradient(110deg, rgb(197, 197, 197) 8%, rgb(207, 207, 207) 18%, rgb(197, 197, 197) 33%);
