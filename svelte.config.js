@@ -45,6 +45,14 @@ const config = {
           },
         },
       },
+
+      /**
+       * SvelteKit v1.0.0-next.146 SyntaxError: Cannot use import statement outside a module #2161
+       * https://github.com/sveltejs/kit/issues/2161
+       */
+      /*optimizeDeps: {
+        entries: []
+      },*/
     },
   },
 
