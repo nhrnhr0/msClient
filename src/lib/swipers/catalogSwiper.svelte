@@ -33,7 +33,7 @@
     
     
     export let loaded_data;
-    import {productModalStore, productCartModalStore, userInfoStore, singleAmountPopupStore} from './../../stores/stores';
+    import {productModalStore, productCartModalStore, userInfoStore, singleAmountPopupStore, productQuestionModalStore} from './../../stores/stores';
 import { onDestroy, onMount } from 'svelte';
 
 //import { flyToCart } from '$lib/utils/js/flyToCart';
@@ -141,7 +141,6 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
             for(let i = 0; i < detail.length; i++) {
                 let target = detail[i].target;
                 //console.log('>> \t', target);
-                debugger;
                 if(target) {
                     //console.log('>>>>> class list: >> \t', target.classList);
 
@@ -214,12 +213,24 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                         }
                     }else if(target.classList.contains('delete-btn-click-area')) {
                         // delete product from cart
-                        debugger;
                         let mslide = target.closest('.swiper-slide')
                         let pid = mslide.dataset.productId;
                         cartStore.removeFromCartById(pid);
                     }
-                    
+                    else if(target.classList.contains('swiper-question-click-area')) {
+                        //console.log('swiper question clicked');
+                        
+                        let mslide = target.closest('.swiper-slide');
+                        let pid = mslide.dataset.productId;
+                        let currentProduct = get_product_by_id(pid);
+                        $productQuestionModalStore.toggleModal(currentProduct.id, currentProduct.title);
+                    }
+                    else {
+                        debugger;
+                        console.log('unknown click');
+                        console.log(target);
+                        console.log(target.classList);
+                    }
                 }
             }
         }
@@ -412,9 +423,9 @@ on:change={(event) => {
                                             <FaveIcon class="swiper-star" name={$fave_list.isInList(image.id) ? 'star-full': 'star'} />
                                         </button>
                                         -->
-                                        <div class="question-wraper">
+                                        <div class="question-wraper swiper-question-click-area">
                                             <SvelteTooltip tip="שאל על המוצר" left>
-                                                <QuestionLabel class="swiper-question" product_id={image.id} product_name={image.title} width='35px'  />
+                                                <QuestionLabel class="swiper-question swiper-question-click-area" product_id={image.id} product_name={image.title} width='35px'  />
                                             </SvelteTooltip>
                                         </div>
                                         <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{image.cimage}" alt="{image.title}">

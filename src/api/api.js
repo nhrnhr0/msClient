@@ -2,7 +2,7 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL, GET_CSRF_TOKEN_URL,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL} from "./consts";
+import { BASE_URL, GET_CSRF_TOKEN_URL,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
@@ -126,6 +126,13 @@ function set_user_uuid(newUid) {
 }
 export function get_user_uuid() {
     return localStorage.getItem('uuid');
+}
+
+export function send_product_question(data) {
+    return fetch_wraper(PRODUCT_QUESTION_URL, {
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
 }
 
 export function get_csrf_token() {

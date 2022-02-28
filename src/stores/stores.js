@@ -7,6 +7,7 @@ export let cartModalStore = writable();
 export let categoryModalStore = writable();
 export let productModalStore = writable();
 export let productImageModalStore = writable();
+export let productQuestionModalStore = writable();
 export let loginModalStore= writable();
 export let userDetailModalStore= writable();
 export let productCartModalStore= writable();
