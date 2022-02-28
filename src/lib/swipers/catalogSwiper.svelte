@@ -141,6 +141,7 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
             for(let i = 0; i < detail.length; i++) {
                 let target = detail[i].target;
                 //console.log('>> \t', target);
+                debugger;
                 if(target) {
                     //console.log('>>>>> class list: >> \t', target.classList);
 
@@ -189,7 +190,7 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                             );
                             copySwiperduplicates(E);
                         } else {
-                            
+
                         }
 
                         if(currentProduct.show_sizes_popup) {
@@ -211,9 +212,11 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                             }*/
 
                         }
-                    }else {
+                    }else if(target.classList.contains('delete-btn-click-area')) {
                         // delete product from cart
-                        let pid = target.dataset.productId;
+                        debugger;
+                        let mslide = target.closest('.swiper-slide')
+                        let pid = mslide.dataset.productId;
                         cartStore.removeFromCartById(pid);
                     }
                     
@@ -391,18 +394,19 @@ on:change={(event) => {
                   }}
                 >
                     {#each loaded_data as image,index (image.id)}
-                        <SwiperSlide bind:this={slides[index]} data-product-id="{image.id}" data-is-in-cart={$cartStore[image.id] != undefined}>
+                        <SwiperSlide bind:this={slides[index]} data-product-id="{image.id}">
                             <!--TODO: use only one cart active on the top and not one in the title, like button and more -->
                                 <div class="img-title" class:active={$cartStore[image.id] != undefined}>
                                     <div class="content">
                                         {image.title}
                                     </div>
-                                    <button class="delete-btn">
-                                        <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="30px" height="30px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
-                                    </button>
+                                    
                                 </div>
                                 <div class="slide-content" >
                                     <div class="img-wraper">
+                                        <div class="delete-btn delete-btn-click-area" class:show={$cartStore[image.id] != undefined}>
+                                            <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="30px" height="30px" class="delete-btn-click-area"><path class="delete-btn-click-area" d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
+                                        </div>
                                         <!--
                                         <button class="swiper-star-btn" on:click={(e)=>{fave_list.addToFaveList(image.id)}}>
                                             <FaveIcon class="swiper-star" name={$fave_list.isInList(image.id) ? 'star-full': 'star'} />
@@ -530,23 +534,13 @@ on:change={(event) => {
     :global(.swiper-pagination-bullets) {
         bottom: 24px;
     }
-    .delete-btn {
-        position: absolute;
-        bottom: -50%;
-        left: 0px;
-        z-index: 1;
-        transform: translate(0%, -50%);
-        border: none;
-        background: none;
-        
-    }
-    .swiper-slide[data-is-in-cart="false"] {
+    /*.swiper-slide[data-is-in-cart="false"] {
         .img-title {
             .delete-btn {
                 display: none;
             }
         }
-    }
+    }*/
         .like-btn-wraper {
             cursor: pointer;
             width:100%;
@@ -760,6 +754,24 @@ on:change={(event) => {
                 width: 100%;
                 height: 0;
                 padding-bottom: 100%;
+                .delete-btn {
+                    position: absolute;
+                    top: 5px;
+                    left: 5px;
+                    z-index: 1;
+                    border: none;
+                    background: none;
+                    display: none;
+                    &.show {
+                        display: block;
+                        &:hover {
+                            svg {
+                                fill: red;
+                            }
+                        }
+                    }
+                    
+                }
                 
                 .price-tag {
                     position: absolute;
@@ -771,6 +783,7 @@ on:change={(event) => {
                     background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
                     display: none;
                     font-size: x-large;
+                    color: black;
                     &.active {
                         display: block;
                     }
