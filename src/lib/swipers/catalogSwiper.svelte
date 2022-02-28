@@ -36,7 +36,7 @@
     import {productModalStore, productCartModalStore, userInfoStore, singleAmountPopupStore} from './../../stores/stores';
 import { onDestroy, onMount } from 'svelte';
 
-import { flyToCart } from '$lib/utils/js/flyToCart';
+//import { flyToCart } from '$lib/utils/js/flyToCart';
 
 import { logStore } from './../../stores/logStore';
 import { selectTextOnFocus } from '$lib/ui/inputActions';
@@ -169,7 +169,7 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                     }else if(target.classList.contains('like-btn-wraper')) {
                         let currentProduct = get_product_by_id(target.dataset.productId);
                         if(cartStore.isInCart(currentProduct) == false) {
-                            flyToCart(target.parentElement.querySelector('.product-image'));
+                            //flyToCart(target.parentElement.querySelector('.product-image'));
                             cartStore.addToCart(currentProduct);
                             logStore.addLog(
                             {
@@ -211,7 +211,11 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                             }*/
 
                         }
-                    }  
+                    }else {
+                        // delete product from cart
+                        let pid = target.dataset.productId;
+                        cartStore.removeFromCartById(pid);
+                    }
                     
                 }
             }
@@ -387,10 +391,15 @@ on:change={(event) => {
                   }}
                 >
                     {#each loaded_data as image,index (image.id)}
-                        <SwiperSlide bind:this={slides[index]}>
+                        <SwiperSlide bind:this={slides[index]} data-product-id="{image.id}" data-is-in-cart={$cartStore[image.id] != undefined}>
                             <!--TODO: use only one cart active on the top and not one in the title, like button and more -->
                                 <div class="img-title" class:active={$cartStore[image.id] != undefined}>
+                                    <div class="content">
                                         {image.title}
+                                    </div>
+                                    <button class="delete-btn">
+                                        <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="30px" height="30px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
+                                    </button>
                                 </div>
                                 <div class="slide-content" >
                                     <div class="img-wraper">
@@ -408,21 +417,22 @@ on:change={(event) => {
                                         <div class="price-tag" class:active={show_prices} >{image.client_price + '₪'}</div>
                                     </div> 
                                 </div>
-                                <div  class="like-btn-wraper" data-product-id="{image.id}">
+                                
+                                <div  class="like-btn-wraper" class:active={$cartStore[image.id] != undefined} data-product-id="{image.id}">
                                     {#if $cartStore[image.id] == undefined}
-                                        <button class="like-btn">
+                                        <div class="like-btn">
                                             <div class="img-wraper">
                                                 <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
                                             </div>
                                             <div class="text">
                                                 הוסף
                                             </div>
-                                        </button>
+                                        </div>
                                     {:else}
                                         
-                                        <button class="like-btn active">
+                                        <div class="like-btn active">
                                             <div class="img-wraper">
-                                                <!--<img alt="V" src="https://res.cloudinary.com/ms-global/image/upload/v1639463503/msAssets/external-check-mintab-for-ios-becris-lineal-becris-1_dfwd0z.png"/>-->
+                                                
                                             </div>
                                             <div class="text">
                                                     <span class="text">
@@ -446,7 +456,7 @@ on:change={(event) => {
                                                         {/if}
                                                     </span>
                                             </div>
-                                        </button>
+                                        </div>
                                     {/if}
                                 </div>
                             <!--</div>-->
@@ -520,11 +530,55 @@ on:change={(event) => {
     :global(.swiper-pagination-bullets) {
         bottom: 24px;
     }
+    .delete-btn {
+        position: absolute;
+        bottom: -50%;
+        left: 0px;
+        z-index: 1;
+        transform: translate(0%, -50%);
+        border: none;
+        background: none;
+        
+    }
+    .swiper-slide[data-is-in-cart="false"] {
+        .img-title {
+            .delete-btn {
+                display: none;
+            }
+        }
+    }
         .like-btn-wraper {
             cursor: pointer;
             width:100%;
             .like-btn {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                //visibility: visible;
+                color: white;
+                width: 100%;
+                text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
+                z-index: 2000;
+                font-size: 1.5em;
+                font-weight: bold;
+                pointer-events: none;
+                text-align: center;
+                word-break: break-all;
+
+
+                background: #0000007a;
+                border-radius: 25px;
+                border-top-right-radius: 0px;
+                border-top-left-radius: 0;
+                border: var(--swiper-slide-border) solid black;
+                border-bottom-width: 0px;
                 &.active {
+                    .img-wraper {
+                        .delete-btn {
+                            background: none;
+                            border: none;
+                        }
+                    }
                     width: 100%;
                     @include bg-gradient();
                     div.text {
@@ -602,30 +656,11 @@ on:change={(event) => {
                     }
 
                 }
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                //visibility: visible;
-                color: white;
-                width: 100%;
-                text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
-                z-index: 2000;
-                font-size: 1.5em;
-                font-weight: bold;
-                pointer-events: none;
-                text-align: center;
-                word-break: break-all;
-
-
-                background: #0000007a;
-                border-radius: 25px;
-                border-top-right-radius: 0px;
-                border-top-left-radius: 0;
-                border: var(--swiper-slide-border) solid black;
-                border-bottom-width: 0px;
+                
 
                 
             }
+            
         }
         
     .loader-wraper {
@@ -725,6 +760,7 @@ on:change={(event) => {
                 width: 100%;
                 height: 0;
                 padding-bottom: 100%;
+                
                 .price-tag {
                     position: absolute;
                     bottom: 5px;
