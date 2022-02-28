@@ -15,7 +15,8 @@
     loginModalStore,
     sizesJsonStore,
     colorsJsonStore,
-    userInfoStore
+    userInfoStore,
+
   } from './../stores/stores'
   import {
     ALBUMS_API_URL,

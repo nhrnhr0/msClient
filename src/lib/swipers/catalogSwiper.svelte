@@ -33,7 +33,7 @@
     
     
     export let loaded_data;
-    import {productModalStore, productCartModalStore, userInfoStore} from './../../stores/stores';
+    import {productModalStore, productCartModalStore, userInfoStore, singleAmountPopupStore} from './../../stores/stores';
 import { onDestroy, onMount } from 'svelte';
 
 import { flyToCart } from '$lib/utils/js/flyToCart';
@@ -98,7 +98,9 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
             unsubCart();
         }
     })
-    
+    function open_single_amount_dialog(product_id,product_title) {
+        $singleAmountPopupStore.toggleModal(product_id, product_title);
+    }
     /*function swiperClicked(e) {
         e.preventDefault();
         //console.log('swiperClicked: ', e);        
@@ -133,7 +135,7 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
             }
         }
 
-        // handle clicks on add to card and image
+        // handle clicks on add to cart and image
         if(typeof(E) == 'object') {
             let detail = E.detail[0];
             for(let i = 0; i < detail.length; i++) {
@@ -193,6 +195,8 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                         if(currentProduct.show_sizes_popup) {
                                 open_edit_amount_dialog(currentProduct.id);
                         }else {
+                            open_single_amount_dialog(currentProduct.id, currentProduct.title);
+                            /*
                             const selector = '#slider_amount_input_'+currentProduct.id;
                             const query = document.querySelectorAll(selector);
                             if(query.length == 0) {
@@ -204,7 +208,8 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                                 },5);
                             }else {
                                 query[0].focus();
-                            }
+                            }*/
+
                         }
                     }  
                     
@@ -395,7 +400,7 @@ on:change={(event) => {
                                         </button>
                                         -->
                                         <div class="question-wraper">
-                                            <SvelteTooltip tip="שאלה על המוצר" left>
+                                            <SvelteTooltip tip="שאל על המוצר" left>
                                                 <QuestionLabel class="swiper-question" product_id={image.id} product_name={image.title} width='35px'  />
                                             </SvelteTooltip>
                                         </div>
@@ -436,7 +441,7 @@ on:change={(event) => {
                                                                 <div class="amount-input-pre-text">
                                                                     כמות בסל:
                                                                 </div>
-                                                                <input type="number" id="slider_amount_input_{image.id}" class="cart-amount" use:selectTextOnFocus bind:value="{$cartStore[image.id].amount}" min="1" max="9999"  data-product-id="{image.id}">
+                                                                <input type="number" id="slider_amount_input_{image.id}" disabled class="cart-amount" use:selectTextOnFocus bind:value="{$cartStore[image.id].amount}" min="1" max="9999"  data-product-id="{image.id}">
                                                             </div>
                                                         {/if}
                                                     </span>

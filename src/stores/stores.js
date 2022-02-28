@@ -10,6 +10,7 @@ export let productImageModalStore = writable();
 export let loginModalStore= writable();
 export let userDetailModalStore= writable();
 export let productCartModalStore= writable();
+export let singleAmountPopupStore= writable();
 export let _modal_z_index_incrementor = writable(0);
 
 export let sizesJsonStore = writable([]);
