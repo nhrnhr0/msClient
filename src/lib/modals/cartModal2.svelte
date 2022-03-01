@@ -81,6 +81,7 @@ import { Spinner } from "sveltestrap";
                 uuid: get_user_uuid() || '',
                 message: form_message || '',
                 products: cart_products,
+				raw_cart: JSON.stringify($cartStore)
             };
             
             logStore.addLog(
