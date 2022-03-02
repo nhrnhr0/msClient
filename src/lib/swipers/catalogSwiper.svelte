@@ -425,7 +425,7 @@ on:change={(event) => {
                                         -->
                                         <div class="question-wraper swiper-question-click-area">
                                             <SvelteTooltip tip="שאל על המוצר" left>
-                                                <QuestionLabel class="swiper-question swiper-question-click-area" product_id={image.id} product_name={image.title} width='35px'  />
+                                                <QuestionLabel class="swiper-question swiper-question-click-area" AllClassName={'swiper-question-click-area'} product_id={image.id} product_name={image.title} width='35px'  />
                                             </SvelteTooltip>
                                         </div>
                                         <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{image.cimage}" alt="{image.title}">
@@ -487,6 +487,9 @@ on:change={(event) => {
 <!--</Lazy>-->
 </div>
 <style lang="scss">
+    :global(.swiper-question-click-area) {
+        cursor: pointer;
+    }
     :global(.question-wraper) {
         position: absolute;
         top: 0;
