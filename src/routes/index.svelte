@@ -39,8 +39,9 @@
   } from "$lib/modals/modalManager";
   export async function load({
     fetch,
-    params
+    page
   }) {
+    let params = page.params;
     console.log('load: ', params);
     /*
     console.log('getting: ', ALBUMS_API_URL);

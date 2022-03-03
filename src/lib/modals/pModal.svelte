@@ -2,7 +2,7 @@
 
 <script>
   import {flyToCart} from './../utils/js/flyToCart';
-  import {productCartModalStore} from './../../stores/stores';
+  import {productCartModalStore, productQuestionModalStore} from './../../stores/stores';
   import {
     get_album_details
   } from './../../api/api';
@@ -46,6 +46,7 @@ import { logStore } from './../../stores/logStore';
     import { selectTextOnFocus } from '$lib/ui/inputActions';
     import {activeModalsStore } from '$lib/modals/modalManager';
 import MyCountdown from '$lib/components/MyCountdown.svelte';
+import QuestionLabel from '$lib/components/questionLabel.svelte';
 
   let productData = writable();
   let current_album = writable();
@@ -418,7 +419,16 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
             <div class="modal-body">
                 <div class="inner-body">
                     <div class="product-detail">
-                        <div class="product-title">{$productData.title}</div>
+                        <div class="product-title">
+                          <button class="question-button" on:click={()=> {$productQuestionModalStore.toggleModal($productData.id,$productData.title);}} >
+                            <!--                          <QuestionLabel product_id={$productData.id} product_name={$productData.title} width='35px'  />-->
+                                                      יש לך שאלה?
+                                                    </button>
+                          <div class="title-text">
+                            {$productData.title}
+                          </div>
+                        </div>
+                        
                         <hr>
                         <div class="product-properties">
                             <div class="product-color-wraper">
@@ -965,11 +975,36 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 
         .product-detail {
           .product-title {
-            font-size: 2em;
-            font-weight: bolder;
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: space-between;
+            .title-text {
+              font-size: 2em;
+              font-weight: bolder;
+            }
+            .question-button {
+                border: 1px solid #444;
+                border-radius: 5px;
+                padding: 5px;
+                display: inline;
+                background: none;
+                color: #444;
+                font-size: 1.2em;
+                font-weight: bolder;
+                transition: all 0.2s ease;
+                &:hover, &:focus {
+                  background: #444;
+                  color: white;
+                }
+              }
+            }
+            @media screen and (max-width: 850px) {
+              font-size: 0.8rem;
+            }
+            @media screen and (max-width: 500px) {
+              
             }
             overflow-y: auto;
-            
             //padding-right: 5px;
             flex: 1;
             min-width: 35%;
@@ -984,7 +1019,9 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
               padding-left: 10px;
               overflow-y: auto;
               .product-title {
-                font-size: 1.7em;
+                .title-text {
+                  font-size: 1.7em;
+                }
               }
             }
 

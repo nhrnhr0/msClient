@@ -6,10 +6,11 @@ import { isNumeric } from "$lib/utils/utils";
     import { ALBUMS_API_URL, CLOUDINARY_URL } from "./../../../api/consts";
     
     
-        export async function load({ params, fetch, session, contex}) {
+        export async function load({ fetch, page, session, contex}) {
             //console.log(page);
             //console.log("load", page.params);
             //let url = ALBUMS_API_URL + page.params.id + "/";
+            let params = page.params;
             let server_url = ALBUMS_API_URL + params.id + '/';
             //console.log(url);
             if(isNumeric(params.id)) {
