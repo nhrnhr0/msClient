@@ -202,6 +202,9 @@
             <thead>
               <tr>
                 <th class="sticky-col const-size-cell">צבע</th>
+                {#if $cartStore[product_id].varients.length != 0}
+                  <th class="const-size-cell">מודל</th>
+                {/if}
                 {#each $cartStore[product_id].sizes as size_id}
                   <th class="size-header">{$sizesJsonStore[size_id]?.size}</th>
                 {/each}
@@ -211,12 +214,22 @@
             <tbody>
               {#if $cartStore[$cartStore[product_id].id] != undefined && $cartStore[$cartStore[product_id].id].mentries}
 
-              {#each $cartStore[product_id].colors as color}
+              {#each $cartStore[product_id].colors as color, color_idx}
                 <!-- color: 84 -->
                 <tr>
                   <td class="sticky-col">
                     <div class="color-box" ><div class="inner" style="background-color: {$colorsJsonStore[color].color}"></div>{$colorsJsonStore[color].name}</div>
                   </td>
+                  {#if $cartStore[product_id].varients.length != 0}
+                    <td>
+                      {#each $cartStore[product_id].varients as varient }
+                      <div class="varient-box">
+                        {varient.name}
+                      </div>
+                      {/each}
+                      
+                    </td>
+                  {/if}
                   {#each $cartStore[product_id].sizes as size}
                     <td class="size-cell">
                       
@@ -225,7 +238,7 @@
                         {:else}
                         <div class="cell-wraper">
                           {#each $cartStore[product_id].varients as {id, name}, idx}
-                            <label class="size-input-label" for="input_entery_{product_id}_{size}_{color}_{id}">{name}:</label>
+                            
                             <input id="input_entery_{product_id}_{size}_{color}_{id}" class="size-input" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color][size][id].quantity}" min="0" max="9999" >
                           {/each}
                         </div>
@@ -273,6 +286,11 @@
                     סך הכל:
                   </div>
                 </td>
+                {#if $cartStore[product_id].varients.length != 0}
+                  <td class="total-cell">
+                    <div>-</div>
+                  </td>
+                {/if}
 
                   <!--
                     cartStore[$productData.id].mentries[color_id][size_id].quantity
@@ -428,20 +446,18 @@
           tbody {
             tr {
               td {
+                .varient-box {
+                  font-weight: bold;
+                    width: 100%;
+                    text-align: center;
+                    border-bottom: 1px solid rgb(85, 85, 85);
+                    background: none;
+                    padding: 5px;
+                }
                 &.size-cell {
                   & .cell-wraper {
                     display: grid;
-                    grid-template-columns: auto 1fr;
-                  }
-                  label.size-input-label {
-                    display: block;
-                    text-align: center;
-                    width: 100%;
-                    font-weight: bold;
-                    
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
+                    grid-template-columns: 1fr;
                   }
                   input.size-input {
                     
