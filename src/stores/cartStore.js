@@ -3,7 +3,7 @@ import { update_cart_to_server } from "$lib/flashy";
 import { writable, get } from "svelte/store";
 
 let initCart = {};
-const LOCAL_STORE_NAME = "cart3";
+const LOCAL_STORE_NAME = "cart5";
 if(browser) {
     initCart=JSON.parse(localStorage.getItem(LOCAL_STORE_NAME));
     if(!initCart) {

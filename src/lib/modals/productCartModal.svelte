@@ -60,13 +60,47 @@
     }
     if ($cartStore[product_id].mentries == undefined) {
       let mentries = {};
-      $cartStore[product_id].colors.forEach(color => {
-        mentries[color] = $cartStore[product_id].sizes.map(size => {
-          return {
-            quantity: undefined
+      for(let clrIdx = 0; clrIdx < $cartStore[product_id].colors.length; clrIdx++) {
+        mentries[$cartStore[product_id].colors[clrIdx]] = {};
+        for(let sizeIdx = 0; sizeIdx < $cartStore[product_id].sizes.length; sizeIdx++) {
+          mentries[$cartStore[product_id].colors[clrIdx]][$cartStore[product_id].sizes[sizeIdx]] = {};
+          if($cartStore[product_id].varients.length != 0) {
+            for(let varIdx = 0; varIdx < $cartStore[product_id].varients.length; varIdx++) {
+              mentries[$cartStore[product_id].colors[clrIdx]][$cartStore[product_id].sizes[sizeIdx]][$cartStore[product_id].varients[varIdx].id] = {
+                quantity: 0
+              };
+            }
+          }else {
+            mentries[$cartStore[product_id].colors[clrIdx]][$cartStore[product_id].sizes[sizeIdx]] = {
+              quantity: 0
+            };
           }
-        });
+        }
+      }
+      /*
+      $cartStore[product_id].colors.forEach(color => {
+        if($cartStore[product_id].varients.length == 0) {
+          mentries[color] = $cartStore[product_id].sizes.map(size => {
+            return {
+              quantity: undefined
+            }
+          });
+        }else {
+          
+          mentries[color] = $cartStore[product_id].sizes.map(size => {
+            let ret = [];
+            for (let i = 0; i < $cartStore[product_id].varients.length; i++) {
+              ret.push({
+                varient: $cartStore[product_id].varients[i].name,
+                quantity: undefined
+              });
+            }
+            return ret;
+          });
+        }
       });
+      debugger;
+      */
       $cartStore[product_id].mentries = mentries;
     }
     is_loaded = true;
@@ -74,10 +108,17 @@
   $: {
     // $productData.amount = sum(cartStore[$productData.id].mentries[color_id][size_id].quantity) for color_id and size_id in cartStore[$productData.id].mentries
     let total_amount = 0;
+    
     if ($cartStore[product_id] && $cartStore[product_id].mentries) {
       $cartStore[product_id].colors.forEach(color => {
         $cartStore[product_id].sizes.forEach((size, size_idx) => {
-          total_amount += $cartStore[product_id].mentries[color][size_idx].quantity || 0;
+          if($cartStore[product_id].varients.length == 0) {
+            total_amount += $cartStore[product_id].mentries[color][size].quantity || 0;
+          }else {
+            $cartStore[product_id].varients.forEach((varient, varient_idx) => {
+              total_amount += $cartStore[product_id].mentries[color][size][varient.id].quantity || 0;
+            });
+          }
         });
       });
       $cartStore[product_id].amount = total_amount;
@@ -169,6 +210,40 @@
             </thead>
             <tbody>
               {#if $cartStore[$cartStore[product_id].id] != undefined && $cartStore[$cartStore[product_id].id].mentries}
+
+              {#each $cartStore[product_id].colors as color}
+                <!-- color: 84 -->
+                <tr>
+                  <td class="sticky-col">
+                    <div class="color-box" ><div class="inner" style="background-color: {$colorsJsonStore[color].color}"></div>{$colorsJsonStore[color].name}</div>
+                  </td>
+                  {#each $cartStore[product_id].sizes as size}
+                    <td class="size-cell">
+                      
+                        {#if $cartStore[product_id].varients.length == 0}
+                            <input class="size-input" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color][size].quantity}" min="0" max="9999" >
+                        {:else}
+                        <div class="cell-wraper">
+                          {#each $cartStore[product_id].varients as {id, name}, idx}
+                            <label class="size-input-label" for="input_entery_{product_id}_{size}_{color}_{id}">{name}:</label>
+                            <input id="input_entery_{product_id}_{size}_{color}_{id}" class="size-input" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color][size][id].quantity}" min="0" max="9999" >
+                          {/each}
+                        </div>
+                        {/if}
+                      
+                    </td>
+                    
+                  {/each}
+                  <td class="delete-cell-style">
+                    <button class="remove-button">
+                      <svg xmlns="http://www.w3.org/2000/svg" on:click={clear_sizes_entries(color)}  width="16px" height="16px" viewBox="0 0 32 36"><path fill="currentColor" d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"/></svg>
+                    </button>
+                  </td>
+                </tr>
+                
+              {/each}
+              
+              <!--
               {#each Object.keys($cartStore[$cartStore[product_id].id].mentries) as color_entry}
                 <tr>
                   <td class="sticky-col">
@@ -186,6 +261,12 @@
                   </td>
                 </tr>
               {/each}
+                -->
+
+
+
+
+
               <tr>
                 <td class="total-cell">
                   <div>
@@ -202,9 +283,19 @@
                       <td class="total-cell">
                         <div>
                         <!-- calculate the sum of cartStore[$cartStore[product_id].id].mentries[X][size_id].quantity -->
+                        {#if $cartStore[product_id].varients.length == 0}
+                          { Object.keys($cartStore[$cartStore[product_id].id].mentries).reduce((acc, curr) => {
+                            return acc + ($cartStore[$cartStore[product_id].id].mentries[curr][size_id].quantity || 0);
+                          }, 0)}
+                        {:else}
                         { Object.keys($cartStore[$cartStore[product_id].id].mentries).reduce((acc, curr) => {
-                          return acc + ($cartStore[$cartStore[product_id].id].mentries[curr][size_id].quantity || 0);
+                          let sum = 0;
+                          for(let i = 0; i < $cartStore[product_id].varients.length; i++){
+                            sum += ($cartStore[$cartStore[product_id].id].mentries[curr][size_id][$cartStore[product_id].varients[i].id].quantity || 0);
+                          }
+                          return acc + sum;
                         }, 0)}
+                        {/if}
                         </div>
                       </td>
                     {/each}
@@ -338,10 +429,27 @@
             tr {
               td {
                 &.size-cell {
-                  input {
+                  & .cell-wraper {
+                    display: grid;
+                    grid-template-columns: auto 1fr;
+                  }
+                  label.size-input-label {
+                    display: block;
+                    text-align: center;
+                    width: 100%;
+                    font-weight: bold;
+                    
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  }
+                  input.size-input {
+                    
                     width: 100%;
                     text-align: center;
                     border: 1px solid #777777;
+                    
+                    
                     border-radius: 5px;
                     background: none;
                     padding: 5px;

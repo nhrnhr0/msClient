@@ -44,32 +44,45 @@ import { Spinner } from "sveltestrap";
 		}
 		else if(state == 1) {
 			state = 2;
+			debugger;
 			cart_submit();
 		}
 	}
 	function cart_submit() {
+		
         if(mform.reportValidity()) {
             let cart_products = [];
             for(let key in $cartStore) {
                 let product = $cartStore[key];
 				// prep mentries
 				// input: {"77": [{}, {}, {"quantity": 5}, {"quantity": 1}, {}, {}, {}, {}], "80": [{}, {}, {"quantity": 2}, {}, {"quantity": 5}, {}, {}, {}], "82": [{}, {},
-				let mentries = [];
+				/*let mentries = [];
 				if(product.mentries) {
 					Object.keys(product.mentries).forEach(function(color_id) {
 						let mentry = product.mentries[color_id];
 						for(let size_idx = 0; size_idx < mentry.length; size_idx++) {
+							let size_id = product.sizes[size_idx];
 							if('quantity' in product.mentries[color_id][size_idx]) {
 								mentries.push({
 									"color_id": color_id,
 									"size_id": product.sizes[size_idx],
 									"quantity": product.mentries[color_id][size_idx].quantity
 								});
+							}else if(product.varients.length != 0) {
+								for(let i= 0; i < product.varients.length; i++) {
+									mentries.push({
+										"color_id": color_id,
+										"size_id": product.sizes[size_idx],
+										"variant_id": product.varients[i].id,
+										"quantity": product.mentries[color_id][size_idx][product.varients[i].id].quantity
+									})
+								}
 							}
 						}
 					});
 				}
-                cart_products.push({'id': product.id, 'amount': product.amount, 'mentries': mentries});
+				debugger;*/
+                cart_products.push({'id': product.id, 'amount': product.amount, 'mentries': product.mentries});
 				
             }
 
