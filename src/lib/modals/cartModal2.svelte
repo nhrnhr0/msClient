@@ -1,5 +1,5 @@
 <script>
-    import {all_swipers,cartModalStore, successModalStore, _modal_z_index_incrementor, productModalStore,userInfoStore, sizesJsonStore} from "./../../stores/stores";
+    import {all_swipers,cartModalStore, successModalStore, _modal_z_index_incrementor, productModalStore,userInfoStore, sizesJsonStore, singleAmountPopupStore} from "./../../stores/stores";
     import {fly, fade} from 'svelte/transition';
     import { cartStore } from "./../../stores/cartStore"
     import { CLOUDINARY_URL, STATIC_BASE, SUBMIT_CART_URL } from "./../../api/consts";
@@ -188,19 +188,24 @@ import { Spinner } from "sveltestrap";
                             );
         }, 0);
     }
-	function open_edit_amount_dialog(product_id) {
+	function open_edit_amount_dialog(product_id, product_title) {
 		if(cartStore.getProduct(product_id).show_sizes_popup){
 			$productCartModalStore.set_product(product_id);
 			setTimeout(()=> {
 				$productCartModalStore.toggleModal();
 			}, 5);
 		}else {
-			document.querySelector('input#cart_amount_'+product_id).focus();
+			//document.querySelector('input#cart_amount_'+product_id).focus();
+			$singleAmountPopupStore.toggleModal(product_id, product_title);
 		}
 	}
     function open_product_modal(key) {
         let product = $cartStore[key];
-        $productModalStore.setProduct(product.albums[0], product.id);
+		debugger;
+		//product.albums = [15, 85]
+		let min_album = Math.min(...product.albums);
+
+        $productModalStore.setProduct(min_album, product.id);
         $productModalStore.toggleModal();
 
         logStore.addLog(
@@ -252,7 +257,7 @@ import { Spinner } from "sveltestrap";
 												<span class="product-details">
 													<h3>{$cartStore[key].title}</h3>
 													<hr>
-													<div class="qty-price"  on:click={open_edit_amount_dialog(key)}>
+													<div class="qty-price"  on:click={open_edit_amount_dialog(key, $cartStore[key].title)}>
 														<div class="table">
 															<div class="table-row">
 																<div class="table-cell table-cell-title">

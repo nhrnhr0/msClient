@@ -271,6 +271,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
     setTimeout(()=>{check_if_product_in_any_campain(data);}, 10);
     last_product_id = data.id;
     isLoaded = true;
+    console.log('===================== Product Modal Is Loaded. productData: ', data);
   });
 
   function check_if_product_in_any_campain(data) {
@@ -410,7 +411,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
 <div style="z-index: {modal_zIndex};" id="productModal" class="modal" class:active={isModalOpen}>
   <div style="z-index: {modal_zIndex+5};" class="overlay" on:click={toggleModal}></div>
-
   {#if isLoaded && isModalOpen && $productData && $productData.cimage && $current_album}
         <div style="z-index: {modal_zIndex+10};" class="modal_content">
             <div class="modal-header">

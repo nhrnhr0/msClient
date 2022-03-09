@@ -24,15 +24,16 @@
 };*/
 
 export function scrollFix(node) {
+	var startY, startTopScroll;
     const touchstart_event = (event) => {
         startY = event.touches[0].pageY;
-		startTopScroll = elem.scrollTop;
+		startTopScroll = node.scrollTop;
 		
 		if(startTopScroll <= 0)
-			elem.scrollTop = 1;
+			node.scrollTop = 1;
 
-		if(startTopScroll + elem.offsetHeight >= elem.scrollHeight)
-			elem.scrollTop = elem.scrollHeight - elem.offsetHeight - 1;
+		if(startTopScroll + node.offsetHeight >= node.scrollHeight)
+			node.scrollTop = node.scrollHeight - node.offsetHeight - 1;
     }
     node.addEventListener('touchstart', touchstart_event, false);
     return {
