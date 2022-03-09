@@ -552,7 +552,7 @@ on:change={(event) => {
             --swiper-navigation-size: 235px;
             &:hover {
                 --swiper-navigation-size: 270px;
-                --swiper-theme-color: #ca9e0e;
+                --swiper-theme-color: #dd0e0e;
             }
         }
     }
