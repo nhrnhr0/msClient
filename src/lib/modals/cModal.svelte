@@ -420,11 +420,13 @@
   {/await}
   
   {#if $current_album}
-  <h4 class="category-fotter">
-    {#key $current_album.description}
-      <SvelteMarkdown source={fotter} />
-    {/key}
-    </h4>
+    {#if $userInfoStore.isLogin == false}
+      <h4 class="category-fotter">
+        {#key $current_album.description}
+          <SvelteMarkdown source={fotter} />
+        {/key}
+        </h4>
+    {/if}
   {/if}
   
   

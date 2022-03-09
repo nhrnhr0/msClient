@@ -114,7 +114,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
       if (all_products_in_category[i].id === $productData.id) {
         let newIndex = ((i + 1) % all_products_in_category.length);
         newProductObj = all_products_in_category[newIndex];
-        console.log('setting new product: ', $current_album.id, all_products_in_category[newIndex].id);
         setProduct($current_album.id, all_products_in_category[newIndex].id);
         break;
       }
@@ -143,7 +142,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
         let newIndex = (i - 1);
         newIndex = newIndex >= 0 ? newIndex : all_products_in_category.length - 1;
         newProductObj = all_products_in_category[newIndex];
-        console.log('setting new product: ', $current_album.id, newProductObj.id);
         setProduct($current_album.id, newProductObj.id);
         break;
       }
@@ -227,8 +225,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
       sizeMarkupLocal += `<div class="size-box">${size.size}</div>`;
     }
 
-    console.log('new sizeMarkup: ', sizeMarkupLocal);
-    console.log('new colorMarkup: ', colorMarkupLocal);
     colorMarkup = colorMarkupLocal;
     sizeMarkup = sizeMarkupLocal;
     
@@ -271,11 +267,9 @@ import SingleAmountModal from './singleAmountModal.svelte';
     setTimeout(()=>{check_if_product_in_any_campain(data);}, 10);
     last_product_id = data.id;
     isLoaded = true;
-    console.log('===================== Product Modal Is Loaded. productData: ', data);
   });
 
   function check_if_product_in_any_campain(data) {
-    console.log('check_if_product_in_any_campain: ', data);
     if($campainsStore) {
       for(let i = 0; i < $campainsStore.length; i++) {
         let camp = $campainsStore[i];
@@ -284,14 +278,12 @@ import SingleAmountModal from './singleAmountModal.svelte';
           is_in_campain = true;
           campain = camp;
           priceTable = info.priceTable;
-          console.log(info);
           campain_title = camp.album.title;
           campain_id = camp.id;
           break;
         }
       }
     }else {
-      console.log('no campainsStore');
       return false;
     }
   }
@@ -308,7 +300,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
 
   export function toggleModal(push_url=true) {
-    console.log('product toggleModal');
     isModalOpen = !isModalOpen;
     activeModalsStore.modalToggle('pModal', isModalOpen);
     if (isModalOpen == false) {
@@ -322,7 +313,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
 
   function likeBtnClicked() {
-    console.log('like btn clicked');
     if(cartStore.isInCart($productData) == false) {
       flyToCart(document.querySelector('.product-modal-img'));
       logStore.addLog(
@@ -358,7 +348,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
   let is_under_500px = ()=> { return window && window.matchMedia && window.matchMedia("(max-width:500px)").matches;}
 
   function openProductImageModal(e) {
-    console.log('openProductImageModal');
     // open image in new tab
     debugger;
     let src = e.target.src

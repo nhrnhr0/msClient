@@ -363,7 +363,6 @@ import { flashy_page_view } from "$lib/flashy";
         //document.body.classList.add('my-modal-open');
         sl_enable();
       }
-      console.log('hey: ', Object.keys(modals).length);
     }
   });
   function update_campains_with_local_data(campains) {
@@ -424,7 +423,7 @@ import { flashy_page_view } from "$lib/flashy";
 .title-wraper {
   display: flex;
   justify-content: center;
-  padding-bottom: 50px;
+  //padding-bottom: 50px;
   
   .title {
     opacity: 0.5;

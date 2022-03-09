@@ -33,7 +33,7 @@
     
     
     export let loaded_data;
-    import {productModalStore, productCartModalStore, userInfoStore, singleAmountPopupStore, productQuestionModalStore} from './../../stores/stores';
+    import {productModalStore, productCartModalStore, userInfoStore, singleAmountPopupStore, productQuestionModalStore, categoryModalStore} from './../../stores/stores';
 import { onDestroy, onMount } from 'svelte';
 
 //import { flyToCart } from '$lib/utils/js/flyToCart';
@@ -99,6 +99,7 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
         }
     })
     function open_single_amount_dialog(product_id,product_title) {
+        console.log('====== toggle single amount popup');
         $singleAmountPopupStore.toggleModal(product_id, product_title);
     }
     /*function swiperClicked(e) {
@@ -252,6 +253,10 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
     function remove_from_cart(productId) {
         cartStore.removeFromCartById(productId);
     }
+    function open_category_modal() {
+        $categoryModalStore.toggleModal();
+        $categoryModalStore.setAlbum(album);
+    }
     function open_edit_amount_dialog(product_id) {
         $productCartModalStore.set_product(product_id);
         setTimeout(()=> {
@@ -293,6 +298,20 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
 
         
     }
+
+    function background_click(e) {
+        console.log('background_click: ', e);
+        let classs = e.target.classList
+        if(classs.contains('lazy-swiper-wraper') || classs.contains('swiper')) {
+            open_category_modal();
+            return;
+        }
+        /*if(e.target.classList.contains('swiper-button-prev') || e.target.classList.contains('swiper-button-next')) {
+            return;
+        }else {
+            
+        }*/
+    }
     function round(number, increment) {
         return Math.ceil((number) / increment ) * increment;
     }
@@ -303,7 +322,7 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
 
     const show_prices = ($userInfoStore['me'] && Object.keys($userInfoStore['me']) != 0 && $userInfoStore['me'].show_prices == true)? true : false;
 </script>
-<div class="lazy-swiper-wraper" class:active="{isInView}" class:loaded="{isLoaded}"
+<div class="lazy-swiper-wraper" on:click={(e)=>{background_click(e)}} class:active="{isInView}" class:loaded="{isLoaded}"
 use:inview="{inview_options}"
 
 on:change={(event) => {
@@ -525,21 +544,16 @@ on:change={(event) => {
         }
         :global(.swiper-button-next), :global(.swiper-button-prev) {
             transform: all 250ms ease-in-out;
-            position: absolute;
-            top: 100%;
-            transform: translateY(-50%);
+            //position: absolute;
+            //top: 100%;
+            //transform: translateY(-50%);
             overflow: visible;
             border-radius: 50%;
-            
+            --swiper-navigation-size: 235px;
             &:hover {
-                --swiper-navigation-size: 99px!important;
+                --swiper-navigation-size: 270px;
+                --swiper-theme-color: #ca9e0e;
             }
-        }
-        :global(.swiper-button-next) {
-            left: 80px;
-        }
-        :global(.swiper-button-prev) {
-            right: 80px;
         }
     }
     :global(.swiper-wrapper) {
@@ -678,6 +692,7 @@ on:change={(event) => {
         align-items: center;
     }
 .lazy-swiper-wraper {
+    padding-top: 50px;
     height: 408px !important;
     max-width: 99vw;
     margin: auto;

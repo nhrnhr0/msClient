@@ -25,7 +25,6 @@ export function update_cart_to_server(cart) {
     let tempCart = {...cart};
     tempCart['active_cart_id'] = localStorage.getItem('active_cart_id');
     track_cart_to_server(tempCart).then(result => {
-        console.log(result);
         localStorage.setItem('active_cart_id', result.active_cart_id);
     });
 }

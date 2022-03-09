@@ -30,7 +30,6 @@ import { Spinner } from "sveltestrap";
 		if(state == 0) {
 			error_found = false;
 			for (const [key, value] of Object.entries($cartStore)) {
-				console.log(`${key}: ${value}`);
 				if(value == undefined || value.amount == undefined || value.amount < 0) {
 					error_found = true;
 					error_message = 'שדה כמות חסר או שגוי';
@@ -137,14 +136,12 @@ import { Spinner } from "sveltestrap";
 		}
     }
     function decrease_product_amount(key) {
-        console.log('decrease_product_amount: ', key);
         if($cartStore[key].amount > 1) {
             $cartStore[key].amount--;
         }
     }
 
     function increase_product_amount(key) {
-        console.log('increase_product_amount: ', key);
         if ($cartStore[key].amount < 9999) {
             $cartStore[key].amount++;
         }
@@ -228,9 +225,9 @@ import { Spinner } from "sveltestrap";
 {#if isModalOpen}
 <div id="cartModal" style="z-index: {modal_zIndex};" class="modal" class:active={isModalOpen}>
     <div class="overlay" style="z-index: {modal_zIndex+5};" on:click={toggleModal}>
-            <aside on:click|stopPropagation|preventDefault={()=>{console.log('aside click')}} transition:fly="{{x:340}}" id="sidebar-cart">
+            <aside on:click|stopPropagation|preventDefault={()=>{}} transition:fly="{{x:340}}" id="sidebar-cart">
                 <main>
-                    <button class="close-button" on:click="{()=>{console.log('close click'); toggleModal();}}">X</button>
+                    <button class="close-button" on:click="{()=>{toggleModal();}}">X</button>
                     <h2>מוצרים שאהבתי<span class="count">{Object.keys($cartStore).length}</span></h2>
 					<h2 class="sub-title">הוסיפו מוצרים
 						וקבלו הצעת מחיר משתלמת ללא עלות וללא התחייבות</h2>

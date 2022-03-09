@@ -20,7 +20,6 @@ import { send_product_question } from "./../../api/api";
     let is_sending = false;
     let value ='';
     function question_submit(e) {
-        console.log(e);
         e.preventDefault();
         let form = e.target;
         let formData = new FormData(form);
