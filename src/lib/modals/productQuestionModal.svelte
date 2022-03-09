@@ -18,6 +18,7 @@ import { send_product_question } from "./../../api/api";
     let modal_zIndex = 0;
     let product_title;
     let is_sending = false;
+    let value ='';
     function question_submit(e) {
         console.log(e);
         e.preventDefault();
@@ -27,15 +28,17 @@ import { send_product_question } from "./../../api/api";
         formData.forEach((value, key) => {
             data[key] = value;
         });
-        data.question = document.getElementById('popup_input').value;
+        data.question = value;//document.getElementById('popup_input').value;
         is_sending = true;
         send_product_question(data).then((result)=> {
             toggleModal();
+            value = '';
             $successModalStore.toggleModal();
         }).catch((error)=> {
             alert(error);
         }).finally(()=> {
             is_sending = false;
+            
         });
     }
     export function toggleModal(_product_id, _product_title) {
@@ -54,6 +57,16 @@ import { send_product_question } from "./../../api/api";
     export function isOpen() {
         return isModalOpen;
     }
+    let is_disabled = true;
+
+    function text_changed(e) {
+        value = e.target.value;
+        /*if(e.target.value == '') {
+            is_disabled = true;
+        } else {
+            is_disabled = false;
+        }*/
+    }
 </script>
 
 
@@ -70,14 +83,14 @@ import { send_product_question } from "./../../api/api";
                 <form action="product-question" method="POST" on:submit="{question_submit}">
                     <div class="row">
                         <div class="input-wraper">
-                            <textarea id="popup_input" class="text-input" type="number" placeholder="כל מה שעולה לך לראש..."></textarea>
+                            <textarea on:input="{text_changed}" id="popup_input" class="text-input" type="number" placeholder="נשמח לעמוד לשירותכם בהקדם"></textarea>
                             <input type="hidden" name="product_id" value="{product_id}">
                             <input type="hidden" name="product_title" value="{product_title}">
                         </div>
                     </div>
                     <div class="row">
                         <div class="action-wraper">
-                            <button disabled={is_sending} class="btn btn-primary" type="submit">
+                            <button disabled={is_sending || value == ''} class="btn btn-primary" type="submit">
                                 {#if is_sending}
                                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                 {:else}

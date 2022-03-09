@@ -2,7 +2,7 @@
 
 <script>
   import {flyToCart} from './../utils/js/flyToCart';
-  import {productCartModalStore, productQuestionModalStore} from './../../stores/stores';
+  import {productCartModalStore, productQuestionModalStore, singleAmountPopupStore} from './../../stores/stores';
   import {
     get_album_details
   } from './../../api/api';
@@ -47,6 +47,7 @@ import { logStore } from './../../stores/logStore';
     import {activeModalsStore } from '$lib/modals/modalManager';
 import MyCountdown from '$lib/components/MyCountdown.svelte';
 import QuestionLabel from '$lib/components/questionLabel.svelte';
+import SingleAmountModal from './singleAmountModal.svelte';
 
   let productData = writable();
   let current_album = writable();
@@ -357,10 +358,15 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
 
   function openProductImageModal(e) {
     console.log('openProductImageModal');
+    // open image in new tab
+    debugger;
+    let src = e.target.src
+    window.open(src);
+    /*
     if(should_use_pImg_modal()) {
       $productImageModalStore.setProduct($productData);
       $productImageModalStore.toggleModal();
-    }
+    }*/
 
   }
 
@@ -389,8 +395,7 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
       return false;
     }
     if(cartStore.getProduct(_productId).show_sizes_popup == false) {
-      
-      amount_input.focus();
+      $singleAmountPopupStore.toggleModal($productData.id, $productData.title);
       return false;
     }
     $productCartModalStore.set_product($productData.id);
@@ -420,10 +425,6 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                 <div class="inner-body">
                     <div class="product-detail">
                         <div class="product-title">
-                          <button class="question-button" on:click={()=> {$productQuestionModalStore.toggleModal($productData.id,$productData.title);}} >
-                            <!--                          <QuestionLabel product_id={$productData.id} product_name={$productData.title} width='35px'  />-->
-                                                      יש לך שאלה?
-                                                    </button>
                           <div class="title-text">
                             {$productData.title}
                           </div>
@@ -499,6 +500,9 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                           {#if $productData && $productData.description}
                             <SvelteMarkdown source={$productData.description} />
                           {/if}
+                          <button class="question-button btn btn-primary" on:click={()=> {$productQuestionModalStore.toggleModal($productData.id,$productData.title);}} >
+                            יש לך שאלה?
+                          </button>
                         </div>
                         
                     </div>
@@ -509,12 +513,13 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                     >
                       <div class="img-inner-wraper">
                         
-                
+                        <a href="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}" target="_blank">
                         <img class:loaded={is_image_loaded} on:load={()=>{is_image_loaded = true}} on:error={()=>{is_image_loaded = false}} class="product-modal-img" 
-                          on:click={openProductImageModal} alt="{$productData.image}" id="catalog-image-{$productData.id}"
+                          alt="{$productData.image}" id="catalog-image-{$productData.id}"
                           src="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
                           data-large-img-url="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
                           />
+                        </a>
                           <div class="price-tag" class:active={show_prices} >{$productData.client_price + '₪'}</div>
                       </div>
                   </div>
@@ -561,7 +566,7 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                               כמות בסל
                             </div>
                             <div class="edit-amount-btn">
-                              <input class="amount-input" use:selectTextOnFocus bind:this={amount_input} type="number" min="1" max="9999" bind:value="{$cartStore[_productId].amount}"/>
+                              <input class="amount-input" disabled bind:this={amount_input} type="number" min="1" max="9999" bind:value="{$cartStore[_productId].amount}"/>
                             </div>
                           </div>
                         {/if}
@@ -904,6 +909,21 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
 }
 */
 #productModal {
+  .question-button {
+                /*border: 1px solid #444;
+                border-radius: 5px;
+                padding: 5px;
+                display: inline;
+                background: none;
+                color: #444;
+                font-size: 1.2em;
+                font-weight: bolder;
+                transition: all 0.2s ease;
+                &:hover, &:focus {
+                  background: #444;
+                  color: white;
+                }*/
+              }
 .modal_content {
   display: flex;
   flex-direction: column;
@@ -982,21 +1002,7 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
               font-size: 2em;
               font-weight: bolder;
             }
-            .question-button {
-                border: 1px solid #444;
-                border-radius: 5px;
-                padding: 5px;
-                display: inline;
-                background: none;
-                color: #444;
-                font-size: 1.2em;
-                font-weight: bolder;
-                transition: all 0.2s ease;
-                &:hover, &:focus {
-                  background: #444;
-                  color: white;
-                }
-              }
+            
             }
             @media screen and (max-width: 850px) {
               font-size: 0.8rem;

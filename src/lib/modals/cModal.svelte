@@ -20,6 +20,7 @@
     albumsJsonStore,
     campainsStore,
     productModalStore,
+    singleAmountPopupStore,
     userInfoStore,
     _modal_z_index_incrementor
   } from './../../stores/stores';
@@ -177,8 +178,9 @@
     if($cartStore[imgData.id].show_sizes_popup) {
         open_edit_amount_dialog(imgData.id);
       }else {
-        let itm = document.querySelector('input#amount_' + imgData.id); 
-        itm.focus();
+        //let itm = document.querySelector('input#amount_' + imgData.id); 
+        //itm.focus();
+        $singleAmountPopupStore.toggleModal(imgData.id, imgData.title);
       }
     //open_edit_amount_dialog(imgData.id);
 
@@ -357,7 +359,7 @@
                     {:else}
                       כמות בסל:
                       <div class="text">
-                        <input id="amount_{img.id}" class="amount-input" pattern="[0-9]*" name="item_amount" min="1" max="9999" type="number" use:selectTextOnFocus bind:value={$cartStore[img.id].amount} />
+                        <input disabled id="amount_{img.id}" class="amount-input" pattern="[0-9]*" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
                       </div>
                     {/if}
                   </div>
@@ -622,7 +624,7 @@
                   background: none;
                   font-weight: bold;
                   outline: none;
-
+                  width: 100%;;
                   /** remove arrows https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp*/
                   /* Chrome, Safari, Edge, Opera */
                   &::-webkit-outer-spin-button,
