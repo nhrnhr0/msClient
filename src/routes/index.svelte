@@ -166,33 +166,7 @@
 
 {#each albums as album, i(album.id)}
 
-		<div class="title-wraper" class:campain={album.is_campain}>
-			<button class="title btn"  on:click={openCategoryModal(album)}>
-				{album.title}
-        
-        {#if album.is_campain}
-          <MyCountdown date={$campainsStore.find(v => v.album.id == album.id)?.endTime}/>
-        {/if}
-        <!--
-            <Countdown from="2023-11-09 09:30:00" dateFormat="YYYY-MM-DD H:m:s" zone="Europe/Athens" let:remaining>
-              <div class="whatever">
-                  {#if remaining.done === false}5
-                  <span>{remaining.years} years</span>
-                  <span>{remaining.months} months</span>
-                  <span>{remaining.weeks} weeks</span>
-                  <span>{remaining.days} days</span>
-                  <span>{remaining.hours} hours</span>
-                  <span>{remaining.minutes} minutes</span>
-                  <span>{remaining.seconds} seconds</span>
-                  {:else}
-                  <h2>The time has come!</h2>
-                  {/if}
-              </div>
-          </Countdown>
-        -->
-        
-			</button>
-		</div>
+
 
 	<CatalogSwiper album={album} bind:this={$all_swipers[album.id]} loaded_data={all_products[album.id]}/>
 
@@ -216,7 +190,6 @@ import { bind } from 'svelte/internal';
 import { stateQuery} from './../stores/queryStore'
 import { logStore } from "../stores/logStore";
 import { campainsStore } from '../stores/stores';
-import MyCountdown from "$lib/components/MyCountdown.svelte";
 import {sl_disable, sl_enable} from "$lib/utils/scroll-lock";
 import CallToActionForm from '$lib/components/CallToActionForm.svelte';
 import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
@@ -420,96 +393,5 @@ import { flashy_page_view } from "$lib/flashy";
 <style lang="scss">
 
 
-.title-wraper {
-  display: flex;
-  justify-content: center;
-  //padding-bottom: 50px;
-  
-  .title {
-    opacity: 0.5;
-    background-color: black;
-    border-color: var(--clr-primery-gold);
-    //margin-top: 25px;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    font-size: 2rem;
-    width: 100%;
-    margin-right: 20px;
-    margin-left: 20px;
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease 0s;
-    &::before {
-      content: '>> לקטגוריית ';
-      opacity: 1;
-      font-size: 1.4rem;
-    }
 
-    &::after {
-      content: ' לחץ כאן <<';
-      opacity: 1;
-      font-size: 1.4rem;
-    }
-    &:hover,&:focus {
-      box-shadow: 0px 15px 20px black;
-      transform: translateY(-7px);
-      opacity: 0.8;
-      //font-size: 2.2rem;
-    }
-
-    @media screen and (max-width: 685px) {
-      &:before {
-        content: 'לקטגוריית ';
-        opacity: 1;
-        font-size: 1.4rem;
-      }
-      &::after {
-        content: ' לחץ כאן';
-        opacity: 1;
-        font-size: 1.4rem;
-      }
-    }
-    @media screen and (max-width: 610px) {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      &::before, &::after {
-        //flex:1;
-        line-height: 0.8;
-      }
-
-    }
-  /*@media screen and (max-width: 610px) {
-      &:before {
-        content: '';
-        opacity: 1;
-        font-size: 1.4rem;
-      }
-      &::after {
-        content: '';
-        opacity: 1;
-        font-size: 1.4rem;
-      }
-    }*/
-  }
-  &.campain {
-    
-    .title {
-      @media (min-width: 820px) {
-          &::before {
-          content: '';
-          opacity: 1;
-          font-size: 1.4rem;
-        }
-
-        &::after {
-          content: '';
-          opacity: 1;
-          font-size: 1.4rem;
-        }
-      }
-    }
-  }
-}
 </style>

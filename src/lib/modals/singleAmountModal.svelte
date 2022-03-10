@@ -16,7 +16,23 @@ import { cartStore } from "./../../stores/cartStore";
     let modal_zIndex = 0;
     let product_title;
     let opend_at = 0;
+    function focus_input_field() {
+        let input = document.getElementById('popup_amount_input');
+        input.select();
+        input.select();
+    }
     export function toggleModal(_product_id, _product_title) {
+
+        // if exit modal:
+        if(_product_id == undefined && product_id != undefined) {
+            // if amount if 0 or less: remove product from cart
+            if($cartStore[product_id]) {
+                if($cartStore[product_id].amount <= 0) {
+                    cartStore.removeFromCartById(product_id);
+                } else {
+                }
+            }
+        }
         product_id = _product_id
         product_title = _product_title;
         opend_at = Date.now();
@@ -27,7 +43,7 @@ import { cartStore } from "./../../stores/cartStore";
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
 
             setTimeout(() => {
-                document.getElementById('popup_amount_input').focus();
+                focus_input_field();
             }, 0);
         }
     }
@@ -54,12 +70,13 @@ import { cartStore } from "./../../stores/cartStore";
         <div class="modal_content" in:fly="{{ y: 200, duration: 200 }}" on:click|stopPropagation="{()=>{}}" style="z-index: {modal_zIndex+10};">
             <div class="modal-header">
                 
-                <div class="modal-title">בחר/י כמות ל-<b>{product_title}</b></div>
+                <div class="modal-title">בחר/י כמות ל-<span>{product_title}</span></div>
                 
             </div>
             <div class="modal-body">
-                <div class="mrow">
+                <div class="mrow actions-row">
                     <button class="btn btn-danger" on:click={()=>{cartStore.removeFromCartById(product_id);toggleModal();}}>הסר מהעגלה</button>
+                    <button class="btn btn-secondary" on:click={()=>{$cartStore[product_id].amount = 0;setTimeout(()=> {focus_input_field();},0)}}>נקה</button>
                 </div>
                 <div class="mrow">
                     <div class="input-wraper">
@@ -67,9 +84,9 @@ import { cartStore } from "./../../stores/cartStore";
                     </div>
                 </div>
                 <div class="mrow buttons-row">
-                    <button on:click={()=> {add_to_amount(6)}} class="option">+6</button>
-                    <button on:click={()=> {add_to_amount(12)}} class="option">+12</button>
-                    <button  on:click={()=> {add_to_amount(24)}} class="option">+24</button>
+                    <button on:click={()=> {add_to_amount(6)}} class="option">6+</button>
+                    <button on:click={()=> {add_to_amount(12)}} class="option">12+</button>
+                    <button  on:click={()=> {add_to_amount(24)}} class="option">24+</button>
                 </div>
             </div>
         </div>
@@ -90,12 +107,23 @@ import { cartStore } from "./../../stores/cartStore";
             font-size: 1.5em;
             text-align: center;
             width: 100%;
+            span {
+                font-weight: bold;
+                text-decoration: underline;
+            }
         }
     }
     .modal-body {
+        .actions-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         .buttons-row {
             display: flex;;
+            flex-direction: row-reverse;
             justify-content: space-around;
+            text-align: center;
             padding-top:25px;
             .option {
                 width: 120px;

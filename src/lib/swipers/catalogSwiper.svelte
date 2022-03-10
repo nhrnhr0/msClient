@@ -12,6 +12,7 @@
         Swiper,
         SwiperSlide
     } from 'swiper/svelte';
+    import MyCountdown from "$lib/components/MyCountdown.svelte";
 
     // Import Swiper styles
     import 'swiper/css';
@@ -33,7 +34,7 @@
     
     
     export let loaded_data;
-    import {productModalStore, productCartModalStore, userInfoStore, singleAmountPopupStore, productQuestionModalStore, categoryModalStore} from './../../stores/stores';
+    import {productModalStore, productCartModalStore, userInfoStore, singleAmountPopupStore, productQuestionModalStore, categoryModalStore, campainsStore} from './../../stores/stores';
 import { onDestroy, onMount } from 'svelte';
 
 //import { flyToCart } from '$lib/utils/js/flyToCart';
@@ -302,7 +303,7 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
     function background_click(e) {
         console.log('background_click: ', e);
         let classs = e.target.classList
-        if(classs.contains('lazy-swiper-wraper') || classs.contains('swiper')) {
+        if(classs.contains('lazy-swiper-wraper') || classs.contains('swiper') || classs.contains('swiper-wrapper') || classs.contains('swiper-pagination')) {
             open_category_modal();
             return;
         }
@@ -318,11 +319,32 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
     const inview_options = {
         rootMargin: '450px',
     }
-
-
+    let active_hover = false;
+    function clickable_category_mouse_leave(e) {
+        active_hover = false;
+    }
+    function clickable_category_mouse_enter(e) {
+        console.log(e.target);
+        // swiper-wrapper, lazy-swiper-wraper, swiper
+        if(e.target.classList.contains('swiper-wrapper') || e.target.classList.contains('lazy-swiper-wraper') || e.target.classList.contains('swiper') || e.target.classList.contains('swiper-pagination')) {
+            active_hover = true;
+        }else {
+            active_hover = false;
+        }
+    }
     const show_prices = ($userInfoStore['me'] && Object.keys($userInfoStore['me']) != 0 && $userInfoStore['me'].show_prices == true)? true : false;
 </script>
-<div class="lazy-swiper-wraper" on:click={(e)=>{background_click(e)}} class:active="{isInView}" class:loaded="{isLoaded}"
+<div class="title-wraper" class:campain={album.is_campain}>
+    <button class:active={active_hover} class="title btn"  on:click={open_category_modal(album)}>
+        {album.title}
+
+{#if album.is_campain}
+  <MyCountdown date={$campainsStore.find(v => v.album.id == album.id)?.endTime}/>
+{/if}
+
+    </button>
+</div>
+<div class="lazy-swiper-wraper" on:focus="{clickable_category_mouse_enter}" on:mouseover="{clickable_category_mouse_enter}" on:blur="{clickable_category_mouse_enter}" on:mouseleave="{clickable_category_mouse_leave}"  on:click={(e)=>{background_click(e)}} class:active="{isInView}" class:loaded="{isLoaded}"
 use:inview="{inview_options}"
 
 on:change={(event) => {
@@ -358,6 +380,7 @@ on:change={(event) => {
         {:else}
                 <Swiper
                 bind:this={mswiper}
+                
                 resizeReInit={true},
                 effect="{'coverflow'}"
                 centeredSlides="{true}"
@@ -367,9 +390,9 @@ on:change={(event) => {
                 rebuildOnUpdate="{true}"
                 speed= "{50}"
                 loop= "{true}"
+                navigation="{false}"
                 allowTouchMove="{true}"
                 preventClicks="{false}"
-                
                 on:click={swiperSlideClicked}
                 threshold={10}
                 coverflowEffect='{{
@@ -400,7 +423,6 @@ on:change={(event) => {
                         }
                     }}'
                   pagination="{true}" 
-                  navigation="{true}"
                   on:realIndexChange={(event) => {
                     //console.log('activeIndexChange: ', event);
                     //console.log('activeIndexChange: ', event.detail[0]);
@@ -498,6 +520,13 @@ on:change={(event) => {
                     {/each}
                     
             </Swiper>
+            
+        <button on:click={(e)=>{mswiper.swiper().slideNext()}} class="nav-btn left">
+            <img src="/arrow.svg" class="arrow arrow-left" alt="left arrow" />
+        </button>
+        <button on:click={(e)=>{mswiper.swiper().slidePrev()}} class="nav-btn right">
+            <img src="/arrow.svg" class="arrow arrow-right" alt="right arrow"/>
+        </button>
         {/if}
     <!--
         {/await}
@@ -538,22 +567,41 @@ on:change={(event) => {
         }
     }
     :global(.swiper) {
+        cursor: pointer;
+        padding-top: 60px;
+        
         :global(.default-tip) {
             
             transform: translate(0%, 15%);
         }
         :global(.swiper-button-next), :global(.swiper-button-prev) {
+            &::after {
+                font-family: ''!important;
+                content: '';
+            }
             transform: all 250ms ease-in-out;
             //position: absolute;
             //top: 100%;
             //transform: translateY(-50%);
             overflow: visible;
-            border-radius: 50%;
-            --swiper-navigation-size: 235px;
+            
+            //--swiper-navigation-size: 235px;
             &:hover {
-                --swiper-navigation-size: 270px;
-                --swiper-theme-color: #dd0e0e;
+                //--swiper-navigation-size: 270px;
+                //--swiper-theme-color: #dd0e0e;
             }
+        }
+        :global(.swiper-button-prev) {
+            /*background-image: url('/arrow.svg');
+            border:1px solid red;
+            background-size: contain;
+            background-repeat: no-repeat;
+            height: 78px;
+            width: 78px;
+            position: absolute;
+            top: 100%;
+            left: 0%;*/
+            
         }
     }
     :global(.swiper-wrapper) {
@@ -691,19 +739,150 @@ on:change={(event) => {
         justify-content: center;
         align-items: center;
     }
+    .title-wraper {
+  display: flex;
+  justify-content: center;
+  //padding-bottom: 50px;
+  
+  .title {
+    opacity: 0.5;
+    background-color: black;
+    border-color: var(--clr-primery-gold);
+    //margin-top: 25px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    font-size: 2rem;
+    width: 100%;
+    margin-right: 20px;
+    margin-left: 20px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    &::before {
+      content: '>> לקטגוריית ';
+      opacity: 1;
+      font-size: 1.4rem;
+    }
+
+    &::after {
+      content: ' לחץ כאן <<';
+      opacity: 1;
+      font-size: 1.4rem;
+    }
+    &:hover,&:focus, &.active {
+      box-shadow: 0px 15px 20px black;
+      transform: translateY(-7px);
+      opacity: 0.8;
+      //font-size: 2.2rem;
+    }
+
+    @media screen and (max-width: 685px) {
+      &:before {
+        content: 'לקטגוריית ';
+        opacity: 1;
+        font-size: 1.4rem;
+      }
+      &::after {
+        content: ' לחץ כאן';
+        opacity: 1;
+        font-size: 1.4rem;
+      }
+    }
+    @media screen and (max-width: 610px) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      &::before, &::after {
+        //flex:1;
+        line-height: 0.8;
+      }
+
+    }
+  /*@media screen and (max-width: 610px) {
+      &:before {
+        content: '';
+        opacity: 1;
+        font-size: 1.4rem;
+      }
+      &::after {
+        content: '';
+        opacity: 1;
+        font-size: 1.4rem;
+      }
+    }*/
+  }
+  &.campain {
+    
+    .title {
+      @media (min-width: 820px) {
+          &::before {
+          content: '';
+          opacity: 1;
+          font-size: 1.4rem;
+        }
+
+        &::after {
+          content: '';
+          opacity: 1;
+          font-size: 1.4rem;
+        }
+      }
+    }
+  }
+}
 .lazy-swiper-wraper {
-    padding-top: 50px;
-    height: 408px !important;
+    cursor: pointer;
+    //padding-top: 50px;
+    position: relative;
+    height: 438px !important;
     max-width: 99vw;
     margin: auto;
     @media all and (min-width: 1300px) and (max-width:1460px) { 
-        height: 438px !important;
+        height: 498px !important;
     }
     @media all and (min-width: 1460px)  { 
-        height: 508px !important;
+        height: 568px !important;
     }
     &.loaded:not(&.active) {
         //height: auto!important;
+    }
+
+    .nav-btn {
+        //display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        z-index: 1;
+        position: absolute;
+        top: 10px;
+        img {
+            width: 75px;
+            height: 75px;
+        }
+        &.left {
+            border: 3px solid black;
+            border-radius: 50%;
+            left: 10px;
+            
+            transform: rotate(180deg);
+        }
+        
+        &.right {
+            border: 3px solid black;
+            border-radius: 50%;
+            right: 10px;
+        } 
+        &:hover {
+            border: 5px solid black;
+            border-radius: 50%;
+            &.left {
+                transform: scale(1.1) rotate(180deg);
+            }
+            &.right {
+                transform: scale(1.1);
+            }
+        }
     }
 }
 :global(.swiper-slide-prev .slide-content .img-wraper .price-tag) {

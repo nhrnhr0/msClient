@@ -91,6 +91,8 @@ import { logStore } from "./../stores/logStore";
                 }
                 return 0;
             });
+            // keep only the first 5 albums:
+            albums = albums.slice(0, 5);
 
             // add the albums in the start and after the products
             let items = albums.concat(data.all);
