@@ -985,7 +985,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
         .product-detail {
           .product-title {
             display: flex;
-            flex-direction: row-reverse;
+            flex-direction: row;
             justify-content: space-between;
             .title-text {
               font-size: 2em;

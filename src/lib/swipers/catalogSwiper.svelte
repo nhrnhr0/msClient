@@ -856,6 +856,7 @@ on:change={(event) => {
         z-index: 1;
         position: absolute;
         top: 10px;
+        
         img {
             width: 75px;
             height: 75px;
@@ -874,6 +875,7 @@ on:change={(event) => {
             right: 10px;
         } 
         &:hover {
+            background: rgba(255, 255, 255, 0.678);
             border: 5px solid black;
             border-radius: 50%;
             &.left {
