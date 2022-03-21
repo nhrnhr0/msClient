@@ -3,7 +3,7 @@ import { submit_distribution_lead } from "./../../api/api";
 
 
 
-    const business_types = ['אבטחה','הייטק','הפקות/ חיי לילה','חברות ניקיון וכוח אדם ','חקלאים/ גדש','לולים','מוסכים','מטבחים/ מסעדות','מלונאות','מנהל חינוך','מנהל תרבות','מנהל קורונה','מסגריות/ רתכים','מפעל/ תעשייה ','נגריות','נוי/ גננים','רפתות','אחר - פרט למטה'];
+    const business_types = ['אבטחה','הייטק','הפקות/ חיי לילה','חברות ניקיון וכוח אדם ','חקלאים/ גדש','לולים','מוסכים','מטבחים/ מסעדות','מלונאות','מנהל חינוך','מנהל תרבות','מנהל קורונה','מסגריות/ רתכים','מפעל/ תעשייה ','נגריות','נוי/ גננים','רפתות', 'בית אריזה', 'טכנאי/מתקין', 'אחר - פרט למטה', ];
     let _i_want_emails = true;
     let _i_want_wantsapp = true;
     let submited = false;
@@ -33,7 +33,7 @@ import { submit_distribution_lead } from "./../../api/api";
             });
         }
     }
-    const PHONE_PATTERN = '^(?:(?:(\\+?972|\\(\\+?972\\)|\\+?\\(972\\))(?:\\s|\\.|-)?([1-9]\\d?))|(0[23489]{1})|(0[57]{1}[0-9]))(?:\\s|\\.|-)?([^0\\D]{1}\\d{2}(?:\\s|\\.|-)?\\d{4})$'
+    //const PHONE_PATTERN = '^(?:(?:(\\+?972|\\(\\+?972\\)|\\+?\\(972\\))(?:\\s|\\.|-)?([1-9]\\d?))|(0[23489]{1})|(0[57]{1}[0-9]))(?:\\s|\\.|-)?([^0\\D]{1}\\d{2}(?:\\s|\\.|-)?\\d{4})$'
     const EMAIL_PATTERN = `/^[a-zA-Z0-9.!#$%&'*+/=?^_\`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$/`
     function checkbox_state_change(e) {
         let checkbox = e.target;
@@ -45,14 +45,14 @@ import { submit_distribution_lead } from "./../../api/api";
         }
     }
 
-    function validate_numbers(e) {
+    /*function validate_numbers(e) {
         var chr = String.fromCharCode(e.which);
         
         if(!(/[0-9]/.test(chr))) {
             e.preventDefault();
             return false;
         }
-    }
+    }*/
 </script>
 
 <div class="bg-wraper">
@@ -104,7 +104,7 @@ import { submit_distribution_lead } from "./../../api/api";
                     <fieldset>
                         <input required="{true}" type="text" name="name" id="name" placeholder="שם איש קשר">
                         <!--https://stackoverflow.com/questions/34556308/how-to-validate-israeli-phone-number-->
-                        <input required="{_i_want_wantsapp}" type="tel" name="phone" on:keypress="{validate_numbers}" pattern="{PHONE_PATTERN}" minlength="10" id="tel" placeholder="טלפון">
+                        <input required="{_i_want_wantsapp}" type="tel" name="phone" minlength="10" id="tel" placeholder="טלפון">
                         <input required="{_i_want_emails}" type="email" name="email" id="email" placeholder="אימייל">
                         <div class="mailing-list-register">
                             <input type="checkbox" name="mailing-list" id="mailing-list" on:click={checkbox_state_change} bind:checked={_i_want_emails}>

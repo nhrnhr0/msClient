@@ -178,7 +178,7 @@ export function submit_distribution_lead(data){
         method:"POST",
         body: JSON.stringify(data),
     };
-    let response 
+    let response;
     response = fetch_wraper(LEAD_DISTRIBUTION_URL, requestOptions);
     return response;
 }
