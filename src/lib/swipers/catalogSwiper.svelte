@@ -1,3 +1,4 @@
+
 <script export="module">
     import { inview } from 'svelte-inview';
     //import Lazy from 'svelte-lazy';
@@ -28,7 +29,7 @@
     import Spinner from 'svelte-spinner';
     import {cartStore} from './../../stores/cartStore'
     import LazyImage from 'svelte-lazy-image';
-
+    import { Button } from "sveltestrap";
 
     // import Swiper core and required modules
     
@@ -43,6 +44,7 @@ import { logStore } from './../../stores/logStore';
 import { selectTextOnFocus } from '$lib/ui/inputActions';
 import SvelteTooltip from 'svelte-tooltip';
 import QuestionLabel from '$lib/components/questionLabel.svelte';
+//import FaveBtn from '$lib/components/FaveBtn.svelte';
 //import FaveIcon from '$lib/components/faveIcon.svelte';
 //import { fave_list } from './../../stores/faveStore';
 
@@ -169,6 +171,7 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                             );
 
                     }else if(target.classList.contains('like-btn-wraper')) {
+                        debugger;
                         let currentProduct = get_product_by_id(target.dataset.productId);
                         if(cartStore.isInCart(currentProduct) == false) {
                             //flyToCart(target.parentElement.querySelector('.product-image'));
@@ -226,6 +229,55 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                         let pid = mslide.dataset.productId;
                         let currentProduct = get_product_by_id(pid);
                         $productQuestionModalStore.toggleModal(currentProduct.id, currentProduct.title);
+                    }
+                    else if(target.classList.contains('read-more-btn') && dont_open_modal == false) {
+                        $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);
+                        
+                        $productModalStore.toggleModal();
+
+                        logStore.addLog(
+                            {
+                                'a': 'פתיחת מוצר מסליידר',
+                                't': 'open product',
+                                'f':{
+                                    'type':'slider',
+                                    'id':album.id,
+                                    'ti':album.title,
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':target.dataset.productId,
+                                    'ti':target.getAttribute('alt'), 
+                                }
+                            }
+                            );
+                    }
+                    else if(target.classList.contains('add-to-cart-btn')) {
+                        debugger;
+                        let currentProduct = get_product_by_id(target.dataset.productId);
+                        if(cartStore.isInCart(currentProduct) == false) {
+                            //flyToCart(target.parentElement.querySelector('.product-image'));
+                            cartStore.addToCart(currentProduct);
+                            logStore.addLog(
+                            {
+                                'a': 'הוסף לעגלה מסליידר',
+                                't': 'add to cart',
+                                'f': {
+                                    'type':'slider',
+                                    'id':album.id,
+                                    'ti':album.title
+                                },
+                                'w':{
+                                    'type':'product',
+                                    'id':target.dataset.productId,
+                                    'ti':currentProduct.title, 
+                                }
+                            }
+                            );
+                            copySwiperduplicates(E);
+                        } else {
+
+                        }
                     }
                     else {
                         debugger;
@@ -393,6 +445,7 @@ on:change={(event) => {
                 navigation="{false}"
                 allowTouchMove="{true}"
                 preventClicks="{false}"
+                preventClicksPropagation="{false}"
                 on:click={swiperSlideClicked}
                 threshold={10}
                 coverflowEffect='{{
@@ -471,21 +524,23 @@ on:change={(event) => {
                                         </div>
                                         <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{image.cimage}" alt="{image.title}">
                                         <div class="price-tag" class:active={show_prices} >{image.client_price + '₪'}</div>
+                                        <!--     <FaveBtn product_id={image.id}/>-->
                                     </div> 
                                 </div>
                                 
-                                <div  class="like-btn-wraper" class:active={$cartStore[image.id] != undefined} data-product-id="{image.id}">
                                     {#if $cartStore[image.id] == undefined}
-                                        <div class="like-btn">
-                                            <div class="img-wraper">
-                                                <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
-                                            </div>
-                                            <div class="text">
+                                        <div class="like-btn like-btn-small">
+                                            <Button color="danger" data-product-id={image.id} data-catalog-id={album.id} class="add-to-cart-btn">
                                                 הוסף
-                                            </div>
+                                            </Button>
+                                            <Button color="primary" data-product-id={image.id} data-catalog-id={album.id} class="read-more-btn">
+                                                קרא עוד
+                                            </Button>
                                         </div>
-                                    {:else}
                                         
+                                    {:else}
+                                    <div  class="like-btn-wraper" class:active={$cartStore[image.id] != undefined} data-product-id="{image.id}">
+
                                         <div class="like-btn active">
                                             <div class="img-wraper">
                                                 
@@ -513,8 +568,9 @@ on:change={(event) => {
                                                     </span>
                                             </div>
                                         </div>
+                                    </div>
+
                                     {/if}
-                                </div>
                             <!--</div>-->
                         </SwiperSlide>
                     {/each}
@@ -618,7 +674,7 @@ on:change={(event) => {
         }
     }*/
         .like-btn-wraper {
-            cursor: pointer;
+            //cursor: pointer;
             width:100%;
             .like-btn {
                 display: flex;
@@ -727,11 +783,31 @@ on:change={(event) => {
 
                 }
                 
-
                 
             }
             
         }
+        .like-btn-small {
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    * {
+                        margin: 0;
+                        width: 100%;
+                        flex:1;
+                        flex-grow: 1;
+                        flex-shrink: 0;
+                    }
+                    :global(.add-to-cart-btn){
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+                    }
+                    :global(.read-more-btn) {
+                        width: 100%;
+                    }
+                }
         
     .loader-wraper {
         width:100%;
