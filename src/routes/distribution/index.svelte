@@ -148,8 +148,8 @@ import { submit_distribution_lead } from "./../../api/api";
     background-position: center;
     overflow:hidden;
     width: 100%;
-    height: -webkit-fill-available;
-    //height: 100vh;
+    //height: -webkit-fill-available;
+    height: 100vh;
     overflow-y: auto;
     main {
         display: flex;
