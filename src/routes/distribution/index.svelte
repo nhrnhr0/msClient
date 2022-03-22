@@ -57,7 +57,7 @@ import { submit_distribution_lead } from "./../../api/api";
 
 <div class="bg-wraper">
     <main>
-        <form bind:this="{mform}"  class="distribution-form  bg-color-primary" class:submited={submited}>
+        <form bind:this="{mform}" autocomplete="off" class="distribution-form  bg-color-primary" class:submited={submited}>
             <div class="vip-text">
                 <div>כל הלקוחות שלנו הם V.I.P אבל יש כאלה שמרוויחים <span class="mark-strong">יותר</span>...</div>
         
@@ -82,8 +82,8 @@ import { submit_distribution_lead } from "./../../api/api";
         
                 <div class="form-fields">
                     <fieldset>
-                        <input required="{true}" type="text" name="business-name" id="business_name" placeholder="שם העסק">
-                        <select required="{true}" title="סוג עסק" bind:value={selected_business_type} name="business-type" id="business_type" placeholder="סוג העסק">
+                        <input required="{true}" autocomplete="off"  type="text" name="business-name" id="business_name" placeholder="שם העסק">
+                        <select required="{true}" autocomplete="off" title="סוג עסק" bind:value={selected_business_type} name="business-type" id="business_type" placeholder="סוג העסק">
                             <option value="" disabled selected>סוג עסק שלך</option>
                             {#each business_types as business_type}
                                 <option value="{business_type}">{business_type}</option>
@@ -98,14 +98,14 @@ import { submit_distribution_lead } from "./../../api/api";
                         </datalist>
                         -->
                     {#if selected_business_type == 'אחר - פרט למטה'}
-                        <input required="{true}" type="text" name="business-type-other" id="business_type_other" placeholder="סוג העסק שלך">
+                        <input autocomplete="off" required="{true}" type="text" name="business-type-other" id="business_type_other" placeholder="סוג העסק שלך">
                     {/if}
                     </fieldset>
                     <fieldset>
-                        <input required="{true}" type="text" name="name" id="name" placeholder="שם איש קשר">
+                        <input required="{true}" autocomplete="off" type="text" name="name" id="name" placeholder="שם איש קשר">
                         <!--https://stackoverflow.com/questions/34556308/how-to-validate-israeli-phone-number-->
-                        <input required="{_i_want_wantsapp}" type="tel" name="phone" minlength="10" id="tel" placeholder="טלפון">
-                        <input required="{_i_want_emails}" type="email" name="email" id="email" placeholder="אימייל">
+                        <input required="{_i_want_wantsapp}" autocomplete="off" type="tel" name="phone" minlength="10" id="tel" placeholder="טלפון">
+                        <input required="{_i_want_emails}" autocomplete="off" type="email" name="email" id="email" placeholder="אימייל">
                         <div class="mailing-list-register">
                             <input type="checkbox" name="mailing-list" id="mailing-list" on:click={checkbox_state_change} bind:checked={_i_want_emails}>
                             <label for="mailing-list">

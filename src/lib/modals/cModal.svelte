@@ -25,6 +25,7 @@
     _modal_z_index_incrementor
   } from './../../stores/stores';
   import {
+Button,
     Dropdown,
     DropdownItem,
     DropdownMenu,
@@ -152,10 +153,11 @@
     });
   }
 
-  function likeBtnClicked(e) {
-    console.log('likeBtnClicked', e);
-    let img = e.currentTarget.parentElement.querySelector('.product-image');
-    let imgData = JSON.parse(e.currentTarget.dataset["img"]);
+  function likeBtnClicked(img) {
+    debugger;
+    //console.log('likeBtnClicked', e);
+    //let img = e.currentTarget.parentElement.querySelector('.product-image');
+    let imgData = img;// JSON.parse(e.currentTarget.dataset["img"]);
     if (cartStore.isInCart(imgData) == false) {
       cartStore.addToCart(imgData);
       //flyToCart(img);
@@ -319,22 +321,33 @@
 
           <div class="img-title">{img.title}</div>
         </div>
-        <div  on:click={likeBtnClicked} data-img={JSON.stringify(img)} class="like-btn-wraper">
+        <div data-img={JSON.stringify(img)} class="like-btn-wraper"> <!--    -->
           {#if $cartStore[img.id] == undefined}
-          <button  id="categoryModalLikeBtn" class="like-btn">
+          <div  id="categoryModalLikeBtn" class="like-btn">
             <div class="img-wraper">
               <div class="btn-product-title">
                           {img.title}
               </div>
               <div class="action">
+                <div class="like-btn-small">
+                  <Button color="danger" on:click={likeBtnClicked(img)} data-product-id={img.id} data-catalog-id={$current_album.id} class="add-to-cart-btn">
+                      הוסף
+                  </Button>
+                  <Button color="primary" on:click="{open_product(img)}" data-product-id={img.id} data-catalog-id={$current_album.id} class="read-more-btn">
+                      קרא עוד
+                  </Button>
+              </div>
+              <!--
                   <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
                   <div class="text">
                     הוסף
                   </div>
               </div>
+              -->
             </div>
             
-          </button>
+          </div>
+          </div>
           {:else}
 
           <button  id="categoryModalLikeBtn" class="like-btn active">
@@ -489,11 +502,6 @@
         border-top-left-radius: 0;
         border: var(--swiper-slide-border) solid black;
         border-bottom-width: 0px;
-        .text {
-          display:inline-block;
-          font-size: 1.5em;
-          
-        }
         
         &.active {
           @include bg-gradient();
@@ -547,105 +555,127 @@
             justify-content: center;
             align-items: center;
             .amount-before {
-            width: 100%;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            flex: 1;
-            .delete-btn {
-              border: none;
-              background: none;
-              @media screen and (max-width: 357px) and (min-width: 330px){
-                padding: 0px;
-              }
-              &:hover {
-                svg {
-                  fill: red;
-                
-                }
-              }
-            }
-            
-            .amount-text {
-              height: 100%;
+              width: 100%;
               display: flex;
-              flex-direction: row;
-              justify-content: center;
+              justify-content: space-around;
               align-items: center;
-              color: white;
-              //width: 100%;
-              
-              
-              flex-direction: column;
-              .text {
-                font-size: 1em;
-                font-weight: bold;
-                
-                width: 100%;
-                @media screen and (max-width: 1115px) {
-                  font-size: 0.9em;
+              flex: 1;
+              .delete-btn {
+                border: none;
+                background: none;
+                @media screen and (max-width: 357px) and (min-width: 330px){
+                  padding: 0px;
                 }
-                @media screen and (max-width: 1040) {
-                  font-size: 1em;
-                }
-                
-                @media screen and (max-width: 902px){
-                  font-size: 0.8em;
-                
-                }
-                @media screen and (max-width: 840px){
-                  font-size: 1em;
+                &:hover {
+                  svg {
+                    fill: red;
                   
-                }
-                @media screen and (max-width: 690px) {
-                  font-size: 0.8em;
-                }
-                @media screen and (max-width: 600px) {
-                  font-size: 0.75em;
-                  font-weight: normal;
-                }
-                @media screen and (max-width: 555px) {
-                  font-size: 1em;
-                  font-weight: bold;
-                }
-                @media screen and (max-width: 469px) {
-                  font-size: 0.9em;
-                }
-                @media screen and (max-width: 439px) {
-                  font-size: 0.75em;
-                }
-                @media screen and (max-width: 330px) {
-                  font-size: 1em;
-                }
-
-                input.amount-input {
-                  height: 1.5em;
-                  width: 1.5em;
-                  border: none;
-                  text-align: center;
-                  background: none;
-                  font-weight: bold;
-                  outline: none;
-                  width: 100%;;
-                  /** remove arrows https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp*/
-                  /* Chrome, Safari, Edge, Opera */
-                  &::-webkit-outer-spin-button,
-                  &::-webkit-inner-spin-button {
-                    -webkit-appearance: none;
-                    margin: 0;
                   }
-                  /* Firefox */
-                    -moz-appearance: textfield;
                 }
               }
-              .edit-amount-btn {
-                font-size: 1.2em;
-                padding-right: 10%;
-                padding-left: 10%;
-                font-weight: bold;
+            
+              .amount-text {
+                height: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                color: white;
+                //width: 100%;
+                
+                
+                flex-direction: column;
+                .text {
+                  font-size: 1em;
+                  font-weight: bold;
+                  
+                  width: 100%;
+                  @media screen and (max-width: 1115px) {
+                    font-size: 0.9em;
+                  }
+                  @media screen and (max-width: 1040) {
+                    font-size: 1em;
+                  }
+                  
+                  @media screen and (max-width: 902px){
+                    font-size: 0.8em;
+                  
+                  }
+                  @media screen and (max-width: 840px){
+                    font-size: 1em;
+                    
+                  }
+                  @media screen and (max-width: 690px) {
+                    font-size: 0.8em;
+                  }
+                  @media screen and (max-width: 600px) {
+                    font-size: 0.75em;
+                    font-weight: normal;
+                  }
+                  @media screen and (max-width: 555px) {
+                    font-size: 1em;
+                    font-weight: bold;
+                  }
+                  @media screen and (max-width: 469px) {
+                    font-size: 0.9em;
+                  }
+                  @media screen and (max-width: 439px) {
+                    font-size: 0.75em;
+                  }
+                  @media screen and (max-width: 330px) {
+                    font-size: 1em;
+                  }
+
+                  input.amount-input {
+                    height: 1.5em;
+                    width: 1.5em;
+                    border: none;
+                    text-align: center;
+                    background: none;
+                    font-weight: bold;
+                    outline: none;
+                    width: 100%;;
+                    /** remove arrows https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp*/
+                    /* Chrome, Safari, Edge, Opera */
+                    &::-webkit-outer-spin-button,
+                    &::-webkit-inner-spin-button {
+                      -webkit-appearance: none;
+                      margin: 0;
+                    }
+                    /* Firefox */
+                      -moz-appearance: textfield;
+                  }
+                }
+                .edit-amount-btn {
+                  font-size: 1.2em;
+                  padding-right: 10%;
+                  padding-left: 10%;
+                  font-weight: bold;
+                }
               }
             }
-          }
+            .like-btn-small {
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    width: 90%;
+                    * {
+                        margin: 0;
+                        width: 100%;
+                        flex:1;
+                        flex-grow: 1;
+                        flex-shrink: 0;
+                    }
+                    :global(.add-to-cart-btn){
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+                    }
+                    :global(.read-more-btn) {
+                        width: 100%;
+                    }
+                }
           }
           @media (hover: hover){
             .action {
