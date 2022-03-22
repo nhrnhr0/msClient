@@ -148,8 +148,8 @@ import { submit_distribution_lead } from "./../../api/api";
     background-position: center;
     overflow:hidden;
     width: 100%;
-    //min-height: stretch ;
-    height: 100vh;
+    height: -webkit-fill-available;
+    //height: 100vh;
     overflow-y: auto;
     main {
         display: flex;
@@ -157,6 +157,7 @@ import { submit_distribution_lead } from "./../../api/api";
         align-items: center;
         //height: 100%;
         padding-top: 20px;
+        padding-bottom: 20px;
         .distribution-form {
             border-radius: 25px;
             --defualt-font: 1.5rem;
