@@ -81,10 +81,10 @@ import { Spinner } from "sveltestrap";
 					});
 				}
 				debugger;*/
-                cart_products.push({'id': product.id, 'amount': product.amount, 'mentries': product.mentries});
+                cart_products.push({'id': product.id, 'amount': product.amount, 'price': product.client_price, 'mentries': product.mentries});
 				
             }
-
+			let actAs = $userInfoStore?.me?.actAs;
             let data = {
                 name: form_name || '',
                 email: form_email || '',
@@ -93,6 +93,7 @@ import { Spinner } from "sveltestrap";
                 uuid: get_user_uuid() || '',
                 message: form_message || '',
                 products: cart_products,
+				asUser: actAs,
 				raw_cart: JSON.stringify($cartStore)
             };
             
@@ -185,6 +186,21 @@ import { Spinner } from "sveltestrap";
                             );
         }, 0);
     }
+
+	function price_cell_click(e, cart_key){
+		debugger;
+		if($userInfoStore.isLogin && $userInfoStore.me && $userInfoStore.me.is_superuser == true) {
+			// open popup to edit price
+			let item = $cartStore[cart_key];
+			let prom = prompt('ערוך מחיר', item.client_price);
+			if(prom) {
+				$cartStore[item.id].client_price = parseFloat(prom);;
+			}
+			e.preventDefault();
+			e.stopPropagation();
+		}
+
+	}
 	function open_edit_amount_dialog(product_id, product_title) {
 		if(cartStore.getProduct(product_id).show_sizes_popup){
 			$productCartModalStore.set_product(product_id);
@@ -269,7 +285,7 @@ import { Spinner } from "sveltestrap";
 																</div>
 															</div>
 														{#if show_prices}
-															<div class="table-row">
+															<div class="table-row" on:click={(e)=>price_cell_click(e,key)}>
 																<div class="table-cell table-cell-title">
 																	:'מחיר ליח
 																</div>
@@ -278,7 +294,7 @@ import { Spinner } from "sveltestrap";
 																</div>
 															</div>
 														{/if}
-
+														
 														
 														<button class="edit-btn">
 															ערוך

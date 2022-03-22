@@ -445,7 +445,7 @@ on:change={(event) => {
                 navigation="{false}"
                 allowTouchMove="{true}"
                 preventClicks="{false}"
-                preventClicksPropagation="{false}"
+                
                 on:click={swiperSlideClicked}
                 threshold={10}
                 coverflowEffect='{{
