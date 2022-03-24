@@ -1,5 +1,7 @@
 <script>
-import { submit_distribution_lead } from "./../../api/api";
+import { onMount } from "svelte";
+
+import { submit_distribution_lead,loadAllIntrests } from "./../../api/api";
 
 
 
@@ -9,6 +11,14 @@ import { submit_distribution_lead } from "./../../api/api";
     let submited = false;
     let mform;
     let selected_business_type;
+    let intrests = [];
+    let selected_intrests = [];
+    onMount(async ()=> {
+        debugger;
+        intrests = await loadAllIntrests();
+        console.log(intrests);
+    })
+
     function submit_form(e) {
         submited = true;
         if(mform.reportValidity()) {
@@ -57,6 +67,7 @@ import { submit_distribution_lead } from "./../../api/api";
 
 <div class="bg-wraper">
     <main>
+        {JSON.stringify(intrests)}
         <form bind:this="{mform}" autocomplete="off" class="distribution-form  bg-color-primary" class:submited={submited}>
             <div class="vip-text">
                 <div>כל הלקוחות שלנו הם V.I.P אבל יש כאלה שמרוויחים <span class="mark-strong">יותר</span>...</div>
