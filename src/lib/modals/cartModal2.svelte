@@ -84,7 +84,7 @@ import { Spinner } from "sveltestrap";
                 cart_products.push({'id': product.id, 'amount': product.amount, 'price': product.client_price, 'mentries': product.mentries});
 				
             }
-			let actAs = $userInfoStore?.me?.actAs;
+			let actAs = $userInfoStore?.actAs;
             let data = {
                 name: form_name || '',
                 email: form_email || '',
