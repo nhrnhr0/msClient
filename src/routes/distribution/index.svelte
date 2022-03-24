@@ -100,7 +100,9 @@ import { submit_distribution_lead } from "./../../api/api";
                     {#if selected_business_type == 'אחר - פרט למטה'}
                         <input autocomplete="off" required="{true}" type="text" name="business-type-other" id="business_type_other" placeholder="סוג העסק שלך">
                     {/if}
+                    <input required="{false}" autocomplete="off" type="text" name="address" id="address" placeholder="כתובת">
                     </fieldset>
+                    
                     <fieldset>
                         <input required="{true}" autocomplete="off" type="text" name="name" id="name" placeholder="שם איש קשר">
                         <!--https://stackoverflow.com/questions/34556308/how-to-validate-israeli-phone-number-->
