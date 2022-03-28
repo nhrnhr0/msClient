@@ -2,7 +2,7 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL,GET_ALL_USERS_URL, GET_CSRF_TOKEN_URL,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL} from "./consts";
+import { BASE_URL,GET_ALL_USERS_URL, GET_CSRF_TOKEN_URL,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
@@ -21,7 +21,9 @@ export function apiSendLogs(logs) {
         body: JSON.stringify(body)
     })
 }
-export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false) {
+
+
+function fetch_wraper_prep(url, requestOptions,) {
     console.log('fetch_wraper: ', url);
     let headers_json= {
         'Content-Type': 'application/json',
@@ -47,7 +49,43 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
             headers: myHeaders,
             redirect: 'follow'
         },requestOptions);
-    
+    return requestOptions;
+}
+
+
+export async function fetch_wraper_async(url, requestOptions, custom_fetch, isRetry=false) {
+    requestOptions = fetch_wraper_prep(url, requestOptions)
+    let response;
+    try {
+        if(custom_fetch) {
+            response = await custom_fetch(url, requestOptions);
+        }
+        else {
+            response = await fetch(url, requestOptions);
+        }
+    }
+    catch (error) {
+        console.error(error);
+        // expected output: ReferenceError: nonExistentFunction is not defined
+        // Note - error messages will vary depending on browser
+    }
+
+    if(response.status == 401) {
+        let userInfo = get(userInfoStore);
+        userInfo.isLogin = false;
+        userInfo.access = null;
+        userInfoStore.set(userInfo);
+        if(!isRetry) {
+            return fetch_wraper_async(url, requestOptions, custom_fetch, true);
+        }
+    }
+    console.log(url, ' ==> ', response.status);
+    let json = await response.json();
+    return json;
+
+}
+export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false) {
+    requestOptions = fetch_wraper_prep(url, requestOptions)
     let response;
     try {
         if(custom_fetch) {
@@ -175,10 +213,14 @@ export async function adming_get_campains() {
     let json_response = response;
     return json_response;
 }
-
+export async function loadBusinessTypes() {
+    let response;
+    response = await fetch_wraper_async(GET_ALL_BUSINESS_TYPES)
+    return response
+}
 export async function loadAllIntrests() {
     let response;
-    response = await fetch_wraper(GET_ALL_INTERESTS_URL);
+    response = await fetch_wraper_async(GET_ALL_INTERESTS_URL);
     return response;
 }
 
@@ -191,3 +233,5 @@ export function submit_distribution_lead(data){
     response = fetch_wraper(LEAD_DISTRIBUTION_URL, requestOptions);
     return response;
 }
+
+export const maps_key = import.meta.env['VITE_MAPS_API_KEY']

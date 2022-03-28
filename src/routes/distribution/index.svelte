@@ -1,26 +1,46 @@
 <script>
 import { onMount } from "svelte";
 
-import { submit_distribution_lead,loadAllIntrests } from "./../../api/api";
+import { submit_distribution_lead,loadAllIntrests,loadBusinessTypes, maps_key } from "./../../api/api";
+import AutoComplete from "simple-svelte-autocomplete";
+import {Spinner} from 'sveltestrap';
 
-
-
-    const business_types = ['אבטחה','הייטק','הפקות/ חיי לילה','חברות ניקיון וכוח אדם ','חקלאים/ גדש','לולים','מוסכים','מטבחים/ מסעדות','מלונאות','מנהל חינוך','מנהל תרבות','מנהל קורונה','מסגריות/ רתכים','מפעל/ תעשייה ','נגריות','נוי/ גננים','רפתות', 'בית אריזה', 'טכנאי/מתקין','תחזוקה','נאמן בטיחות', 'אחר - פרט למטה', ];
+    let business_types = [];// = ['אבטחה','הייטק','הפקות/ חיי לילה','חברות ניקיון וכוח אדם ','חקלאים/ גדש','לולים','מוסכים','מטבחים/ מסעדות','מלונאות','מנהל חינוך','מנהל תרבות','מנהל קורונה','מסגריות/ רתכים','מפעל/ תעשייה ','נגריות','נוי/ גננים','רפתות', 'בית אריזה', 'טכנאי/מתקין','תחזוקה','נאמן בטיחות', 'אחר - פרט למטה', ];
     let _i_want_emails = true;
     let _i_want_wantsapp = true;
     let submited = false;
+    let loaded = false;
     let mform;
     let selected_business_type;
     let intrests = [];
     let selected_intrests = [];
+    let business_input;
     onMount(async ()=> {
-        debugger;
+        loaded = false;
         intrests = await loadAllIntrests();
-        console.log(intrests);
+        business_types = await loadBusinessTypes();
+        console.log('intrests: ', intrests);
+        console.log('business types: ', business_types)
+        loaded = true;
+        /*window.$(document).ready(function() {
+            
+            setTimeout(()=>{
+                    console.log('ready!');
+                    window.$('#business_type').select2({
+                        placeholder: 'בחר את תחומי העיסוק שלך',
+                        allowClear: false,
+                        dropdownAutoWidth: true,
+                        closeOnSelect: false,
+                    });
+                    window.$('#business_type').on('change', business_type_results_changed)
+                },0)
+        })*/
+        
     })
 
     function submit_form(e) {
         submited = true;
+        debugger;
         if(mform.reportValidity()) {
             console.log('submit=', submited);
             const formData = new FormData(mform);
@@ -29,11 +49,14 @@ import { submit_distribution_lead,loadAllIntrests } from "./../../api/api";
                 const [key, value] = field;
                 data[key] = value;
             }
+            data.intrests = instrests_results;
+            data.business_types = business_type_results;
             /*let fields = mform.querySelectorAll('input')
             let data = {};
             for(let i = 0; i < fields.length; i++) {
                 data[fields[i].name] = fields[i].value;
             }*/
+            console.log('submiting data: ', data);
             submit_distribution_lead(data).then(res => {
                 console.log('res=', res);
                 if(res.status === 200) {
@@ -63,87 +86,237 @@ import { submit_distribution_lead,loadAllIntrests } from "./../../api/api";
             return false;
         }
     }*/
-</script>
+    let hasCustomInBusinessType = false;
+    let business_type_results;
+    let instrests_results;
+    $: {
+        console.log('business_type_results: ', business_type_results);
+        if (business_type_results != undefined) {
+            hasCustomInBusinessType = business_type_results.find(x => x === 'אחר - פרט למטה') != undefined;
+        }
+    }
 
+</script>
+<svelte:head>
+    <!--
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={maps_key}&callback=initMap&libraries=places&v=weekly&channel=2" async defer ></script>
+    <script>
+        function initMap() {
+            console.log('initMap before timeout');
+            setTimeout(() => {
+                console.log('initMap');
+                const options = {
+                    strictBounds: false,
+
+                };
+                const input = document.getElementById("address");
+                console.log('input: ', input);
+                const autocomplete = new google.maps.places.Autocomplete(input, options);
+                console.log('autocomplete: ', autocomplete);
+            }, 200);
+            
+        }
+
+    </script>
+</svelte:head>
 <div class="bg-wraper">
     <main>
-        {JSON.stringify(intrests)}
-        <form bind:this="{mform}" autocomplete="off" class="distribution-form  bg-color-primary" class:submited={submited}>
-            <div class="vip-text">
-                <div>כל הלקוחות שלנו הם V.I.P אבל יש כאלה שמרוויחים <span class="mark-strong">יותר</span>...</div>
-        
-                <div>
-                    <span class="mark-strong">
-                        רוצים להרוויח גם?
-                    </span>
-                </div>
-        
-                <div>הצטרפו למועדון הלקוחות שלנו ותתחילו להרוויח <span class="mark-strong">יותר</span> על כל הזמנה!
-                </div>
-            </div>
-            <!--
-                טופס
-                שם העסק
-                סוג העסק - autocompleate from api
-                שם איש הקשר
-                - אני מעוניין בדיוור:
-                - למייל - bool
-                - לוואטסאפ - bool
-            -->
-        
-                <div class="form-fields">
-                    <fieldset>
-                        <input required="{true}" autocomplete="off"  type="text" name="business-name" id="business_name" placeholder="שם העסק">
-                        <select required="{true}" autocomplete="off" title="סוג עסק" bind:value={selected_business_type} name="business-type" id="business_type" placeholder="סוג העסק">
-                            <option value="" disabled selected>סוג עסק שלך</option>
-                            {#each business_types as business_type}
-                                <option value="{business_type}">{business_type}</option>
-                            {/each}
-                        </select>
-                        <!--
-                        <input bind:value={selected_business_type} required={true} pattern="{business_types.join('|')}" type="text" name="business_type" id="business_type" list="business_types" placeholder="סוג העסק - בחר (אחר) אם העסק שלך לא נמצא">
-                        <datalist id="business_types">
-                            {#each business_types as business_type}
-                                <option value="{business_type}">
-                            {/each}
-                        </datalist>
-                        -->
-                    {#if selected_business_type == 'אחר - פרט למטה'}
-                        <input autocomplete="off" required="{true}" type="text" name="business-type-other" id="business_type_other" placeholder="סוג העסק שלך">
-                    {/if}
-                    <input required="{false}" autocomplete="off" type="text" name="address" id="address" placeholder="כתובת">
-                    </fieldset>
-                    
-                    <fieldset>
-                        <input required="{true}" autocomplete="off" type="text" name="name" id="name" placeholder="שם איש קשר">
-                        <!--https://stackoverflow.com/questions/34556308/how-to-validate-israeli-phone-number-->
-                        <input required="{_i_want_wantsapp}" autocomplete="off" type="tel" name="phone" minlength="10" id="tel" placeholder="טלפון">
-                        <input required="{_i_want_emails}" autocomplete="off" type="email" name="email" id="email" placeholder="אימייל">
-                        <div class="mailing-list-register">
-                            <input type="checkbox" name="mailing-list" id="mailing-list" on:click={checkbox_state_change} bind:checked={_i_want_emails}>
-                            <label for="mailing-list">
-                                אני מעוניין בדיוור למייל
-                            </label>
-                            <br>
-                            <input type="checkbox" name="whatsapp-list" id="whatsapp-list" on:click={checkbox_state_change} bind:checked={_i_want_wantsapp}>
-                            <label for="whatsapp-list">
-                                אני מעוניין בדיוור לוואטסאפ
-                            </label>
-                        </div>
-                    </fieldset>
-                    <!--
-                    <div class="form-group">
-                        <input class="checkbox" checked type="checkbox" name="מעוניין_בתוכן_שיווקי" id="check2">
-                        <label class="checkbox-title" for="check2">אני מעוניין לקבל תוכן פרסומי</label>
+            <form bind:this="{mform}" autocomplete="off" class="distribution-form  bg-color-primary" class:submited={submited}>
+                <div class="vip-text">
+                    <div>כל הלקוחות שלנו הם V.I.P אבל יש כאלה שמרוויחים <span class="mark-strong">יותר</span>...</div>
+            
+                    <div>
+                        <span class="mark-strong">
+                            רוצים להרוויח גם?
+                        </span>
                     </div>
-                    -->
+            
+                    <div>הצטרפו למועדון הלקוחות שלנו ותתחילו להרוויח <span class="mark-strong">יותר</span> על כל הזמנה!
+                    </div>
                 </div>
-                <button class="sub-btn" on:click|preventDefault="{submit_form}" type="submit">רוצה הצעה משתלמת!</button>
-        </form>
+                <!--
+                    טופס
+                    שם העסק
+                    סוג העסק - autocompleate from api
+                    שם איש הקשר
+                    - אני מעוניין בדיוור:
+                    - למייל - bool
+                    - לוואטסאפ - bool
+                -->
+            
+                    <div class="form-fields">
+                        <fieldset>
+                            <input required="{true}" autocomplete="off"  type="text" name="business-name" id="business_name" placeholder="שם העסק">
+                            <!--<select required="{true}" autocomplete="off" title="סוג עסק" bind:value={selected_business_type} name="business-type" id="business_type" placeholder="סוג העסק">
+                                <option value="" disabled selected>סוג עסק שלך</option>
+                                {#each business_types as business_type}
+                                    <option value="{business_type}">{business_type}</option>
+                                {/each}
+                            </select>
+                            -->
+                            <!--
+                            <select name="business-type[]" id="business_type" placeholder="סוג העסק" multiple="multiple">
+                            
+                                {#each business_types as business_type}
+                                    <option value={business_type['name']}>{business_type['name']}</option>
+                                {/each}
+                            </select>
+                            -->
+                            <AutoComplete multiple={true} id="business_type" items={business_types} createText="לא נמצאו תוצאות, בחר ב'אחר'"
+                                create=false placeholder="תחום עיסוק" className="autocomplete-cls" delay=200 localFiltering="{false}" labelFieldName="name" valueFieldName="name" bind:value={business_type_results}  >
+                                <!--
+                                    <div slot="loading" let:loadingText={loadingText}>
+                                        <Spinner
+                                            size="sm"
+                                            speed="750"
+                                            unit="em"
+                                            color="#A82124"
+                                            thickness="2"
+                                        />
+                                        <span>{loadingText}</span>
+                                    </div>
+
+
+                                    <div slot="item" let:item={item} let:label={label}>
+                                        {@html label}
+                                    </div>
+                                -->
+                                <div class="tag-wraper" slot="tag" let:label="{label}" let:item="{item}" let:unselectItem="{unselectItem}">
+                                    <span class="tag">{label}</span>
+                                    <span class="delete-tag" on:click|preventDefault="{unselectItem(item)}">x</span>
+                                </div>
+                            </AutoComplete>
+                            <!--
+                            <input bind:value={selected_business_type} required={true} pattern="{business_types.join('|')}" type="text" name="business_type" id="business_type" list="business_types" placeholder="סוג העסק - בחר (אחר) אם העסק שלך לא נמצא">
+                            <datalist id="business_types">
+                                {#each business_types as business_type}
+                                    <option value="{business_type}">
+                                {/each}
+                            </datalist>
+                            -->
+                            
+                        {#if hasCustomInBusinessType} 
+                                <input autocomplete="off" required="{true}" type="text" name="business-type-other" id="business_type_other" placeholder="פרט על סוג העסק שלך">
+                        {/if}
+                        <input required="{true}" type="text" name="address" id="address" placeholder="כתובת">
+
+                        <AutoComplete multiple={true} id="intrested" items={intrests} createText="לא נמצאו תוצאות"
+                                create=false placeholder="מוצרים מעניינים" className="autocomplete-cls" delay=200 localFiltering="{false}"  labelFieldName="name" valueFieldName="name" bind:value={instrests_results}  >
+                                <!--
+                                    <div slot="loading" let:loadingText={loadingText}>
+                                        <Spinner
+                                            size="sm"
+                                            speed="750"
+                                            unit="em"
+                                            color="#A82124"
+                                            thickness="2"
+                                        />
+                                        <span>{loadingText}</span>
+                                    </div>
+
+
+                                    <div slot="item" let:item={item} let:label={label}>
+                                        {@html label}
+                                    </div>
+                                -->
+                                <div class="tag-wraper" slot="tag" let:label="{label}" let:item="{item}" let:unselectItem="{unselectItem}">
+                                    <span class="tag">{label}</span>
+                                    <span class="delete-tag" on:click|preventDefault="{unselectItem(item)}">x</span>
+                                </div>
+                            </AutoComplete>
+                        </fieldset>
+                        
+                        <fieldset>
+                            <input required="{true}" autocomplete="off" type="text" name="name" id="name" placeholder="שם איש קשר">
+                            <!--https://stackoverflow.com/questions/34556308/how-to-validate-israeli-phone-number-->
+                            <input required="{_i_want_wantsapp}" autocomplete="off" type="tel" name="phone" minlength="10" id="tel" placeholder="טלפון">
+                            <input required="{_i_want_emails}" autocomplete="off" type="email" name="email" id="email" placeholder="אימייל">
+                            <div class="mailing-list-register">
+                                <input type="checkbox" name="mailing-list" id="mailing-list" on:click={checkbox_state_change} bind:checked={_i_want_emails}>
+                                <label for="mailing-list">
+                                    אני מעוניין בדיוור למייל
+                                </label>
+                                <br>
+                                <input type="checkbox" name="whatsapp-list" id="whatsapp-list" on:click={checkbox_state_change} bind:checked={_i_want_wantsapp}>
+                                <label for="whatsapp-list">
+                                    אני מעוניין בדיוור לוואטסאפ
+                                </label>
+                            </div>
+                        </fieldset>
+                        <!--
+                        <div class="form-group">
+                            <input class="checkbox" checked type="checkbox" name="מעוניין_בתוכן_שיווקי" id="check2">
+                            <label class="checkbox-title" for="check2">אני מעוניין לקבל תוכן פרסומי</label>
+                        </div>
+                        -->
+                    </div>
+                    <button class="sub-btn" on:click|preventDefault="{submit_form}" type="submit">רוצה הצעה משתלמת!</button>
+            </form>
     </main>
 </div>
 
 <style lang="scss">
+    :global(.autocomplete-cls) {
+        height: auto!important;
+        :global(.input-container){
+                padding-right: 2.8em!important;
+                    :global(.tag-wraper){
+                        background-color: rgb(170, 165, 165)!important;
+                        border-radius: 15px!important;
+                        margin-left: 4px;
+                        margin-right: 4px;
+                        :global(.delete-tag){
+                            padding-left: 8px;
+                            padding-right: 8px;
+                        }
+                    }
+            :global(.autocomplete.is-multiple .tags) {
+                margin-right: 2.7em;
+            }
+        }
+
+    }
+    /*:global(.select2) {
+        :global(span.selection) {
+            :global(span.select2-selection) {
+                //border: 1px solid black;//light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+                writing-mode: horizontal-tb !important;
+                text-rendering: auto;
+                color: -internal-light-dark(black, white);
+                letter-spacing: normal;
+                word-spacing: normal;
+                line-height: normal;
+                text-transform: none;
+                text-indent: 0px;
+                text-shadow: none;
+                text-align: start;
+                appearance: auto;
+                -webkit-rtl-ordering: logical;
+                cursor: text;
+                background-color: -internal-light-dark(rgb(255, 255, 255), rgb(59, 59, 59));
+                margin: 0em;
+                padding: 1px 2px;
+                border-width: 2px;
+                
+                border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+                border-image: initial;
+            }
+            :global(.select2-search){
+                :global(textarea.select2-search__field) {
+                    height: auto;
+                    line-height: 0.5;
+                    margin-top: 0px;
+                    
+                }
+            }
+        }
+    }*/
+    
     .mark-strong {
         font-weight: bolder;
     }
