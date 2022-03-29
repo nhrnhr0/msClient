@@ -67,12 +67,12 @@
           if($cartStore[product_id].varients.length != 0) {
             for(let varIdx = 0; varIdx < $cartStore[product_id].varients.length; varIdx++) {
               mentries[$cartStore[product_id].colors[clrIdx]][$cartStore[product_id].sizes[sizeIdx]][$cartStore[product_id].varients[varIdx].id] = {
-                quantity: 0
+                quantity: undefined
               };
             }
           }else {
             mentries[$cartStore[product_id].colors[clrIdx]][$cartStore[product_id].sizes[sizeIdx]] = {
-              quantity: 0
+              quantity: undefined
             };
           }
         }
@@ -455,6 +455,7 @@
                     padding: 5px;
                 }
                 &.size-cell {
+                  border: 1px solid rgb(85, 85, 85);
                   & .cell-wraper {
                     display: grid;
                     grid-template-columns: 1fr;
@@ -463,7 +464,8 @@
                     
                     width: 100%;
                     text-align: center;
-                    border: 1px solid #777777;
+                    //border: 1px solid #777777;
+                    border:none;
                     
                     
                     border-radius: 5px;
@@ -472,7 +474,13 @@
                     &:focus {
                       outline: none;
                     }
+                    &::-webkit-outer-spin-button,
+                    &::-webkit-inner-spin-button {
+                      -webkit-appearance: none;
+                      margin: 0;
+                    }
                   }
+                  
                 }
                 .remove-button {
                   background: none;
