@@ -517,6 +517,9 @@ on:change={(event) => {
                                         <div class="delete-btn delete-btn-click-area" class:show={$cartStore[image.id] != undefined}>
                                             <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="30px" height="30px" class="delete-btn-click-area"><path class="delete-btn-click-area" d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
                                         </div>
+                                        {#if image.out_of_stock}
+                                            <img src="https://res.cloudinary.com/ms-global/image/upload/v1648557091/msAssets/out-of-stock_faypce.png" class="sold-out-icon" alt="מלאי לא זמין"/>
+                                        {/if}
                                         <!--
                                         <button class="swiper-star-btn" on:click={(e)=>{fave_list.addToFaveList(image.id)}}>
                                             <FaveIcon class="swiper-star" name={$fave_list.isInList(image.id) ? 'star-full': 'star'} />
@@ -596,6 +599,17 @@ on:change={(event) => {
 <!--</Lazy>-->
 </div>
 <style lang="scss">
+    .sold-out-icon {
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        top: 0px;
+        left: 50%;
+        z-index: 1;
+        border: none;
+        background: none;
+        transform: translate(-50%, 0);
+    }
     :global(.swiper-question-click-area) {
         cursor: pointer;
     }
@@ -629,8 +643,8 @@ on:change={(event) => {
     }
     :global(.swiper) {
         cursor: pointer;
-        padding-top: 60px;
-        
+        //padding-top: 60px;
+        padding-top: 93px;
         :global(.default-tip) {
             
             transform: translate(0%, 15%);
@@ -821,6 +835,7 @@ on:change={(event) => {
         align-items: center;
     }
     .title-wraper {
+        margin-top: 60px;
   display: flex;
   justify-content: center;
   //padding-bottom: 50px;
