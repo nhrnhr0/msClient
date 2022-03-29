@@ -57,7 +57,6 @@ import { apiGetAllUsers } from './../../api/api';
     
 
     let unsub = userInfoStore.subscribe((newValue)=>{
-        debugger;
         if(newValue) {
             if(newValue['me']) {
                 username = newValue['me'].username;
@@ -91,7 +90,6 @@ import { apiGetAllUsers } from './../../api/api';
             old_password = '';
             new_password = '';
             error_detail = '';
-            debugger;
             refresh_all_users()
         }
     }

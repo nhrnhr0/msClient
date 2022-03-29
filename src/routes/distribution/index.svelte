@@ -40,7 +40,6 @@ import {Spinner} from 'sveltestrap';
 
     function submit_form(e) {
         submited = true;
-        debugger;
         if(mform.reportValidity()) {
             console.log('submit=', submited);
             const formData = new FormData(mform);

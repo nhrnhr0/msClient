@@ -349,7 +349,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
   function openProductImageModal(e) {
     // open image in new tab
-    debugger;
     let src = e.target.src
     window.open(src);
     /*
@@ -357,7 +356,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
       $productImageModalStore.setProduct($productData);
       $productImageModalStore.toggleModal();
     }*/
-
   }
 
   function remove_from_cart()  {

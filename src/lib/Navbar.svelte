@@ -24,6 +24,17 @@ Spinner
 import NavLoginManager from "./components/navLoginManager.svelte";
 import { apiSearchProducts } from "./../api/api";
 import { logStore } from "./../stores/logStore";
+        let groupedAlbums; // group groupedAlbums albumsJsonStore by topLevelCategory, if topLevelCategory is not found, create others
+        albumsJsonStore.subscribe((albums) => {
+            groupedAlbums = albums.reduce((acc, album) => {
+                const topLevelCategory = album.topLevelCategory;
+                if (!acc[topLevelCategory]) {
+                    acc[topLevelCategory] = [];
+                }
+                acc[topLevelCategory].push(album);
+                return acc;
+            }, {});
+        });
         function menuItemClicked(album) {
             $categoryModalStore.setAlbum(album);
             $categoryModalStore.toggleModal();
@@ -207,7 +218,6 @@ import { logStore } from "./../stores/logStore";
         </form>
 
 
-
             <Dropdown id="navCategoryList" class="category-menu">
                 <DropdownToggle color="none" caret aria-label="menu">  
                     <svg viewBox="0 0 100 80" width="40" height="40">
@@ -219,12 +229,31 @@ import { logStore } from "./../stores/logStore";
                 
                 <DropdownMenu>                    
                     <h1 class="drop-title"> מחלקות מוצרים</h1>
-                    {#if $albumsJsonStore }
-                        {#each $albumsJsonStore as  album}
-                            <DropdownItem>
-                                <button class="btn btn-dark" on:click={menuItemClicked(album)}>
-                                    {album.title}
-                                </button>
+                    {#if groupedAlbums }
+                        {#each Object.entries(groupedAlbums) as  [key, val]}
+                            <DropdownItem header>
+                                
+                                <Dropdown class="category-menu-2">
+                                    <DropdownToggle color="none" caret aria-label="submenu">
+                                        <button class="btn btn-dark">
+                                            {#if key == 'undefined'}
+                                                אחר
+                                            {:else}
+                                                {key}
+                                            {/if}
+                                        </button>
+                                    </DropdownToggle>
+                                    <DropdownMenu>
+                                        {#each val as  album}
+                                        <DropdownItem>
+                                            <button class="btn btn-dark" on:click={menuItemClicked(album)}>
+                                                {album.title}
+                                            </button>
+                                        </DropdownItem>
+                                        {/each}
+                                        
+                                    </DropdownMenu>
+                                </Dropdown>
                             </DropdownItem>
                         {/each}
                     {/if}
@@ -258,15 +287,17 @@ import { logStore } from "./../stores/logStore";
 
 :global(#navCategoryList) {
         :global(.dropdown-menu.show) {
-          max-height: 80vh;
-          overflow-y: auto;
+          
           left: 0%!important;
           padding-top: 40px;
+            overflow-y: visible;
           .drop-title {
             font-size: 2rem;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
+            width: 100%;
+            text-align: center;
             
           }
           @media screen and (max-width: 900px) {

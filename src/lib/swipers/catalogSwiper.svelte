@@ -147,7 +147,6 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                 //console.log('>> \t', target);
                 if(target) {
                     //console.log('>>>>> class list: >> \t', target.classList);
-                    debugger;
                     if(target.classList.contains('product-image') && dont_open_modal == false) {
                         $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);
                         
@@ -171,7 +170,6 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                             );
 
                     }else if(target.classList.contains('like-btn-wraper')) {
-                        debugger;
                         let currentProduct = get_product_by_id(target.dataset.productId);
                         if(cartStore.isInCart(currentProduct) == false) {
                             //flyToCart(target.parentElement.querySelector('.product-image'));
@@ -255,7 +253,6 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                             );
                     }
                     else if(target.classList.contains('add-to-cart-btn')) {
-                        debugger;
                         let currentProduct = get_product_by_id(target.dataset.productId);
                         if(cartStore.isInCart(currentProduct) == false) {
                             //flyToCart(target.parentElement.querySelector('.product-image'));

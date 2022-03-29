@@ -154,7 +154,6 @@ Button,
   }
 
   function likeBtnClicked(img) {
-    debugger;
     //console.log('likeBtnClicked', e);
     //let img = e.currentTarget.parentElement.querySelector('.product-image');
     let imgData = img;// JSON.parse(e.currentTarget.dataset["img"]);

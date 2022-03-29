@@ -43,7 +43,6 @@ import { Spinner } from "sveltestrap";
 		}
 		else if(state == 1) {
 			state = 2;
-			debugger;
 			cart_submit();
 		}
 	}
@@ -80,7 +79,7 @@ import { Spinner } from "sveltestrap";
 						}
 					});
 				}
-				debugger;*/
+				;*/
                 cart_products.push({'id': product.id, 'amount': product.amount, 'price': product.client_price, 'mentries': product.mentries});
 				
             }
@@ -188,7 +187,6 @@ import { Spinner } from "sveltestrap";
     }
 
 	function price_cell_click(e, cart_key){
-		debugger;
 		if($userInfoStore.isLogin && $userInfoStore.me && $userInfoStore.me.is_superuser == true) {
 			// open popup to edit price
 			let item = $cartStore[cart_key];
@@ -214,7 +212,6 @@ import { Spinner } from "sveltestrap";
 	}
     function open_product_modal(key) {
         let product = $cartStore[key];
-		debugger;
 		//product.albums = [15, 85]
 		let min_album = Math.min(...product.albums);
 

@@ -315,7 +315,7 @@ import { flashy_page_view } from "$lib/flashy";
     if(new_albums.length > 0) {
       albums = new_albums;
     }
-    console.log('albums: ', new_albums);
+    console.log('new albums subscriber: ', new_albums);
   });
 
   activeModalsStore.subscribe(modals => {
