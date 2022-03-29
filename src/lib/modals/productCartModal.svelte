@@ -223,7 +223,7 @@
                   {#if $cartStore[product_id].varients.length != 0}
                     <td>
                       {#each $cartStore[product_id].varients as varient }
-                      <div class="varient-box">
+                      <div class="varient-box cls-cell">
                         {varient.name}
                       </div>
                       {/each}
@@ -234,12 +234,14 @@
                     <td class="size-cell">
                       
                         {#if $cartStore[product_id].varients.length == 0}
-                            <input class="size-input" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color][size].quantity}" min="0" max="9999" >
+                          <div class="cell-wraper">
+                            <input class="size-input cls-cell" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color][size].quantity}" min="0" max="9999" >
+                          </div>
                         {:else}
                         <div class="cell-wraper">
                           {#each $cartStore[product_id].varients as {id, name}, idx}
                             
-                            <input id="input_entery_{product_id}_{size}_{color}_{id}" class="size-input" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color][size][id].quantity}" min="0" max="9999" >
+                            <input id="input_entery_{product_id}_{size}_{color}_{id}" class="size-input cls-cell" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color][size][id].quantity}" min="0" max="9999" >
                           {/each}
                         </div>
                         {/if}
@@ -360,7 +362,9 @@
 </div>
 
 <style lang="scss">
-
+.cls-cell {
+  border:1px solid rgb(85, 85, 85);
+}
   .modal-body {
     .const-size-cell {
       width: 200px;
@@ -445,30 +449,42 @@
           }
           tbody {
             tr {
+              
               td {
+                
                 .varient-box {
                   font-weight: bold;
                     width: 100%;
                     text-align: center;
-                    border-bottom: 1px solid rgb(85, 85, 85);
+                    
+                    
                     background: none;
                     padding: 5px;
                 }
                 &.size-cell {
-                  border: 1px solid rgb(85, 85, 85);
+                  
                   & .cell-wraper {
+                    
                     display: grid;
                     grid-template-columns: 1fr;
                   }
+                  input.size-input:first-child {
+                    &:last-child {
+                      border-left: none;
+                    }
+                  }
                   input.size-input {
-                    
+                    //border: 1px solid rgb(85, 85, 85);
                     width: 100%;
                     text-align: center;
                     //border: 1px solid #777777;
-                    border:none;
+                    //border:none;
+                    //border-right: 1px solid rgb(85, 85, 85);
+                    //border-left: 1px solid rgb(85, 85, 85);
                     
                     
-                    border-radius: 5px;
+                    
+                    //border-radius: 5px;
                     background: none;
                     padding: 5px;
                     &:focus {
