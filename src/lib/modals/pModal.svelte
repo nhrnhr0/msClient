@@ -42,7 +42,7 @@ import {pushMainPage, pushProductState } from './../../stores/urlManager';
 
 import { logStore } from './../../stores/logStore';
     import {Event} from '$lib/utils/js/Event'
-    import {Magnifier} from '$lib/utils/js/Magnifier.js';
+    //import {Magnifier} from '$lib/utils/js/Magnifier.js';
     import { selectTextOnFocus } from '$lib/ui/inputActions';
     import {activeModalsStore } from '$lib/modals/modalManager';
 import MyCountdown from '$lib/components/MyCountdown.svelte';
@@ -510,9 +510,11 @@ import SingleAmountModal from './singleAmountModal.svelte';
                           <div class="price-tag" class:active={show_prices} >{$productData.client_price + '₪'}</div>
                       </div>
                   </div>
+                  <!--
                   <div class="magnifier-preview-wraper">
                     <div class="magnifier-preview example heading" id="preview"></div>
                   </div>
+                  -->
                 </div>
             </div>
 
@@ -662,7 +664,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
 
 <style lang="scss">
-    @import '$lib/utils/css/magnifier.css';
+    //@import '$lib/utils/css/magnifier.css';
 
     .like-btn-wraper{
       
