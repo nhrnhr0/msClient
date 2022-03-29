@@ -147,7 +147,7 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                 //console.log('>> \t', target);
                 if(target) {
                     //console.log('>>>>> class list: >> \t', target.classList);
-
+                    debugger;
                     if(target.classList.contains('product-image') && dont_open_modal == false) {
                         $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);
                         
@@ -196,11 +196,13 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                         } else {
 
                         }
+                        
 
                         if(currentProduct.show_sizes_popup) {
                                 open_edit_amount_dialog(currentProduct.id);
                         }else {
                             open_single_amount_dialog(currentProduct.id, currentProduct.title);
+                        }
                             /*
                             const selector = '#slider_amount_input_'+currentProduct.id;
                             const query = document.querySelectorAll(selector);
@@ -215,7 +217,7 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                                 query[0].focus();
                             }*/
 
-                        }
+                        
                     }else if(target.classList.contains('delete-btn-click-area')) {
                         // delete product from cart
                         let mslide = target.closest('.swiper-slide')
@@ -277,6 +279,12 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
                             copySwiperduplicates(E);
                         } else {
 
+                        }
+
+                        if(currentProduct.show_sizes_popup) {
+                                open_edit_amount_dialog(currentProduct.id);
+                        }else {
+                            open_single_amount_dialog(currentProduct.id, currentProduct.title);
                         }
                     }
                     else {

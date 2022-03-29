@@ -177,13 +177,8 @@ Button,
       });
     } else {
     }
-    if($cartStore[imgData.id].show_sizes_popup) {
-        open_edit_amount_dialog(imgData.id);
-      }else {
-        //let itm = document.querySelector('input#amount_' + imgData.id); 
-        //itm.focus();
-        $singleAmountPopupStore.toggleModal(imgData.id, imgData.title);
-      }
+    open_edit_amount_dialog(imgData);
+    
     //open_edit_amount_dialog(imgData.id);
 
     //flyToCart(img);
@@ -191,13 +186,17 @@ Button,
 
 
   }
-  function open_edit_amount_dialog(product_id) {
-    $productCartModalStore.set_product(product_id);
-    setTimeout(()=> {
+  function open_edit_amount_dialog(product) {
+    console.log('open_edit_amount_dialog', product);
+    if($cartStore[product.id].show_sizes_popup) {
+      $productCartModalStore.set_product(product.id);
+      setTimeout(() => {
         $productCartModalStore.toggleModal();
-    }, 5);
+      }, 5);
+    }else {
+      $singleAmountPopupStore.toggleModal(product.id, product.title);
+    }
   }
-
   let modal_body;
 
   function changeCategory(alb) {
@@ -219,6 +218,16 @@ Button,
     });
     setAlbum(alb);
   }
+
+
+  /*function open_cart_edit_pupup(img) {
+    
+    if(cartStore.getProduct(product_id).show_sizes_popup == false) {
+      $singleAmountPopupStore.toggleModal(product_id, title);
+      return false;
+    }
+    $productCartModalStore.set_product($productData.id);
+  }*/
 </script>
 
 
@@ -350,13 +359,13 @@ Button,
           </div>
           {:else}
 
-          <button  id="categoryModalLikeBtn" class="like-btn active">
+          <button  id="categoryModalLikeBtn" on:click={()=> open_edit_amount_dialog(img)} class="like-btn active">
             <div class="img-wraper">
               <div class="btn-product-title">
                           {img.title}
               </div>
               <hr>
-              <div class="action">
+              <div class="action" >
                 <div class="amount-before">
                   <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" data-product-id="{img.id}">
                     <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="25px" height="25px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
