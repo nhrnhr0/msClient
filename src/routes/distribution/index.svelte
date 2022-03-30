@@ -334,7 +334,7 @@ import {Spinner} from 'sveltestrap';
     overflow:hidden;
     width: 100%;
     //height: -webkit-fill-available;
-    height: 100vh;
+    //height: 100vh;
     overflow-y: auto;
     main {
         display: flex;
@@ -446,12 +446,12 @@ import {Spinner} from 'sveltestrap';
 
         @media screen and (max-height: 675px) {
                 .distribution-form{
-                    margin-top: 250px;
+                    //margin-top: 250px;
                 }
         }
         @media screen and (max-height: 462px) {
                 .distribution-form{
-                    margin-top: 350px;
+                    //margin-top: 350px;
                 }
             
         }
