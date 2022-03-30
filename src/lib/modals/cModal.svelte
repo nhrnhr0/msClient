@@ -188,10 +188,7 @@ Button,
   function open_edit_amount_dialog(product) {
     console.log('open_edit_amount_dialog', product);
     if($cartStore[product.id].show_sizes_popup) {
-      $productCartModalStore.set_product(product.id);
-      setTimeout(() => {
-        $productCartModalStore.toggleModal();
-      }, 5);
+      $productCartModalStore.toggleModal(product.id);
     }else {
       $singleAmountPopupStore.toggleModal(product.id, product.title);
     }

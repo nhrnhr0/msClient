@@ -26,13 +26,24 @@
   let modal_zIndex = 0;
   export let isModalOpen = false;
 
-  export function toggleModal() {
+  export function toggleModal(product_id_) {
     isModalOpen = !isModalOpen;
+    debugger;
     activeModalsStore.modalToggle('productCart', isModalOpen);
+    // modal is close
+    
     if (isModalOpen == false) {
       is_loaded = false;
+      // if the last product amount was 0 when close: remove from cart
+      if (product_id != undefined && $cartStore[product_id] != undefined && $cartStore[product_id].amount <= 0) {
+
+        cartStore.removeFromCartById(product_id);
+      }
+      
+    // modal is open
     } else {
       modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
+      set_product(product_id_);
     }
   }
   export function isOpen() {
@@ -40,7 +51,7 @@
   }
   let product_id = 0;
   const MAX_RETRY_COUNT = 3;
-  export function set_product(product_id_, retrys = 0) {
+  function set_product(product_id_, retrys = 0) {
     product_id = product_id_;
     is_loaded = false;
     if (MAX_RETRY_COUNT < retrys) {
@@ -77,30 +88,6 @@
           }
         }
       }
-      /*
-      $cartStore[product_id].colors.forEach(color => {
-        if($cartStore[product_id].varients.length == 0) {
-          mentries[color] = $cartStore[product_id].sizes.map(size => {
-            return {
-              quantity: undefined
-            }
-          });
-        }else {
-          
-          mentries[color] = $cartStore[product_id].sizes.map(size => {
-            let ret = [];
-            for (let i = 0; i < $cartStore[product_id].varients.length; i++) {
-              ret.push({
-                varient: $cartStore[product_id].varients[i].name,
-                quantity: undefined
-              });
-            }
-            return ret;
-          });
-        }
-      });
-      debugger;
-      */
       $cartStore[product_id].mentries = mentries;
     }
     is_loaded = true;

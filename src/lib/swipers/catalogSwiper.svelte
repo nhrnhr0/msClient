@@ -316,10 +316,9 @@ import QuestionLabel from '$lib/components/questionLabel.svelte';
         $categoryModalStore.setAlbum(album);
     }
     function open_edit_amount_dialog(product_id) {
-        $productCartModalStore.set_product(product_id);
-        setTimeout(()=> {
-            $productCartModalStore.toggleModal();
-        }, 5);
+        //$productCartModalStore.set_product(product_id);
+        $productCartModalStore.toggleModal(product_id);
+        
     }
     export function update_swiper() {
         //TODO: update swipers

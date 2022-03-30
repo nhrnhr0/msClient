@@ -386,10 +386,8 @@ import SingleAmountModal from './singleAmountModal.svelte';
       $singleAmountPopupStore.toggleModal($productData.id, $productData.title);
       return false;
     }
-    $productCartModalStore.set_product($productData.id);
-    setTimeout(()=> {
-        $productCartModalStore.toggleModal();
-    }, 5);
+    $productCartModalStore.toggleModal($productData.id);
+    
   }
 </script>
 

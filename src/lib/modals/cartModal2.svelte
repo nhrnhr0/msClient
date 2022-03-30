@@ -201,10 +201,11 @@ import { Spinner } from "sveltestrap";
 	}
 	function open_edit_amount_dialog(product_id, product_title) {
 		if(cartStore.getProduct(product_id).show_sizes_popup){
-			$productCartModalStore.set_product(product_id);
-			setTimeout(()=> {
-				$productCartModalStore.toggleModal();
-			}, 5);
+			//$productCartModalStore.set_product(product_id);
+			$productCartModalStore.toggleModal(product_id);
+			/*setTimeout(()=> {
+				
+			}, 5);*/
 		}else {
 			//document.querySelector('input#cart_amount_'+product_id).focus();
 			$singleAmountPopupStore.toggleModal(product_id, product_title);
