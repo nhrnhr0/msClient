@@ -822,9 +822,13 @@ on:change={(event) => {
                         justify-content: center;
                         align-items: center;
                         width: 100%;
+                        background-color: #70C38A;
+                        border: 1px solid #70C38A;
                     }
                     :global(.read-more-btn) {
                         width: 100%;
+                        background-color: #565E64;
+                        border: 1px solid #565E64;
                     }
                 }
         

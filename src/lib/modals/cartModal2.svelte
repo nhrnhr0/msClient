@@ -354,7 +354,7 @@ import { Spinner } from "sveltestrap";
 						<button class="checkout-back" on:click="{checkout_back_click}" class:active="{state != 0}" >הקודם</button>
 						<button class="checkout-button" on:click="{checkout_click}" disabled={state == 2}>
 							{#if state == 0}
-								המשך
+								לקופה
 							{/if}
 							{#if state == 1}
 								שלח
