@@ -339,7 +339,7 @@ Button,
                       הוסף
                   </Button>
                   <Button color="primary" on:click="{open_product(img)}" data-product-id={img.id} data-catalog-id={$current_album.id} class="read-more-btn">
-                      קרא עוד
+                      פרטים
                   </Button>
               </div>
               <!--

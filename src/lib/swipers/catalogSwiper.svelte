@@ -541,7 +541,7 @@ on:change={(event) => {
                                                 הוסף
                                             </Button>
                                             <Button color="primary" data-product-id={image.id} data-catalog-id={album.id} class="read-more-btn">
-                                                קרא עוד
+                                                פרטים
                                             </Button>
                                         </div>
                                         
