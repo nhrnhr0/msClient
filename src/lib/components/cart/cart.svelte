@@ -47,7 +47,7 @@
             top:0px;
             right:0px;
             transform: translate(50%,-50%);
-                background-color: rgb(48, 48, 219);
+                background-color: #FF0000;//rgb(48, 48, 219);
                 border-radius: 50%;
                 display: inline-block;
                 height: 25px;

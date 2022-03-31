@@ -859,13 +859,13 @@ on:change={(event) => {
     box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease 0s;
     &::before {
-      content: '>> לקטגוריית ';
+      content: 'לקטגוריית ';
       opacity: 1;
       font-size: 1.4rem;
     }
 
     &::after {
-      content: ' לחץ כאן <<';
+      content: ' לחץ כאן';
       opacity: 1;
       font-size: 1.4rem;
     }

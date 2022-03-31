@@ -327,7 +327,7 @@
         </div>
         <div class="action-buttons">
           <!-- שמור ומחק -->
-          <button class="btn btn-primary" on:click={toggleModal}>שמור והמשך</button>
+          <button class="btn btn-primary" on:click={toggleModal}>הוסף לסל</button>
           <button class="btn btn-danger" on:click={remove_from_cart}>מחק</button>
 
         </div>

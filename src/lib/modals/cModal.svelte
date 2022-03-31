@@ -322,9 +322,10 @@ Button,
       <div class="category-item" data-category-prod-id="{img.id}">
         <div class="category-item-img-wraper" on:click="{open_product(img)}" >
           <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
+          <div class="img-title">{img.title}</div>
           <div class="price-tag" class:active={show_prices} >{img.client_price + '₪'}</div>
 
-          <div class="img-title">{img.title}</div>
+          
         </div>
         <div data-img={JSON.stringify(img)} class="like-btn-wraper"> <!--    -->
           {#if $cartStore[img.id] == undefined}
@@ -886,9 +887,19 @@ Button,
       }
 
       position: relative;
-
       .category-item-img-wraper {
-        img {
+        .img-title {
+          position: absolute;
+          display: none;
+          color: white;
+          z-index: 2000;
+          font-size: 1.5em;
+          pointer-events: none;
+          top: 50%;
+          text-align: center;
+          width: 100%;
+        }
+        img.product-image {
           height: auto;
           /*padding: 5px;*/
           border-radius: 0px;
@@ -897,47 +908,22 @@ Button,
 
 
           &:hover {
-            transform: scale(1.0);
+            //transform: scale(1.0);
             mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+            + .img-title {
+              display: block!important;;
+              transition: transform 0.2s;
+              //transform: translate(-50%, -80%);
+              font-weight: 700;
+            }
           }
 
-          &:hover+.img-title {
-            display: block;
-            transition: transform 0.2s;
-            //transform: translate(-50%, -80%);
-            font-weight: 700;
-          }
           
         }
+        
       }
 
-      .img-title {
-        /*position: absolute;
-        display: none;
-        color: white;
-        z-index: 2000;
-        bottom: 50%;
-        transform: translate(-50%, 0%);
-        //top: 0px;
-        font-size: 1.5em;
-
-        left: 50%;
-        pointer-events: none;
-        text-align: center;*/
-        position: absolute;
-        display: none;
-        color: white;
-        z-index: 2000;
-        /* bottom: 50%; */
-        /* transform: translate(-50%, 0%); */
-        font-size: 1.5em;
-        /* left: 50%; */
-        pointer-events: none;
-        top: 50%;
-        text-align: center;
-        width: 100%;
       
-      }
     }
   }
   }
