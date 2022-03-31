@@ -78,9 +78,9 @@
 
     <style lang="scss">
         .logos-wraper {
-            background: rgba(182, 181, 181, 0.527);
+            /*background: rgba(182, 181, 181, 0.527);
             border-radius: 25px;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);*/
             margin-left: 25px;
             margin-right: 25px;
             :global(.logo-swiper) {

@@ -954,11 +954,14 @@ on:change={(event) => {
     height: 438px !important;
     max-width: 99vw;
     margin: auto;
+    @media all and (min-width: 1300px) and (max-width: 1350px) {
+        height: 300px !important;
+    }
     @media all and (min-width: 1300px) and (max-width:1460px) { 
-        height: 498px !important;
+        height: 428px !important;
     }
     @media all and (min-width: 1460px)  { 
-        height: 568px !important;
+        height: 480px !important;
     }
     &.loaded:not(&.active) {
         //height: auto!important;
