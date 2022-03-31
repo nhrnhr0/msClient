@@ -172,9 +172,51 @@ import { logStore } from "./../stores/logStore";
                 src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1634457672/msAssets/favicon_rza3n9"
                 alt=""></a>
 
-                
+                <Dropdown id="navCategoryList" class="category-menu">
+                    <DropdownToggle color="none" caret aria-label="menu">  
+                        <svg viewBox="0 0 100 80" width="40" height="40">
+                            <rect width="100" height="20"></rect>
+                            <rect y="30" width="100" height="20"></rect>
+                            <rect y="60" width="100" height="20"></rect>
+                        </svg>
+                    </DropdownToggle>
+                    
+                    <DropdownMenu>                    
+                        <h1 class="drop-title"> מחלקות מוצרים</h1>
+                        {#if groupedAlbums }
+                            {#each Object.entries(groupedAlbums) as  [key, val]}
+                                <DropdownItem header>
+                                    
+                                    <Dropdown class="category-menu-2">
+                                        <DropdownToggle color="none" caret aria-label="submenu">
+                                            <button class="btn btn-dark">
+                                                {#if key == 'undefined'}
+                                                    אחר
+                                                {:else}
+                                                    {key}
+                                                {/if}
+                                            </button>
+                                        </DropdownToggle>
+                                        <DropdownMenu>
+                                            {#each val as  album}
+                                            <DropdownItem>
+                                                <button class="btn btn-dark" on:click={menuItemClicked(album)}>
+                                                    {album.title}
+                                                </button>
+                                            </DropdownItem>
+                                            {/each}
+                                            
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                </DropdownItem>
+                            {/each}
+                        {/if}
+                    </DropdownMenu>
+                </Dropdown>
 
-                <NavLoginManager></NavLoginManager>
+                <Cart bind:this={$cartDomElementStore}></Cart>
+
+                
 
 
         <form class="d-flex" id="search_form">
@@ -217,51 +259,10 @@ import { logStore } from "./../stores/logStore";
 
         </form>
 
-
-            <Dropdown id="navCategoryList" class="category-menu">
-                <DropdownToggle color="none" caret aria-label="menu">  
-                    <svg viewBox="0 0 100 80" width="40" height="40">
-                        <rect width="100" height="20"></rect>
-                        <rect y="30" width="100" height="20"></rect>
-                        <rect y="60" width="100" height="20"></rect>
-                    </svg>
-                </DropdownToggle>
-                
-                <DropdownMenu>                    
-                    <h1 class="drop-title"> מחלקות מוצרים</h1>
-                    {#if groupedAlbums }
-                        {#each Object.entries(groupedAlbums) as  [key, val]}
-                            <DropdownItem header>
-                                
-                                <Dropdown class="category-menu-2">
-                                    <DropdownToggle color="none" caret aria-label="submenu">
-                                        <button class="btn btn-dark">
-                                            {#if key == 'undefined'}
-                                                אחר
-                                            {:else}
-                                                {key}
-                                            {/if}
-                                        </button>
-                                    </DropdownToggle>
-                                    <DropdownMenu>
-                                        {#each val as  album}
-                                        <DropdownItem>
-                                            <button class="btn btn-dark" on:click={menuItemClicked(album)}>
-                                                {album.title}
-                                            </button>
-                                        </DropdownItem>
-                                        {/each}
-                                        
-                                    </DropdownMenu>
-                                </Dropdown>
-                            </DropdownItem>
-                        {/each}
-                    {/if}
-                </DropdownMenu>
-            </Dropdown>
+        <NavLoginManager></NavLoginManager>
             
                 
-            <Cart bind:this={$cartDomElementStore}></Cart>
+            
             <div>
             <a rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
                 <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
