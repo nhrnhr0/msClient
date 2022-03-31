@@ -336,12 +336,12 @@ Button,
               </div>
               <div class="action">
                 <div class="like-btn-small">
-                  <Button color="danger" on:click={likeBtnClicked(img)} data-product-id={img.id} data-catalog-id={$current_album.id} class="add-to-cart-btn">
+                  <button on:click={likeBtnClicked(img)} data-product-id={img.id} data-catalog-id={$current_album.id} class="add-to-cart-btn">
                       הוסף
-                  </Button>
-                  <Button color="primary" on:click="{open_product(img)}" data-product-id={img.id} data-catalog-id={$current_album.id} class="read-more-btn">
+                  </button>
+                  <button on:click="{open_product(img)}" data-product-id={img.id} data-catalog-id={$current_album.id} class="read-more-btn">
                       פרטים
-                  </Button>
+                  </button>
               </div>
               <!--
                   <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>

@@ -50,6 +50,10 @@
 :root {
   --swiper-theme-color: #d4af37!important;
   --swiper-navigation-size: 80px!important;
+  --buy-btn-color: #70C38A;
+  --buy-btn-color-hover: #5A9E7D;
+  --details-btn-color: #565E64;
+  --details-btn-color-hover: #3D3E3F;
   /*font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   --font-mono: "Fira Mono", monospace;
@@ -63,6 +67,25 @@
   --background-without-opacity: rgba(255, 255, 255, 0.7);
   --column-width: 42rem;
   --column-margin-top: 4rem;*/
+}
+.add-to-cart-btn{
+  background-color: var(--buy-btn-color);
+  border: 1px solid var(--buy-btn-color);
+  &:hover, &:focus {
+      background-color: var(--buy-btn-color-hover);
+      border: 1px solid var(--buy-btn-color-hover);
+      box-shadow: 0 0 0 0.2rem var(--buy-btn-color-hover);
+  }
+}
+.read-more-btn {
+  width: 100%;
+  background-color: var(--details-btn-color);
+  border: 1px solid var(--details-btn-color);
+  &:hover, &:focus {
+      background-color: var(--details-btn-color-hover);
+      border: 1px solid var(--details-btn-color-hover);
+      box-shadow: 0 0 0 0.2rem var(--details-btn-color-hover);
+  }
 }
 
 body{

@@ -234,7 +234,10 @@ import { Spinner } from "sveltestrap";
                             }
                             );
     }
-	let show_prices = true;
+	let show_prices = false;
+	$: {
+		show_prices = $userInfoStore && $userInfoStore.isLogin;
+	}
 </script>
 {#if isModalOpen}
 <div id="cartModal" style="z-index: {modal_zIndex};" class="modal" class:active={isModalOpen}>

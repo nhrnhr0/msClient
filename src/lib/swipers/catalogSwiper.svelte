@@ -466,16 +466,19 @@ on:change={(event) => {
                         "400": {
                             "slidesPerView": 2,
                         },
-                        "600": {
-                            "slidesPerView": 3,
+                        "750": {
+                            "slidesPerView": 3.5,
                         },
                         "870": {
-                            "slidesPerView": 3.3,
+                            "slidesPerView": 3.7,
                         },
                         "960": {
                             "slidesPerView": 4,
                         },
-                        "1100": {
+                        "1020": {
+                            "slidesPerView": 4,
+                        },
+                        "1400": {
                             "slidesPerView": 5,
                         }
                     }}'
@@ -537,12 +540,12 @@ on:change={(event) => {
                                 
                                     {#if $cartStore[image.id] == undefined}
                                         <div class="like-btn like-btn-small">
-                                            <Button color="danger" data-product-id={image.id} data-catalog-id={album.id} class="add-to-cart-btn">
+                                            <button data-product-id={image.id} data-catalog-id={album.id} class="action-btn add-to-cart-btn">
                                                 הוסף
-                                            </Button>
-                                            <Button color="primary" data-product-id={image.id} data-catalog-id={album.id} class="read-more-btn">
+                                            </button>
+                                            <button data-product-id={image.id} data-catalog-id={album.id} class="action-btn read-more-btn">
                                                 פרטים
-                                            </Button>
+                                            </button>
                                         </div>
                                         
                                     {:else}
@@ -644,7 +647,10 @@ on:change={(event) => {
     :global(.swiper) {
         cursor: pointer;
         //padding-top: 60px;
-        padding-top: 93px;
+        //padding-top: 93px;
+        margin-top: 23px;
+        margin-bottom: 0px;
+        max-width: 85vw;
         :global(.default-tip) {
             
             transform: translate(0%, 15%);
@@ -817,19 +823,28 @@ on:change={(event) => {
                         flex-grow: 1;
                         flex-shrink: 0;
                     }
-                    :global(.add-to-cart-btn){
+                    .action-btn {
+                        display: inline-block;
+                        font-weight: 400;
+                        line-height: 1.5;
+                        color: #212529;
+                        text-align: center;
+                        text-decoration: none;
+                        vertical-align: middle;
+                        cursor: pointer;
+                        user-select: none;
+                        border: 1px solid transparent;
+                        padding: 0.375rem 0.75rem;
+                        font-size: 1rem;
+                        border-radius: 0.25rem;
+                        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
                         display: flex;
                         justify-content: center;
                         align-items: center;
                         width: 100%;
-                        background-color: #70C38A;
-                        border: 1px solid #70C38A;
+                        
                     }
-                    :global(.read-more-btn) {
-                        width: 100%;
-                        background-color: #565E64;
-                        border: 1px solid #565E64;
-                    }
+                    
                 }
         
     .loader-wraper {
@@ -935,6 +950,7 @@ on:change={(event) => {
     cursor: pointer;
     //padding-top: 50px;
     position: relative;
+    display: flex;
     height: 438px !important;
     max-width: 99vw;
     margin: auto;
@@ -955,7 +971,7 @@ on:change={(event) => {
         cursor: pointer;
         z-index: 1;
         position: absolute;
-        top: 10px;
+        top: 35%;
         
         img {
             width: 75px;
@@ -966,25 +982,36 @@ on:change={(event) => {
             border-radius: 50%;
             left: 10px;
             
-            transform: rotate(180deg);
+            transform: rotate(180deg)
         }
         
         &.right {
             border: 3px solid black;
             border-radius: 50%;
             right: 10px;
+            
         } 
         &:hover {
             background: rgba(255, 255, 255, 0.678);
             border: 5px solid black;
             border-radius: 50%;
             &.left {
-                transform: scale(1.1) rotate(180deg);
+                transform: scale(1.1) rotate(180deg)
             }
             &.right {
-                transform: scale(1.1);
+                transform: scale(1.1)
             }
         }
+        @media screen and (max-width: 1020px) {
+            &.left {
+                left: 1px;
+            }
+            &.right {
+                right: 1px;
+            }
+        }
+    
+        
     }
 }
 :global(.swiper-slide-prev .slide-content .img-wraper .price-tag) {
@@ -993,6 +1020,7 @@ on:change={(event) => {
 
     :global(.swiper-slide) {
         position: relative;
+        
         &:hover {
             .img-title {
                 visibility: visible;

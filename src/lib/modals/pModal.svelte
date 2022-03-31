@@ -485,11 +485,48 @@ import SingleAmountModal from './singleAmountModal.svelte';
                           {#if $productData && $productData.description}
                             <SvelteMarkdown source={$productData.description} />
                           {/if}
-                          <button class="question-button btn btn-primary" on:click={()=> {$productQuestionModalStore.toggleModal($productData.id,$productData.title);}} >
-                            יש לך שאלה?
-                          </button>
+                          
                         </div>
-                        
+                        <div  on:click={likeBtnClicked} class="like-btn-wraper">
+                          {#if $cartStore[_productId] == undefined}
+                              <button  id="productModalLikeBtn" class="like-btn">
+                                <div class="img-wraper">
+                                  <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
+                                </div>
+                                <div class="text">
+                                    הוסף
+                                </div>
+                              </button>
+                          {:else}
+                              <button on:click|preventDefault="{open_edit_amount_dialog}"  id="productModalLikeBtn" class="like-btn active">
+                                <div class="amount-before">
+                                  <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" >
+                                    <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="32px" height="32px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
+                                  </button>
+                                  {#if $cartStore[_productId].show_sizes_popup}
+                                    <div class="amount-text">
+                                      <div class="text">
+                                        לחץ לבחירת מידות
+                                      </div>
+                                      <div class="edit-amount-btn">
+                                          {$cartStore[_productId].amount}
+                                      </div>
+                                    </div>
+                                  {:else}
+                                    <div class="amount-text">
+                                      <div class="text">
+                                        כמות בסל
+                                      </div>
+                                      <div class="edit-amount-btn">
+                                        <input class="amount-input" disabled bind:this={amount_input} type="number" min="1" max="9999" bind:value="{$cartStore[_productId].amount}"/>
+                                      </div>
+                                    </div>
+                                  {/if}
+                                </div>
+                                
+                              </button>
+                          {/if}
+                          </div>
                     </div>
                     <div class="img-wraper"
                     style="padding-bottom:{(!is_image_loaded && is_under_500px())?"100%":"0%"}
@@ -504,9 +541,17 @@ import SingleAmountModal from './singleAmountModal.svelte';
                           src="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
                           data-large-img-url="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
                           />
+                          
                         </a>
+                        {#if is_image_loaded}
+                          <button class="question-button btn btn-primary" on:click={()=> {$productQuestionModalStore.toggleModal($productData.id,$productData.title);}} >
+                            יש לך שאלה?
+                          </button>
+                        
                           <div class="price-tag" class:active={show_prices} >{$productData.client_price + '₪'}</div>
+                        {/if}
                       </div>
+                      
                   </div>
                   <!--
                   <div class="magnifier-preview-wraper">
@@ -522,46 +567,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
                     <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="prev">
                 </button>
 
-                <div  on:click={likeBtnClicked} class="like-btn-wraper">
-                {#if $cartStore[_productId] == undefined}
-                    <button  id="productModalLikeBtn" class="like-btn">
-                      <div class="img-wraper">
-                        <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
-                      </div>
-                      <div class="text">
-                          הוסף
-                      </div>
-                    </button>
-                {:else}
-                    <button on:click|preventDefault="{open_edit_amount_dialog}"  id="productModalLikeBtn" class="like-btn active">
-                      <div class="amount-before">
-                        <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" >
-                          <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="32px" height="32px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
-                        </button>
-                        {#if $cartStore[_productId].show_sizes_popup}
-                          <div class="amount-text">
-                            <div class="text">
-                              לחץ לבחירת מידות
-                            </div>
-                            <div class="edit-amount-btn">
-                                {$cartStore[_productId].amount}
-                            </div>
-                          </div>
-                        {:else}
-                          <div class="amount-text">
-                            <div class="text">
-                              כמות בסל
-                            </div>
-                            <div class="edit-amount-btn">
-                              <input class="amount-input" disabled bind:this={amount_input} type="number" min="1" max="9999" bind:value="{$cartStore[_productId].amount}"/>
-                            </div>
-                          </div>
-                        {/if}
-                      </div>
-                      
-                    </button>
-                {/if}
-                </div> 
+                 
                 <!--
                 <div  on:click={likeBtnClicked} class="like-btn-wraper">
                     <button  id="productModalLikeBtn" class:active={$cartStore[_productId] != undefined} class="like-btn">
@@ -670,12 +676,12 @@ import SingleAmountModal from './singleAmountModal.svelte';
       height: auto;
       flex:1;
       max-width: 60%;
-      @media (min-width: 820px) {
+      /*@media (min-width: 820px) {
           & .like-btn:not(.active) .text::after {
             content: ' לסל';
             
           }
-      }
+      }*/
       @media screen and (max-width: 819px) {
         //width: 200px;
         .amount-text {
@@ -695,10 +701,19 @@ import SingleAmountModal from './singleAmountModal.svelte';
       }*/
       
       .like-btn {
+        
+        background-color: var(--buy-btn-color);
+        border: 1px solid var(--buy-btn-color);
+        &:hover, &:focus {
+              background-color: var(--buy-btn-color-hover);
+              border: 1px solid var(--buy-btn-color-hover);
+              box-shadow: 0 0 0 0.2rem var(--buy-btn-color-hover);
+          }
         &.active {
           //border: 1px solid red;
-          background: rgba(255, 255, 255, 0.478);
-          color:rgb(70, 70, 70);
+          
+          //background: rgba(255, 255, 255, 0.478);
+          //color:rgb(70, 70, 70);
           .amount-before {
             width: 100%;
             display: flex;
@@ -749,8 +764,8 @@ import SingleAmountModal from './singleAmountModal.svelte';
         }
         
         .text {
-          
-          display:inline-block;
+          display:flex;
+          flex: 1;
           font-size: 1.7em;
         }
         .img-wraper {
@@ -792,7 +807,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
         z-index: 1;
         font-weight: bold;
         text-align: center;
-        background: #0000007a;
+        //background: #0000007a;
         border-radius: 25px;
 
 
@@ -1192,6 +1207,13 @@ import SingleAmountModal from './singleAmountModal.svelte';
             align-items: flex-start;
             .img-inner-wraper{
               position: relative;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              .question-button {
+                margin-top: 25px;
+                width: auto;
+              }
               .price-tag {
                     position: absolute;
                     top:5px;
@@ -1207,7 +1229,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
                     }
                 }
             }
-            img {
+            img.product-modal-img {
               @include bg-image;
               //float: left;
               //border-radius: 15px;
