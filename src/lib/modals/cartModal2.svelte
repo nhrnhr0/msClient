@@ -834,7 +834,7 @@ $gray-1200: #131314;
 		right: 0;
 		width: 100%;
 		height: 80px;
-		background: $white;
+		//background: $white;
 		display: block;
 		white-space: nowrap;
 		//display:flex;

@@ -141,9 +141,13 @@
 </svelte:head>
 <svelte:window on:resize="{window_resize}" bind:scrollY={y_scroll} />
 <Header />
-<About />
+{#if ($userInfoStore == undefined || $userInfoStore.isLogin == false)}
+  <About />
+{/if}
 <LogoSwiper {logos} />
-<CartDisclaimer />
+{#if ($userInfoStore == undefined || $userInfoStore.isLogin == false)}
+  <CartDisclaimer />
+{/if}
 <!--
 <FavoritesSidePopup />
 -->
@@ -175,7 +179,9 @@
   {/if}
 
 {/each}
-
+{#if ($userInfoStore && $userInfoStore.isLogin == true)}
+  <About />
+{/if}
 <ContentForm></ContentForm>
 <BusinessOwnerPopup/>
 <link rel="preload" as="image" href="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png">

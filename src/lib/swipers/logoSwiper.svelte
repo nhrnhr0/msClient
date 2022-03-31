@@ -22,8 +22,10 @@
         SwiperCore.use([Autoplay, EffectCoverflow, Pagination,Navigation]);
 </script>
     {#if logos}
+    <div class="logos-wraper">
+    <h1 class="slider-title">בין לקוחותינו</h1>
     <div class="logo-section">
-        <Swiper
+        <Swiper class="logo-swiper"
                 slidesPerView="{'7'}"
                 breakpoints='{{
                     "220": {
@@ -69,18 +71,38 @@
                     {/each}
             </Swiper>
         </div>
+    </div>
     {:else}
     error
     {/if}
 
     <style lang="scss">
-        .img-wraper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            img {
-                height: 100px;
-                max-width: 100%;
+        .logos-wraper {
+            background: rgba(131, 131, 131, 0.527);
+            border-radius: 25px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+            margin-left: 25px;
+            margin-right: 25px;
+            :global(.logo-swiper) {
+                padding-top: 0px!important;
+                
+            }
+            .slider-title {
+                text-decoration: underline;
+                font-size: 2.5rem;
+                font-weight: bold;
+                text-align: center;
+                margin-top: 30px;
+                //background-color: #f5f5f5;
+            }
+            .img-wraper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                img {
+                    height: 100px;
+                    max-width: 100%;
+                }
             }
         }
     </style>
