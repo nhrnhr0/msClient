@@ -7,6 +7,8 @@
     get_album_details
   } from './../../api/api';
   import SvelteMarkdown from 'svelte-markdown';
+  import { Button } from "sveltestrap";
+
 
   import {
     writable
@@ -358,7 +360,8 @@ import SingleAmountModal from './singleAmountModal.svelte';
     }*/
   }
 
-  function remove_from_cart()  {
+  function remove_from_cart(e)  {
+    e.stopPropagation();
     cartStore.removeFromCart($productData);
       logStore.addLog(
                             {
@@ -500,9 +503,12 @@ import SingleAmountModal from './singleAmountModal.svelte';
                           {:else}
                               <button on:click|preventDefault="{open_edit_amount_dialog}"  id="productModalLikeBtn" class="like-btn active">
                                 <div class="amount-before">
-                                  <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" >
+                                  <Button color="danger" class="delete-btn" on:click="{remove_from_cart}" >
                                     <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="32px" height="32px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
-                                  </button>
+                                  </Button>
+                                  <label for="edit-btn">כמות בסל: {$cartStore[_productId].amount}</label>
+                                  <Button color="primary" class="edit-amount-btn">ערוך</Button>
+                                  <!--
                                   {#if $cartStore[_productId].show_sizes_popup}
                                     <div class="amount-text">
                                       <div class="text">
@@ -522,6 +528,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
                                       </div>
                                     </div>
                                   {/if}
+                                  -->
                                 </div>
                                 
                               </button>
@@ -675,7 +682,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
       width: auto;
       height: auto;
       flex:1;
-      max-width: 60%;
+      max-width: 100%;
       /*@media (min-width: 820px) {
           & .like-btn:not(.active) .text::after {
             content: ' לסל';
@@ -710,6 +717,14 @@ import SingleAmountModal from './singleAmountModal.svelte';
               box-shadow: 0 0 0 0.2rem var(--buy-btn-color-hover);
           }
         &.active {
+          background-color: rgba(122, 117, 117, 0.589);
+          border: transparent;
+          &:hover, &:focus {
+                background-color: rgba(105, 99, 99, 0.589);
+                border: 1px solid rgba(105, 99, 99, 0.589);
+                box-shadow: none;
+                //box-shadow: 0 0 0 0.2rem rgba(105, 99, 99, 0.589);
+            }
           //border: 1px solid red;
           
           //background: rgba(255, 255, 255, 0.478);
@@ -792,7 +807,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
               fill: black;
             }
             &:hover svg {
-              fill:red;
+              //fill:red;
             }
           }
         }
