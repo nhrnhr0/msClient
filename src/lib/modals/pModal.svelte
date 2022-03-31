@@ -493,12 +493,13 @@ import SingleAmountModal from './singleAmountModal.svelte';
                         <div  on:click={likeBtnClicked} class="like-btn-wraper">
                           {#if $cartStore[_productId] == undefined}
                               <button  id="productModalLikeBtn" class="like-btn">
+                                <div class="text">
+                                  הוסף
+                              </div>
                                 <div class="img-wraper">
                                   <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
                                 </div>
-                                <div class="text">
-                                    הוסף
-                                </div>
+                                
                               </button>
                           {:else}
                               <button on:click|preventDefault="{open_edit_amount_dialog}"  id="productModalLikeBtn" class="like-btn active">
@@ -779,16 +780,24 @@ import SingleAmountModal from './singleAmountModal.svelte';
         }
         
         .text {
-          display:flex;
-          flex: 1;
-          font-size: 1.7em;
+          //flex: 1;
+          font-size: 1.5em;
+          color: black;
+          text-shadow: none;
+          text-align: center;
         }
         .img-wraper {
-          width:43px;
-          height: 43px;
+          display: inline-block!important;
+          flex:0!important;
+          width:30px;
+          height: 30px;
           display: inline-flex;
           justify-content: center;
           align-items: center;
+          img {
+            width: auto;
+            height: 100%;
+          }
         }
         .amount-before {
           font-size: 1.7em;
@@ -817,7 +826,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
         margin-top: 10px;
         margin-bottom: 10px;
         color: white;
-        width: 100%;
+        width: 50%;
         text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
         z-index: 1;
         font-weight: bold;

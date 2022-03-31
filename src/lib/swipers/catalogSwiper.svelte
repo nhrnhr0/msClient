@@ -1035,18 +1035,19 @@ on:change={(event) => {
                 visibility: hidden;
                 color: white;
                 width: 100%;
-                text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
+                //text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
                 z-index: 2000;
-                font-size: 1.5em;
+                font-size: 1.2em;
                 font-weight: bold;
                 pointer-events: none;
                 text-align: center;
                 word-break: break-word;
 
                 position: absolute;
-                top:0px;
+                top:6px;
                 &.active {
                     visibility: visible;
+                    text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
                 }
                 //transform: translate(0, -100%);
 
@@ -1152,6 +1153,7 @@ on:change={(event) => {
         .img-title {
                 //display: block;
                 visibility: visible;
+                
         }
     }
     /*
