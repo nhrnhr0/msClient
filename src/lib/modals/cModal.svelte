@@ -363,10 +363,13 @@ Button,
 
           <button  id="categoryModalLikeBtn" on:click={()=> open_edit_amount_dialog(img)} class="like-btn active">
             <div class="img-wraper">
+              <!--
               <div class="btn-product-title">
                           {img.title}
               </div>
               <hr>
+              -->
+
               <div class="action" >
                 <div class="amount-before">
                   <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" data-product-id="{img.id}">
@@ -536,12 +539,13 @@ Button,
             margin: 0px;
           }
           @media (hover: hover) {
+            /*
             .btn-product-title {
               display:none;
             }
             hr {
               display:none;
-            }
+            }*/
           }
           img {
             width:40px;

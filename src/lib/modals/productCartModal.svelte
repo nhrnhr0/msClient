@@ -222,15 +222,16 @@
                       
                         {#if $cartStore[product_id].varients.length == 0}
                           <div class="cell-wraper">
-                            <input class="size-input cls-cell" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color][size].quantity}" min="0" max="9999" >
+                            <input class="size-input cls-cell" type="number" placeholder="כמות" bind:value="{$cartStore[product_id].mentries[color][size].quantity}" min="0" max="9999" >
                           </div>
                         {:else}
-                        <div class="cell-wraper">
+                        
                           {#each $cartStore[product_id].varients as {id, name}, idx}
-                            
+                          <div class="cell-wraper">
                             <input id="input_entery_{product_id}_{size}_{color}_{id}" class="size-input cls-cell" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color][size][id].quantity}" min="0" max="9999" >
+                          </div>
                           {/each}
-                        </div>
+                        
                         {/if}
                       
                     </td>
@@ -360,7 +361,7 @@
   position: -webkit-sticky;
   position: sticky;
   background-color: rgba(238, 238, 238, 0.651);
-  min-width: 80px;
+  //min-width: 80px;
     position: sticky;
     position: -webkit-sticky;
     position: sticky;
@@ -373,7 +374,7 @@
   div {
     font-weight: bold;
     background-color: rgba(34, 34, 34, 0.746);
-    min-width: 80px;
+    //min-width: 80px;
     color:white;
     border: 1px solid #777777;
     border-radius: 5px;
@@ -385,7 +386,7 @@
   
   background-color: rgba(238, 238, 238, 0.651);
   border: 1px solid #777777;
-  min-width: 80px;
+  //min-width: 80px;
   }
     .product-details {
       display:flex;
@@ -426,7 +427,7 @@
                 text-align: center;
                 border-bottom: 1px solid rgb(85, 85, 85);
                 border-left: 1px solid rgb(85, 85, 85);
-                min-width: 90px;
+                //min-width: 90px;
                 
                 &:last-child {
                   border-left: none;
@@ -449,11 +450,10 @@
                     padding: 5px;
                 }
                 &.size-cell {
-                  
                   & .cell-wraper {
-                    
                     display: grid;
                     grid-template-columns: 1fr;
+                    border:1px solid black;
                   }
                   input.size-input:first-child {
                     &:last-child {
@@ -462,7 +462,9 @@
                   }
                   input.size-input {
                     //border: 1px solid rgb(85, 85, 85);
-                    width: 100%;
+                    min-width: 48px;
+                    
+                    width: max-content;
                     text-align: center;
                     //border: 1px solid #777777;
                     //border:none;
@@ -474,6 +476,8 @@
                     //border-radius: 5px;
                     background: none;
                     padding: 5px;
+                    border:none;
+                    margin: auto;
                     &:focus {
                       outline: none;
                     }
@@ -511,7 +515,7 @@
                   display: flex;
                   justify-content: start;
                   align-items: center;
-                  
+                  width: max-content;
                   .inner {
                     margin-left: 15px;
                     width: 25px;

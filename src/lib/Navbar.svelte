@@ -189,20 +189,16 @@ import { logStore } from "./../stores/logStore";
                                     
                                     <Dropdown class="category-menu-2">
                                         <DropdownToggle color="none" caret aria-label="submenu">
-                                            <button class="btn btn-dark">
                                                 {#if key == 'undefined'}
                                                     אחר
                                                 {:else}
                                                     {key}
                                                 {/if}
-                                            </button>
                                         </DropdownToggle>
                                         <DropdownMenu>
                                             {#each val as  album}
-                                            <DropdownItem>
-                                                <button class="btn btn-dark" on:click={menuItemClicked(album)}>
+                                            <DropdownItem on:click={menuItemClicked(album)}>
                                                     {album.title}
-                                                </button>
                                             </DropdownItem>
                                             {/each}
                                             
@@ -285,27 +281,28 @@ import { logStore } from "./../stores/logStore";
 
 
 <style lang="scss">
-
+        
 :global(#navCategoryList) {
         :global(.dropdown-menu.show) {
-          
+          grid-template-columns: repeat(1, 1fr);
           left: 0%!important;
-          padding-top: 40px;
+          padding-top: 55px;
             overflow-y: visible;
           .drop-title {
-            font-size: 2rem;
+            font-size: 1.56rem;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
             text-align: center;
+            min-width: fit-content; 
             
           }
           @media screen and (max-width: 900px) {
-            grid-template-columns: repeat(3, auto);
+            grid-template-columns: repeat(1, 1fr);
           }
           @media screen and (max-width: 600px) {
-            grid-template-columns: repeat(2, auto);
+            grid-template-columns: repeat(1, 1fr);
             
           }
           @media screen and (max-width: 400px) {
@@ -317,7 +314,9 @@ import { logStore } from "./../stores/logStore";
             }
           }
         }
-      }
+
+
+    }
 :global(#navLoginManager) {
     :global(.dropdown-toggle) {
         padding: 0px;
@@ -326,6 +325,72 @@ import { logStore } from "./../stores/logStore";
         }
     }
 }
+:global(.category-menu) {
+        :global(.dropdown-menu) {
+            grid-template-columns: repeat(1, 1fr);
+            :global(.dropdown-toggle) {
+                        display: inline-block;
+                        width: 100%;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    margin-bottom: 10px;
+    padding: .5rem 1rem;
+
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    
+    color: #fff;
+    background-color: #212529;
+    border-color: #212529;
+
+                    }
+            :global(.dropdown-header) {
+            :global(.category-menu-2){
+                :global(.dropdown-menu.show) {
+                    max-height: 45vh;
+                    overflow-y: scroll!important;;
+                    padding-top: 15px!important;
+                    :global(.dropdown-item) {
+                        display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    margin-bottom: 10px;
+    padding: .5rem 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    
+    color: #fff;
+    background-color: #212529;
+    border-color: #212529;
+
+                    }
+                }
+            }
+        }
+        }
+        
+        }
 
 /*
 :global(.autocomplete-cls)  {

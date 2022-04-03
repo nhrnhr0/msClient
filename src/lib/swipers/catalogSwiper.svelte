@@ -541,49 +541,19 @@ on:change={(event) => {
                                     </div> 
                                 </div>
                                 
-                                    {#if $cartStore[image.id] == undefined}
                                         <div class="like-btn like-btn-small">
-                                            <button data-product-id={image.id} data-catalog-id={album.id} class="action-btn add-to-cart-btn">
+                                            <button data-product-id={image.id} data-catalog-id={album.id} class:gold={$cartStore[image.id] != undefined} class="action-btn add-to-cart-btn">
+                                                {#if $cartStore[image.id] == undefined}
                                                 הוסף
+                                                {:else}✔️ נוסף({$cartStore[image.id].amount})
+                                                
+                                                {/if}
                                             </button>
                                             <button data-product-id={image.id} data-catalog-id={album.id} class="action-btn read-more-btn">
                                                 פרטים
                                             </button>
                                         </div>
                                         
-                                    {:else}
-                                    <div  class="like-btn-wraper" class:active={$cartStore[image.id] != undefined} data-product-id="{image.id}">
-
-                                        <div class="like-btn active">
-                                            <div class="img-wraper">
-                                                
-                                            </div>
-                                            <div class="text">
-                                                    <span class="text">
-                                                        
-                                                        {#if $cartStore[image.id].show_sizes_popup}
-                                                            <div class="sizes-popup-btn">
-                                                                <div class="amount">
-                                                                    {$cartStore[image.id].amount}
-                                                                </div>
-                                                                <div class="sizes-popup-pre-text">
-                                                                    לחץ לבחירת מידות
-                                                                </div>
-                                                            </div>
-                                                        {:else}
-                                                            <div class="amount-input-wraper">
-                                                                <div class="amount-input-pre-text">
-                                                                    כמות בסל:
-                                                                </div>
-                                                                <input type="number" id="slider_amount_input_{image.id}" disabled class="cart-amount" use:selectTextOnFocus bind:value="{$cartStore[image.id].amount}" min="1" max="9999"  data-product-id="{image.id}">
-                                                            </div>
-                                                        {/if}
-                                                    </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/if}
                             <!--</div>-->
                         </SwiperSlide>
                     {/each}
@@ -827,6 +797,7 @@ on:change={(event) => {
                     display: flex;
                     justify-content: space-around;
                     align-items: center;
+                    
                     * {
                         margin: 0;
                         width: 100%;
@@ -853,7 +824,13 @@ on:change={(event) => {
                         justify-content: center;
                         align-items: center;
                         width: 100%;
-                        
+                        &.gold {
+                            @include bg-gradient();
+                            &:hover, &:focus {
+                                box-shadow: inset 0 0 0 0.2rem #e0aa3e;
+                            }
+                            
+                        }
                     }
                     
                 }
@@ -1158,7 +1135,23 @@ on:change={(event) => {
             
         }
 
-        
+        /*@media screen and (hover:hover) {
+
+            .like-btn-small{
+                visibility: hidden;
+                transform: translateY(-100%);
+            }
+            &:hover, &:focus {
+                .like-btn-small {
+                    visibility: visible;
+                }
+                .slide-content .img-wraper .price-tag {
+                    bottom: 40px;
+                }
+            }
+            
+            
+        }*/
     }
     :global(.swiper-slide-active) {
         .img-title {
