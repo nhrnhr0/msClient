@@ -23,7 +23,7 @@
 </script>
     {#if logos}
     <div class="logos-wraper">
-    <h1 class="slider-title">בין לקוחותינו</h1>
+    <h2 class="slider-title">בין לקוחותינו</h2>
     <div class="logo-section">
         <Swiper class="logo-swiper"
                 slidesPerView="{'7'}"
@@ -88,8 +88,8 @@
                 
             }
             .slider-title {
-                text-decoration: underline;
-                font-size: 2.5rem;
+                //text-decoration: underline;
+                font-size: 2.1rem;
                 font-weight: bold;
                 text-align: center;
                 margin-top: 30px;
