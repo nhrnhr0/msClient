@@ -463,8 +463,8 @@
                   input.size-input {
                     //border: 1px solid rgb(85, 85, 85);
                     min-width: 48px;
-                    
-                    width: max-content;
+                    width: 100%;
+                    //width: max-content;
                     text-align: center;
                     //border: 1px solid #777777;
                     //border:none;

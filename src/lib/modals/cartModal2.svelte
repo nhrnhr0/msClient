@@ -13,12 +13,13 @@
 import { flashy_purchase } from "$lib/flashy";
 import { Spinner } from "sveltestrap";
 
+
 	export let main_wraper;
     export let isModalOpen = false;
 	let is_cart_locked = false;
     let modal_zIndex = 0;
 	let state = 0;
-	let form_name, form_email, form_phone, form_message,form_business_name;
+	let form_name, form_email, form_phone, form_message,form_business_name,form_privateCompany;
 	let error_found = false;
 	let error_message = '';
 	function checkout_back_click() {
@@ -30,10 +31,9 @@ import { Spinner } from "sveltestrap";
 		if(state == 0) {
 			error_found = false;
 			for (const [key, value] of Object.entries($cartStore)) {
-				if(value == undefined || value.amount == undefined || value.amount < 0) {
+				if(value == undefined || value.amount == undefined || value.amount <= 0) {
 					error_found = true;
 					error_message = 'שדה כמות חסר או שגוי';
-
 					break;
 				}
 			}
@@ -41,10 +41,10 @@ import { Spinner } from "sveltestrap";
 				state = 1;
 			}
 		}
-		else if(state == 1) {
+		/*else if(state == 1) {
 			state = 2;
 			cart_submit();
-		}
+		}*/
 	}
 	function cart_submit() {
 		
@@ -134,17 +134,6 @@ import { Spinner } from "sveltestrap";
 			alert('נא למלא את כל השדות');
 			state = 1;
 		}
-    }
-    function decrease_product_amount(key) {
-        if($cartStore[key].amount > 1) {
-            $cartStore[key].amount--;
-        }
-    }
-
-    function increase_product_amount(key) {
-        if ($cartStore[key].amount < 9999) {
-            $cartStore[key].amount++;
-        }
     }
     export function toggleModal() {
         isModalOpen = !isModalOpen;
@@ -242,19 +231,142 @@ import { Spinner } from "sveltestrap";
 {#if isModalOpen}
 <div id="cartModal" style="z-index: {modal_zIndex};" class="modal" class:active={isModalOpen}>
     <div class="overlay" style="z-index: {modal_zIndex+5};" on:click={toggleModal}>
+	{#if state == 1}
+		<div class="modal_content"in:fly="{{ y: 200, duration: 350 }}" on:click|stopPropagation|preventDefault={()=>{}} out:fade style="z-index: {modal_zIndex+10};">
+			<div class="modal-header">
+			<button title="Close" on:click={toggleModal} class="close-btn right">x</button>
+			<h5 class="modal-title">וודא שליחת טופס</h5>
+			<button title="Close" on:click={toggleModal} class="close-btn left">x</button>
+			</div>
+		
+			<div class="modal-body">
+				<form class="cart-form" bind:this={mform} method="POST" action="{SUBMIT_CART_URL}" >
+					<div class="form-group">
+
+						
+						<div class="form-control">
+							<label for="name">שם בחשבונית</label>
+							<input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="{$userInfoStore?.me?.businessName}"  type="text"></div>	
+
+						
+						<div class="form-control">
+							<label for="email">אימייל</label>
+							<input bind:value="{form_email}" name="email" placeholder="{$userInfoStore?.me?.email}" type="email"></div>
+
+						
+						<div class="form-control">
+							<label for="phone">טלפון</label>
+							<input bind:value="{form_phone}" name="tel" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="טלפון" type="tel"></div>
+
+						
+						<div class="form-control">
+							<label for="privateCompany">ח.פ.</label>
+							<input type="text" bind:value="{form_privateCompany}" name="privateCompany" required={false} placeholder="{$userInfoStore?.me?.privateCompany}">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="form-control"><textarea bind:value="{form_message}" name="message" required="{false}" placeholder="הודעה:"/>
+					</div>
+						</div>
+
+						<!--
+							table with all products
+							product image
+							product name
+							product amount
+							product price
+							total price
+
+							---- total price to all products
+							
+						-->
+						<table class="products">
+							<thead>
+								<tr>
+									<th>מוצר</th>
+									<th>ברקוד</th>
+									<th>האם יש ברקוד פיזי</th>
+									<th>כמות</th>
+									<th>מחיר</th>
+									<th>סה"כ</th>
+								</tr>
+							</thead>
+							<tbody>
+								{#each Object.entries($cartStore) as  [key, val] (key)}
+								{@const item = $cartStore[key]}
+								<tr>
+									<td>
+										<div class="product-image-and-title">
+											<div class="product-image">
+												<img src="{CLOUDINARY_URL}{item.cimage}" alt="{item.title}">
+											</div>
+											<div class="product-title">
+												<a href="#" on:click={open_product_modal.bind(this, item.id)}>{item.title}</a>
+											</div>
+										</div>
+									</td>
+									<td>
+										{item?.barcode || ''}
+									</td>
+									<td>
+										{item.has_physical_barcode? '✅':'❌'}
+									</td>
+									<td>
+										<div class="product-amount" title="ערוך" on:click="{open_edit_amount_dialog(item.id, item.title)}">
+											{item.amount}
+										</div>
+									</td>
+									<td>
+										<div class="product-price">
+											{item.client_price}₪
+										</div>
+									</td>
+									<td>
+										<div class="product-total-price">
+											{item.client_price * item.amount}₪
+										</div>
+								</tr>
+								{/each}
+							</tbody>
+							<tr class="totals">
+								<td colspan="5">
+									<div  class="product-total-price">
+										סה"כ
+									</div>
+									
+									
+									
+								</td>
+								<td>
+									<div class="product-total-price-result">
+										{Object.entries($cartStore).reduce((acc, [key, val]) => {
+											return acc + val.client_price * val.amount
+										}, 0)}₪
+									</div>
+								</td>
+							</tr>
+						</table>
+
+				</form>
+			</div>
+		
+		</div>
+	{/if}
+
+
             <aside on:click|stopPropagation|preventDefault={()=>{}} transition:fly="{{x:340}}" id="sidebar-cart">
                 <main>
                     <button class="close-button" on:click="{()=>{toggleModal();}}">X</button>
                     <h2>מוצרים שאהבתי<span class="count">{Object.keys($cartStore).length}</span></h2>
+					<!--
 					<h2 class="sub-title">הוסיפו מוצרים
 						וקבלו הצעת מחיר משתלמת ללא עלות וללא התחייבות</h2>
+						-->
 					{#if error_found }
 						{#key error_found}
 							<h4 class="error-msg">{error_message}</h4>
 						{/key}
-					{/if}
-					{#if state == 0}
-					
+					{/if}					
 						{#if Object.keys($cartStore).length > 0}
 							<ul class="products" use:scrollFix>
 								{#each Object.keys($cartStore) as key, i (key)}
@@ -318,56 +430,12 @@ import { Spinner } from "sveltestrap";
 								
 							</div>
 						{/if}
-					{:else}
-						<div class="cart-info" in:fly="{{x: 340,duration: 500}}">
-							{#if $userInfoStore}
-								{#if $userInfoStore.isLogin}
-									<div class="info">
-										<div class="info-title">שם העסק</div>
-										<div class="info-res">
-											<input disabled value={$userInfoStore.me['businessName']}/>
-										</div>
-									</div>
-									<div class="info">
-										<div class="info-title">אימייל</div>
-										<div class="info-res" style="direction:ltr">
-											<input disabled value={$userInfoStore.me['email']}/>
-										</div>
-									</div>
-									<div class="info">
-										<div class="info-title">ח.פ.</div>
-										<div class="info-res">
-											<input disabled value={$userInfoStore.me['privateCompany']}/>
-										</div>
-									</div>
-								{/if}
-							{/if}
-
-							<form  bind:this={mform} method="POST" action="{SUBMIT_CART_URL}" >
-								<div class="form-control"><input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="שם:" type="text"></div>
-								<div class="form-control"><input bind:value="{form_email}" name="email" placeholder="אימייל:" type="email"></div>
-								<div class="form-control"><input bind:value="{form_phone}" name="tel" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="טלפון:" type="tel"></div>
-								<div class="form-control"><input bind:value="{form_business_name}" name="buissness name" required="{false}" placeholder="שם העסק:" type="text" /></div>
-								<div class="form-control"><textarea bind:value="{form_message}" name="message" required="{false}" placeholder="הודעה:"/>
-									</div>
-							</form>
-						</div>
-					{/if}
 					<div class="action-buttons">
-						<button class="checkout-back" on:click="{checkout_back_click}" class:active="{state != 0}" >הקודם</button>
+					{#if state == 0}
 						<button class="checkout-button" on:click="{checkout_click}" disabled={state == 2}>
-							{#if state == 0}
 								לקופה
-							{/if}
-							{#if state == 1}
-								שלח
-							{/if}
-							{#if state == 2}
-								<Spinner
-								style="width: 1rem; height: 1rem;"
-								/>
-							{/if}
 						</button>
+						{/if}
 					</div>
 				</main>
 			</aside>
@@ -386,7 +454,7 @@ import { Spinner } from "sveltestrap";
                         </div> 
                     </div>
                     -->
-                    
+
     </div>
 </div>
 {/if}
@@ -451,9 +519,101 @@ $gray-1200: #131314;
 	margin-top: 0.5em;
 }
 .modal_content {
-    top:0px;
-    left:0px;
+	.modal-body {
+		.cart-form {
+			.form-group {
+				display: flex;
+				flex-direction: row;;
+				justify-content: space-around;
+				.form-control {
+					flex:1;
+					flex-grow: 1;
+					flex-shrink: 0;
+					margin:5px;
+					line-height: 2.5;
+					display:flex;
+					flex-direction: column;
 
+				}
+			}
+
+			table.products {
+				th {
+					
+					font-size: 1em;
+					text-align: start;
+					font-weight: bold;
+				}
+				td {
+					font-size: 1.2em;
+					text-align: start;
+					font-weight: bold;
+				}
+				width: 100%;
+				thead {
+					tr {
+						th {
+							
+							padding: 10px;
+							
+							background-color: $gray-800;
+						}
+					}
+				}
+				tbody {
+					tr {
+						td {
+							.product-amount {
+								cursor: pointer;
+
+							}
+							.product-image-and-title {
+								display: flex;
+								justify-content: start;
+								align-items: center;
+								.product-image {
+									width: 100px;
+									height: 100px;
+									img {
+										width: 100%;
+										height: 100%;
+									}
+								}
+								.product-title {
+									
+									font-weight: bold;
+								}
+							}
+
+							
+						}
+						// ligther colors on all odd rows
+						&:nth-child(even) {
+							background-color: $gray-600;
+						}
+					}
+
+					
+
+				}
+				tr.totals {
+					background-color:$gray-300;
+					line-height: 2;
+					td {
+						
+						.product-total-price {
+
+						}
+					}
+				}
+			}
+
+			.float-actions {
+				position: fixed;
+				top: 20px;
+			}
+		}
+	}
 }
 #sidebar-cart {
     direction: ltr;
@@ -468,10 +628,14 @@ $gray-1200: #131314;
 	top: 0;
 	//right: -340px;
 	box-shadow: -10px 0 15px rgba(0, 0, 0, 0.1);
-	transition: right 0.5s ease-in-out;
+	transition: all 0.75s ease-in-out;
 
     right: 0;
     visibility: visible;
+
+	/*&.popup-state{
+		width: 85vw;
+	}*/
 	.cart-info {
 		color:white;
 		direction: rtl;
