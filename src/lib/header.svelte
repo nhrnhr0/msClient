@@ -86,7 +86,8 @@
 
             .class-bg-image {
                 width: 100vw;
-                border:1px solid red;
+                //border:1px solid red;
+                filter: contrast(0.657);
                 img {
                     width: 100%;
                     height: auto;
