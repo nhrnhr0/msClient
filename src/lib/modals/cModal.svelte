@@ -320,20 +320,25 @@ Button,
   
   
       <div class="category-item" data-category-prod-id="{img.id}">
-        <div class="category-item-img-wraper" on:click="{open_product(img)}" >
-          <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
-          <div class="img-title">{img.title}</div>
-          <div class="price-tag" class:active={show_prices} >{img.client_price + '₪'}</div>
-
+        <div class="image-and-title-wraper">
           
+          <div class="category-item-img-wraper" on:click="{open_product(img)}" >
+            
+            <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
+            
+            <div class="price-tag" class:active={show_prices} >{img.client_price + '₪'}</div>
+          </div>
+          <div class="img-title">{img.title}</div>
         </div>
         <div data-img={JSON.stringify(img)} class="like-btn-wraper"> <!--    -->
           {#if $cartStore[img.id] == undefined}
           <div  id="categoryModalLikeBtn" class="like-btn">
             <div class="img-wraper">
+              <!--
               <div class="btn-product-title">
                           {img.title}
               </div>
+              -->
               <div class="action">
                 <div class="like-btn-small">
                   <button on:click={likeBtnClicked(img)} data-product-id={img.id} data-catalog-id={$current_album.id} class="add-to-cart-btn">
@@ -494,7 +499,7 @@ Button,
         color: white;
         text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
         z-index: 1;
-        height: 75px;
+        //height: 75px;
         font-weight: bold;
         //pointer-events: none;
         text-align: center;
@@ -502,7 +507,7 @@ Button,
         //word-break: break-all;
 
 
-        background: #0000007a;
+        //background: #0000007a;
         border-radius: 25px;
         border-top-right-radius: 0px;
         border-top-left-radius: 0;
@@ -542,7 +547,7 @@ Button,
             width:40px;
             height: 40px;
           }
-          .btn-product-title {
+          /*.btn-product-title {
             font-size: 1.2em;
             //text-overflow: ellipsis;
             overflow: hidden;
@@ -554,7 +559,7 @@ Button,
             
             
             
-          }
+          }*/
           .action {
             width: 100%;
             display: flex;
@@ -664,7 +669,7 @@ Button,
                     display: flex;
                     justify-content: space-around;
                     align-items: center;
-                    width: 90%;
+                    width: 100%;
                     * {
                         margin: 0;
                         width: 100%;
@@ -677,9 +682,48 @@ Button,
                         justify-content: center;
                         align-items: center;
                         width: 100%;
+                        display: inline-block;
+                        font-weight: 400;
+                        line-height: 1.5;
+                        color: #212529;
+                        text-align: center;
+                        text-decoration: none;
+                        vertical-align: middle;
+                        cursor: pointer;
+                        user-select: none;
+                        border: 1px solid transparent;
+                        padding: 0.375rem 0.75rem;
+                        font-size: 1rem;
+                        border-radius: 0.25rem;
+                        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+
+                        border-bottom-right-radius: 25px;
                     }
                     :global(.read-more-btn) {
                         width: 100%;
+                        display: inline-block;
+                        font-weight: 400; 
+                        line-height: 1.5;
+                        color: #212529;
+                        text-align: center;
+                        text-decoration: none;
+                        vertical-align: middle;
+                        cursor: pointer;
+                        user-select: none;
+                        border: 1px solid transparent;
+                        padding: 0.375rem 0.75rem;
+                        font-size: 1rem;
+                        border-radius: 0.25rem;
+                        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+                        border-bottom-left-radius: 25px;
                     }
                 }
           }
@@ -840,6 +884,9 @@ Button,
         padding: 25px!important;
       }
     }
+    .image-and-title-wraper {
+      position: relative;
+    }
     .category-item {
       cursor: pointer;
       padding: 5px;
@@ -850,7 +897,7 @@ Button,
         position: relative;
         .price-tag {
                     position: absolute;
-                    top:5px;
+                    bottom: 5px;
                     left:5px;
                     padding: 5px;
                     font-weight: bold;
@@ -887,24 +934,39 @@ Button,
       }
 
       position: relative;
-      .category-item-img-wraper {
-        .img-title {
+      .img-title {
           position: absolute;
-          display: none;
+          //display: none;
           color: white;
           z-index: 2000;
-          font-size: 1.5em;
+          font-size: 1.2em;
           pointer-events: none;
-          top: 50%;
+          top: 0%;
           text-align: center;
           width: 100%;
+          z-index: 9999;
+
+
+          
+          color: white;
+          text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
+          z-index: 1;
+          font-weight: bold;
+          background: #0000007a;
+          border-radius: 25px;
+          border-bottom-right-radius: 0px;
+          border-bottom-left-radius: 0;
+          border: var(--swiper-slide-border) solid black;
+          border-bottom-width: 0px;
         }
+      .category-item-img-wraper {
+
         img.product-image {
           height: auto;
           /*padding: 5px;*/
           border-radius: 0px;
-          border-top-right-radius: 15px;
-          border-top-left-radius: 15px;
+          border-top-right-radius: 25px;
+          border-top-left-radius: 25px;
 
 
           &:hover {

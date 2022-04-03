@@ -44,6 +44,9 @@ import { logStore } from './../../stores/logStore';
 import { selectTextOnFocus } from '$lib/ui/inputActions';
 import SvelteTooltip from 'svelte-tooltip';
 import QuestionLabel from '$lib/components/questionLabel.svelte';
+let mouse_over_right_arrow = false;
+let mouse_over_left_arrow = false;
+
 //import FaveBtn from '$lib/components/FaveBtn.svelte';
 //import FaveIcon from '$lib/components/faveIcon.svelte';
 //import { fave_list } from './../../stores/faveStore';
@@ -587,11 +590,19 @@ on:change={(event) => {
                     
             </Swiper>
             
-        <button on:click={(e)=>{mswiper.swiper().slideNext()}} class="nav-btn left">
-            <img src="/arrow.svg" class="arrow arrow-left" alt="left arrow" />
+        <button on:click={(e)=>{mswiper.swiper().slideNext()}} class="nav-btn left" on:mouseenter="{()=>{mouse_over_left_arrow =true;}}" on:mouseleave="{()=>{mouse_over_left_arrow = false;}}">
+            {#if mouse_over_left_arrow}
+                <img src="/right-arrow-hover.png" class="arrow arrow-left" alt="left arrow" />
+            {:else}
+                <img src="/right-arrow.png" class="arrow arrow-left" alt="left arrow" />
+            {/if}
         </button>
-        <button on:click={(e)=>{mswiper.swiper().slidePrev()}} class="nav-btn right">
-            <img src="/arrow.svg" class="arrow arrow-right" alt="right arrow"/>
+        <button on:click={(e)=>{mswiper.swiper().slidePrev()}} class="nav-btn right" on:mouseenter="{()=>{mouse_over_right_arrow =true;}}" on:mouseleave="{()=>{mouse_over_right_arrow = false;}}" >
+            {#if mouse_over_right_arrow}
+                <img src="/right-arrow-hover.png" class="arrow arrow-right" alt="right arrow" />
+            {:else}
+                <img src="/right-arrow.png" class="arrow arrow-right" alt="right arrow" />
+            {/if}
         </button>
         {/if}
     <!--
@@ -981,23 +992,23 @@ on:change={(event) => {
             height: 75px;
         }
         &.left {
-            border: 3px solid black;
-            border-radius: 50%;
+            //border: 3px solid black;
+            //border-radius: 50%;
             left: 10px;
             
             transform: rotate(180deg)
         }
         
         &.right {
-            border: 3px solid black;
-            border-radius: 50%;
+            //border: 3px solid black;
+            //border-radius: 50%;
             right: 10px;
             
         } 
         &:hover {
-            background: rgba(255, 255, 255, 0.678);
-            border: 5px solid black;
-            border-radius: 50%;
+            //background: rgba(255, 255, 255, 0.678);
+            //border: 5px solid black;
+            //border-radius: 50%;
             &.left {
                 transform: scale(1.1) rotate(180deg)
             }
