@@ -163,6 +163,9 @@ import { Spinner } from "sveltestrap";
     export function isOpen() {
         return isModalOpen;
     }
+	function roundHalf(num) {
+    	return Math.round(num*2)/2;
+	}
     let mform;
     function delete_product_from_cart(key) {
         let element = document.querySelector(`.product[data-product="${key}"]`).classList.add('deleted')
@@ -357,9 +360,9 @@ import { Spinner } from "sveltestrap";
 								</td>
 								<td>
 									<div class="product-total-price-result">
-										{Object.entries($cartStore).reduce((acc, [key, val]) => {
+										{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
 											return acc + val.client_price * val.amount
-										}, 0)}₪
+										}, 0))}₪
 									</div>
 								</td>
 								<td colspan="2">
@@ -368,7 +371,7 @@ import { Spinner } from "sveltestrap";
 									</div>
 								</td>
 								<td>
-									{parseInt(Object.entries($cartStore).reduce((acc, [key, val]) => {
+									{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
 										return acc + val.client_price * val.amount * 1.17
 									}, 0))}₪
 								</td>
