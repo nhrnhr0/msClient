@@ -165,7 +165,7 @@ import { logStore } from "./../stores/logStore";
 
         
 </script>
-<nav class="navbar navbar-expand-* navbar-light">
+<nav id="main-navbar-wraper" class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
         <!-- svelte-ignore a11y-invalid-attribute -->
         <a class="navbar-logo" href="javascript:window.location.href=window.location.href" aria-label="logo" role="button"><img class="nav-logo" width="98.7064676px" height="40px"
@@ -462,14 +462,16 @@ import { logStore } from "./../stores/logStore";
     }
 }*/
     .navbar {
+        position: fixed;
+        width:100%;
         .container-fluid {
             flex-wrap: nowrap;
         }
         
         @include bg-gradient();
-        position: sticky;
+        //position: sticky;
         top: 0;
-        z-index: 1000;
+        z-index: 10;
 
         .nav-logo {
             //width: auto;

@@ -353,6 +353,14 @@
 .cls-cell {
   border:1px solid rgb(85, 85, 85);
 }
+.modal-header {
+  .modal-title {
+    @media screen and (max-width: 1000px) {
+      font-size: 1.5rem;
+      
+    }
+  }
+}
   .modal-body {
     .const-size-cell {
       width: 200px;

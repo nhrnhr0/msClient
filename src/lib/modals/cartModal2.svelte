@@ -14,7 +14,7 @@ import { flashy_purchase } from "$lib/flashy";
 import { Spinner } from "sveltestrap";
 
 
-	export let main_wraper;
+	
     export let isModalOpen = false;
 	let is_cart_locked = false;
     let modal_zIndex = 0;
@@ -22,6 +22,7 @@ import { Spinner } from "sveltestrap";
 	let form_name, form_email, form_phone, form_message,form_business_name,form_privateCompany;
 	let error_found = false;
 	let error_message = '';
+	let isSending = false;
 	function checkout_back_click() {
 		if(state > 0) {
 			state = 0;
@@ -47,7 +48,7 @@ import { Spinner } from "sveltestrap";
 		}*/
 	}
 	function cart_submit() {
-		
+		debugger;
         if(mform.reportValidity()) {
             let cart_products = [];
             for(let key in $cartStore) {
@@ -109,7 +110,7 @@ import { Spinner } from "sveltestrap";
                                 }
                             }
                             );
-			
+			isSending = true;
             let response = submit_cart_form(data);
 			
             response.then((data_json)=> {
@@ -129,6 +130,9 @@ import { Spinner } from "sveltestrap";
 				alert(error.toString());
 				state = 0;
 			});
+			response.finally(function() {
+				isSending = false;
+			})
 			
         }else {
 			alert('נא למלא את כל השדות');
@@ -137,13 +141,25 @@ import { Spinner } from "sveltestrap";
     }
     export function toggleModal() {
         isModalOpen = !isModalOpen;
-		activeModalsStore.modalToggle('cartModal2', isModalOpen);
+		let main_wraper_element = document.querySelector('#main_wraper');
+		//let sidebar_cart_element = document.querySelector('#sidebar-cart');
+		let main_navbar_wraper = document.querySelector('#main-navbar-wraper');
+		//activeModalsStore.modalToggle('cartModal2', isModalOpen);
         if(isModalOpen) {
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
+			main_wraper_element.style = `width: calc(100vw - 315px);position: absolute;left: 0px;`
+			main_navbar_wraper.style = `width: calc(100vw - 315px);left: 0px;`
+			//sidebar_cart_element.style = `z-index: ${modal_zIndex*5};`
+
         }else {
+			debugger;
 			state = 0;
+			main_wraper_element.style = `width:auto;`;
+			//sidebar_cart_element.style = ``;
+			main_navbar_wraper.style=`width: 100%;`;
 		}
     }
+	
     export function isOpen() {
         return isModalOpen;
     }
@@ -229,9 +245,10 @@ import { Spinner } from "sveltestrap";
 	}
 </script>
 {#if isModalOpen}
-<div id="cartModal" style="z-index: {modal_zIndex};" class="modal" class:active={isModalOpen}>
-    <div class="overlay" style="z-index: {modal_zIndex+5};" on:click={toggleModal}>
+
 	{#if state == 1}
+	<div id="cartModal" style="z-index: {modal_zIndex};" class="modal" class:active={isModalOpen}>
+		<div class="overlay" style="z-index: {modal_zIndex+5};" on:click={toggleModal}>
 		<div class="modal_content"in:fly="{{ y: 200, duration: 350 }}" on:click|stopPropagation|preventDefault={()=>{}} out:fade style="z-index: {modal_zIndex+10};">
 			<div class="modal-header">
 			<button title="Close" on:click={toggleModal} class="close-btn right">x</button>
@@ -241,6 +258,7 @@ import { Spinner } from "sveltestrap";
 		
 			<div class="modal-body">
 				<form class="cart-form" bind:this={mform} method="POST" action="{SUBMIT_CART_URL}" >
+					
 					<div class="form-group">
 
 						
@@ -329,9 +347,9 @@ import { Spinner } from "sveltestrap";
 								{/each}
 							</tbody>
 							<tr class="totals">
-								<td colspan="5">
+								<td colspan="2">
 									<div  class="product-total-price">
-										סה"כ
+										סה"כ ללא מע"מ
 									</div>
 									
 									
@@ -344,16 +362,37 @@ import { Spinner } from "sveltestrap";
 										}, 0)}₪
 									</div>
 								</td>
+								<td colspan="2">
+									<div class="product-total-price-tax">
+										סה"כ כולל מע"מ
+									</div>
+								</td>
+								<td>
+									{parseInt(Object.entries($cartStore).reduce((acc, [key, val]) => {
+										return acc + val.client_price * val.amount * 1.17
+									}, 0))}₪
+								</td>
 							</tr>
+							
 						</table>
-
+						<button on:click="{cart_submit}" class="submit-btn btn">
+							{#if isSending}
+							<Spinner />
+							{:else}
+							שלח
+							{/if}
+						</button>
 				</form>
 			</div>
 		
 		</div>
+		
+	</div>
+</div>
 	{/if}
-
-
+	
+	{#if isModalOpen}
+		<div class="sidebar-cart-wraper">
             <aside on:click|stopPropagation|preventDefault={()=>{}} transition:fly="{{x:340}}" id="sidebar-cart">
                 <main>
                     <button class="close-button" on:click="{()=>{toggleModal();}}">X</button>
@@ -439,7 +478,7 @@ import { Spinner } from "sveltestrap";
 					</div>
 				</main>
 			</aside>
-					
+		</div>
                     <!--
                     <div class="totals">
                         
@@ -454,9 +493,9 @@ import { Spinner } from "sveltestrap";
                         </div> 
                     </div>
                     -->
+	{/if}
 
-    </div>
-</div>
+    
 {/if}
 
 <style lang="scss">
@@ -607,6 +646,22 @@ $gray-1200: #131314;
 					}
 				}
 			}
+			.submit-btn {
+				margin-top: 1em;
+				margin-bottom: 1em;
+				width:100%;
+				@include bg-gradient();
+				box-shadow: 0 0 10px rgba(0,0,0,0.3);
+				font-size: 2.5em;
+				font-weight: bold;
+				transition: all 0.3s ease 0s;
+				&:hover, &:focus {
+					box-shadow: 0px 15px 10px rgba(0,0,0,0.7);
+					transform: translateY(-7px);
+					
+				}
+				
+			}
 
 			.float-actions {
 				position: fixed;
@@ -622,9 +677,10 @@ $gray-1200: #131314;
 	padding: 15px 15px 0 15px;
 	position: fixed;
 	display: block;
-	width: 320px;
+	width: 315px;
 	height: calc(100vh - calc(100vh - 100%));
-	z-index: 2;
+	z-index: 999;
+	//z-index: 2;
 	top: 0;
 	//right: -340px;
 	box-shadow: -10px 0 15px rgba(0, 0, 0, 0.1);
@@ -639,7 +695,7 @@ $gray-1200: #131314;
 	.cart-info {
 		color:white;
 		direction: rtl;
-		height: calc(100vh - 230px);
+		height: calc(100vh - 150px);
 		//overflow: scroll;
 		overflow: auto;
 		.info {
@@ -725,7 +781,7 @@ $gray-1200: #131314;
 		margin: 0;
 		padding: 0 0 15px 0;
 		list-style: none;
-		height: calc(100vh - 230px);
+		height: calc(100vh - 150px);
 		overflow-x: hidden;
 		overflow-y: auto;
 		display: block;

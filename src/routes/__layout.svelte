@@ -21,13 +21,14 @@ import { onMount } from "svelte";
 <ProductModal bind:this={$productModalStore}></ProductModal>
 <ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
 <CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
-<CartModal2 bind:this={$cartModalStore}></CartModal2>
+
 <SuccessModal bind:this={$successModalStore}></SuccessModal>
 <UserDetailsModal bind:this={$userDetailModalStore}></UserDetailsModal>
 <ProductCartModal bind:this={$productCartModalStore}></ProductCartModal>
 <SingleAmountModal bind:this={$singleAmountPopupStore}></SingleAmountModal>
 <ProductQuestionModal bind:this={$productQuestionModalStore}></ProductQuestionModal>
 <Navbar></Navbar>
+
 <!--<div class="hidden">
 <input type="text" bind:value={$stateQuery['product']}> 
 <input type="text" bind:value={$stateQuery['category']}> 
@@ -45,10 +46,9 @@ import { onMount } from "svelte";
   import SingleAmountModal from '$lib/modals/singleAmountModal.svelte';
 import ProductQuestionModal from "$lib/modals/productQuestionModal.svelte";
   export const prerender = false;
-  let main_wraper = writable();
 </script>
 
-<div id="main_wraper" bind:this={$main_wraper} class="bg-wraper">
+<div id="main_wraper" class="bg-wraper">
   <slot />
       <footer id="footer">
         <div class="footer-top">
@@ -108,6 +108,7 @@ import ProductQuestionModal from "$lib/modals/productQuestionModal.svelte";
         </div>
     </footer>
 </div>
+<CartModal2 bind:this={$cartModalStore}></CartModal2>
 
 <style lang="scss">
   .bg-wraper  {
@@ -115,6 +116,7 @@ import ProductQuestionModal from "$lib/modals/productQuestionModal.svelte";
     background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url('https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl')!important;
     background-position: center;
     overflow:hidden;
+    padding-top: 78px;
   }
 
   #footer {
