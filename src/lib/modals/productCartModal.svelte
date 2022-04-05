@@ -328,7 +328,7 @@
         </div>
         <div class="action-buttons">
           <!-- שמור ומחק -->
-          <button class="btn btn-primary" on:click={toggleModal}>הוסף לסל</button>
+          <button class="btn btn-primary" style:visibility={$cartStore[product_id].amount>0?'visible':'hidden'} on:click={toggleModal}>הוסף לסל</button>
           <button class="btn btn-danger" on:click={remove_from_cart}>מחק</button>
 
         </div>
@@ -350,6 +350,7 @@
 </div>
 
 <style lang="scss">
+  
 .cls-cell {
   border:1px solid rgb(85, 85, 85);
 }

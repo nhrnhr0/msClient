@@ -26,7 +26,8 @@ import { apiSearchProducts } from "./../api/api";
 import { logStore } from "./../stores/logStore";
         let groupedAlbums; // group groupedAlbums albumsJsonStore by topLevelCategory, if topLevelCategory is not found, create others
         albumsJsonStore.subscribe((albums) => {
-            groupedAlbums = albums.reduce((acc, album) => {
+            if (albums.length > 0) {
+            let groupedAlbumsTemp = albums.reduce((acc, album) => {
                 const topLevelCategory = album.topLevelCategory;
                 if (!acc[topLevelCategory]) {
                     acc[topLevelCategory] = [];
@@ -34,7 +35,37 @@ import { logStore } from "./../stores/logStore";
                 acc[topLevelCategory].push(album);
                 return acc;
             }, {});
+            // put undefined topLevelCategory albums at the end
+            debugger;
+            
+            console.log('groupedAlbums', groupedAlbums);
+
+
+            let groupedAlbumsTempArr = [];
+            let entries = Object.entries(groupedAlbumsTemp);
+            
+            let lastVal = undefined;
+            for(let i = 0; i < entries.length; i++) {
+                let key = entries[i][0];
+                let value = entries[i][1];
+                if (key == 'undefined') {
+                    lastVal = value;
+                }else {
+                    groupedAlbumsTempArr.push({
+                        key: key,
+                        value: value
+                    });
+                }
+            }
+            groupedAlbumsTempArr.push({
+                key: 'undefined',
+                value: lastVal
+            });
+
+            groupedAlbums = groupedAlbumsTempArr;
+            }
         });
+
         function menuItemClicked(album) {
             $categoryModalStore.setAlbum(album);
             $categoryModalStore.toggleModal();
@@ -172,7 +203,7 @@ import { logStore } from "./../stores/logStore";
                 src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1634457672/msAssets/favicon_rza3n9"
                 alt=""></a>
 
-                <Dropdown id="navCategoryList" class="category-menu">
+                <Dropdown id="navCategoryList" class="main-category-menu">
                     <DropdownToggle color="none" caret aria-label="menu">  
                         <svg viewBox="0 0 100 80" width="40" height="40">
                             <rect width="100" height="20"></rect>
@@ -181,22 +212,22 @@ import { logStore } from "./../stores/logStore";
                         </svg>
                     </DropdownToggle>
                     
-                    <DropdownMenu>                    
+                    <DropdownMenu >                    
                         <h1 class="drop-title"> מחלקות מוצרים</h1>
                         {#if groupedAlbums }
-                            {#each Object.entries(groupedAlbums) as  [key, val]}
+                            {#each groupedAlbums as key_val_album }
                                 <DropdownItem header>
                                     
                                     <Dropdown class="category-menu-2">
                                         <DropdownToggle color="none" caret aria-label="submenu">
-                                                {#if key == 'undefined'}
+                                                {#if key_val_album['key'] == 'undefined'}
                                                     אחר
                                                 {:else}
-                                                    {key}
+                                                    {key_val_album['key']}
                                                 {/if}
-                                        </DropdownToggle>
-                                        <DropdownMenu>
-                                            {#each val as  album}
+                                        </DropdownToggle >
+                                        <DropdownMenu end class="category-menu-2-menu" style="transform: translate3d(0px, 44px, 0px);">
+                                            {#each key_val_album['value'] as  album}
                                             <DropdownItem on:click={menuItemClicked(album)}>
                                                     {album.title}
                                             </DropdownItem>
@@ -285,11 +316,12 @@ import { logStore } from "./../stores/logStore";
 :global(#navCategoryList) {
         :global(.dropdown-menu.show) {
           grid-template-columns: repeat(1, 1fr);
-          left: 0%!important;
+          //left: 0%!important;
           padding-top: 55px;
             overflow-y: visible;
           .drop-title {
             font-size: 1.56rem;
+            top: 0px;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
@@ -325,7 +357,8 @@ import { logStore } from "./../stores/logStore";
         }
     }
 }
-:global(.category-menu) {
+
+:global(.main-category-menu) {
         :global(.dropdown-menu) {
             grid-template-columns: repeat(1, 1fr);
             :global(.dropdown-toggle) {
@@ -355,6 +388,11 @@ import { logStore } from "./../stores/logStore";
                     }
             :global(.dropdown-header) {
             :global(.category-menu-2){
+                :global(.category-menu-2-menu.show) {
+                    display: grid;
+                    transform: translate3d(-100%, 44px, 0px);
+                    left:-100%;
+                }
                 :global(.dropdown-menu.show) {
                     max-height: 45vh;
                     overflow-y: scroll!important;;
