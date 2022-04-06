@@ -44,9 +44,11 @@
                 alt="">
                 </picture>
         <div class="content">
+            <!--
             <div class="title">
                 נשמח לעמוד לשירותכם
             </div>
+            -->
         </div>
     </div>
 </div>
@@ -63,7 +65,7 @@
             /*font-family: 'Rounded Mplus 1c';*/
             color: black;
             text-align: center;
-            font-size: 1.8rem;
+            font-size: 1.35rem;
             font-weight: bold;
             position: relative;
 
@@ -111,7 +113,7 @@
 
                 .text {}
             }
-
+            /*
             @media screen and (max-width:640px) {
                 .content {
                     .title {
@@ -126,7 +128,7 @@
                         font-size: 40px;
                     }
                 }
-            }
+            }*/
         }
 
     }

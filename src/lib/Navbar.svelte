@@ -312,7 +312,10 @@ import { logStore } from "./../stores/logStore";
 
 
 <style lang="scss">
-        
+        :root {
+            --autocomplete-bg-hover-clr: rgb(136, 135, 135);
+            --autocomplete-txt-hover-clr: rgb(255, 255, 255);
+        }
 :global(#navCategoryList) {
         :global(.dropdown-menu.show) {
           grid-template-columns: repeat(1, 1fr);
@@ -464,7 +467,8 @@ import { logStore } from "./../stores/logStore";
     &:hover {
       .search-item {
         //background-color: #40508d;
-        background-color: #3969B1;
+        background-color: var(--autocomplete-bg-hover-clr);
+        color: var(--autocomplete-txt-hover-clr);
       }
     }
   }
@@ -532,6 +536,11 @@ import { logStore } from "./../stores/logStore";
                                 display: none;
                             }
                         }
+                        
+                    }
+                    :global(.autocomplete-list-item.selected) {
+                        background-color: var(--autocomplete-bg-hover-clr);
+                            color: vart(--autocomplete-txt-hover-clr);  
                     }
 
                     @media screen and (max-width: 550px) {

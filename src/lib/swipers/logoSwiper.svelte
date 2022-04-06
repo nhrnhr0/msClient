@@ -90,7 +90,6 @@
             .slider-title {
                 //text-decoration: underline;
                 font-size: 2.1rem;
-                font-weight: bold;
                 text-align: center;
                 margin-top: 30px;
                 //background-color: #f5f5f5;

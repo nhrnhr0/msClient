@@ -176,6 +176,7 @@
 
     <div class="modal-body">
       {#if is_loaded && $cartStore[product_id] != undefined}
+      <div class="product-grid-wraper">
         <div class="product-details">
           <div class="product-img">
             <img width="150" height="150" src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[product_id].cimage}" alt="{$cartStore[product_id].title}">
@@ -326,6 +327,7 @@
             </tbody>
           </table>
         </div>
+      </div>
         <div class="action-buttons">
           <!-- שמור ומחק -->
           <button class="btn btn-primary" style:visibility={$cartStore[product_id].amount>0?'visible':'hidden'} on:click={toggleModal}>הוסף לסל</button>
@@ -350,16 +352,18 @@
 </div>
 
 <style lang="scss">
-  
+  .product-grid-wraper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
 .cls-cell {
   border:1px solid rgb(85, 85, 85);
 }
 .modal-header {
   .modal-title {
-    @media screen and (max-width: 1000px) {
-      font-size: 1.5rem;
-      
-    }
+    font-size: 1.5rem;
   }
 }
   .modal-body {
@@ -399,7 +403,7 @@
   }
     .product-details {
       display:flex;
-      flex-direction: row;
+      flex-direction: row-reverse;
       justify-content: space-around;
       align-items: center;
       .product-img {
@@ -412,14 +416,20 @@
       }
     }
     .product-attributes {
-      width: 100%;
+      //width: 100%;
       
       //padding-bottom: 450px;
       
-      overflow-x: scroll;
-      border: 1px solid #777777;
+      overflow-x: auto;
+      
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       table.product-table {
-          width: 100%;
+        border: 1px solid #777777;
+          //width: 100%;
+          margin:auto;
           border-spacing: 0;
           thead {
             tr {
@@ -427,16 +437,17 @@
                 text-align: center;
                 border-bottom: 1px solid rgb(85, 85, 85);
                 border-left: 1px solid rgb(85, 85, 85);
+                max-width: 95px;
                 &:last-child {
                   border-left: none;
                 }
 
               }
-              .size-header {
+              th.size-header {
                 text-align: center;
                 border-bottom: 1px solid rgb(85, 85, 85);
                 border-left: 1px solid rgb(85, 85, 85);
-                //min-width: 90px;
+                
                 
                 &:last-child {
                   border-left: none;
@@ -463,6 +474,7 @@
                     display: grid;
                     grid-template-columns: 1fr;
                     border:1px solid black;
+                    max-width: 95px;
                   }
                   input.size-input:first-child {
                     &:last-child {
@@ -470,6 +482,11 @@
                     }
                   }
                   input.size-input {
+                    /* webkit solution */
+                    ::-webkit-input-placeholder { text-align:center; }
+                    /* mozilla solution */
+                    input:-moz-placeholder { text-align:center; }
+                    
                     //border: 1px solid rgb(85, 85, 85);
                     min-width: 48px;
                     width: 100%;
@@ -490,11 +507,11 @@
                     &:focus {
                       outline: none;
                     }
-                    &::-webkit-outer-spin-button,
+                    /*&::-webkit-outer-spin-button,
                     &::-webkit-inner-spin-button {
                       -webkit-appearance: none;
                       margin: 0;
-                    }
+                    }*/
                   }
                   
                 }
