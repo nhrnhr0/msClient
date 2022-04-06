@@ -231,7 +231,7 @@ let mouse_over_left_arrow = false;
                         let mslide = target.closest('.swiper-slide');
                         let pid = mslide.dataset.productId;
                         let currentProduct = get_product_by_id(pid);
-                        $productQuestionModalStore.toggleModal(currentProduct.id, currentProduct.title);
+                        $productQuestionModalStore.openModal(currentProduct.id, currentProduct.title);
                     }
                     else if(target.classList.contains('read-more-btn') && dont_open_modal == false) {
                         $productModalStore.setProduct(target.dataset.catalogId, target.dataset.productId);

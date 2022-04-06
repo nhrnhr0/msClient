@@ -552,7 +552,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
                           
                         </a>
                         {#if is_image_loaded}
-                          <button class="question-button btn btn-primary" on:click={()=> {$productQuestionModalStore.toggleModal($productData.id,$productData.title);}} >
+                          <button class="question-button btn btn-primary" on:click={()=> {$productQuestionModalStore.openModal($productData.id,$productData.title);}} >
                             יש לך שאלה?
                           </button>
                         

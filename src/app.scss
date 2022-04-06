@@ -357,6 +357,8 @@ button:focus:not(:focus-visible) {
   &.left {
     padding-right:7%;
     padding-left: 2%;
+    opacity: 0;
+    cursor: default;
   }
   &.right {
     padding-left:7%;

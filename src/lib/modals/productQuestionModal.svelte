@@ -40,7 +40,28 @@ import { send_product_question } from "./../../api/api";
             
         });
     }
-    export function toggleModal(_product_id, _product_title) {
+    export function openModal(_product_id, _product_title) {
+        console.log('openModal', _product_id, _product_title);
+        product_id = _product_id
+        product_title = _product_title;
+        modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
+        isModalOpen = true;
+        activeModalsStore.modalToggle('productQuestionModal', isModalOpen);
+        setTimeout(() => {
+                let inputField = document.getElementById('popup_input');
+                if(inputField) {
+                    inputField.focus();
+                }else {
+                    console.log('inputField not found, modal is closed');
+                }
+            }, 0);
+    }
+    export function closeModal(e) {
+        console.log('closeModal', e);  
+        isModalOpen = false;
+        activeModalsStore.modalToggle('productQuestionModal', isModalOpen);
+    }
+    /*export function toggleModal(_product_id, _product_title) {
         product_id = _product_id
         product_title = _product_title;
         isModalOpen = !isModalOpen;
@@ -52,7 +73,7 @@ import { send_product_question } from "./../../api/api";
                 document.getElementById('popup_input').focus();
             }, 0);
         }
-    }
+    }*/
     export function isOpen() {
         return isModalOpen;
     }
@@ -70,12 +91,13 @@ import { send_product_question } from "./../../api/api";
 
 
 <div id="singleAmountModal" style="z-index: {modal_zIndex};" class="modal" class:active={isModalOpen}>
-    <div class="overlay" style="z-index: {modal_zIndex+5};" on:click={toggleModal}>
+    <div class="overlay" style="z-index: {modal_zIndex+5};" on:click={closeModal}>
         {#if isModalOpen}
         <div class="modal_content" in:fly="{{ y: 200, duration: 200 }}" on:click|stopPropagation="{()=>{}}" style="z-index: {modal_zIndex+10};">
             <div class="modal-header">
-                
+                <button title="Close" on:click={closeModal} class="close-btn right">x</button>
                 <div class="modal-title">יש לך שאלה על<div class="mark-strong">{product_title}?</div></div>
+                <button title="Close" on:click={closeModal} class="close-btn left">x</button>
                 
             </div>
             <div class="modal-body">
