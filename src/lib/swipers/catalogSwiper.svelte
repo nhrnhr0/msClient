@@ -198,12 +198,12 @@ let mouse_over_left_arrow = false;
 
                         }
                         
-
-                        if(currentProduct.show_sizes_popup) {
-                                open_edit_amount_dialog(currentProduct.id);
+                        open_edit_amount_dialog(currentProduct.id);
+                        /*if(currentProduct.show_sizes_popup) {
+                                
                         }else {
                             open_single_amount_dialog(currentProduct.id, currentProduct.title);
-                        }
+                        }*/
                             /*
                             const selector = '#slider_amount_input_'+currentProduct.id;
                             const query = document.querySelectorAll(selector);
@@ -280,12 +280,12 @@ let mouse_over_left_arrow = false;
                         } else {
 
                         }
-
-                        if(currentProduct.show_sizes_popup) {
-                                open_edit_amount_dialog(currentProduct.id);
-                        }else {
-                            open_single_amount_dialog(currentProduct.id, currentProduct.title);
-                        }
+                        open_edit_amount_dialog(currentProduct.id);
+                        // if(currentProduct.show_sizes_popup) {
+                                
+                        // }else {
+                        //     open_single_amount_dialog(currentProduct.id, currentProduct.title);
+                        // }
                     }
                     else {
                         console.log('unknown click');

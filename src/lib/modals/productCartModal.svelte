@@ -2,7 +2,8 @@
   import {
     colorsJsonStore,
     sizesJsonStore
-  } from "./../../stores/stores"
+  } from "./../../stores/stores";
+  import {selectTextOnFocus} from "$lib/ui/inputActions";
   import {
     cartStore
   } from './../../stores/cartStore';
@@ -33,6 +34,7 @@
     
     if (isModalOpen == false) {
       is_loaded = false;
+      last_active_input = null;
       // if the last product amount was 0 when close: remove from cart
       if (product_id != undefined && $cartStore[product_id] != undefined && $cartStore[product_id].amount <= 0) {
 
@@ -95,7 +97,7 @@
     // $productData.amount = sum(cartStore[$productData.id].mentries[color_id][size_id].quantity) for color_id and size_id in cartStore[$productData.id].mentries
     let total_amount = 0;
     
-    if ($cartStore[product_id] && $cartStore[product_id].mentries) {
+    if ($cartStore[product_id] && $cartStore[product_id].mentries && $cartStore[product_id].show_sizes_popup) {
       $cartStore[product_id].colors.forEach(color => {
         $cartStore[product_id].sizes.forEach((size, size_idx) => {
           if($cartStore[product_id].varients.length == 0) {
@@ -160,6 +162,44 @@
     cartStore.removeFromCart($cartStore[product_id]);
     toggleModal();
   }
+
+  function add_to_amount(amount) {
+    if (last_active_input == null) {
+      show_add_amount_focus_error = true;
+    }else {
+      show_add_amount_focus_error = false;
+      if($cartStore[product_id].show_sizes_popup) {
+        let originalVal = last_active_input.value;
+        if (originalVal == '') {
+          originalVal = 0;
+        }
+        let val = parseInt(originalVal) + amount;
+        //let obj = $cartStore[product_id].mentries;
+        debugger;
+        last_active_input.value = val;
+        last_active_input.dispatchEvent(new Event('input', {bubbles:true}));
+        last_active_input.focus();
+      }else {
+          $cartStore[product_id].amount += amount;
+      }
+    }
+}
+  let show_add_amount_focus_error = false;;
+  let last_active_input = null;
+  let last_store_path = undefined;
+  function input_blur_activate(e) {
+
+  }
+  function input_focus_activate(e, storePath) {
+    last_active_input = e.target;
+    last_store_path = storePath;
+    
+    console.log('last_active_input', last_active_input);
+    console.log('last_store_path', last_store_path);
+    if (show_add_amount_focus_error) {
+      show_add_amount_focus_error = false;
+    }
+  }
 </script>
 
 
@@ -169,7 +209,9 @@
   <div class="modal_content"in:fly="{{ y: 200, duration: 350 }}" out:fade style="z-index: {modal_zIndex+10};">
     <div class="modal-header">
       <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
-      <h5 class="modal-title">בחר צבעים ומידות</h5>
+      <h5 class="modal-title">עריכת כמות ל-
+        <span class="product-name">{$cartStore[product_id]?.title}</span>
+      </h5>
       <button title="Close" on:click={toggleModal} class="close-btn left">x</button>
     </div>
 
@@ -184,149 +226,204 @@
             <h1>{$cartStore[product_id].title}</h1>
           </div>
         </div>
-        <div class="product-attributes">
-          <table class="product-table">
-            <thead>
-              <tr>
-                <th class="sticky-col const-size-cell">צבע</th>
-                {#if $cartStore[product_id].varients.length != 0}
-                  <th class="const-size-cell">מודל</th>
-                {/if}
-                {#each $cartStore[product_id].sizes as size_id}
-                  <th class="size-header">{$sizesJsonStore[size_id]?.size}</th>
-                {/each}
-                <th class="delete-cell-style">מחק</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#if $cartStore[$cartStore[product_id].id] != undefined && $cartStore[$cartStore[product_id].id].mentries}
-
-              {#each $cartStore[product_id].colors as color, color_idx}
-                <!-- color: 84 -->
+        {#if $cartStore[product_id].show_sizes_popup}
+          <div class="product-attributes">
+            <table class="product-table">
+              <thead>
                 <tr>
-                  <td class="sticky-col">
-                    <div class="color-box" ><div class="inner" style="background-color: {$colorsJsonStore[color].color}"></div>{$colorsJsonStore[color].name}</div>
-                  </td>
+                  <th class="sticky-col const-size-cell">צבע</th>
                   {#if $cartStore[product_id].varients.length != 0}
-                    <td>
-                      {#each $cartStore[product_id].varients as varient }
-                      <div class="varient-box cls-cell">
-                        {varient.name}
-                      </div>
-                      {/each}
-                      
-                    </td>
+                    <th class="const-size-cell">מודל</th>
                   {/if}
-                  {#each $cartStore[product_id].sizes as size}
-                    <td class="size-cell">
-                      
-                        {#if $cartStore[product_id].varients.length == 0}
-                          <div class="cell-wraper">
-                            <input class="size-input cls-cell" type="number" placeholder="כמות" bind:value="{$cartStore[product_id].mentries[color][size].quantity}" min="0" max="9999" >
-                          </div>
-                        {:else}
-                        
-                          {#each $cartStore[product_id].varients as {id, name}, idx}
-                          <div class="cell-wraper">
-                            <input id="input_entery_{product_id}_{size}_{color}_{id}" class="size-input cls-cell" type="number" placeholder="כמות" bind:value="{$cartStore[product_id].mentries[color][size][id].quantity}" min="0" max="9999" >
-                          </div>
-                          {/each}
-                        
-                        {/if}
-                      
-                    </td>
-                    
+                  {#each $cartStore[product_id].sizes as size_id}
+                    <th class="size-header">{$sizesJsonStore[size_id]?.size}</th>
                   {/each}
-                  <td class="delete-cell-style">
-                    <button class="remove-button">
-                      <svg xmlns="http://www.w3.org/2000/svg" on:click={clear_sizes_entries(color)}  width="16px" height="16px" viewBox="0 0 32 36"><path fill="currentColor" d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"/></svg>
-                    </button>
-                  </td>
+                  <th class="delete-cell-style">מחק</th>
                 </tr>
-                
-              {/each}
-              
-              <!--
-              {#each Object.keys($cartStore[$cartStore[product_id].id].mentries) as color_entry}
-                <tr>
-                  <td class="sticky-col">
-                    <div class="color-box" ><div class="inner" style="background-color: {$colorsJsonStore[color_entry].color}"></div>{$colorsJsonStore[color_entry].name}</div>
-                  </td>
-                  {#each Object.keys($cartStore[product_id].mentries[color_entry]) as size_id}
-                    <td class="size-cell">
-                      <input class="size-input" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color_entry][size_id].quantity}" min="0" max="9999" >
+              </thead>
+              <tbody>
+                {#if $cartStore[$cartStore[product_id].id] != undefined && $cartStore[$cartStore[product_id].id].mentries}
+
+                {#each $cartStore[product_id].colors as color, color_idx}
+                  <!-- color: 84 -->
+                  <tr>
+                    <td class="sticky-col">
+                      <div class="color-box" ><div class="inner" style="background-color: {$colorsJsonStore[color].color}"></div>{$colorsJsonStore[color].name}</div>
                     </td>
-                  {/each}
-                  <td class="delete-cell-style">
-                    <button class="remove-button">
-                      <svg xmlns="http://www.w3.org/2000/svg" on:click={clear_sizes_entries(color_entry)}  width="16px" height="16px" viewBox="0 0 32 36"><path fill="currentColor" d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"/></svg>
-                    </button>
-                  </td>
-                </tr>
-              {/each}
-                -->
-
-
-
-
-
-              <tr>
-                <td class="total-cell">
-                  <div>
-                    סך הכל:
-                  </div>
-                </td>
-                {#if $cartStore[product_id].varients.length != 0}
-                  <td class="total-cell">
-                    <div>-</div>
-                  </td>
-                {/if}
-
-                  <!--
-                    cartStore[$productData.id].mentries[color_id][size_id].quantity
-                  -->
-                  <!-- td with the calculated total quantity of each size in mentries -->
-                  
-                    {#each Object.keys($cartStore[product_id].mentries[Object.keys($cartStore[product_id].mentries)[0]]) as size_id}
-                      <td class="total-cell">
-                        <div>
-                        <!-- calculate the sum of cartStore[$cartStore[product_id].id].mentries[X][size_id].quantity -->
-                        {#if $cartStore[product_id].varients.length == 0}
-                          { Object.keys($cartStore[$cartStore[product_id].id].mentries).reduce((acc, curr) => {
-                            return acc + ($cartStore[$cartStore[product_id].id].mentries[curr][size_id].quantity || 0);
-                          }, 0)}
-                        {:else}
-                        { Object.keys($cartStore[$cartStore[product_id].id].mentries).reduce((acc, curr) => {
-                          let sum = 0;
-                          for(let i = 0; i < $cartStore[product_id].varients.length; i++){
-                            sum += ($cartStore[$cartStore[product_id].id].mentries[curr][size_id][$cartStore[product_id].varients[i].id].quantity || 0);
-                          }
-                          return acc + sum;
-                        }, 0)}
-                        {/if}
+                    {#if $cartStore[product_id].varients.length != 0}
+                      <td>
+                        {#each $cartStore[product_id].varients as varient }
+                        <div class="varient-box cls-cell">
+                          {varient.name}
                         </div>
+                        {/each}
+                        
                       </td>
+                    {/if}
+                    {#each $cartStore[product_id].sizes as size}
+                      <td class="size-cell">
+                        
+                          {#if $cartStore[product_id].varients.length == 0}
+                            <div class="cell-wraper">
+                              <input class="size-input cls-cell" class:has-focus-error={show_add_amount_focus_error} type="number" on:blur="{input_blur_activate}" on:focus="{(e)=> {input_focus_activate(e, `${color}.${size}`);}}" placeholder="כמות" bind:value="{$cartStore[product_id].mentries[color][size].quantity}" min="0" max="9999" >
+                            </div>
+                          {:else}
+                          
+                            {#each $cartStore[product_id].varients as {id, name}, idx}
+                            <div class="cell-wraper">
+                              <input id="input_entery_{product_id}_{size}_{color}_{id}" on:focus="{(e)=> {input_focus_activate(e, `${color}.${size}.${id}`);}}" class="size-input cls-cell" type="number" placeholder="כמות" bind:value="{$cartStore[product_id].mentries[color][size][id].quantity}" min="0" max="9999" >
+                            </div>
+                            {/each}
+                          
+                          {/if}
+                        
+                      </td>
+                      
                     {/each}
-                    <td class="total-cell">
-                      <div>
-                        {$cartStore[product_id].amount}
-                      </div>
+                    <td class="delete-cell-style">
+                      <button class="remove-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" on:click={clear_sizes_entries(color)}  width="16px" height="16px" viewBox="0 0 32 36"><path fill="currentColor" d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"/></svg>
+                      </button>
                     </td>
+                  </tr>
                   
+                {/each}
                 
                 <!--
-                  {#each Object.keys($productData.mentries[color_entry]) as size_id}
-                    
-                      {$productData.mentries[color_entry][size_id].quantity}
+                {#each Object.keys($cartStore[$cartStore[product_id].id].mentries) as color_entry}
+                  <tr>
+                    <td class="sticky-col">
+                      <div class="color-box" ><div class="inner" style="background-color: {$colorsJsonStore[color_entry].color}"></div>{$colorsJsonStore[color_entry].name}</div>
                     </td>
-                  {/each}
+                    {#each Object.keys($cartStore[product_id].mentries[color_entry]) as size_id}
+                      <td class="size-cell">
+                        <input class="size-input" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color_entry][size_id].quantity}" min="0" max="9999" >
+                      </td>
+                    {/each}
+                    <td class="delete-cell-style">
+                      <button class="remove-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" on:click={clear_sizes_entries(color_entry)}  width="16px" height="16px" viewBox="0 0 32 36"><path fill="currentColor" d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"/></svg>
+                      </button>
+                    </td>
+                  </tr>
+                {/each}
                   -->
-              </tr>
-              {/if}
-            </tbody>
-          </table>
-        </div>
+
+
+
+
+
+                <tr>
+                  <td class="total-cell">
+                    <div>
+                      סך הכל:
+                    </div>
+                  </td>
+                  {#if $cartStore[product_id].varients.length != 0}
+                    <td class="total-cell">
+                      <div>-</div>
+                    </td>
+                  {/if}
+
+                    <!--
+                      cartStore[$productData.id].mentries[color_id][size_id].quantity
+                    -->
+                    <!-- td with the calculated total quantity of each size in mentries -->
+                    
+                      {#each Object.keys($cartStore[product_id].mentries[Object.keys($cartStore[product_id].mentries)[0]]) as size_id}
+                        <td class="total-cell">
+                          <div>
+                          <!-- calculate the sum of cartStore[$cartStore[product_id].id].mentries[X][size_id].quantity -->
+                          {#if $cartStore[product_id].varients.length == 0}
+                            { Object.keys($cartStore[$cartStore[product_id].id].mentries).reduce((acc, curr) => {
+                              return acc + ($cartStore[$cartStore[product_id].id].mentries[curr][size_id].quantity || 0);
+                            }, 0)}
+                          {:else}
+                          { Object.keys($cartStore[$cartStore[product_id].id].mentries).reduce((acc, curr) => {
+                            let sum = 0;
+                            for(let i = 0; i < $cartStore[product_id].varients.length; i++){
+                              sum += ($cartStore[$cartStore[product_id].id].mentries[curr][size_id][$cartStore[product_id].varients[i].id].quantity || 0);
+                            }
+                            return acc + sum;
+                          }, 0)}
+                          {/if}
+                          </div>
+                        </td>
+                      {/each}
+                      <td class="total-cell">
+                        <div>
+                          {$cartStore[product_id].amount}
+                        </div>
+                      </td>
+                    
+                  
+                  <!--
+                    {#each Object.keys($productData.mentries[color_entry]) as size_id}
+                      
+                        {$productData.mentries[color_entry][size_id].quantity}
+                      </td>
+                    {/each}
+                    -->
+                </tr>
+                {/if}
+              </tbody>
+            </table>
+          </div>
+        {:else}
+          <div class="product-attributes-single">
+            {#if $cartStore[product_id].colors.length > 0}
+              <h4 class="single-amount-title-1 single-amount-title">מוצר זה מגיע
+                {#if $cartStore[product_id].colors.length > 1}
+                  בצבעים:
+                    {#each $cartStore[product_id].colors as color, color_idx}
+                        <div class="color-box" ><div class="inner" style="background-color: {$colorsJsonStore[color].color}"></div></div>
+                    {/each}
+                {:else}
+                  בצבע:
+                    <div class="color-box" ><div class="inner" style="background-color: {$colorsJsonStore[$cartStore[product_id].colors[0]].color}"></div></div>
+                {/if}
+              </h4>
+            {/if} 
+            {#if $cartStore[product_id].sizes.length > 0}
+              <h4 class="single-amount-title-2 single-amount-title">
+                {#if $cartStore[product_id].sizes.length > 1}
+                  בגדלים:
+                    {#each $cartStore[product_id].sizes as size, size_idx}
+                      <div class="size-box">
+                        {$sizesJsonStore[size].name}
+                      </div>
+                    {/each}
+                {:else}
+                  בגודל:
+                    <div class="size-box">
+                      {$sizesJsonStore[$cartStore[product_id].sizes[0]].size}
+                    </div>
+                {/if}
+              </h4>
+            {/if}
+            
+            
+            <div class="input-wraper">
+              <label for="popup_amount_input" class="amount-input-label">כמות: </label>
+              <input id="popup_amount_input" on:keyup={(e)=> {e.key === 'Enter' && toggleModal()}} use:selectTextOnFocus bind:value={$cartStore[product_id].amount} class="amount-input" type="number" >
+            </div>
+          </div>
+        {/if}
       </div>
+      <div class="fast-amount-buttons">
+        <button on:click={()=> {add_to_amount(6)}} class="option">6+</button>
+        <button on:click={()=> {add_to_amount(12)}} class="option">12+</button>
+        <button  on:click={()=> {add_to_amount(24)}} class="option">24+</button>
+      </div>
+
+      {#if show_add_amount_focus_error}
+        <div class="amount-focus-error-message">
+          לחץ על התא שאליו תרצה להוסיף כמות
+        </div>
+      {/if}
+
+
+
         <div class="action-buttons">
           <!-- שמור ומחק -->
           <button class="btn btn-primary" style:visibility={$cartStore[product_id].amount>0?'visible':'hidden'} on:click={toggleModal}>הוסף לסל</button>
@@ -351,6 +448,12 @@
 </div>
 
 <style lang="scss">
+  .amount-focus-error-message {
+    width: fit-content;
+    margin: auto;
+    color: red;
+    font-weight: bold;
+  }
   .product-grid-wraper {
     display: flex;
     align-items: center;
@@ -503,6 +606,11 @@
                     padding: 5px;
                     border:none;
                     margin: auto;
+                    &.has-focus-error {
+                      &:hover {
+                        background-color: #2b2a2a;
+                      }
+                    }
                     &:focus {
                       outline: none;
                     }
@@ -552,6 +660,72 @@
           }
         }
       }
+    }
+    .product-attributes-single {
+      .single-amount-title { 
+        display:flex;
+        justify-content: flex-start;
+        align-items: center;
+      }
+      .single-amount-title-1{
+        .color-box {
+          .inner {
+              margin-left: 15px;
+              width: 25px;
+              height: 25px;
+          }
+        }
+      }
+
+      .input-wraper {
+        .amount-input-label {
+
+        }
+            .amount-input {
+                width: 100%;
+                height: 50px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 5px;
+                margin-top: 15px;
+                font-size: 1.9em;
+                font-weight: bold;
+                text-align: center;
+                background-color: rgba(255, 255, 255, 0.404);
+                box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
+                color: #000;
+                
+            }
+        }
+    }
+
+    .fast-amount-buttons {
+      width: fit-content;
+    margin: auto;
+      display: flex;;
+            flex-direction: row-reverse;
+            justify-content: space-around;
+            text-align: center;
+            padding-top:25px;
+            .option {
+                width: 120px;
+                height: 75px;
+                border-radius: 25px;
+                text-align: center;
+                font-weight: bold;
+                border: 1px solid #ccc;
+                @include bg-gradient(); 
+                font-size: 1.5em;
+                margin: 0 5px;
+                box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
+                outline: none;
+                transition:ease-in-out 0.2s;
+                &:hover, &:focus {
+                    border: 1px solid rgb(71, 71, 71);
+                    box-shadow: 0px 0px 22px rgba(0, 0, 0, 0.4);
+                }
+
+            }
     }
 
     .action-buttons {
