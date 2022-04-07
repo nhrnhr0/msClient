@@ -2,7 +2,7 @@
 
 <script>
   import {flyToCart} from './../utils/js/flyToCart';
-  import {productCartModalStore, productQuestionModalStore, singleAmountPopupStore} from './../../stores/stores';
+  import {productCartModalStore, productQuestionModalStore} from './../../stores/stores';
   import {
     get_album_details
   } from './../../api/api';
@@ -383,10 +383,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
   function open_edit_amount_dialog() {
     if(cartStore.isInCart($productData) == false) {
-      return false;
-    }
-    if(cartStore.getProduct(_productId).show_sizes_popup == false) {
-      $singleAmountPopupStore.toggleModal($productData.id, $productData.title);
       return false;
     }
     $productCartModalStore.toggleModal($productData.id);

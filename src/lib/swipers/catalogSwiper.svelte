@@ -35,7 +35,7 @@
     
     
     export let loaded_data;
-    import {productModalStore, productCartModalStore, userInfoStore, singleAmountPopupStore, productQuestionModalStore, categoryModalStore, campainsStore} from './../../stores/stores';
+    import {productModalStore, productCartModalStore, userInfoStore, productQuestionModalStore, categoryModalStore, campainsStore} from './../../stores/stores';
 import { onDestroy, onMount } from 'svelte';
 
 //import { flyToCart } from '$lib/utils/js/flyToCart';
@@ -104,10 +104,6 @@ let mouse_over_left_arrow = false;
             unsubCart();
         }
     })
-    function open_single_amount_dialog(product_id,product_title) {
-        console.log('====== toggle single amount popup');
-        $singleAmountPopupStore.toggleModal(product_id, product_title);
-    }
     /*function swiperClicked(e) {
         e.preventDefault();
         //console.log('swiperClicked: ', e);        

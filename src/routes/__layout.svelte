@@ -5,7 +5,7 @@
   import Navbar from "$lib/Navbar.svelte";
   //import { stateQuery} from './../stores/stores'
 import { onMount } from "svelte";
-  import {all_swipers,userDetailModalStore, productCartModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore,singleAmountPopupStore, productQuestionModalStore} from './../stores/stores'
+  import {all_swipers,userDetailModalStore, productCartModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore, productQuestionModalStore} from './../stores/stores'
   
 </script>
 
@@ -25,7 +25,9 @@ import { onMount } from "svelte";
 <SuccessModal bind:this={$successModalStore}></SuccessModal>
 <UserDetailsModal bind:this={$userDetailModalStore}></UserDetailsModal>
 <ProductCartModal bind:this={$productCartModalStore}></ProductCartModal>
+<!--
 <SingleAmountModal bind:this={$singleAmountPopupStore}></SingleAmountModal>
+-->
 <ProductQuestionModal bind:this={$productQuestionModalStore}></ProductQuestionModal>
 <Navbar></Navbar>
 

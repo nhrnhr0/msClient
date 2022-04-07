@@ -20,7 +20,6 @@
     albumsJsonStore,
     campainsStore,
     productModalStore,
-    singleAmountPopupStore,
     userInfoStore,
     _modal_z_index_incrementor
   } from './../../stores/stores';
@@ -187,11 +186,7 @@ Button,
   }
   function open_edit_amount_dialog(product) {
     console.log('open_edit_amount_dialog', product);
-    if($cartStore[product.id].show_sizes_popup) {
-      $productCartModalStore.toggleModal(product.id);
-    }else {
-      $singleAmountPopupStore.toggleModal(product.id, product.title);
-    }
+    $productCartModalStore.toggleModal(product.id);
   }
   let modal_body;
 
@@ -214,16 +209,6 @@ Button,
     });
     setAlbum(alb);
   }
-
-
-  /*function open_cart_edit_pupup(img) {
-    
-    if(cartStore.getProduct(product_id).show_sizes_popup == false) {
-      $singleAmountPopupStore.toggleModal(product_id, title);
-      return false;
-    }
-    $productCartModalStore.set_product($productData.id);
-  }*/
 </script>
 
 

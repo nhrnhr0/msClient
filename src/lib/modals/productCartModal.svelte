@@ -164,7 +164,7 @@
   }
 
   function add_to_amount(amount) {
-    if (last_active_input == null) {
+    if (last_active_input == null && $cartStore[product_id].show_sizes_popup) {
       show_add_amount_focus_error = true;
     }else {
       show_add_amount_focus_error = false;
@@ -416,11 +416,9 @@
         <button  on:click={()=> {add_to_amount(24)}} class="option">24+</button>
       </div>
 
-      {#if show_add_amount_focus_error}
-        <div class="amount-focus-error-message">
+        <div class="amount-focus-error-message" class:active={show_add_amount_focus_error}>
           לחץ על התא שאליו תרצה להוסיף כמות
         </div>
-      {/if}
 
 
 
@@ -453,6 +451,10 @@
     margin: auto;
     color: red;
     font-weight: bold;
+    visibility: hidden;
+    &.active {
+      visibility: visible;
+    }
   }
   .product-grid-wraper {
     display: flex;

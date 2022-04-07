@@ -1,5 +1,5 @@
 <script>
-    import {all_swipers,cartModalStore, successModalStore, _modal_z_index_incrementor, productModalStore,userInfoStore, sizesJsonStore, singleAmountPopupStore} from "./../../stores/stores";
+    import {all_swipers,cartModalStore, successModalStore, _modal_z_index_incrementor, productModalStore,userInfoStore, sizesJsonStore} from "./../../stores/stores";
     import {fly, fade} from 'svelte/transition';
     import { cartStore } from "./../../stores/cartStore"
     import { CLOUDINARY_URL, STATIC_BASE, SUBMIT_CART_URL } from "./../../api/consts";
@@ -206,16 +206,7 @@ import { Spinner } from "sveltestrap";
 
 	}
 	function open_edit_amount_dialog(product_id, product_title) {
-		if(cartStore.getProduct(product_id).show_sizes_popup){
-			//$productCartModalStore.set_product(product_id);
-			$productCartModalStore.toggleModal(product_id);
-			/*setTimeout(()=> {
-				
-			}, 5);*/
-		}else {
-			//document.querySelector('input#cart_amount_'+product_id).focus();
-			$singleAmountPopupStore.toggleModal(product_id, product_title);
-		}
+		$productCartModalStore.toggleModal(product_id);
 	}
     function open_product_modal(key) {
         let product = $cartStore[key];
