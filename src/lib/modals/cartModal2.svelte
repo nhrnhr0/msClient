@@ -48,7 +48,6 @@ import { Spinner } from "sveltestrap";
 		}*/
 	}
 	function cart_submit() {
-		debugger;
         if(mform.reportValidity()) {
             let cart_products = [];
             for(let key in $cartStore) {
@@ -152,7 +151,6 @@ import { Spinner } from "sveltestrap";
 			//sidebar_cart_element.style = `z-index: ${modal_zIndex*5};`
 
         }else {
-			debugger;
 			state = 0;
 			main_wraper_element.style = `width:auto;`;
 			//sidebar_cart_element.style = ``;

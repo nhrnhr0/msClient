@@ -314,134 +314,32 @@ Button,
   {:then prods} 
     <div class="category-items">
       {#each prods as img}
-        
-  
-  
-  
-  
-      <div class="category-item" data-category-prod-id="{img.id}">
-        <div class="image-and-title-wraper">
-          
-          <div class="category-item-img-wraper" on:click="{open_product(img)}" >
+        <div class="category-item" data-category-prod-id="{img.id}">
+          <div class="image-and-title-wraper">
             
-            <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
-            
-            <div class="price-tag" class:active={show_prices} >{img.client_price + '₪'}</div>
+            <div class="category-item-img-wraper" on:click="{open_product(img)}" >
+              
+              <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
+              
+              <div class="price-tag" class:active={show_prices} >{img.client_price + '₪'}</div>
+            </div>
+            <div class="img-title">{img.title}</div>
           </div>
-          <div class="img-title">{img.title}</div>
-        </div>
-        <div data-img={JSON.stringify(img)} class="like-btn-wraper"> <!--    -->
-          {#if $cartStore[img.id] == undefined}
-          <div  id="categoryModalLikeBtn" class="like-btn">
-            <div class="img-wraper">
-              <!--
-              <div class="btn-product-title">
-                          {img.title}
-              </div>
-              -->
-              <div class="action">
-                <div class="like-btn-small">
-                  <button on:click={likeBtnClicked(img)} data-product-id={img.id} data-catalog-id={$current_album.id} class="add-to-cart-btn">
-                      הוסף
-                  </button>
-                  <button on:click="{open_product(img)}" data-product-id={img.id} data-catalog-id={$current_album.id} class="read-more-btn">
-                      פרטים
-                  </button>
-              </div>
-              <!--
-                  <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
-                  <div class="text">
+          <div data-img={JSON.stringify(img)} class="like-btn-wraper"> <!--    -->
+            <div class="like-btn like-btn-small">
+              <button class:gold={$cartStore[img.id] != undefined} class="action-btn add-to-cart-btn" on:click="{likeBtnClicked(img)}">
+                  {#if $cartStore[img.id] == undefined}
                     הוסף
-                  </div>
-              </div>
-              -->
-            </div>
-            
-          </div>
-          </div>
-          {:else}
-
-          <button  id="categoryModalLikeBtn" on:click={()=> open_edit_amount_dialog(img)} class="like-btn active">
-            <div class="img-wraper">
-              <!--
-              <div class="btn-product-title">
-                          {img.title}
-              </div>
-              <hr>
-              -->
-
-              <div class="action" >
-                <div class="amount-before">
-                  <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" data-product-id="{img.id}">
-                    <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="25px" height="25px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
-                  </button>
-                  <div class="amount-text">
-                    {#if $cartStore[img.id].show_sizes_popup}
-                      <div class="text">
-                        לחץ לבחירת מידות
-                      </div>
-                      <div class="edit-amount-btn">
-                        {$cartStore[img.id].amount}
-                      </div>
-                    {:else}
-                      כמות בסל:
-                      <div class="text">
-                        <input disabled id="amount_{img.id}" class="amount-input" pattern="[0-9]*" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
-                      </div>
-                    {/if}
-                  </div>
-                </div>
-
-            </div>
-            </div>
-            
-          </button>
-
-          {/if}
-          <!--
-          <button  id="categoryModalLikeBtn" class:active={$cartStore[img.id] != undefined} class="like-btn">
-            <div class="img-wraper">
-              <div class="btn-product-title">
-                          {img.title}
-              </div>
-              <div class="action">
-              {#if $cartStore[img.id] != undefined}
-                  <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
-                  <div class="text">
-                    נוסף
-                  </div>
-                {:else}
-                  <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
-                  <div class="text">
-                    הוסף
-                  </div>
-              {/if}
-            </div>
-            </div>
-            
-          </button>
-          -->
-        </div>
-        <!--
-        <div>
-          <div class="like-btn" name="like-btn">
-            <div class="like-wrapper">
-              <a name="like-btn">
-              <span name="like-btn">
-                TODO:
-              </span></a>
+                  {:else}
+                    ✔️ נוסף({$cartStore[img.id].amount})
+                  {/if}
+              </button>
+              <button class="action-btn read-more-btn" on:click={open_product(img)}>
+                  פרטים
+              </button>
             </div>
           </div>
         </div>
-        -->
-      </div>
-  
-  
-  
-  
-  
-  
-  
       {/each}
     </div>
   {/await}

@@ -28,7 +28,6 @@
 
   export function toggleModal(product_id_) {
     isModalOpen = !isModalOpen;
-    debugger;
     activeModalsStore.modalToggle('productCart', isModalOpen);
     // modal is close
     
@@ -229,7 +228,7 @@
                         
                           {#each $cartStore[product_id].varients as {id, name}, idx}
                           <div class="cell-wraper">
-                            <input id="input_entery_{product_id}_{size}_{color}_{id}" class="size-input cls-cell" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color][size][id].quantity}" min="0" max="9999" >
+                            <input id="input_entery_{product_id}_{size}_{color}_{id}" class="size-input cls-cell" type="number" placeholder="כמות" bind:value="{$cartStore[product_id].mentries[color][size][id].quantity}" min="0" max="9999" >
                           </div>
                           {/each}
                         

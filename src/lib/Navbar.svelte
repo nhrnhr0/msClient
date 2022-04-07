@@ -36,7 +36,6 @@ import { logStore } from "./../stores/logStore";
                 return acc;
             }, {});
             // put undefined topLevelCategory albums at the end
-            debugger;
             
             console.log('groupedAlbums', groupedAlbums);
 
