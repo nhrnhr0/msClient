@@ -490,11 +490,13 @@ import SingleAmountModal from './singleAmountModal.svelte';
                           {#if $cartStore[_productId] == undefined}
                               <button  id="productModalLikeBtn" class="like-btn">
                                 <div class="text">
-                                  הוסף
+                                  הוסף לסל
                               </div>
+                              <!--
                                 <div class="img-wraper">
                                   <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
                                 </div>
+                                -->
                                 
                               </button>
                           {:else}

@@ -1,5 +1,5 @@
 <script>
-    import {all_swipers,cartModalStore, successModalStore, _modal_z_index_incrementor, productModalStore,userInfoStore, sizesJsonStore} from "./../../stores/stores";
+    import {all_swipers,cartModalStore, successModalStore,productPhotoModalStore, _modal_z_index_incrementor, productModalStore,userInfoStore, sizesJsonStore} from "./../../stores/stores";
     import {fly, fade} from 'svelte/transition';
     import { cartStore } from "./../../stores/cartStore"
     import { CLOUDINARY_URL, STATIC_BASE, SUBMIT_CART_URL } from "./../../api/consts";
@@ -23,6 +23,7 @@ import { Spinner } from "sveltestrap";
 	let error_found = false;
 	let error_message = '';
 	let isSending = false;
+	let fileinput;
 	function checkout_back_click() {
 		if(state > 0) {
 			state = 0;
@@ -139,7 +140,12 @@ import { Spinner } from "sveltestrap";
 			main_navbar_wraper.style=`width: 100%;`;
 		}
     }
-	
+
+	function onFileSelected(e) {
+		console.log(e);
+		let file = e.target.files[0];
+		$productPhotoModalStore.openModal(file);
+	}
     export function isOpen() {
         return isModalOpen;
     }
@@ -398,13 +404,18 @@ import { Spinner } from "sveltestrap";
 	</div>
 </div>
 	{/if}
-	
+	<input type="file" style="display:none" name="my_file" on:change="{onFileSelected}" bind:this={fileinput}>
 	{#if isModalOpen}
 		<div class="sidebar-cart-wraper">
-            <aside on:click|stopPropagation|preventDefault={()=>{}} transition:fly="{{x:340}}" id="sidebar-cart">
+            <aside on:click|preventDefault={()=>{}} transition:fly="{{x:340}}" id="sidebar-cart">
                 <main>
                     <button class="close-button" on:click="{()=>{toggleModal();}}">X</button>
                     <h2>מוצרים שאהבתי<span class="count">{Object.keys($cartStore).length}</span></h2>
+
+					<div class="upload-image-wraper" on:click={()=>{fileinput.click();}}>
+						<span>שלח מוצר שלא מצאת</span>
+						<img class="upload" width="45px" height="45px" src="https://res.cloudinary.com/ms-global/image/upload/v1649581221/msAssets/upload_camera_s12a01.png" alt="" />
+					</div>
 					<!--
 					<h2 class="sub-title">הוסיפו מוצרים
 						וקבלו הצעת מחיר משתלמת ללא עלות וללא התחייבות</h2>
@@ -704,6 +715,23 @@ $gray-1200: #131314;
 	/*&.popup-state{
 		width: 85vw;
 	}*/
+	.upload-image-wraper {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: $gray-800;
+		margin-bottom: 15px;
+		border-radius: 25px;
+		cursor: pointer;
+		//box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.418);
+		color:white;
+		font-size: larger;
+		font-weight: bold;
+		@include hover-active() {
+			background-color: $gray-700;
+			box-shadow: 0 0 0 0.2rem rgba(0,0,0,0.1);
+		}
+	}
 	.cart-info {
 		color:white;
 		direction: rtl;

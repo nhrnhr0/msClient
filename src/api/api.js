@@ -2,7 +2,7 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL,GET_ALL_USERS_URL, GET_CSRF_TOKEN_URL,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL} from "./consts";
+import { BASE_URL,GET_ALL_USERS_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
@@ -84,6 +84,26 @@ export async function fetch_wraper_async(url, requestOptions, custom_fetch, isRe
     return json;
 
 }
+
+export function fetch_wraper_without_json(url, requestOptions,custom_fetch, isRetry = false) {
+    requestOptions = fetch_wraper_prep(url, requestOptions)
+    let response;
+    try {
+        if(custom_fetch) {
+            response = custom_fetch(url, requestOptions);
+        }
+        else {
+            response = fetch(url, requestOptions);
+        }
+    }
+    catch (error) {
+        console.error(error);
+        // expected output: ReferenceError: nonExistentFunction is not defined
+        // Note - error messages will vary depending on browser
+      }
+      return response;
+}
+
 export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false) {
     requestOptions = fetch_wraper_prep(url, requestOptions)
     let response;
@@ -168,6 +188,15 @@ function set_user_uuid(newUid) {
 }
 export function get_user_uuid() {
     return localStorage.getItem('uuid');
+}
+
+export async function send_product_photo(formData) {
+    let headers_json = {};
+
+    return await fetch_wraper_without_json(PRODUCT_PHOTO_URL, {
+        method: "POST", 
+        body: formData
+      });
 }
 
 export function send_product_question(data) {

@@ -5,7 +5,7 @@
   import Navbar from "$lib/Navbar.svelte";
   //import { stateQuery} from './../stores/stores'
 import { onMount } from "svelte";
-  import {all_swipers,userDetailModalStore, productCartModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore, productQuestionModalStore} from './../stores/stores'
+  import {all_swipers,userDetailModalStore,productPhotoModalStore, productCartModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore, productQuestionModalStore} from './../stores/stores'
   
 </script>
 
@@ -25,6 +25,7 @@ import { onMount } from "svelte";
 <SuccessModal bind:this={$successModalStore}></SuccessModal>
 <UserDetailsModal bind:this={$userDetailModalStore}></UserDetailsModal>
 <ProductCartModal bind:this={$productCartModalStore}></ProductCartModal>
+<ProductPhotoModal bind:this={$productPhotoModalStore}></ProductPhotoModal>
 <!--
 <SingleAmountModal bind:this={$singleAmountPopupStore}></SingleAmountModal>
 -->
@@ -47,6 +48,7 @@ import { onMount } from "svelte";
   import ProductCartModal from '$lib/modals/productCartModal.svelte';
   import SingleAmountModal from '$lib/modals/singleAmountModal.svelte';
 import ProductQuestionModal from "$lib/modals/productQuestionModal.svelte";
+import ProductPhotoModal from "$lib/modals/productPhotoModal.svelte";
   export const prerender = false;
 </script>
 
