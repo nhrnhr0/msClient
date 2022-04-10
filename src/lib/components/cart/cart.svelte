@@ -4,7 +4,7 @@
     import Fa from 'svelte-fa/src/fa.svelte'
     import { onDestroy } from 'svelte';
     //import CartModal from '$lib/modals/cartModal.svelte';
-    import {cartModalStore} from "./../../../stores/stores"
+    import {cartModalStore} from "./../../../stores/stores";
 	let isBooped = false;
     export function setIsBooped(val) {
 		isBooped = val;

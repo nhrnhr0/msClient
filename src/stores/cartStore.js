@@ -1,6 +1,7 @@
 import { browser } from "$app/env";
 import { update_cart_to_server } from "$lib/flashy";
 import { writable, get } from "svelte/store";
+import {cartModalStore} from "./../stores/stores";
 
 let initCart = {};
 const LOCAL_STORE_NAME = "cart5";
@@ -46,6 +47,11 @@ const createCartStore = () => {
               product.embro = false;
               store[product.id] = product;
               set(store);
+            }
+            if (Object.keys(store).length == 1) {
+                if (get(cartModalStore).isOpen() == false) {
+                  get(cartModalStore).toggleModal();
+                }
             }
             return exist;
           }
