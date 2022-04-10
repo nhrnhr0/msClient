@@ -31,7 +31,10 @@ import { apiGetAllUsers } from './../../api/api';
     }
     
     function update_admin_as_user() {
-        $userInfoStore.actAs = admin_as_user;
+        debugger;
+        if (admin_as_user) {
+            $userInfoStore.actAs = all_users.find((user)=> {return user.id == parseInt(admin_as_user)});
+        }
     }
     function remove_admin_as_user() {
         $userInfoStore.actAs = undefined;
@@ -171,14 +174,14 @@ import { apiGetAllUsers } from './../../api/api';
                                 <div class="card-wraper">
                                     <Card class="">
                                         <CardHeader>
-                                        <CardTitle>פרטי משתמש</CardTitle>
+                                        <CardTitle>שינוי סיסמא</CardTitle>
                                         </CardHeader>
                                         <CardBody>
                                         <CardText>
                                             <div class="info">
                                                 <div class="info-title">שם משתמש</div>
                                                 <div class="info-res">
-                                                    <input type="text" class="form-control" id="username" placeholder="שם משתמש" bind:value={username}>
+                                                    <input type="text" disabled={true} class="form-control" id="username" placeholder="שם משתמש" bind:value={username}>
                                                     </div>
                                             </div>
                                             <div class="info">
@@ -234,7 +237,7 @@ import { apiGetAllUsers } from './../../api/api';
                                             </div>
                                                 {#if userInfoStore && $userInfoStore.me && $userInfoStore.actAs }
                                                 {#if all_users}
-                                                    {#each Object.entries(all_users.find((user)=>user.id == parseInt($userInfoStore.actAs))) as [key, value]}
+                                                    {#each Object.entries($userInfoStore.actAs) as [key, value]}
                                                     <div class="info">
 
                                                         <div class="info-title">

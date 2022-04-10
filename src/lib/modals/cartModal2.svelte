@@ -52,47 +52,29 @@ import { Spinner } from "sveltestrap";
             let cart_products = [];
             for(let key in $cartStore) {
                 let product = $cartStore[key];
-				// prep mentries
-				// input: {"77": [{}, {}, {"quantity": 5}, {"quantity": 1}, {}, {}, {}, {}], "80": [{}, {}, {"quantity": 2}, {}, {"quantity": 5}, {}, {}, {}], "82": [{}, {},
-				/*let mentries = [];
-				if(product.mentries) {
-					Object.keys(product.mentries).forEach(function(color_id) {
-						let mentry = product.mentries[color_id];
-						for(let size_idx = 0; size_idx < mentry.length; size_idx++) {
-							let size_id = product.sizes[size_idx];
-							if('quantity' in product.mentries[color_id][size_idx]) {
-								mentries.push({
-									"color_id": color_id,
-									"size_id": product.sizes[size_idx],
-									"quantity": product.mentries[color_id][size_idx].quantity
-								});
-							}else if(product.varients.length != 0) {
-								for(let i= 0; i < product.varients.length; i++) {
-									mentries.push({
-										"color_id": color_id,
-										"size_id": product.sizes[size_idx],
-										"variant_id": product.varients[i].id,
-										"quantity": product.mentries[color_id][size_idx][product.varients[i].id].quantity
-									})
-								}
-							}
-						}
-					});
-				}
-				;*/
-                cart_products.push({'id': product.id, 'amount': product.amount, 'price': product.client_price, 'mentries': product.mentries});
+                cart_products.push({'id': product.id, 'amount': product.amount, 'price': product.client_price, 'mentries': product.mentries, 'print': product.print, 'embro': product.embro,});
 				
             }
 			let actAs = $userInfoStore?.actAs;
+			let order_type = document.querySelectorAll('select[name="order_type"]');
+			if (order_type.length == 1) {
+				order_type = order_type[0].value;
+			}else {
+				order_type = 'הזמנה';
+			}
+			debugger;
+			console.log('order_type: ', order_type);
             let data = {
                 name: form_name || '',
                 email: form_email || '',
                 phone:form_phone || '',
 				business_name: form_business_name || '',
+				order_type: order_type,
                 uuid: get_user_uuid() || '',
                 message: form_message || '',
                 products: cart_products,
 				asUser: actAs,
+
 				raw_cart: JSON.stringify($cartStore)
             };
             
@@ -235,6 +217,7 @@ import { Spinner } from "sveltestrap";
 	$: {
 		show_prices = $userInfoStore && $userInfoStore.isLogin;
 	}
+	let checked = true;
 </script>
 {#if isModalOpen}
 
@@ -256,12 +239,12 @@ import { Spinner } from "sveltestrap";
 						
 						<div class="form-control">
 							<label for="name">שם בחשבונית</label>
-							<input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="{$userInfoStore?.me?.businessName}"  type="text"></div>	
+							<input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="{$userInfoStore?.actAs?.businessName || $userInfoStore?.me?.businessName}"  type="text"></div>	
 
 						
 						<div class="form-control">
 							<label for="email">אימייל</label>
-							<input bind:value="{form_email}" name="email" placeholder="{$userInfoStore?.me?.email}" type="email"></div>
+							<input bind:value="{form_email}" name="email" placeholder="{$userInfoStore?.actAs?.email || $userInfoStore?.me?.email}" type="email"></div>
 
 						
 						<div class="form-control">
@@ -271,7 +254,7 @@ import { Spinner } from "sveltestrap";
 						
 						<div class="form-control">
 							<label for="privateCompany">ח.פ.</label>
-							<input type="text" bind:value="{form_privateCompany}" name="privateCompany" required={false} placeholder="{$userInfoStore?.me?.privateCompany}">
+							<input type="text" bind:value="{form_privateCompany}" name="privateCompany" required={false} placeholder="{$userInfoStore?.actAs?.privateCompany || $userInfoStore?.me?.privateCompany}">
 						</div>
 					</div>
 					<div class="form-group">
@@ -296,6 +279,10 @@ import { Spinner } from "sveltestrap";
 									<th>מוצר</th>
 									<th>ברקוד</th>
 									<th>האם יש ברקוד פיזי</th>
+									{#if $userInfoStore?.me?.is_superuser}
+									<th>הדפסה</th>
+									<th>רקמה</th>
+									{/if}
 									<th>כמות</th>
 									<th>מחיר</th>
 									<th>סה"כ</th>
@@ -321,6 +308,26 @@ import { Spinner } from "sveltestrap";
 									<td>
 										{item.has_physical_barcode? '✅':'❌'}
 									</td>
+									{#if $userInfoStore?.me?.is_superuser}
+										<td>
+											<div on:click="{(e) => {$cartStore[key].print = !$cartStore[key].print;}}">
+												{#if $cartStore[key].print}
+													✅
+												{:else}
+													❌
+												{/if}
+											</div>
+										</td>
+										<td>
+											<div on:click="{(e) => {$cartStore[key].embro = !$cartStore[key].embro;}}">
+												{#if $cartStore[key].embro}
+													✅
+												{:else}
+													❌
+												{/if}
+											</div>
+										</td>
+									{/if}
 									<td>
 										<div class="product-amount" title="ערוך" on:click="{open_edit_amount_dialog(item.id, item.title)}">
 											{item.amount}
@@ -354,7 +361,7 @@ import { Spinner } from "sveltestrap";
 										}, 0))}₪
 									</div>
 								</td>
-								<td colspan="2">
+								<td colspan="{$userInfoStore?.me?.is_superuser? 4:2}">
 									<div class="product-total-price-tax">
 										סה"כ כולל מע"מ
 									</div>
@@ -367,13 +374,22 @@ import { Spinner } from "sveltestrap";
 							</tr>
 							
 						</table>
-						<button on:click="{cart_submit}" class="submit-btn btn">
-							{#if isSending}
-							<Spinner />
-							{:else}
-							שלח
+						<div class="send-wra">
+							{#if $userInfoStore?.me?.is_superuser}
+								<!-- האם הזמנה או הצעת מחיר -->
+								<select name="order_type">
+									<option value="הזמנה">הזמנה</option>
+									<option value="הצעת מחיר">הצעת מחיר</option>
+								</select>
 							{/if}
-						</button>
+							<button on:click="{cart_submit}" class="submit-btn btn">
+								{#if isSending}
+								<Spinner />
+								{:else}
+								שלח
+								{/if}
+							</button>
+						</div>
 				</form>
 			</div>
 		
@@ -596,7 +612,11 @@ $gray-1200: #131314;
 						td {
 							.product-amount {
 								cursor: pointer;
-
+								transition: color 0.5s linear;
+								@include hover-active() {
+									color: $secondary;
+									text-decoration: none;
+								}
 							}
 							.product-image-and-title {
 								display: flex;
