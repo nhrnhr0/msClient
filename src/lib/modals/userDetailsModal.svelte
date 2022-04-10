@@ -210,7 +210,7 @@ import { apiGetAllUsers } from './../../api/api';
                                         </CardBody>
                                     </Card>
                                 </div>
-                                {#if $userInfoStore && $userInfoStore.isLogin && $userInfoStore.me }
+                                {#if $userInfoStore && $userInfoStore.isLogin && $userInfoStore.me.is_superuser }
                                 <div class="card-wraper">
                                     <Card class="">
                                         <CardHeader>
