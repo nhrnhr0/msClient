@@ -23,12 +23,12 @@ export function apiSendLogs(logs) {
 }
 
 
-function fetch_wraper_prep(url, requestOptions,) {
+function fetch_wraper_prep(url, requestOptions,headers_json= {}) {
     console.log('fetch_wraper: ', url);
-    let headers_json= {
+    headers_json= Object.assign({}, {
         'Content-Type': 'application/json',
         'Content-Type': 'application/json; charset=UTF-8',
-    }
+    },headers_json);
     
     if(requestOptions && requestOptions.method == "POST") {
         headers_json['X-CSRFToken']= get_csrf_token();
@@ -103,9 +103,30 @@ export function fetch_wraper_without_json(url, requestOptions,custom_fetch, isRe
       }
       return response;
 }
-
-export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false) {
-    requestOptions = fetch_wraper_prep(url, requestOptions)
+function formData_fetch_wraper(url, formData){
+    debugger;
+    let headers_json = {
+    }
+    if (browser) {
+        if (get(userInfoStore).access) {
+            headers_json['Authorization'] = "Token " +get(userInfoStore).access;
+        }
+        headers_json['X-CSRFToken']= get_csrf_token();
+    }
+        
+    var myHeaders = new Headers(headers_json);
+    var requestOptions = {
+            method: "POST",
+            mode:'cors',
+            credentials: 'include',//'',
+            headers: myHeaders,
+            redirect: 'follow',
+            body: formData
+        };
+    return fetch(url, requestOptions);
+}
+export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false, headers_json={}) {
+    requestOptions = fetch_wraper_prep(url, requestOptions, headers_json)
     let response;
     try {
         if(custom_fetch) {
@@ -183,6 +204,8 @@ export async function request_csrf_token() {
     return json_response;
 }
 
+
+
 function set_user_uuid(newUid) {
     localStorage.setItem('uuid', newUid);
 }
@@ -191,12 +214,7 @@ export function get_user_uuid() {
 }
 
 export async function send_product_photo(formData) {
-    let headers_json = {};
-
-    return await fetch_wraper_without_json(PRODUCT_PHOTO_URL, {
-        method: "POST", 
-        body: formData
-      });
+    return formData_fetch_wraper(PRODUCT_PHOTO_URL, formData);
 }
 
 export function send_product_question(data) {

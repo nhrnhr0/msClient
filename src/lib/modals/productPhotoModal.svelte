@@ -1,5 +1,5 @@
 <script>
-    import {_modal_z_index_incrementor} from "./../../stores/stores";
+    import {successModalStore, _modal_z_index_incrementor} from "./../../stores/stores";
     import {fly} from "svelte/transition";
     import {activeModalsStore } from '$lib/modals/modalManager';
     import { send_product_photo } from "./../../api/api";
@@ -56,12 +56,23 @@
         let buy_price = document.getElementById('buy_price_input').value;
         let want_price = document.getElementById('want_price_input').value;
 
-
         formData.append('description', description);
         formData.append('buy_price', buy_price);
         formData.append('want_price', want_price);
         console.log(formData)
-        send_product_photo(formData);
+        let response = send_product_photo(formData);
+        debugger;
+        response.then(res => {
+            debugger;
+            if (res.status === 200) {
+                debugger;
+                closeModal();
+                $successModalStore.toggleModal();
+            }
+        }).catch(err => {
+            debugger;
+            alert(err);
+        });
         
     }
 </script>
