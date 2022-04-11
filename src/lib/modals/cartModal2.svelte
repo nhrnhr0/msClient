@@ -126,18 +126,24 @@ import { Spinner } from "sveltestrap";
 		let main_wraper_element = document.querySelector('#main_wraper');
 		//let sidebar_cart_element = document.querySelector('#sidebar-cart');
 		let main_navbar_wraper = document.querySelector('#main-navbar-wraper');
+		let is_under_700px = window.matchMedia("(max-width: 700px)").matches;
 		//activeModalsStore.modalToggle('cartModal2', isModalOpen);
         if(isModalOpen) {
+			
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
-			main_wraper_element.style = `width: calc(100vw - 315px);position: absolute;left: 0px;`
-			main_navbar_wraper.style = `width: calc(100vw - 315px);left: 0px;`
+			if (!is_under_700px) {
+				main_wraper_element.style = `width: calc(100vw - 315px);position: absolute;left: 0px;`
+				main_navbar_wraper.style = `width: calc(100vw - 315px);left: 0px;`
+			}
 			//sidebar_cart_element.style = `z-index: ${modal_zIndex*5};`
 
         }else {
 			state = 0;
-			main_wraper_element.style = `width:auto;`;
-			//sidebar_cart_element.style = ``;
-			main_navbar_wraper.style=`width: 100%;`;
+			if(!is_under_700px) {
+				main_wraper_element.style = `width:auto;`;
+				//sidebar_cart_element.style = ``;
+				main_navbar_wraper.style=`width: 100%;`;
+			}
 		}
     }
 
@@ -239,7 +245,9 @@ import { Spinner } from "sveltestrap";
 		
 			<div class="modal-body">
 				<form class="cart-form" bind:this={mform} method="POST" action="{SUBMIT_CART_URL}" >
-					
+					{#if $userInfoStore?.me?.is_superuser}
+						<h3>סוכן: {$userInfoStore.me.username}</h3>
+					{/if}
 					<div class="form-group">
 
 						
@@ -283,11 +291,11 @@ import { Spinner } from "sveltestrap";
 							<thead>
 								<tr>
 									<th>מוצר</th>
-									<th>ברקוד</th>
-									<th>האם יש ברקוד פיזי</th>
+									<th class="hide-on-md">ברקוד</th>
+									<th class="hide-on-md">האם יש ברקוד פיזי</th>
 									{#if $userInfoStore?.me?.is_superuser}
-									<th>הדפסה</th>
-									<th>רקמה</th>
+									<th class="hide-on-md">הדפסה</th>
+									<th class="hide-on-md">רקמה</th>
 									{/if}
 									<th>כמות</th>
 									<th>מחיר</th>
@@ -308,14 +316,14 @@ import { Spinner } from "sveltestrap";
 											</div>
 										</div>
 									</td>
-									<td>
+									<td class="hide-on-md">
 										{item?.barcode || ''}
 									</td>
-									<td>
+									<td class="hide-on-md">
 										{item.has_physical_barcode? '✅':'❌'}
 									</td>
 									{#if $userInfoStore?.me?.is_superuser}
-										<td>
+										<td class="hide-on-md">
 											<div on:click="{(e) => {$cartStore[key].print = !$cartStore[key].print;}}">
 												{#if $cartStore[key].print}
 													✅
@@ -324,7 +332,7 @@ import { Spinner } from "sveltestrap";
 												{/if}
 											</div>
 										</td>
-										<td>
+										<td class="hide-on-md">
 											<div on:click="{(e) => {$cartStore[key].embro = !$cartStore[key].embro;}}">
 												{#if $cartStore[key].embro}
 													✅
@@ -351,35 +359,23 @@ import { Spinner } from "sveltestrap";
 								</tr>
 								{/each}
 							</tbody>
-							<tr class="totals">
-								<td colspan="2">
-									<div  class="product-total-price">
-										סה"כ ללא מע"מ
-									</div>
-									
-									
-									
-								</td>
-								<td>
-									<div class="product-total-price-result">
-										{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
-											return acc + val.client_price * val.amount
-										}, 0))}₪
-									</div>
-								</td>
-								<td colspan="{$userInfoStore?.me?.is_superuser? 4:2}">
-									<div class="product-total-price-tax">
-										סה"כ כולל מע"מ
-									</div>
-								</td>
-								<td>
-									{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
-										return acc + val.client_price * val.amount * 1.17
-									}, 0))}₪
-								</td>
-							</tr>
-							
 						</table>
+						<div class="totals">
+							<div  class="product-total-price">
+								סה"כ ללא מע"מ
+							</div>
+							<div class="product-total-price-result">
+								{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
+									return acc + val.client_price * val.amount
+								}, 0))}₪
+							</div>
+							<div class="product-total-price-tax">
+								סה"כ כולל מע"מ
+							</div>
+							{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
+								return acc + val.client_price * val.amount * 1.17
+							}, 0))}₪
+						</div>
 						<div class="send-wra">
 							{#if $userInfoStore?.me?.is_superuser}
 								<!-- האם הזמנה או הצעת מחיר -->
@@ -583,6 +579,10 @@ $gray-1200: #131314;
 				display: flex;
 				flex-direction: row;;
 				justify-content: space-around;
+				@media screen and (max-width: 945px) {
+					display: grid;
+					grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+				}
 				.form-control {
 					flex:1;
 					flex-grow: 1;
@@ -658,17 +658,23 @@ $gray-1200: #131314;
 					
 
 				}
-				tr.totals {
+				
+			}
+			div.totals {
 					background-color:$gray-300;
 					line-height: 2;
-					td {
-						
-						.product-total-price {
-
-						}
+					//display: flex;
+					display: grid;
+					grid-template-columns: 1fr 1fr 1fr 1fr;
+					justify-content: space-around;
+					font-size: 1.5rem;
+					font-weight: bold;
+					width: 100%;
+					@media screen and (max-width: 945px) {
+						display: grid;
+						grid-template-columns: 1fr 1fr;
 					}
 				}
-			}
 			.submit-btn {
 				margin-top: 1em;
 				margin-bottom: 1em;
@@ -1173,6 +1179,11 @@ $gray-1200: #131314;
 	}
 }
 
+.hide-on-md {
+	@media (max-width: 1000px) {
+		display: none;
+	}
+}
 
 #cartModal.active {
     //transition: right 1s ease-in-out;

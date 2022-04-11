@@ -30,7 +30,7 @@ import { send_product_question } from "./../../api/api";
         data.question = value;//document.getElementById('popup_input').value;
         is_sending = true;
         send_product_question(data).then((result)=> {
-            toggleModal();
+            closeModal();
             value = '';
             $successModalStore.toggleModal();
         }).catch((error)=> {

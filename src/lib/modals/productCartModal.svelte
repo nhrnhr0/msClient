@@ -154,9 +154,21 @@
     console.log(mentries);
     console.log(color_key);
     if($cartStore[product_id].show_sizes_popup) {
-      let sizeKeys = Object.keys($cartStore[product_id].mentries[color_key]);
-      for(let size_index = 0; size_index < sizeKeys.length; size_index++) {
-        $cartStore[product_id].mentries[color_key][sizeKeys[size_index]] = {quantity: undefined};
+      if($cartStore[product_id].varients.length == 0) {
+        let sizeKeys = Object.keys($cartStore[product_id].mentries[color_key]);
+        for(let size_index = 0; size_index < sizeKeys.length; size_index++) {
+          $cartStore[product_id].mentries[color_key][sizeKeys[size_index]] = {quantity: undefined};
+        }
+      }else {
+        debugger;
+        let sizeKeys = Object.keys($cartStore[product_id].mentries[color_key]);
+        for(let size_index = 0; size_index < sizeKeys.length; size_index++) {
+          let verientsKeys = Object.keys($cartStore[product_id].mentries[color_key][sizeKeys[size_index]]);
+          for(let i = 0; i < verientsKeys.length; i++) {
+            $cartStore[product_id].mentries[color_key][sizeKeys[size_index]][verientsKeys[i]] = {quantity: undefined};
+          }
+          //$cartStore[product_id].mentries[color_key][sizeKeys[size_index]] = {quantity: undefined};
+        }
       }
     }else {
 
