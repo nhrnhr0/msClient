@@ -218,20 +218,24 @@ import { logStore } from "./../stores/logStore";
                                 <DropdownItem header>
                                     
                                     <Dropdown class="category-menu-2">
+                                        {#if key_val_album['value']}
                                         <DropdownToggle color="none" caret aria-label="submenu">
                                                 {#if key_val_album['key'] == 'undefined'}
                                                     אחר
                                                 {:else}
                                                     {key_val_album['key']}
                                                 {/if}
+                                                
                                         </DropdownToggle >
+                                        {/if}
                                         <DropdownMenu end class="category-menu-2-menu" style="transform: translate3d(0px, 44px, 0px);">
-                                            {#each key_val_album['value'] as  album}
-                                            <DropdownItem on:click={menuItemClicked(album)}>
-                                                    {album.title}
-                                            </DropdownItem>
-                                            {/each}
-                                            
+                                            {#if key_val_album['value']}
+                                                {#each key_val_album['value'] as  album}
+                                                <DropdownItem on:click={menuItemClicked(album)}>
+                                                        {album.title}
+                                                </DropdownItem>
+                                                {/each}
+                                            {/if}
                                         </DropdownMenu>
                                     </Dropdown>
                                 </DropdownItem>
