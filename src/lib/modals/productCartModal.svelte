@@ -150,11 +150,17 @@
   }*/
 
   function clear_sizes_entries(color_key) {
-    $cartStore[product_id].mentries[color_key] = $cartStore[product_id].sizes.map((item) => {
-      return {
-        'quantity': undefined
+    let mentries = $cartStore[product_id].mentries;
+    console.log(mentries);
+    console.log(color_key);
+    if($cartStore[product_id].show_sizes_popup) {
+      let sizeKeys = Object.keys($cartStore[product_id].mentries[color_key]);
+      for(let size_index = 0; size_index < sizeKeys.length; size_index++) {
+        $cartStore[product_id].mentries[color_key][sizeKeys[size_index]] = {quantity: undefined};
       }
-    });
+    }else {
+
+    }
   }
 
   function remove_from_cart() {
@@ -218,16 +224,21 @@
     <div class="modal-body">
       {#if is_loaded && $cartStore[product_id] != undefined}
       <div class="product-grid-wraper">
-        <div class="product-details">
-          <div class="product-img">
-            <img width="150" height="150" src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[product_id].cimage}" alt="{$cartStore[product_id].title}">
-          </div>
-          <div class="product-title">
-            <h1>{$cartStore[product_id].title}</h1>
-          </div>
-        </div>
+        
         {#if $cartStore[product_id].show_sizes_popup}
           <div class="product-attributes">
+            <div class="product-details">
+              <div class="product-title-wraper">
+                <div class="product-img">
+                  <img width="150" height="150" src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[product_id].cimage}" alt="{$cartStore[product_id].title}">
+                </div>
+                <div class="product-title">
+                  <h2>{$cartStore[product_id].title}</h2>
+                </div>
+                <div class="empty-div"></div>
+                <div class="empty-div"></div>
+            </div>
+            </div>
             <table class="product-table">
               <thead>
                 <tr>
@@ -387,10 +398,11 @@
             {#if $cartStore[product_id].sizes.length > 0}
               <h4 class="single-amount-title-2 single-amount-title">
                 {#if $cartStore[product_id].sizes.length > 1}
-                  בגדלים:
+                  בגדלים: 
                     {#each $cartStore[product_id].sizes as size, size_idx}
+                    
                       <div class="size-box">
-                        {$sizesJsonStore[size].name}
+                        {$sizesJsonStore[size].size}
                       </div>
                     {/each}
                 {:else}
@@ -435,7 +447,7 @@
               <img width="150" height="150" src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[product_id].cimage}" alt="{$cartStore[product_id].title}">
             </div>
             <div class="product-title">
-              <h1>{$cartStore[product_id].title}</h1>
+              <h2>{$cartStore[product_id].title}</h2>
             </div>
           </div>
         {/if}
@@ -510,12 +522,19 @@
       flex-direction: row-reverse;
       justify-content: space-around;
       align-items: center;
-      .product-img {
-        img {
-          width: 100%;
-          max-width: 150px;
+      width: 100%;
+      .product-title-wraper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        .product-img {
+          img {
+            width: 100%;
+            max-width: 150px;
 
-          max-height: 150px;
+            max-height: 150px;
+          }
         }
       }
     }
@@ -526,10 +545,11 @@
       
       overflow-x: auto;
       
-      width: 100%;
+      //width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
       table.product-table {
         border: 1px solid #777777;
           //width: 100%;
@@ -678,6 +698,12 @@
           }
         }
       }
+      .single-amount-title-2 {
+        .size-box {
+              margin-right: 15px;
+              
+        }
+      }
 
       .input-wraper {
         .amount-input-label {
@@ -703,12 +729,23 @@
 
     .fast-amount-buttons {
       width: fit-content;
-    margin: auto;
+      margin: auto;
       display: flex;;
             flex-direction: row-reverse;
             justify-content: space-around;
             text-align: center;
             padding-top:25px;
+            @media screen and (max-width: 420px) {
+              width:100%;
+              .option {
+                    width: 100%;
+                    flex:1;
+                    flex-shrink: 0;
+                    flex-grow: 1;
+                    height: 65px;
+                    font-size: 1.2em;
+                }
+              }
             .option {
                 width: 120px;
                 height: 75px;
@@ -726,6 +763,13 @@
                     border: 1px solid rgb(71, 71, 71);
                     box-shadow: 0px 0px 22px rgba(0, 0, 0, 0.4);
                 }
+
+                @media screen and (max-width: 768px) {
+                    width: 100px;
+                    height: 65px;
+                    font-size: 1.2em;
+                }
+                
 
             }
     }

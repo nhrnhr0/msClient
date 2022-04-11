@@ -398,6 +398,7 @@ import { logStore } from "./../stores/logStore";
                     display: grid;
                     transform: translate3d(-100%, 44px, 0px);
                     left:-100%;
+                    width: 290px;
                 }
                 :global(.dropdown-menu.show) {
                     max-height: 45vh;

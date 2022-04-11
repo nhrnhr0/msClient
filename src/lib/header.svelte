@@ -22,19 +22,9 @@
                 media="(max-width: 767px)"
                 sizes="(max-width: 334px) 100vw, 334px"
                 srcset="
-                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_200/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 200w,
-                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_334/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 334w">
-                <source
-                media="(min-width: 768px) and (max-width: 991px)"
-                sizes="(max-width: 636px) 70vw, 445px"
-                srcset="
-                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_445/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 445w">
-                <source
-                media="(min-width: 992px) and (max-width: 1199px)"
-                sizes="(max-width: 988px) 60vw, 593px"
-                srcset="
-                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_596/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 596w,
-                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_593/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 593w">
+                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_500/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 500w,
+                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_634/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 634w">
+                
                 <img
                 sizes="(max-width: 2560px) 40vw, 1024px"
                 srcset="
@@ -73,11 +63,10 @@
             padding-bottom: 2%;
 
             @media screen and (max-width:640px) {
-                font-size: 2.5rem;
-            }
-
-            @media screen and (max-width:500px) {
-                font-size: 2rem;
+                font-size: 0.8rem;
+                img {
+                    width:150px;
+                }
             }
         }
     }
@@ -85,7 +74,7 @@
     .header-2 {
         .header-image {
             position: relative;
-
+            filter: brightness(0.8);
             .class-bg-image {
                 width: 100vw;
                 //border:1px solid red;

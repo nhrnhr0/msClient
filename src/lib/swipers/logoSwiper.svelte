@@ -26,27 +26,8 @@
     <h2 class="slider-title">בין לקוחותינו</h2>
     <div class="logo-section">
         <Swiper class="logo-swiper"
-                slidesPerView="{'7'}"
-                breakpoints='{{
-                    "220": {
-                        "slidesPerView":2,
-                    },
-                    "400": {
-                        "slidesPerView": 3.5,
-                    },
-                    "600": {
-                        "slidesPerView": 4,
-                    },
-                    "820": {
-                        "slidesPerView": 5,
-                    },
-                    "960": {
-                        "slidesPerView": 6,
-                    },
-                    "1100": {
-                        "slidesPerView": 7,
-                    }
-                }}'
+                slidesPerView="{'auto'}"
+                
                 autoplay='{{
                     "delay": 50,
                     "disableOnInteraction": false
@@ -57,7 +38,7 @@
                 allowTouchMove="{true}"
                 preventClicks="{false}"
                 observer="{true}"
-                
+                centeredSlides="{true}"
                 pagination="{true}" 
                 navigation="{false}"
                 
@@ -85,7 +66,23 @@
             margin-right: 25px;
             :global(.logo-swiper) {
                 padding-top: 0px!important;
-                
+                width: fit-content;
+                max-width: 90vw!important;
+                :global(.swiper-slide) {
+                    width: fit-content;
+                    :global(.img-wraper)  {
+                        
+                    }
+                }
+                @media screen and (max-width:840px) {
+                    :global(.swiper-slide) {
+                        :global(.img-wraper)  {
+                            :global(img) {
+                                height: 75px;
+                            }
+                        }
+                    }
+                }
             }
             .slider-title {
                 //text-decoration: underline;

@@ -438,7 +438,6 @@ on:change={(event) => {
                 resizeReInit={true},
                 effect="{'coverflow'}"
                 centeredSlides="{true}"
-                slidesPerView="{'5'}"
                 observer="{true}"
                 observeParents= "{true}"
                 rebuildOnUpdate="{true}"
@@ -459,21 +458,24 @@ on:change={(event) => {
                   }}'
                   breakpoints='{{
                         "220": {
-                            "slidesPerView": 1.4,
+                            "slidesPerView": 1.7,
                         },
-                        "400": {
+                        "500": {
                             "slidesPerView": 2,
                         },
+                        "600": {
+                            "slidesPerView": 2.5,
+                        },
                         "750": {
-                            "slidesPerView": 3.5,
+                            "slidesPerView": 3,
                         },
                         "870": {
-                            "slidesPerView": 3.7,
+                            "slidesPerView": 3,
                         },
                         "960": {
-                            "slidesPerView": 4,
+                            "slidesPerView": 3.5,
                         },
-                        "1020": {
+                        "1120": {
                             "slidesPerView": 4,
                         },
                         "1400": {
@@ -627,6 +629,11 @@ on:change={(event) => {
         margin-top: 23px;
         margin-bottom: 0px;
         max-width: 85vw;
+        @media screen and (max-width: 1165px) {
+            //margin-top: 0px;
+            //margin-bottom: 0px;
+            max-width: calc(100vw - 178px);
+        }
         :global(.default-tip) {
             
             transform: translate(0%, 15%);
@@ -658,6 +665,10 @@ on:change={(event) => {
             position: absolute;
             top: 100%;
             left: 0%;*/
+            
+        }
+
+        .nav-btn  {
             
         }
     }
@@ -798,10 +809,10 @@ on:change={(event) => {
     }
     .title-wraper {
         margin-top: 60px;
-  display: flex;
-  justify-content: center;
-  //padding-bottom: 50px;
-  
+        display: flex;
+        justify-content: center;
+        //padding-bottom: 50px;
+        
   .title {
     opacity: 0.5;
     background-color: black;
@@ -839,11 +850,13 @@ on:change={(event) => {
         content: 'לקטגוריית ';
         opacity: 1;
         font-size: 1.4rem;
+        display: none;
       }
       &::after {
         content: ' לחץ כאן';
         opacity: 1;
         font-size: 1.4rem;
+        display: none;
       }
     }
     @media screen and (max-width: 610px) {
@@ -856,6 +869,11 @@ on:change={(event) => {
         line-height: 0.8;
       }
 
+    }
+
+    @media screen and (max-width:475px) {
+
+            font-size: 1.5rem;
     }
   /*@media screen and (max-width: 610px) {
       &:before {
@@ -909,8 +927,7 @@ on:change={(event) => {
     &.loaded:not(&.active) {
         //height: auto!important;
     }
-
-    .nav-btn {
+        .nav-btn {
         //display: none;
         background: none;
         border: none;
@@ -956,8 +973,16 @@ on:change={(event) => {
                 right: 1px;
             }
         }
-    
         
+        
+    }
+    @media screen and (max-width: 685px) {
+        .nav-btn {
+            display: none;
+        }
+        :global(.swiper) {
+            max-width: 95%;
+        }
     }
 }
 :global(.swiper-slide-prev .slide-content .img-wraper .price-tag) {
