@@ -147,11 +147,9 @@ import { Spinner } from "sveltestrap";
 		}
     }
 
-	function onFileSelected(e) {
-		console.log(e);
-		let file = e.target.files[0];
-		$productPhotoModalStore.openModal(file);
-	}
+	
+	
+	
     export function isOpen() {
         return isModalOpen;
     }
@@ -400,7 +398,6 @@ import { Spinner } from "sveltestrap";
 	</div>
 </div>
 	{/if}
-	<input type="file" style="display:none" name="my_file" on:change="{onFileSelected}" bind:this={fileinput}>
 	{#if isModalOpen}
 		<div class="sidebar-cart-wraper">
             <aside on:click|preventDefault={()=>{}} transition:fly="{{x:340}}" id="sidebar-cart">
@@ -408,7 +405,7 @@ import { Spinner } from "sveltestrap";
                     <button class="close-button" on:click="{()=>{toggleModal();}}">X</button>
                     <h2>מוצרים שאהבתי<span class="count">{Object.keys($cartStore).length}</span></h2>
 
-					<div class="upload-image-wraper" on:click={()=>{fileinput.click();}}>
+					<div class="upload-image-wraper" on:click={()=>{$productPhotoModalStore.openModal();}}>
 						<span>שלח מוצר שלא מצאת</span>
 						<img class="upload" width="45px" height="45px" src="https://res.cloudinary.com/ms-global/image/upload/v1649581221/msAssets/upload_camera_s12a01.png" alt="" />
 					</div>

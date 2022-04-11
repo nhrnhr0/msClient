@@ -9,6 +9,7 @@
     let is_sending = false;
     let inputfile;
     let mfile;
+    let description_bind;
     export function closeModal() {
         if (isOpen()) {
             isModalOpen = false;
@@ -112,8 +113,8 @@
                                 <div class="form-group">
                                     <div class="form-control">
                                         <label for="buy_price">תיאור מוצר</label>
-                                        <textarea id="description_input" name="description" placeholder="תיאור המוצר" class="input-text"></textarea>
-                                    </div>	
+                                        <textarea bind:value="{description_bind}" id="description_input" name="description" placeholder="תיאור המוצר" class="input-text"></textarea>
+                                    </div>
                                 </div>
                             </div>
                     </div>
