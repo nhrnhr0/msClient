@@ -61,7 +61,7 @@ import { flashy_page_view } from "$lib/flashy";
     </script>
     <svelte:head>
         <title>{data?.title}</title>
-        <link rel="icon" href="{data.favicon}">
+        <link sizes="60x60" rel="icon" href="{data.favicon}">
         <meta name="description" content={data?.fotter} />
         <meta name="keywords" content={data?.keywords} />
         <meta name="title" content="{data?.title}">
