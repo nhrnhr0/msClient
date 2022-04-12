@@ -482,7 +482,7 @@ on:change={(event) => {
                             "slidesPerView": 5,
                         }
                     }}'
-                  pagination="{true}" 
+                  pagination="{false}" 
                   on:realIndexChange={(event) => {
                     //console.log('activeIndexChange: ', event);
                     //console.log('activeIndexChange: ', event.detail[0]);

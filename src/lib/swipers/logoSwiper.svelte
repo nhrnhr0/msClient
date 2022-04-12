@@ -39,7 +39,7 @@
                 preventClicks="{false}"
                 observer="{true}"
                 centeredSlides="{true}"
-                pagination="{true}" 
+                pagination="{false}" 
                 navigation="{false}"
                 
                 >
