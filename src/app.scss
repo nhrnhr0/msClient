@@ -87,11 +87,14 @@
       box-shadow: 0 0 0 0.2rem var(--details-btn-color-hover);
   }
 }
-
+html {
+  height:100%;
+}
 body{
     scroll-behavior: unset;
     overflow-y: auto;
     margin-right: 0px;
+    min-height:100%;
       &.my-modal-open {
         overflow-y: hidden;
         position:relative;
