@@ -23,7 +23,6 @@ import { Spinner } from "sveltestrap";
 	let error_found = false;
 	let error_message = '';
 	let isSending = false;
-	let fileinput;
 	function checkout_back_click() {
 		if(state > 0) {
 			state = 0;

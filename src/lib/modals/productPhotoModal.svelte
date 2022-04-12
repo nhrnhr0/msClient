@@ -17,19 +17,11 @@
         }
     }
 
-    export function openModal(file=undefined) {
+    export function openModal() {
         isModalOpen = !isModalOpen;
         activeModalsStore.modalToggle('productPhotoModal', isModalOpen);
         if (isModalOpen) {
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
-            if (file) {
-                mfile = file;
-                let reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = e => {
-                image_src = e.target.result
-            };
-            }
         }
     }
     export function isOpen() {
@@ -52,7 +44,9 @@
         is_sending = true;
 
         let formData = new FormData();
-        formData.append('file', mfile);
+        if (mfile) {
+            formData.append('file', mfile);
+        }
         let description = document.getElementById('description_input').value;
         let buy_price = document.getElementById('buy_price_input').value;
         let want_price = document.getElementById('want_price_input').value;
@@ -62,17 +56,16 @@
         formData.append('want_price', want_price);
         console.log(formData)
         let response = send_product_photo(formData);
-        debugger;
         response.then(res => {
-            debugger;
             if (res.status === 200) {
-                debugger;
+                e.target.reset();
                 closeModal();
                 $successModalStore.toggleModal();
             }
         }).catch(err => {
-            debugger;
             alert(err);
+        }).finally(() => {
+            is_sending = false;
         });
         
     }
@@ -95,7 +88,7 @@
                             <div class="input-wraper">
                                 <div class="form-group">
                                     <div class="form-control form-control-row">
-                                        <img width="75px" height="75px" class="product-image" src={image_src} alt="לחץ להעלאת תמונה"/>
+                                        <img width="75px" height="75px" class="product-image" on:click={inputfile.click()} src={image_src || "https://res.cloudinary.com/ms-global/image/upload/v1649581221/msAssets/upload_camera_s12a01.png"} alt="לחץ להעלאת תמונה"/>
                                         <input on:change="{onFileSelected}" type="file" name="image" bind:this={inputfile} class="input-file" />
                                     </div>
                                 </div>
@@ -107,7 +100,7 @@
 
                                     <div class="form-control">
                                         <label for="buy_price">אני רוצה את המוצר ב</label>
-                                        <input id="want_price_input" name="want_price" required="{false}" placeholder="{5.90}"  type="number">
+                                        <input id="want_price_input" name="want_price" required="{false}" placeholder="{4.5}"  type="number">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -120,7 +113,7 @@
                     </div>
                     <div class="row">
                         <div class="action-wraper">
-                            <button class="btn btn-primary" type="submit">
+                            <button disabled={(description_bind == undefined || description_bind == '') && (image_src == undefined || image_src == '')} class="btn btn-primary" type="submit">
                                 {#if is_sending}
                                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                 {:else}
