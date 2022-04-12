@@ -22,10 +22,12 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
             if(browser) {
                 category = window.location.href.match(category_regex);
             }
+            let favicon = `${CLOUDINARY_URL}u_v1649744644:msAssets:image_5_qo7yhx.jpg/${response?.cimage}`;
             return {
                 props: {
                     data: response,
-                    album: category[1]
+                    album: category[1],
+                    favicon: favicon
                 }
             }
         }
@@ -41,6 +43,7 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
 <script>
     export let data;
     export let album;
+    export let favicon;
     onMount(()=> {
         sessionStorage.setItem("onLoadTask",JSON.stringify({type: 'product', data: data, album: album}));
         window.location.replace("/"); 
@@ -51,6 +54,7 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
 <svelte:head>
     <!-- Primary Meta Tags -->
     <title>{data?.title}</title>
+    <link rel="icon" href="{favicon}">
     <meta name="title" content="{data?.title}">
     <meta name="description" content="{data?.description}">
     <meta name="keywords" content={data?.keywords} />
@@ -59,7 +63,7 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
 
     <meta property="og:title" content={data?.title} />
     <meta property="og:description" content={data?.description} />
-    <meta property="og:image" content={CLOUDINARY_URL + 'f_auto,w_auto/' + data?.cimage} />
+    <meta property="og:image" content={favicon} />
     <meta property="og:type" content="product" />
     <meta property="og:site_name" content="M.S. Global" />
     <meta property="og:locale" content="IL" />
@@ -68,6 +72,6 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="{data?.title}">
     <meta property="twitter:description" content="{data?.description}">
-    <meta property="twitter:image" content="{CLOUDINARY_URL + 'f_auto,w_auto/' + data?.cimage}">
+    <meta property="twitter:image" content="{favicon}">
     
 </svelte:head>

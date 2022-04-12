@@ -8,6 +8,9 @@ if(browser) {
     isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     $body = document.querySelector('body');
     scrollPosition = 0;
+    $body.ontouchstart = function(e) {
+        e.preventDefault();
+    }
 }
 function getScrollbarWidth() {
 
@@ -37,6 +40,7 @@ export function sl_enable() {
     $body.style.overflow = 'hidden';
     if(isSafari) {
         $body.style.position = 'fixed';
+        $body.style.WebkitOverflowScrolling ='touch';
         $body.style.top = `-${scrollPosition}px`;
         $body.style.width = '100%';
     }else {

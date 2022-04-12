@@ -392,6 +392,7 @@ button:focus:not(:focus-visible) {
   border: none;
   background: none;
   font-size: 2rem;
+  color:black;
   &:hover,&:focus {
     color:red;
   }
