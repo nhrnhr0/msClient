@@ -18,7 +18,7 @@ import { isNumeric } from "$lib/utils/utils";
                     let response = await fetch_wraper(server_url , {"method":"GET"}, fetch);
                     //console.log(response);
                     response.fotter = response.fotter.replace(/(\r\n|\n|\r)/gm, "");
-                    let favicon = `${CLOUDINARY_URL}u_v1649744644:msAssets:image_5_qo7yhx.jpg/${response?.cimage}`;
+                    let favicon = `${CLOUDINARY_URL}/c_scale,w_365/c_scale,u_v1649744644:msAssets:image_5_qo7yhx.jpg,w_500/${response?.cimage}`;
                     response.favicon = favicon;
                     return {
                         props: {

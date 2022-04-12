@@ -22,7 +22,8 @@ import { CLOUDINARY_URL, PRODUCTS_API_URL } from "../../../../api/consts";
             if(browser) {
                 category = window.location.href.match(category_regex);
             }
-            let favicon = `${CLOUDINARY_URL}u_v1649744644:msAssets:image_5_qo7yhx.jpg/${response?.cimage}`;
+            //let favicon = `${CLOUDINARY_URL}u_v1649744644:msAssets:image_5_qo7yhx.jpg/${response?.cimage}`;
+            let favicon = `${CLOUDINARY_URL}/c_scale,w_365/c_scale,u_v1649744644:msAssets:image_5_qo7yhx.jpg,w_500/${response?.cimage}`;
             return {
                 props: {
                     data: response,
