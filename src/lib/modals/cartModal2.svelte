@@ -39,6 +39,8 @@ import { Spinner } from "sveltestrap";
 				}
 			}
 			if(error_found == false) {
+				activeModalsStore.modalToggle('cartModal2', isModalOpen);
+				currentStep = 1;
 				state = 1;
 			}
 		}
@@ -46,6 +48,14 @@ import { Spinner } from "sveltestrap";
 			state = 2;
 			cart_submit();
 		}*/
+	}
+	let currentStep = 1;
+	function stepBtnClick() {
+		if (currentStep == 1) {
+			currentStep = 2;
+		}else if(currentStep == 2) {
+			cart_submit();
+		}
 	}
 	function cart_submit() {
         if(mform.reportValidity()) {
@@ -143,6 +153,8 @@ import { Spinner } from "sveltestrap";
 				//sidebar_cart_element.style = ``;
 				main_navbar_wraper.style=`width: 100%;`;
 			}
+			activeModalsStore.modalToggle('cartModal2', isModalOpen);
+
 		}
     }
 
@@ -226,7 +238,7 @@ import { Spinner } from "sveltestrap";
 	$: {
 		show_prices = $userInfoStore && $userInfoStore.isLogin;
 	}
-	let checked = true;
+	//let checked = true;
 </script>
 {#if isModalOpen}
 
@@ -245,150 +257,158 @@ import { Spinner } from "sveltestrap";
 					{#if $userInfoStore?.me?.is_superuser}
 						<h3>סוכן: {$userInfoStore.me.username}</h3>
 					{/if}
-					<div class="form-group">
-
-						
-						<div class="form-control">
-							<label for="name">שם בחשבונית</label>
-							<input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="{$userInfoStore?.actAs?.businessName || $userInfoStore?.me?.businessName}"  type="text"></div>	
-
-						
-						<div class="form-control">
-							<label for="email">אימייל</label>
-							<input bind:value="{form_email}" name="email" placeholder="{$userInfoStore?.actAs?.email || $userInfoStore?.me?.email}" type="email"></div>
-
-						
-						<div class="form-control">
-							<label for="phone">טלפון</label>
-							<input bind:value="{form_phone}" name="tel" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="טלפון" type="tel"></div>
-
-						
-						<div class="form-control">
-							<label for="privateCompany">ח.פ.</label>
-							<input type="text" bind:value="{form_privateCompany}" name="privateCompany" required={false} placeholder="{$userInfoStore?.actAs?.privateCompany || $userInfoStore?.me?.privateCompany}">
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="form-control"><textarea bind:value="{form_message}" name="message" required="{false}" placeholder="הודעה:"/>
-					</div>
-						</div>
-
-						<!--
-							table with all products
-							product image
-							product name
-							product amount
-							product price
-							total price
-
-							---- total price to all products
-							
-						-->
-						<table class="products">
-							<thead>
-								<tr>
-									<th>מוצר</th>
-									<th class="hide-on-md">ברקוד</th>
-									<th class="hide-on-md">האם יש ברקוד פיזי</th>
-									{#if $userInfoStore?.me?.is_superuser}
-									<th class="hide-on-md">הדפסה</th>
-									<th class="hide-on-md">רקמה</th>
-									{/if}
-									<th>כמות</th>
-									<th>מחיר</th>
-									<th>סה"כ</th>
-								</tr>
-							</thead>
-							<tbody>
-								{#each Object.entries($cartStore) as  [key, val] (key)}
-								{@const item = $cartStore[key]}
-								<tr>
-									<td>
-										<div class="product-image-and-title">
-											<div class="product-image">
-												<img src="{CLOUDINARY_URL}{item.cimage}" alt="{item.title}">
-											</div>
-											<div class="product-title">
-												<a href="#" on:click={open_product_modal.bind(this, item.id)}>{item.title}</a>
-											</div>
-										</div>
-									</td>
-									<td class="hide-on-md">
-										{item?.barcode || ''}
-									</td>
-									<td class="hide-on-md">
-										{item.has_physical_barcode? '✅':'❌'}
-									</td>
-									{#if $userInfoStore?.me?.is_superuser}
-										<td class="hide-on-md">
-											<div on:click="{(e) => {$cartStore[key].print = !$cartStore[key].print;}}">
-												{#if $cartStore[key].print}
-													✅
-												{:else}
-													❌
-												{/if}
+					{#if currentStep == 1}
+						<div in:fly="{{x:-340}}" class="step step-1">
+							<table class="products">
+								<thead>
+									<tr>
+										<th>מוצר</th>
+										<th class="hide-on-md">ברקוד</th>
+										<th class="hide-on-md">האם יש ברקוד פיזי</th>
+										{#if $userInfoStore?.me?.is_superuser}
+										<th class="hide-on-md">הדפסה</th>
+										<th class="hide-on-md">רקמה</th>
+										{/if}
+										<th>כמות</th>
+										<th>מחיר</th>
+										<th>סה"כ</th>
+									</tr>
+								</thead>
+								<tbody>
+									{#each Object.entries($cartStore) as  [key, val] (key)}
+									{@const item = $cartStore[key]}
+									<tr>
+										<td>
+											<div class="product-image-and-title">
+												<div class="product-image">
+													<img src="{CLOUDINARY_URL}{item.cimage}" alt="{item.title}">
+												</div>
+												<div class="product-title">
+													<a href="#" on:click={open_product_modal.bind(this, item.id)}>{item.title}</a>
+												</div>
 											</div>
 										</td>
 										<td class="hide-on-md">
-											<div on:click="{(e) => {$cartStore[key].embro = !$cartStore[key].embro;}}">
-												{#if $cartStore[key].embro}
-													✅
-												{:else}
-													❌
-												{/if}
+											{item?.barcode || ''}
+										</td>
+										<td class="hide-on-md">
+											{item.has_physical_barcode? '✅':'❌'}
+										</td>
+										{#if $userInfoStore?.me?.is_superuser}
+											<td class="hide-on-md">
+												<div on:click="{(e) => {$cartStore[key].print = !$cartStore[key].print;}}">
+													{#if $cartStore[key].print}
+														✅
+													{:else}
+														❌
+													{/if}
+												</div>
+											</td>
+											<td class="hide-on-md">
+												<div on:click="{(e) => {$cartStore[key].embro = !$cartStore[key].embro;}}">
+													{#if $cartStore[key].embro}
+														✅
+													{:else}
+														❌
+													{/if}
+												</div>
+											</td>
+										{/if}
+										<td>
+											<div class="product-amount" title="ערוך" on:click="{open_edit_amount_dialog(item.id, item.title)}">
+												{item.amount}
 											</div>
 										</td>
-									{/if}
-									<td>
-										<div class="product-amount" title="ערוך" on:click="{open_edit_amount_dialog(item.id, item.title)}">
-											{item.amount}
-										</div>
-									</td>
-									<td>
-										<div class="product-price">
-											{item.client_price}₪
-										</div>
-									</td>
-									<td>
-										<div class="product-total-price">
-											{item.client_price * item.amount}₪
-										</div>
-								</tr>
-								{/each}
-							</tbody>
-						</table>
-						<div class="totals">
-							<div  class="product-total-price">
-								סה"כ ללא מע"מ
-							</div>
-							<div class="product-total-price-result">
+										<td>
+											<div class="product-price">
+												{item.client_price}₪
+											</div>
+										</td>
+										<td>
+											<div class="product-total-price">
+												{item.client_price * item.amount}₪
+											</div>
+									</tr>
+									{/each}
+								</tbody>
+							</table>
+							<div class="totals">
+								<div  class="product-total-price">
+									סה"כ ללא מע"מ
+								</div>
+								<div class="product-total-price-result">
+									{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
+										return acc + val.client_price * val.amount
+									}, 0))}₪
+								</div>
+								<div class="product-total-price-tax">
+									סה"כ כולל מע"מ
+								</div>
 								{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
-									return acc + val.client_price * val.amount
+									return acc + val.client_price * val.amount * 1.17
 								}, 0))}₪
 							</div>
-							<div class="product-total-price-tax">
-								סה"כ כולל מע"מ
-							</div>
-							{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
-								return acc + val.client_price * val.amount * 1.17
-							}, 0))}₪
 						</div>
-						<div class="send-wra">
-							{#if $userInfoStore?.me?.is_superuser}
-								<!-- האם הזמנה או הצעת מחיר -->
-								<select name="order_type">
-									<option value="הזמנה">הזמנה</option>
-									<option value="הצעת מחיר">הצעת מחיר</option>
-								</select>
-							{/if}
-							<button on:click="{cart_submit}" class="submit-btn btn">
+					{:else}
+					<div in:fly="{{x:-340}}"  class="step step-2">
+						<div class="form-group">
+							
+							<div class="form-control">
+								<label for="name">שם בחשבונית</label>
+								<input bind:value="{form_name}" name="name" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="{$userInfoStore?.actAs?.businessName || $userInfoStore?.me?.businessName}"  type="text"></div>	
+
+							
+							<div class="form-control">
+								<label for="email">אימייל</label>
+								<input bind:value="{form_email}" name="email" placeholder="{$userInfoStore?.actAs?.email || $userInfoStore?.me?.email}" type="email"></div>
+
+							
+							<div class="form-control">
+								<label for="phone">טלפון</label>
+								<input bind:value="{form_phone}" name="tel" required="{!($userInfoStore && $userInfoStore.isLogin)}" placeholder="טלפון" type="tel"></div>
+
+							
+							<div class="form-control">
+								<label for="privateCompany">ח.פ.</label>
+								<input type="text" bind:value="{form_privateCompany}" name="privateCompany" required={false} placeholder="{$userInfoStore?.actAs?.privateCompany || $userInfoStore?.me?.privateCompany}">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-control"><textarea bind:value="{form_message}" name="message" required="{false}" placeholder="הודעה:"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-control">
+								{#if $userInfoStore?.me?.is_superuser}
+									<!-- האם הזמנה או הצעת מחיר -->	
+									<select name="order_type">
+										<option value="הזמנה">הזמנה</option>
+										<option value="הצעת מחיר">הצעת מחיר</option>
+									</select>
+								{/if}
+							</div>
+						</div>
+					</div>
+					{/if}
+
+					
+					<div class="send-wra">
+						{#if currentStep == 1}
+							<button on:click="{stepBtnClick}" class="submit-btn btn">
+								הבא
+								<img class="arrow-left" width="32px" height="32px" src="/right-arrow-hover.png" />
+							</button>
+						{:else}
+							<button on:click="{stepBtnClick}" class="submit-btn btn">
 								{#if isSending}
-								<Spinner />
+									<Spinner />
 								{:else}
-								שלח
+									שלח
 								{/if}
 							</button>
-						</div>
+						{/if}
+						<button on:click="{()=>{currentStep -= 1}}" class="btn back-btn" style:display={currentStep == 1? 'none':'block'}>הקודם</button>
+					</div>
 				</form>
 			</div>
 		
@@ -563,6 +583,15 @@ $gray-1200: #131314;
 	}
 }
 
+.step {
+	&.step-1 {
+
+	}
+	&.step-2 {
+
+	}
+}
+
 .error-msg {
 	color: $red;
 	font-size: 0.8em;
@@ -635,6 +664,10 @@ $gray-1200: #131314;
 								display: flex;
 								justify-content: start;
 								align-items: center;
+								@media screen and (max-width:1100px) {
+									flex-direction: column;
+									align-items: start;
+								}
 								.product-image {
 									width: 100px;
 									height: 100px;
@@ -647,9 +680,20 @@ $gray-1200: #131314;
 									
 									font-weight: bold;
 								}
+								@media screen and (max-width: 1100px) {
+									.product-image {
+										width: 50px;
+										height: 50px;
+									}
+									.product-title {
+										font-size: 0.8em;
+									}
+								}
 							}
 
-							
+							@media screen and (max-width: 765px) {
+								font-size: 1rem;
+							}
 						}
 						// ligther colors on all odd rows
 						&:nth-child(even) {
@@ -676,6 +720,9 @@ $gray-1200: #131314;
 						display: grid;
 						grid-template-columns: 1fr 1fr;
 					}
+					@media screen and (max-width:1100px) {
+						font-size: 1rem;
+					}
 				}
 			.submit-btn {
 				margin-top: 1em;
@@ -691,12 +738,39 @@ $gray-1200: #131314;
 					transform: translateY(-7px);
 					
 				}
-				
+				img.arrow-left {
+					transform: rotate3d(0,0,1,180deg);
+				}
 			}
 
 			.float-actions {
 				position: fixed;
 				top: 20px;
+			}
+
+			.send-wra {
+				display: flex;
+				flex-direction: row-reverse;
+				gap: 20px;
+				.back-btn {
+					
+					margin-top: 1em;
+					margin-bottom: 1em;
+					
+					
+					//@include bg-gradient();
+					background-color: var(--details-btn-color);
+					box-shadow: 0 0 10px rgba(0,0,0,0.3);
+					font-size: 2.5em;
+					font-weight: bold;
+					transition: all 0.3s ease 0s;
+					&:hover, &:focus {
+						box-shadow: 0px 15px 10px rgba(0,0,0,0.7);
+						transform: translateY(-7px);
+						
+					}
+					
+				}
 			}
 		}
 	}
