@@ -557,11 +557,14 @@
       
       overflow-x: auto;
       
-      width: 100%;
+      //width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
+      @media screen and (max-width: 780px) {
+        width:100%;
+      }
       table.product-table {
         border: 1px solid #777777;
           //width: 100%;

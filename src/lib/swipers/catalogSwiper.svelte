@@ -458,7 +458,13 @@ on:change={(event) => {
                   }}'
                   breakpoints='{{
                         "220": {
-                            "slidesPerView": 1.1,
+                            "slidesPerView": 1.3,
+                        },
+                        "395": {
+                            "slidesPerView": 1.5,
+                        },
+                        "440": {
+                            "slidesPerView": 1.7,
                         },
                         "500": {
                             "slidesPerView": 2,

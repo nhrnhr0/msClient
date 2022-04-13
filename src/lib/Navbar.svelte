@@ -198,56 +198,55 @@ import { logStore } from "./../stores/logStore";
 <nav id="main-navbar-wraper" class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
         <!-- svelte-ignore a11y-invalid-attribute -->
-        <a class="navbar-logo" href="javascript:window.location.href=window.location.href" aria-label="logo" role="button"><img class="nav-logo" width="98.7064676px" height="40px"
+        <a class="navbar-logo" href="javascript:window.location.href=window.location.href" aria-label="logo" role="button">
+            <img class="nav-logo" height="32px" width="auto"
                 src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1634457672/msAssets/favicon_rza3n9"
-                alt=""></a>
+                alt="">
+        </a>
 
-                <Dropdown id="navCategoryList" class="main-category-menu">
-                    <DropdownToggle color="none" caret aria-label="menu">  
-                        <svg viewBox="0 0 100 80" width="40" height="40">
-                            <rect width="100" height="20"></rect>
-                            <rect y="30" width="100" height="20"></rect>
-                            <rect y="60" width="100" height="20"></rect>
-                        </svg>
-                    </DropdownToggle>
-                    
-                    <DropdownMenu >                    
-                        <h1 class="drop-title"> מחלקות מוצרים</h1>
-                        {#if groupedAlbums }
-                            {#each groupedAlbums as key_val_album }
-                                <DropdownItem header>
-                                    
-                                    <Dropdown class="category-menu-2">
-                                        {#if key_val_album['value']}
-                                        <DropdownToggle color="none" caret aria-label="submenu">
-                                                {#if key_val_album['key'] == 'undefined'}
-                                                    אחר
-                                                {:else}
-                                                    {key_val_album['key']}
-                                                {/if}
-                                                
-                                        </DropdownToggle >
+        <Dropdown id="navCategoryList" class="main-category-menu">
+            <DropdownToggle color="none" caret aria-label="menu">  
+                <svg viewBox="0 0 100 80" width="40" height="40">
+                    <rect width="100" height="20"></rect>
+                    <rect y="30" width="100" height="20"></rect>
+                    <rect y="60" width="100" height="20"></rect>
+                </svg>
+            </DropdownToggle>
+            
+            <DropdownMenu >                    
+                <h1 class="drop-title"> מחלקות מוצרים</h1>
+                {#if groupedAlbums }
+                    {#each groupedAlbums as key_val_album }
+                        <DropdownItem header>
+                            
+                            <Dropdown class="category-menu-2">
+                                {#if key_val_album['value']}
+                                <DropdownToggle color="none" caret aria-label="submenu">
+                                        {#if key_val_album['key'] == 'undefined'}
+                                            אחר
+                                        {:else}
+                                            {key_val_album['key']}
                                         {/if}
-                                        <DropdownMenu end class="category-menu-2-menu" style="transform: translate3d(0px, 44px, 0px);">
-                                            {#if key_val_album['value']}
-                                                {#each key_val_album['value'] as  album}
-                                                <DropdownItem on:click={menuItemClicked(album)}>
-                                                        {album.title}
-                                                </DropdownItem>
-                                                {/each}
-                                            {/if}
-                                        </DropdownMenu>
-                                    </Dropdown>
-                                </DropdownItem>
-                            {/each}
-                        {/if}
-                    </DropdownMenu>
-                </Dropdown>
+                                        
+                                </DropdownToggle >
+                                {/if}
+                                <DropdownMenu end class="category-menu-2-menu" style="transform: translate3d(0px, 44px, 0px);">
+                                    {#if key_val_album['value']}
+                                        {#each key_val_album['value'] as  album}
+                                        <DropdownItem on:click={menuItemClicked(album)}>
+                                                {album.title}
+                                        </DropdownItem>
+                                        {/each}
+                                    {/if}
+                                </DropdownMenu>
+                            </Dropdown>
+                        </DropdownItem>
+                    {/each}
+                {/if}
+            </DropdownMenu>
+        </Dropdown>
 
-                <Cart bind:this={$cartDomElementStore}></Cart>
-
-                
-
+        <Cart bind:this={$cartDomElementStore}></Cart>
 
         <form class="d-flex" id="search_form">
             <AutoComplete id="search_input" on:focus loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש מוצרים..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:value={searchValue}  >
@@ -294,7 +293,7 @@ import { logStore } from "./../stores/logStore";
                 
             
             <div>
-            <a rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
+            <a class="same-size-icon" rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
                 <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
             </a>
         </div>
@@ -320,6 +319,12 @@ import { logStore } from "./../stores/logStore";
             --autocomplete-txt-hover-clr: rgb(255, 255, 255);
         }
 :global(#navCategoryList) {
+        :global(.dropdown-toggle) {
+            :global(svg) {
+                width: 32px;
+                height: 32px;;
+            }
+        }
         :global(.dropdown-menu.show) {
           grid-template-columns: repeat(1, 1fr);
           //left: 0%!important;

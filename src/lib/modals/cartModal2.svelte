@@ -236,7 +236,7 @@ import { Spinner } from "sveltestrap";
 		<div class="modal_content"in:fly="{{ y: 200, duration: 350 }}" on:click|stopPropagation|preventDefault={()=>{}} out:fade style="z-index: {modal_zIndex+10};">
 			<div class="modal-header">
 			<button title="Close" on:click={toggleModal} class="close-btn right">x</button>
-			<h5 class="modal-title">וודא שליחת טופס</h5>
+			<h5 class="modal-title">לקופה</h5>
 			<button title="Close" on:click={toggleModal} class="close-btn left">x</button>
 			</div>
 		
@@ -569,6 +569,12 @@ $gray-1200: #131314;
 	margin-top: 0.5em;
 }
 .modal_content {
+	.modal-header {
+		.modal-title {
+			font-size: 1.34em;
+			font-weight: bold;
+		}
+	}
 	.modal-body {
 		.cart-form {
 			.form-group {
@@ -595,12 +601,12 @@ $gray-1200: #131314;
 				th {
 					
 					font-size: 1em;
-					text-align: start;
+					text-align: center;
 					font-weight: bold;
 				}
 				td {
 					font-size: 1.2em;
-					text-align: start;
+					text-align: center;
 					font-weight: bold;
 				}
 				width: 100%;

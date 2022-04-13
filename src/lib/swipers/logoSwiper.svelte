@@ -86,10 +86,16 @@
             }
             .slider-title {
                 //text-decoration: underline;
-                font-size: 2.1rem;
+                font-size: 1.8rem;
                 text-align: center;
                 margin-top: 30px;
                 //background-color: #f5f5f5;
+                @media screen and (max-width:840px) {
+                    font-size: 1.5rem;
+                }
+                @media screen and (max-width: 395px) {
+                    font-size: 1.2rem;
+                }
             }
             .img-wraper {
                 display: flex;

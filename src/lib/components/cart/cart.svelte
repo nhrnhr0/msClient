@@ -44,9 +44,9 @@
             .items-counter {
                 //border:1px solid red;
                 position: absolute;
-            top:0px;
-            right:0px;
-            transform: translate(50%,-50%);
+                top:0px;
+                right:0px;
+                transform: translate(50%,-50%);
                 background-color: #FF0000;//rgb(48, 48, 219);
                 border-radius: 50%;
                 display: inline-block;
@@ -60,6 +60,10 @@
                 }
             }
         //}
+        :global(svg) {
+            width: 32px;
+            height: 32px;
+        }
     }
 
 </style>
