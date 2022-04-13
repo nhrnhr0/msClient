@@ -87,12 +87,12 @@
                     <div class="row">
                             <div class="input-wraper">
                                 <div class="form-group">
-                                    <div class="form-control form-control-row">
+                                    <div class="md-flex-colum form-control form-control-row">
                                         <img width="75px" height="75px" class="product-image" on:click={inputfile.click()} src={image_src || "https://res.cloudinary.com/ms-global/image/upload/v1649581221/msAssets/upload_camera_s12a01.png"} alt="לחץ להעלאת תמונה"/>
                                         <input on:change="{onFileSelected}" type="file" name="image" bind:this={inputfile} class="input-file" />
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group md-flex-colum">
                                     <div class="form-control">
                                         <label for="buy_price">אני קונה את המוצר כרגע ב</label>
                                         <input id="buy_price_input" name="buy_price" required="{false}" placeholder="{5.90}"  type="number">
@@ -144,6 +144,7 @@
             width: 100%;
         }
     }
+    
     .modal-body {
         form {
             
@@ -189,6 +190,12 @@
                 border: none;
                 cursor: pointer;
             }
+        }
+    }
+    
+    .md-flex-colum {
+        @media screen and(max-width: 768px) {
+            flex-direction: column!important;
         }
     }
 }
