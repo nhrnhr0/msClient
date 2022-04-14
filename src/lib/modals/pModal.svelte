@@ -64,11 +64,12 @@ import SingleAmountModal from './singleAmountModal.svelte';
   let campain_title = undefined;
   let campain;
   let priceTable = undefined;
+  const error_title = 'מוצר זה אינו זמין לתצוגה כרגע';
   export let isModalOpen = false;
-  let loadingText = 'טוען...';
+  let placeHolderText = 'טוען...';
   let m, evt;
   let amount_input;
-
+  let error_loading_product = false;
   let is_image_loaded = false;
 
   export function isOpen() {
@@ -78,9 +79,10 @@ import SingleAmountModal from './singleAmountModal.svelte';
   function getProduct() {
     return [_catalogId, _productId];
   }
-  export function setProduct(catalogId, productId, push_url = true) {
+  export function setProduct(catalogId, productId, push_url = true, retry=0) {
     isLoaded = false;
     is_image_loaded = false;
+    placeHolderText = 'טוען...';
     //$stateQuery['product'] = catalogId + ',' + productId;
     
     if(push_url) {
@@ -90,21 +92,41 @@ import SingleAmountModal from './singleAmountModal.svelte';
     _catalogId = catalogId;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
     // find album data from id:
-
     current_album.set($albumsJsonStore.filter((val) => {
       return val.id == catalogId;
     })[0]);
 
 
     let productsPromise = get_album_details(catalogId);
+    let productFound = false;
     productsPromise.then((v) => {
       all_products_in_category = v;
+      console.log('all_products_in_category', all_products_in_category);
       for (let i = 0; i < v.length; i++) {
         if (v[i].id == productId) {
           productData.set(v[i]);
-          
+          productFound = true;
+          error_loading_product = false;
+          placeHolderText = 'מוצר זה אינו זמין כרגע';
           break;
         }
+      }
+      if (!productFound) {
+        if(retry < 3) {
+          setProduct(catalogId, productId, push_url, retry+1);
+        }else {
+          error_loading_product = true;
+          placeHolderText = 'מוצר זה אינו זמין כרגע'; 
+          return;
+        }
+      }
+    }).catch((e) => {
+      console.log(e);
+      if(retry < 3) {
+        setProduct(catalogId, productId, push_url, retry+1);
+      }else {
+        error_loading_product = true;
+        return;
       }
     });
   }
@@ -302,10 +324,11 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
 
   export function toggleModal(push_url=true) {
+    debugger;
     isModalOpen = !isModalOpen;
     activeModalsStore.modalToggle('pModal', isModalOpen);
     if (isModalOpen == false) {
-      //$stateQuery['product'] = -1;
+      //$stateQuery['product'] = -1;f
       if(push_url) {
         pushMainPage();
       }
@@ -407,6 +430,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
             <div class="modal-body">
                 <div class="inner-body">
+                  
                     <div class="product-detail">
                         <div class="product-title">
                           <div class="title-text">
@@ -554,7 +578,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
                             יש לך שאלה?
                           </button>
                         
-                          <div class="price-tag" class:active={show_prices} >{$productData.client_price + '₪'}</div>
+                          <div class="price-tag" class:active={show_prices} >{$productData.price + '₪'}</div>
                         {/if}
                       </div>
                       
@@ -606,7 +630,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
       <div class="modal-header">
         <button title="Close" on:click={toggleModal} class="close-btn">x</button>
           <button
-                  class="title btn btn-outline-dark">{loadingText}
+                  class="title btn btn-outline-dark">{placeHolderText}
               </button>
           <button title="Close" on:click={toggleModal} class="close-btn">x</button>
             
@@ -614,15 +638,41 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
       <div class="modal-body">
           <div class="inner-body">
+            {#if error_loading_product}
               <div class="product-detail">
-                  <div class="product-title">{loadingText}</div>
+                <div class="product-title">{error_title}</div>
+                <hr>
+                <div class="product-properties">
+                    <div class="product-color-wraper">
+                        <div class="product-color"></div>
+                    </div>
+                    <div class="product-size-wraper">
+                        <div class="product-size"></div>
+                    </div>
+                    <!--
+                    <div class="product-packing-wraper">
+                        <div class="product-packing">{loadingText}</div>
+                    </div>
+                    -->
+                </div>
+                <hr>
+                
+                <div class="product-description">
+                </div>
+                
+              </div>
+              <div class="img-wraper">  
+              </div>            
+            {:else}
+              <div class="product-detail">
+                  <div class="product-title">{placeHolderText}</div>
                   <hr>
                   <div class="product-properties">
                       <div class="product-color-wraper">
-                          <div class="product-color">{loadingText}</div>
+                          <div class="product-color">{placeHolderText}</div>
                       </div>
                       <div class="product-size-wraper">
-                          <div class="product-size">{loadingText}</div>
+                          <div class="product-size">{placeHolderText}</div>
                       </div>
                       <!--
                       <div class="product-packing-wraper">
@@ -633,39 +683,26 @@ import SingleAmountModal from './singleAmountModal.svelte';
                   <hr>
                   
                   <div class="product-description">
-                    {loadingText}
+                    {placeHolderText}
                   </div>
                   
+                </div>
+                <div class="img-wraper">  
+                    <Spinner
+                  size="200"
+                  speed="750"
+                  color="#A82124"
+                  thickness="2"
+                  gap="40"
+              />
               </div>
-              <div class="img-wraper">  
-                  <Spinner
-                size="200"
-                speed="750"
-                color="#A82124"
-                thickness="2"
-                gap="40"
-            /></div>
+            {/if}
           </div>
       </div>
 
 
       <div class="modal-fotter">
-          <button id="modal-prev-btn" class="btn modal-nav-btn" on:click={prevClick}>
-              <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="prev">
-          </button>
-          <div  on:click={likeBtnClicked} class="like-btn-wraper">
-              <button  id="productModalLikeBtn" class="like-btn">
-                <div class="img-wraper">
-                  <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
-                </div>
-                <div class="text">
-                  {loadingText}
-                </div>
-              </button>
-            </div>
-          <button id="modal-next-btn" class="btn modal-nav-btn" on:click={nextClick}>
-              <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="next">
-          </button>
+          
       </div>
   </div>
     {/if}

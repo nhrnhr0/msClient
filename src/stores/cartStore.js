@@ -80,8 +80,8 @@ cartStore.subscribe((value) => {
       if(_updated_to_server == false) {
         _updated_to_server = true;
         setTimeout(() => {
-          update_cart_to_server(get(cartStore));
           _updated_to_server = false;
+          update_cart_to_server(get(cartStore));
         }, 3000);
       }
     }

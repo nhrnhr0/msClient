@@ -539,7 +539,7 @@ on:change={(event) => {
                                             </SvelteTooltip>
                                         </div>
                                         <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{image.cimage}" alt="{image.title}">
-                                        <div class="price-tag" class:active={show_prices} >{image.client_price + '₪'}</div>
+                                        <div class="price-tag" class:active={show_prices} >{image.price + '₪'}</div>
                                         <!--     <FaveBtn product_id={image.id}/>-->
                                     </div> 
                                 </div>

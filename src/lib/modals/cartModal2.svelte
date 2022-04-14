@@ -62,7 +62,7 @@ import { Spinner } from "sveltestrap";
             let cart_products = [];
             for(let key in $cartStore) {
                 let product = $cartStore[key];
-                cart_products.push({'id': product.id, 'amount': product.amount, 'price': product.client_price, 'mentries': product.mentries, 'print': product.print, 'embro': product.embro,});
+                cart_products.push({'id': product.id, 'amount': product.amount, 'price': product.price, 'mentries': product.mentries, 'print': product.print, 'embro': product.embro,});
 				
             }
 			let actAs = $userInfoStore?.actAs;
@@ -165,7 +165,7 @@ import { Spinner } from "sveltestrap";
         return isModalOpen;
     }
 	function roundHalf(num) {
-    	return Math.round(num*2)/2;
+		return Math.round(num*2)/2;
 	}
     let mform;
     function delete_product_from_cart(key) {
@@ -199,9 +199,9 @@ import { Spinner } from "sveltestrap";
 		if($userInfoStore.isLogin && $userInfoStore.me && $userInfoStore.me.is_superuser == true) {
 			// open popup to edit price
 			let item = $cartStore[cart_key];
-			let prom = prompt('ערוך מחיר', item.client_price);
+			let prom = prompt('ערוך מחיר', item.price);
 			if(prom) {
-				$cartStore[item.id].client_price = parseFloat(prom);;
+				$cartStore[item.id].price = parseFloat(prom);;
 			}
 			e.preventDefault();
 			e.stopPropagation();
@@ -321,12 +321,12 @@ import { Spinner } from "sveltestrap";
 										</td>
 										<td>
 											<div class="product-price">
-												{item.client_price}₪
+												{item.price}₪
 											</div>
 										</td>
 										<td>
 											<div class="product-total-price">
-												{item.client_price * item.amount}₪
+												{item.price * item.amount}₪
 											</div>
 									</tr>
 									{/each}
@@ -338,14 +338,14 @@ import { Spinner } from "sveltestrap";
 								</div>
 								<div class="product-total-price-result">
 									{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
-										return acc + val.client_price * val.amount
+										return acc + val.price * val.amount
 									}, 0))}₪
 								</div>
 								<div class="product-total-price-tax">
 									סה"כ כולל מע"מ
 								</div>
 								{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
-									return acc + val.client_price * val.amount * 1.17
+									return acc + val.price * val.amount * 1.17
 								}, 0))}₪
 							</div>
 						</div>
@@ -473,7 +473,7 @@ import { Spinner } from "sveltestrap";
 																	:'מחיר ליח
 																</div>
 																<div class="table-cell">
-																		<span class="">{$cartStore[key].client_price}₪</span>
+																		<span class="">{$cartStore[key].price}₪</span>
 																</div>
 															</div>
 														{/if}
