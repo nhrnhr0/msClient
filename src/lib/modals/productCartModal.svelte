@@ -182,6 +182,8 @@
   }
 
   function add_to_amount(amount) {
+    console.log("Archor node - ",window.getSelection().anchorNode);
+    console.log("Focus Node - ",window.getSelection().toString());
     if (last_active_input == null && $cartStore[product_id].show_sizes_popup) {
       show_add_amount_focus_error = true;
     }else {
@@ -198,7 +200,11 @@
         last_active_input.dispatchEvent(new Event('input', {bubbles:true}));
         last_active_input.focus();
       }else {
+        if(window.getSelection().anchorNode.id == 'input-wraper' && window.getSelection().toString() == $cartStore[product_id].amount) {
+          $cartStore[product_id].amount = amount
+        }else{
           $cartStore[product_id].amount += amount;
+        }
       }
     }
 }
@@ -216,6 +222,33 @@
     console.log('last_store_path', last_store_path);
     if (show_add_amount_focus_error) {
       show_add_amount_focus_error = false;
+    }
+  }
+
+  function clear_all() {
+    debugger;
+    if ($cartStore[product_id].show_sizes_popup) {
+      /**mentries: {77: {87: {}, 88: {}, 89: {quantity: 1}, 90: {}, 91: {}, 92: {}},…}*/
+      /*{84: {98: {1: {}, 2: {}, 3: {}}, 99: {1: {quantity: 5}, 2: {quantity: 4}, 3: {}},…}}*/
+      /**Set all mentries quantity to undefined*/
+      let colorKeys = Object.keys($cartStore[product_id].mentries);
+      for(let color_index = 0; color_index < colorKeys.length; color_index++) {
+        let sizeKeys = Object.keys($cartStore[product_id].mentries[colorKeys[color_index]]);
+        for(let size_index = 0; size_index < sizeKeys.length; size_index++) {
+          let verientsKeys = Object.keys($cartStore[product_id].mentries[colorKeys[color_index]][sizeKeys[size_index]]);
+          if(verientsKeys.length == 1) {
+            $cartStore[product_id].mentries[colorKeys[color_index]][sizeKeys[size_index]]['quantity']= undefined;
+            
+          }else{
+            for(let i = 0; i < verientsKeys.length; i++) {
+              $cartStore[product_id].mentries[colorKeys[color_index]][sizeKeys[size_index]][verientsKeys[i]]['quantity'] = undefined;
+            }
+            }
+          
+        }
+      }
+    }else {
+      $cartStore[product_id].amount = 0;
     }
   }
 </script>
@@ -427,7 +460,7 @@
             {/if}
             
             
-            <div class="input-wraper">
+            <div class="input-wraper" id="input-wraper">
               <label for="popup_amount_input" class="amount-input-label">כמות: </label>
               <input id="popup_amount_input" on:keyup={(e)=> {e.key === 'Enter' && toggleModal()}} use:selectTextOnFocus bind:value={$cartStore[product_id].amount} class="amount-input" type="number" >
             </div>
@@ -449,6 +482,7 @@
         <div class="action-buttons">
           <!-- שמור ומחק -->
           <button class="btn btn-primary" style:visibility={$cartStore[product_id].amount>0?'visible':'hidden'} on:click={toggleModal}>הוסף לסל</button>
+          <button class="btn btn-secondary" on:click={clear_all}>נקה</button>
           <button class="btn btn-danger" on:click={remove_from_cart}>מחק</button>
 
         </div>
