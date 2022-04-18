@@ -306,7 +306,7 @@ Button,
               
               <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
               
-              <div class="price-tag" class:active={show_prices} >{img.price + '₪'}</div>
+              <div class="price-tag" class:active={show_prices && img.out_of_stock == false} >{img.price + '₪'}</div>
             </div>
             <div class="img-title">{img.title}</div>
           </div>

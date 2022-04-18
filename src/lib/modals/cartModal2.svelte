@@ -270,8 +270,10 @@ import { Spinner } from "sveltestrap";
 										<th class="hide-on-md">רקמה</th>
 										{/if}
 										<th>כמות</th>
-										<th>מחיר</th>
-										<th>סה"כ</th>
+										{#if show_prices}
+											<th>מחיר</th>
+											<th>סה"כ</th>
+										{/if}
 									</tr>
 								</thead>
 								<tbody>
@@ -319,35 +321,52 @@ import { Spinner } from "sveltestrap";
 												{item.amount}
 											</div>
 										</td>
-										<td>
-											<div class="product-price">
-												{item.price}₪
-											</div>
-										</td>
-										<td>
-											<div class="product-total-price">
-												{item.price * item.amount}₪
-											</div>
+										{#if show_prices}
+											<td>
+												<div class="product-price">
+													{#if item.out_of_stock == false}
+														{item.price}₪
+													{/if}
+												</div>
+											</td>
+											<td>
+												<div class="product-total-price">
+													{#if item.out_of_stock == false}
+														{item.price * item.amount}₪
+													{/if}
+												</div>
+											</td>
+										{/if}
 									</tr>
 									{/each}
 								</tbody>
 							</table>
-							<div class="totals">
-								<div  class="product-total-price">
-									סה"כ ללא מע"מ
-								</div>
-								<div class="product-total-price-result">
+							{#if show_prices}
+								<div class="totals">
+									<div  class="product-total-price">
+										סה"כ ללא מע"מ
+									</div>
+									<div class="product-total-price-result">
+										{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
+											/*let ret = acc;
+											if (val.out_of_stock == false) {
+												ret += val.price * val.amount;
+											}*/
+											return acc + (val.price * val.amount) * (val.out_of_stock == false? 1:0);
+										}, 0))}₪
+									</div>
+									<div class="product-total-price-tax">
+										סה"כ כולל מע"מ
+									</div>
 									{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
-										return acc + val.price * val.amount
+										/*let ret = acc;
+										if (val.out_of_stock == false) {
+											ret += val.price * val.amount;
+										}*/
+										return acc + (val.price * val.amount * 1.17) * (val.out_of_stock == false? 1:0);
 									}, 0))}₪
 								</div>
-								<div class="product-total-price-tax">
-									סה"כ כולל מע"מ
-								</div>
-								{roundHalf(Object.entries($cartStore).reduce((acc, [key, val]) => {
-									return acc + val.price * val.amount * 1.17
-								}, 0))}₪
-							</div>
+							{/if}
 						</div>
 					{:else}
 					<div in:fly="{{x:-340}}"  class="step step-2">
@@ -467,7 +486,7 @@ import { Spinner } from "sveltestrap";
 																	{/if}
 																</div>
 															</div>
-														{#if show_prices}
+														{#if show_prices && $cartStore[key].out_of_stock == false}
 															<div class="table-row" on:click={(e)=>price_cell_click(e,key)}>
 																<div class="table-cell table-cell-title">
 																	:'מחיר ליח

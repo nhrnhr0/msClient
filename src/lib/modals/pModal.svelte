@@ -578,7 +578,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
                             יש לך שאלה?
                           </button>
                         
-                          <div class="price-tag" class:active={show_prices} >{$productData.price + '₪'}</div>
+                          <div class="price-tag" class:active={show_prices && $productData.out_of_stock == false} >{$productData.price + '₪'}</div>
                         {/if}
                       </div>
                       
