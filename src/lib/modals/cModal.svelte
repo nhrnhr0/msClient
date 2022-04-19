@@ -305,7 +305,9 @@ Button,
             <div class="category-item-img-wraper" on:click="{open_product(img)}" >
               
               <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
-              
+              {#if img.out_of_stock}
+                <img src="https://res.cloudinary.com/ms-global/image/upload/v1648713887/msAssets/pngfind.com-pubg-player-png-5352359_1_bepovk.png" class="sold-out-icon" alt="מלאי לא זמין"/>
+              {/if}
               <div class="price-tag" class:active={show_prices && img.out_of_stock == false} >{img.price + '₪'}</div>
             </div>
             <div class="img-title">{img.title}</div>
@@ -367,6 +369,18 @@ Button,
 
 
 <style lang="scss">
+  .sold-out-icon {
+        position: absolute;
+        z-index: 1;
+        border: none;
+        background: none;
+        //transform: translate(-50%, 0);
+
+        width: 140px;
+        height: auto;
+        top: 30px;
+        right: 0px;
+    }
 
       .like-btn-wraper{
         display: flex;

@@ -571,6 +571,9 @@ import SingleAmountModal from './singleAmountModal.svelte';
                           src="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
                           data-large-img-url="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
                           />
+                          {#if $productData.out_of_stock}
+                          <img src="https://res.cloudinary.com/ms-global/image/upload/v1648713887/msAssets/pngfind.com-pubg-player-png-5352359_1_bepovk.png" class="sold-out-icon" alt="מלאי לא זמין"/>
+                        {/if}
                           
                         </a>
                         {#if is_image_loaded}
@@ -712,7 +715,18 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
 <style lang="scss">
     //@import '$lib/utils/css/magnifier.css';
+    .sold-out-icon {
+        position: absolute;
+        z-index: 1;
+        border: none;
+        background: none;
+        //transform: translate(-50%, 0);
 
+        width: 140px;
+        height: auto;
+        top: 30px;
+        right: 0px;
+    }
     .like-btn-wraper{
       
       width: auto;
