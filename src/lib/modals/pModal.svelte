@@ -100,6 +100,8 @@ import SingleAmountModal from './singleAmountModal.svelte';
     let productsPromise = get_album_details(catalogId);
     let productFound = false;
     productsPromise.then((v) => {
+      
+      debugger;
       all_products_in_category = v;
       console.log('all_products_in_category', all_products_in_category);
       for (let i = 0; i < v.length; i++) {
@@ -107,7 +109,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
           productData.set(v[i]);
           productFound = true;
           error_loading_product = false;
-          placeHolderText = 'מוצר זה אינו זמין כרגע';
+          placeHolderText = 'טוען...';
           break;
         }
       }
@@ -223,7 +225,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
   let last_product_id = undefined;
 
   productData.subscribe((data) => {
-    
+    debugger;
     colorMarkup = '';
     sizeMarkup = '';
     let colorMarkupLocal = '';
@@ -418,7 +420,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
 <div style="z-index: {modal_zIndex};" id="productModal" class="modal" class:active={isModalOpen}>
   <div style="z-index: {modal_zIndex+5};" class="overlay" on:click={toggleModal}></div>
-  {#if isLoaded && isModalOpen && $productData && $productData.cimage && $current_album}
+  {#if isLoaded && isModalOpen && $productData && $current_album}
         <div style="z-index: {modal_zIndex+10};" class="modal_content">
             <div class="modal-header">
               <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
@@ -510,53 +512,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
                           {/if}
                           
                         </div>
-                        <div  on:click={likeBtnClicked} class="like-btn-wraper">
-                          {#if $cartStore[_productId] == undefined}
-                              <button  id="productModalLikeBtn" class="like-btn">
-                                <div class="text">
-                                  הוסף לסל
-                              </div>
-                              <!--
-                                <div class="img-wraper">
-                                  <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
-                                </div>
-                                -->
-                                
-                              </button>
-                          {:else}
-                              <button on:click|preventDefault="{open_edit_amount_dialog}"  id="productModalLikeBtn" class="like-btn active">
-                                <div class="amount-before">
-                                  <Button color="danger" class="delete-btn action-btn" on:click="{remove_from_cart}" >
-                                    <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="32px" height="32px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
-                                  </Button>
-                                  <label for="edit-btn" class="amount-in-cart-label">כמות בסל: {$cartStore[_productId].amount}</label>
-                                  <Button color="primary" class="edit-amount-btn action-btn">ערוך</Button>
-                                  <!--
-                                  {#if $cartStore[_productId].show_sizes_popup}
-                                    <div class="amount-text">
-                                      <div class="text">
-                                        לחץ לבחירת מידות
-                                      </div>
-                                      <div class="edit-amount-btn">
-                                          {$cartStore[_productId].amount}
-                                      </div>
-                                    </div>
-                                  {:else}
-                                    <div class="amount-text">
-                                      <div class="text">
-                                        כמות בסל
-                                      </div>
-                                      <div class="edit-amount-btn">
-                                        <input class="amount-input" disabled bind:this={amount_input} type="number" min="1" max="9999" bind:value="{$cartStore[_productId].amount}"/>
-                                      </div>
-                                    </div>
-                                  {/if}
-                                  -->
-                                </div>
-                                
-                              </button>
-                          {/if}
-                          </div>
+                        
                     </div>
                     <div class="img-wraper"
                     style="padding-bottom:{(!is_image_loaded && is_under_500px())?"100%":"0%"}
@@ -600,6 +556,55 @@ import SingleAmountModal from './singleAmountModal.svelte';
                     <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="prev">
                 </button>
 
+
+
+                <div  on:click={likeBtnClicked} class="like-btn-wraper">
+                  {#if $cartStore[_productId] == undefined}
+                      <button  id="productModalLikeBtn" class="like-btn">
+                        <div class="text">
+                          הוסף לסל
+                      </div>
+                      <!--
+                        <div class="img-wraper">
+                          <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
+                        </div>
+                        -->
+                        
+                      </button>
+                  {:else}
+                      <button on:click|preventDefault="{open_edit_amount_dialog}"  id="productModalLikeBtn" class="like-btn active">
+                        <div class="amount-before">
+                          <Button color="danger" class="delete-btn action-btn" on:click="{remove_from_cart}" >
+                            <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="32px" height="32px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
+                          </Button>
+                          <label for="edit-btn" class="amount-in-cart-label">כמות בסל: {$cartStore[_productId].amount}</label>
+                          <Button color="primary" class="edit-amount-btn action-btn">ערוך</Button>
+                          <!--
+                          {#if $cartStore[_productId].show_sizes_popup}
+                            <div class="amount-text">
+                              <div class="text">
+                                לחץ לבחירת מידות
+                              </div>
+                              <div class="edit-amount-btn">
+                                  {$cartStore[_productId].amount}
+                              </div>
+                            </div>
+                          {:else}
+                            <div class="amount-text">
+                              <div class="text">
+                                כמות בסל
+                              </div>
+                              <div class="edit-amount-btn">
+                                <input class="amount-input" disabled bind:this={amount_input} type="number" min="1" max="9999" bind:value="{$cartStore[_productId].amount}"/>
+                              </div>
+                            </div>
+                          {/if}
+                          -->
+                        </div>
+                        
+                      </button>
+                  {/if}
+                  </div>
                  
                 <!--
                 <div  on:click={likeBtnClicked} class="like-btn-wraper">
@@ -758,7 +763,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
       }*/
       
       .like-btn {
-        
+        margin: auto;
         background-color: var(--buy-btn-color);
         border: 1px solid var(--buy-btn-color);
         &:hover, &:focus {
@@ -1021,6 +1026,13 @@ import SingleAmountModal from './singleAmountModal.svelte';
   height: 90vh;
   height: calc(90vh - calc(90vh - 90%));
   overflow: hidden;
+
+  background: url('https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634461664/msAssets/wall_bg_az5xzl');
+    background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url('https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634461664/msAssets/wall_bg_az5xzl');
+    background-position: center;
+    //background: linear-gradient( rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) ),url('../imgs/catalogBg1.jpeg');
+    overflow: hidden;
+    text-align: right;
   @media screen and (max-width: 768px) {
     width: 94%;
     //height: 85%;
@@ -1090,6 +1102,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
 
         .product-detail {
+          
           .product-title {
             display: flex;
             flex-direction: row;
@@ -1108,7 +1121,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
             }
             overflow-y: auto;
             //padding-right: 5px;
-            flex: 1;
+            flex: 2;
             min-width: 35%;
             padding-left: 10px;
             
@@ -1355,6 +1368,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
       overflow: hidden;
       align-items: center;
       position: relative;
+      background: none;
       .btn {
         padding: 0px;
         //outline: none;

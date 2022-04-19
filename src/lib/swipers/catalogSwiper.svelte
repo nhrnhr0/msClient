@@ -527,6 +527,10 @@ on:change={(event) => {
                                         </div>
                                         {#if image.out_of_stock}
                                             <img src="https://res.cloudinary.com/ms-global/image/upload/v1648713887/msAssets/pngfind.com-pubg-player-png-5352359_1_bepovk.png" class="sold-out-icon" alt="מלאי לא זמין"/>
+
+                                            <div class="out-of-stock-can-order-label">
+                                                אין במלאי אך ניתן להזמין
+                                            </div>
                                         {/if}
                                         <!--
                                         <button class="swiper-star-btn" on:click={(e)=>{fave_list.addToFaveList(image.id)}}>
@@ -585,6 +589,14 @@ on:change={(event) => {
 <!--</Lazy>-->
 </div>
 <style lang="scss">
+    .out-of-stock-can-order-label {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        color: red;
+        font-weight: bold;
+    }
+
     .sold-out-icon {
         position: absolute;
         z-index: 1;

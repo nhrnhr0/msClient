@@ -743,24 +743,7 @@ $gray-1200: #131314;
 						font-size: 1rem;
 					}
 				}
-			.submit-btn {
-				margin-top: 1em;
-				margin-bottom: 1em;
-				width:100%;
-				@include bg-gradient();
-				box-shadow: 0 0 10px rgba(0,0,0,0.3);
-				font-size: 2.5em;
-				font-weight: bold;
-				transition: all 0.3s ease 0s;
-				&:hover, &:focus {
-					box-shadow: 0px 15px 10px rgba(0,0,0,0.7);
-					transform: translateY(-7px);
-					
-				}
-				img.arrow-left {
-					transform: rotate3d(0,0,1,180deg);
-				}
-			}
+			
 
 			.float-actions {
 				position: fixed;
@@ -780,7 +763,6 @@ $gray-1200: #131314;
 					//@include bg-gradient();
 					background-color: var(--details-btn-color);
 					box-shadow: 0 0 10px rgba(0,0,0,0.3);
-					font-size: 2.5em;
 					font-weight: bold;
 					transition: all 0.3s ease 0s;
 					&:hover, &:focus {
@@ -789,6 +771,25 @@ $gray-1200: #131314;
 						
 					}
 					
+				}
+
+				.submit-btn {
+					margin-top: 1em;
+					margin-bottom: 1em;
+					width:100%;
+					@include bg-gradient();
+					box-shadow: 0 0 10px rgba(0,0,0,0.3);
+					
+					font-weight: bold;
+					transition: all 0.3s ease 0s;
+					&:hover, &:focus {
+						box-shadow: 0px 15px 10px rgba(0,0,0,0.7);
+						transform: translateY(-7px);
+						
+					}
+					img.arrow-left {
+						transform: rotate3d(0,0,1,180deg);
+					}
 				}
 			}
 		}
