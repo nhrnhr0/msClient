@@ -728,6 +728,7 @@ Button,
   
   .modal-body{
     overflow-y: scroll;
+    direction: ltr;
     @media screen and (max-width: 420px) {
       padding:0.25em;
       
@@ -746,6 +747,7 @@ Button,
       }
     }
   .category-items {
+    direction: rtl;
     display: grid;
     grid-auto-rows: 1fr;
     grid-auto-flow: row;

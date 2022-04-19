@@ -1053,6 +1053,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
   .modal-body {
       //background-color: rgba(255, 255, 255, 0.6);
       //background-blend-mode: lighten;
+        direction: ltr;
         min-height: 63vh;
         height: 63vh;
         width: 100%;
@@ -1069,9 +1070,14 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
 
         .inner-body {
+          direction: rtl;
           height: auto;
           display: flex;
           flex-direction: row;
+          @media screen and (max-width:1250px) {
+            font-size: x-small;
+            
+          }
           @media screen and (max-width: 1100px) {
             position: relative;
             overflow: unset;
@@ -1105,6 +1111,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
             flex: 1;
             min-width: 35%;
             padding-left: 10px;
+            
             @media screen and (max-width: 1100px) {
               flex:3;
               padding-left: 10px;
@@ -1279,6 +1286,9 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
         .img-wraper {
             flex: 1;
+            @media screen and (max-width: 1250px) {
+              flex: 1;
+            }
             
             @media screen and (max-width: 1100px) {
               flex:2;
@@ -1325,8 +1335,8 @@ import SingleAmountModal from './singleAmountModal.svelte';
               line-height: 30px;
               
               
-              width: auto;
-              height: 100%;
+              width: 100%;
+              height: auto;
               @media screen and (max-width: 1100px) {
                 width: 100%;
                 height: auto;
