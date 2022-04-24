@@ -42,7 +42,7 @@ const createCartStore = () => {
             if(store[product.id]) {
               exist = true;
             } else {
-              product.amount = 6;
+              product.amount = 0;
               product.print = false;
               product.embro = false;
               store[product.id] = product;

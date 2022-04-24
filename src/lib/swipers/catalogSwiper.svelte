@@ -529,7 +529,7 @@ on:change={(event) => {
                                             <img src="https://res.cloudinary.com/ms-global/image/upload/v1648713887/msAssets/pngfind.com-pubg-player-png-5352359_1_bepovk.png" class="sold-out-icon" alt="מלאי לא זמין"/>
 
                                             <div class="out-of-stock-can-order-label">
-                                                אין במלאי אך ניתן להזמין
+                                                אין במלאי, ניתן להזמין
                                             </div>
                                         {/if}
                                         <!--
