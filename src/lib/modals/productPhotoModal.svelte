@@ -59,8 +59,11 @@
         response.then(res => {
             if (res.status === 200) {
                 e.target.reset();
-                closeModal();
-                $successModalStore.toggleModal();
+                description_bind = '';
+                setTimeout(()=> {
+                    closeModal();
+                    $successModalStore.toggleModal();
+                })
             }
         }).catch(err => {
             alert(err);

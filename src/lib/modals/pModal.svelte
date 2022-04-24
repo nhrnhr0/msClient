@@ -558,9 +558,9 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
 
 
-                <div  on:click={likeBtnClicked} class="like-btn-wraper">
+                <div  class="like-btn-wraper">
                   {#if $cartStore[_productId] == undefined}
-                      <button  id="productModalLikeBtn" class="like-btn">
+                      <button  on:click={likeBtnClicked} id="productModalLikeBtn" class="like-btn">
                         <div class="text">
                           הוסף לסל
                       </div>
