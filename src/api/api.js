@@ -104,7 +104,6 @@ export function fetch_wraper_without_json(url, requestOptions,custom_fetch, isRe
       return response;
 }
 function formData_fetch_wraper(url, formData){
-    debugger;
     let headers_json = {
     }
     if (browser) {

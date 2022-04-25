@@ -100,8 +100,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
     let productsPromise = get_album_details(catalogId);
     let productFound = false;
     productsPromise.then((v) => {
-      
-      debugger;
       all_products_in_category = v;
       console.log('all_products_in_category', all_products_in_category);
       for (let i = 0; i < v.length; i++) {
@@ -225,7 +223,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
   let last_product_id = undefined;
 
   productData.subscribe((data) => {
-    debugger;
     colorMarkup = '';
     sizeMarkup = '';
     let colorMarkupLocal = '';
@@ -326,7 +323,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
 
   export function toggleModal(push_url=true) {
-    debugger;
     isModalOpen = !isModalOpen;
     activeModalsStore.modalToggle('pModal', isModalOpen);
     if (isModalOpen == false) {

@@ -72,7 +72,6 @@ import { Spinner } from "sveltestrap";
 			}else {
 				order_type = 'הזמנה';
 			}
-			debugger;
 			console.log('order_type: ', order_type);
             let data = {
                 name: form_name || '',
@@ -332,7 +331,7 @@ import { Spinner } from "sveltestrap";
 											<td>
 												<div class="product-total-price">
 													{#if item.out_of_stock == false}
-														{item.price * item.amount}₪
+														{roundHalf(item.price * item.amount)}₪
 													{/if}
 												</div>
 											</td>

@@ -28,7 +28,6 @@
         return isModalOpen;
     }
     function onFileSelected(e) {
-        debugger;
         inputfile = e.target.files[0];
         mfile = inputfile;
         let reader = new FileReader();
@@ -39,7 +38,6 @@
     }
     function form_submit(e) {
         e.preventDefault();
-        debugger;
         if (is_sending) return;
         is_sending = true;
 

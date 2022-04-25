@@ -31,7 +31,6 @@ import { apiGetAllUsers } from './../../api/api';
     }
     
     function update_admin_as_user() {
-        debugger;
         if (admin_as_user) {
             $userInfoStore.actAs = all_users.find((user)=> {return user.id == parseInt(admin_as_user)});
         }

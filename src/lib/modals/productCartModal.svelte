@@ -3,7 +3,7 @@
     colorsJsonStore,
     sizesJsonStore
   } from "./../../stores/stores";
-  import {selectTextOnFocus} from "$lib/ui/inputActions";
+  import {selectTextOnFocus,fullNumbersOnly} from "$lib/ui/inputActions";
   import {
     cartStore
   } from './../../stores/cartStore';
@@ -167,7 +167,6 @@
           $cartStore[product_id].mentries[color_key][sizeKeys[size_index]] = {quantity: undefined};
         }
       }else {
-        debugger;
         let sizeKeys = Object.keys($cartStore[product_id].mentries[color_key]);
         for(let size_index = 0; size_index < sizeKeys.length; size_index++) {
           let verientsKeys = Object.keys($cartStore[product_id].mentries[color_key][sizeKeys[size_index]]);
@@ -202,7 +201,6 @@
         }
         let val = parseInt(originalVal) + amount;
         //let obj = $cartStore[product_id].mentries;
-        debugger;
         last_active_input.value = val;
         last_active_input.dispatchEvent(new Event('input', {bubbles:true}));
         last_active_input.focus();
@@ -233,7 +231,6 @@
   }
 
   function clear_all() {
-    debugger;
     if ($cartStore[product_id].show_sizes_popup) {
       /**mentries: {77: {87: {}, 88: {}, 89: {quantity: 1}, 90: {}, 91: {}, 92: {}},…}*/
       /*{84: {98: {1: {}, 2: {}, 3: {}}, 99: {1: {quantity: 5}, 2: {quantity: 4}, 3: {}},…}}*/
@@ -469,7 +466,7 @@
             
             <div class="input-wraper" id="input-wraper">
               <label for="popup_amount_input" class="amount-input-label">כמות: </label>
-              <input id="popup_amount_input" on:keyup={(e)=> {e.key === 'Enter' && toggleModal()}} use:selectTextOnFocus bind:value={$cartStore[product_id].amount} class="amount-input" type="number" >
+              <input id="popup_amount_input" on:keyup={(e)=> {e.key === 'Enter' && toggleModal()}} use:fullNumbersOnly use:selectTextOnFocus bind:value={$cartStore[product_id].amount} class="amount-input" type="number" >
             </div>
           </div>
         {/if}
