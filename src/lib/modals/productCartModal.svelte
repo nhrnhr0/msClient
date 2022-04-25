@@ -26,8 +26,15 @@
   let is_loaded = false;
   let modal_zIndex = 0;
   export let isModalOpen = false;
-
+  let last_open_time = undefined;
   export function toggleModal(product_id_) {
+    if (last_open_time) {
+      let time_diff = Date.now() - last_open_time;
+      if (time_diff < 500) {
+        return;
+      }
+    }
+    last_open_time = Date.now();
     isModalOpen = !isModalOpen;
     activeModalsStore.modalToggle('productCart', isModalOpen);
     // modal is close
