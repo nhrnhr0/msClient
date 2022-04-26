@@ -8,6 +8,9 @@ if(browser) {
     isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     $body = document.querySelector('body');
     scrollPosition = 0;
+    $body.ontouchstart = function(e) {
+        e.preventDefault();
+    }
 }
 function getScrollbarWidth() {
 
@@ -32,12 +35,12 @@ function getScrollbarWidth() {
   
   }
 export function sl_enable() {
-    console.log('enable scroll lock',scrollPosition);
     const scrollbarWidth = getScrollbarWidth();
     scrollPosition = window.pageYOffset;
     $body.style.overflow = 'hidden';
     if(isSafari) {
         $body.style.position = 'fixed';
+        $body.style.WebkitOverflowScrolling ='touch';
         $body.style.top = `-${scrollPosition}px`;
         $body.style.width = '100%';
     }else {
@@ -45,7 +48,6 @@ export function sl_enable() {
     }
   }
   export function sl_disable() {
-    console.log('disable scroll lock',scrollPosition);
     $body.style.removeProperty('overflow');
     $body.style.removeProperty('position');
     $body.style.removeProperty('top');

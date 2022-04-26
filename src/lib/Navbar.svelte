@@ -1,6 +1,6 @@
 <script>
     import AutoComplete from "simple-svelte-autocomplete";
-    import {cartObjStore} from './../stores/cartStore';
+    import {cartDomElementStore} from './../stores/cartStore';
     import {albumsJsonStore, loginModalStore, productModalStore, userInfoStore} from './../stores/stores'
     import {CLOUDINARY_URL, SEARCH_API_URL} from './../api/consts';
 
@@ -24,6 +24,47 @@ Spinner
 import NavLoginManager from "./components/navLoginManager.svelte";
 import { apiSearchProducts } from "./../api/api";
 import { logStore } from "./../stores/logStore";
+        let groupedAlbums; // group groupedAlbums albumsJsonStore by topLevelCategory, if topLevelCategory is not found, create others
+        albumsJsonStore.subscribe((albums) => {
+            if (albums.length > 0) {
+            let groupedAlbumsTemp = albums.reduce((acc, album) => {
+                const topLevelCategory = album.topLevelCategory;
+                if (!acc[topLevelCategory]) {
+                    acc[topLevelCategory] = [];
+                }
+                acc[topLevelCategory].push(album);
+                return acc;
+            }, {});
+            // put undefined topLevelCategory albums at the end
+            
+            console.log('groupedAlbums', groupedAlbums);
+
+
+            let groupedAlbumsTempArr = [];
+            let entries = Object.entries(groupedAlbumsTemp);
+            
+            let lastVal = undefined;
+            for(let i = 0; i < entries.length; i++) {
+                let key = entries[i][0];
+                let value = entries[i][1];
+                if (key == 'undefined') {
+                    lastVal = value;
+                }else {
+                    groupedAlbumsTempArr.push({
+                        key: key,
+                        value: value
+                    });
+                }
+            }
+            groupedAlbumsTempArr.push({
+                key: 'undefined',
+                value: lastVal
+            });
+
+            groupedAlbums = groupedAlbumsTempArr;
+            }
+        });
+
         function menuItemClicked(album) {
             $categoryModalStore.setAlbum(album);
             $categoryModalStore.toggleModal();
@@ -91,6 +132,8 @@ import { logStore } from "./../stores/logStore";
                 }
                 return 0;
             });
+            // keep only the first 5 albums:
+            albums = albums.slice(0, 5);
 
             // add the albums in the start and after the products
             let items = albums.concat(data.all);
@@ -99,7 +142,6 @@ import { logStore } from "./../stores/logStore";
         }
 
         function autocompleteItemSelected(item) {
-            debugger;
 
             if(item == undefined) {
                 return;
@@ -153,17 +195,58 @@ import { logStore } from "./../stores/logStore";
 
         
 </script>
-<nav class="navbar navbar-expand-* navbar-light">
+<nav id="main-navbar-wraper" class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
         <!-- svelte-ignore a11y-invalid-attribute -->
-        <a class="navbar-logo" href="javascript:window.location.href=window.location.href" aria-label="logo" role="button"><img class="nav-logo" width="98.7064676px" height="40px"
+        <a class="navbar-logo" href="javascript:window.location.href=window.location.href" aria-label="logo" role="button">
+            <img class="nav-logo" height="32px" width="auto"
                 src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1634457672/msAssets/favicon_rza3n9"
-                alt=""></a>
+                alt="">
+        </a>
 
-                
+        <Dropdown id="navCategoryList" class="main-category-menu">
+            <DropdownToggle color="none" caret aria-label="menu">  
+                <svg viewBox="0 0 100 80" width="40" height="40">
+                    <rect width="100" height="20"></rect>
+                    <rect y="30" width="100" height="20"></rect>
+                    <rect y="60" width="100" height="20"></rect>
+                </svg>
+            </DropdownToggle>
+            
+            <DropdownMenu >                    
+                <h1 class="drop-title"> מחלקות מוצרים</h1>
+                {#if groupedAlbums }
+                    {#each groupedAlbums as key_val_album }
+                        <DropdownItem header>
+                            
+                            <Dropdown class="category-menu-2">
+                                {#if key_val_album['value']}
+                                <DropdownToggle color="none" caret aria-label="submenu">
+                                        {#if key_val_album['key'] == 'undefined'}
+                                            אחר
+                                        {:else}
+                                            {key_val_album['key']}
+                                        {/if}
+                                        
+                                </DropdownToggle >
+                                {/if}
+                                <DropdownMenu end class="category-menu-2-menu" style="transform: translate3d(0px, 44px, 0px);">
+                                    {#if key_val_album['value']}
+                                        {#each key_val_album['value'] as  album}
+                                        <DropdownItem on:click={menuItemClicked(album)}>
+                                                {album.title}
+                                        </DropdownItem>
+                                        {/each}
+                                    {/if}
+                                </DropdownMenu>
+                            </Dropdown>
+                        </DropdownItem>
+                    {/each}
+                {/if}
+            </DropdownMenu>
+        </Dropdown>
 
-                <NavLoginManager></NavLoginManager>
-
+        <Cart bind:this={$cartDomElementStore}></Cart>
 
         <form class="d-flex" id="search_form">
             <AutoComplete id="search_input" on:focus loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש מוצרים..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:value={searchValue}  >
@@ -205,35 +288,12 @@ import { logStore } from "./../stores/logStore";
 
         </form>
 
-
-
-            <Dropdown id="navCategoryList" class="category-menu">
-                <DropdownToggle color="none" caret aria-label="menu">  
-                    <svg viewBox="0 0 100 80" width="40" height="40">
-                        <rect width="100" height="20"></rect>
-                        <rect y="30" width="100" height="20"></rect>
-                        <rect y="60" width="100" height="20"></rect>
-                    </svg>
-                </DropdownToggle>
-                
-                <DropdownMenu>                    
-                    <h1 class="drop-title"> מחלקות מוצרים</h1>
-                    {#if $albumsJsonStore }
-                        {#each $albumsJsonStore as  album}
-                            <DropdownItem>
-                                <button class="btn btn-dark" on:click={menuItemClicked(album)}>
-                                    {album.title}
-                                </button>
-                            </DropdownItem>
-                        {/each}
-                    {/if}
-                </DropdownMenu>
-            </Dropdown>
+        <NavLoginManager></NavLoginManager>
             
                 
-            <Cart bind:this={$cartObjStore}></Cart>
+            
             <div>
-            <a rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
+            <a class="same-size-icon" rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
                 <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
             </a>
         </div>
@@ -254,24 +314,38 @@ import { logStore } from "./../stores/logStore";
 
 
 <style lang="scss">
-
+        :root {
+            --autocomplete-bg-hover-clr: rgb(136, 135, 135);
+            --autocomplete-txt-hover-clr: rgb(255, 255, 255);
+        }
 :global(#navCategoryList) {
+        :global(.dropdown-toggle) {
+            :global(svg) {
+                width: 32px;
+                height: 32px;;
+            }
+        }
         :global(.dropdown-menu.show) {
-          max-height: 80vh;
-          overflow-y: auto;
-          left: 0%!important;
-          padding-top: 50px;
+          grid-template-columns: repeat(1, 1fr);
+          //left: 0%!important;
+          padding-top: 55px;
+            overflow-y: visible;
           .drop-title {
+            font-size: 1.56rem;
+            top: 0px;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
+            width: 100%;
+            text-align: center;
+            min-width: fit-content; 
             
           }
           @media screen and (max-width: 900px) {
-            grid-template-columns: repeat(3, auto);
+            grid-template-columns: repeat(1, 1fr);
           }
           @media screen and (max-width: 600px) {
-            grid-template-columns: repeat(2, auto);
+            grid-template-columns: repeat(1, 1fr);
             
           }
           @media screen and (max-width: 400px) {
@@ -283,7 +357,9 @@ import { logStore } from "./../stores/logStore";
             }
           }
         }
-      }
+
+
+    }
 :global(#navLoginManager) {
     :global(.dropdown-toggle) {
         padding: 0px;
@@ -292,6 +368,79 @@ import { logStore } from "./../stores/logStore";
         }
     }
 }
+
+:global(.main-category-menu) {
+        :global(.dropdown-menu) {
+            grid-template-columns: repeat(1, 1fr);
+            :global(.dropdown-toggle) {
+                        display: inline-block;
+                        width: 100%;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    margin-bottom: 10px;
+    padding: .5rem 1rem;
+
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    
+    color: #fff;
+    background-color: #212529;
+    border-color: #212529;
+
+                    }
+            :global(.dropdown-header) {
+            :global(.category-menu-2){
+                :global(.category-menu-2-menu.show) {
+                    display: grid;
+                    transform: translate3d(-100%, 44px, 0px);
+                    left:-100%;
+                    width: 290px;
+                }
+                :global(.dropdown-menu.show) {
+                    max-height: 45vh;
+                    overflow-y: scroll!important;;
+                    padding-top: 15px!important;
+                    :global(.dropdown-item) {
+                        display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    margin-bottom: 10px;
+    padding: .5rem 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    
+    color: #fff;
+    background-color: #212529;
+    border-color: #212529;
+
+                    }
+                }
+            }
+        }
+        }
+        
+        }
 
 /*
 :global(.autocomplete-cls)  {
@@ -327,7 +476,8 @@ import { logStore } from "./../stores/logStore";
     &:hover {
       .search-item {
         //background-color: #40508d;
-        background-color: #3969B1;
+        background-color: var(--autocomplete-bg-hover-clr);
+        color: var(--autocomplete-txt-hover-clr);
       }
     }
   }
@@ -363,14 +513,16 @@ import { logStore } from "./../stores/logStore";
     }
 }*/
     .navbar {
+        position: fixed;
+        width:100%;
         .container-fluid {
             flex-wrap: nowrap;
         }
         
         @include bg-gradient();
-        position: sticky;
+        //position: sticky;
         top: 0;
-        z-index: 1000;
+        z-index: 10;
 
         .nav-logo {
             //width: auto;
@@ -393,6 +545,11 @@ import { logStore } from "./../stores/logStore";
                                 display: none;
                             }
                         }
+                        
+                    }
+                    :global(.autocomplete-list-item.selected) {
+                        background-color: var(--autocomplete-bg-hover-clr);
+                            color: vart(--autocomplete-txt-hover-clr);  
                     }
 
                     @media screen and (max-width: 550px) {
@@ -402,6 +559,10 @@ import { logStore } from "./../stores/logStore";
                         position: absolute;
                     }
                     
+                }
+                :global(.autocomplete-input) {
+                    border-radius: 25px;
+                    border: 1px solid #ccc;
                 }
                 /*:global(.autocomplete-input) {
                     border: none;

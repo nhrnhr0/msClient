@@ -4,7 +4,7 @@
     import Fa from 'svelte-fa/src/fa.svelte'
     import { onDestroy } from 'svelte';
     //import CartModal from '$lib/modals/cartModal.svelte';
-    import {cartModalStore} from "./../../../stores/stores"
+    import {cartModalStore} from "./../../../stores/stores";
 	let isBooped = false;
     export function setIsBooped(val) {
 		isBooped = val;
@@ -44,10 +44,10 @@
             .items-counter {
                 //border:1px solid red;
                 position: absolute;
-            top:0px;
-            right:0px;
-            transform: translate(50%,-50%);
-                background-color: rgb(48, 48, 219);
+                top:0px;
+                right:0px;
+                transform: translate(50%,-50%);
+                background-color: #FF0000;//rgb(48, 48, 219);
                 border-radius: 50%;
                 display: inline-block;
                 height: 25px;
@@ -60,6 +60,10 @@
                 }
             }
         //}
+        :global(svg) {
+            width: 32px;
+            height: 32px;
+        }
     }
 
 </style>

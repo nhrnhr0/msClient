@@ -22,7 +22,7 @@
         overflow: hidden;
 
         .container {
-            background: #2f2f2f;
+            //background: #2f2f2f;
             font-size: 2rem;
 
             margin: 10px auto;
@@ -31,17 +31,18 @@
 
             -webkit-box-shadow: 0px 19px 28px 10px rgba(0, 0, 0, 0.89);
             box-shadow: 0px 19px 28px 10px rgba(0, 0, 0, 0.89);
-            background: #454545;
+            background: #454545e5;
             border-radius: 35px;
             margin-top: 75px;
             margin-bottom: 75px;
             .hero-description {
+                font-size: 1.8rem;
                 // reduce the font size as the screen size decreases
                 @media screen and (max-width: 600px) {
-                    font-size: 1.5rem;
+                    font-size: 1.4rem;
                 }
                 @media screen and (max-width: 400px) {
-                    font-size: 1.2rem;
+                    font-size: 1.1rem;
                 }
             }
         }

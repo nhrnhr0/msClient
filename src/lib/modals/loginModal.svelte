@@ -33,6 +33,8 @@ import {activeModalsStore } from '$lib/modals/modalManager';
                 update_campains_with_local_data(me.campains)
                 setTimeout(()=> {
                         toggleModal();
+                        location.reload();
+
                     },1);
                 /*
                 let whoAmI = request_whoAmI();

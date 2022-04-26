@@ -3,7 +3,8 @@ import static_adapter from '@sveltejs/adapter-static';
 import node_adapter from '@sveltejs/adapter-node';
 import { terser } from 'rollup-plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
-import { babel } from '@rollup/plugin-babel';
+import babelimp from '@rollup/plugin-babel';
+const {babel} = babelimp; 
 //import commonjs from '@rollup/plugin-commonjs';
 const production = process.env['NODE_ENV'] == 'production';
 console.log('======================================================================================');
@@ -22,7 +23,7 @@ const config = {
       base: process.env['GITHUB_REPO'],//process.env.NODE_ENV === "production" ? "/msClientBuild" : "",
       assets: '', //process.env['GITHUB_REPO_ABS']
     }, 
-    target: "#svelte",
+    //target: "#svelte",
     /*adapter: static_adapter({}),*/
 
     adapter: node_adapter({ out: 'build' }),
@@ -45,6 +46,14 @@ const config = {
           },
         },
       },
+
+      /**
+       * SvelteKit v1.0.0-next.146 SyntaxError: Cannot use import statement outside a module #2161
+       * https://github.com/sveltejs/kit/issues/2161
+       */
+      /*optimizeDeps: {
+        entries: []
+      },*/
     },
   },
 

@@ -16,9 +16,28 @@
   import {activeModalsStore } from '$lib/modals/modalManager';
 import { request_logout, request_update_user_detail } from './../../api/auth'
 import { onDestroy } from 'svelte';
+import { apiGetAllUsers } from './../../api/api';
     let modal_zIndex = 0;
     let isModalOpen;
     let error_detail = '';
+    function refresh_all_users() {
+        if ($userInfoStore.isLogin && $userInfoStore.me && $userInfoStore.me.is_superuser) {
+                console.log('asking for apiGetAllUsers');
+                apiGetAllUsers().then((response) => {
+                    console.log(response);
+                    all_users = response;
+                });
+            }
+    }
+    
+    function update_admin_as_user() {
+        if (admin_as_user) {
+            $userInfoStore.actAs = all_users.find((user)=> {return user.id == parseInt(admin_as_user)});
+        }
+    }
+    function remove_admin_as_user() {
+        $userInfoStore.actAs = undefined;
+    }
 
     function update_user_detail() {
         request_update_user_detail(username,old_password,new_password).then((response) => {
@@ -41,10 +60,17 @@ import { onDestroy } from 'svelte';
 
     let unsub = userInfoStore.subscribe((newValue)=>{
         if(newValue) {
-            username = newValue['username'];
-            email = newValue['email'];
-            privateCompany = newValue['privateCompany'];
-            businessName = newValue['businessName'];
+            if(newValue['me']) {
+                username = newValue['me'].username;
+                email = newValue['me'].email;
+                privateCompany = newValue['me'].privateCompany;
+                businessName = newValue['me'].businessName;
+            }else{
+                username = newValue['username'];
+                email = newValue['email'];
+                privateCompany = newValue['privateCompany'];
+                businessName = newValue['businessName'];
+            }
             old_password = '';
             new_password = '';
         }
@@ -53,7 +79,7 @@ import { onDestroy } from 'svelte';
     onDestroy(()=> {
         unsub();
     })
-
+    let all_users = undefined;
     export function toggleModal() {
         isModalOpen = !isModalOpen;
         activeModalsStore.modalToggle('userDetailsModal', isModalOpen);
@@ -66,6 +92,7 @@ import { onDestroy } from 'svelte';
             old_password = '';
             new_password = '';
             error_detail = '';
+            refresh_all_users()
         }
     }
 
@@ -86,7 +113,7 @@ import { onDestroy } from 'svelte';
     export function isOpen() {
         return isModalOpen;
     }
-
+    let admin_as_user;
 </script>
 
 
@@ -146,14 +173,14 @@ import { onDestroy } from 'svelte';
                                 <div class="card-wraper">
                                     <Card class="">
                                         <CardHeader>
-                                        <CardTitle>פרטי משתמש</CardTitle>
+                                        <CardTitle>שינוי סיסמא</CardTitle>
                                         </CardHeader>
                                         <CardBody>
                                         <CardText>
                                             <div class="info">
                                                 <div class="info-title">שם משתמש</div>
                                                 <div class="info-res">
-                                                    <input type="text" class="form-control" id="username" placeholder="שם משתמש" bind:value={username}>
+                                                    <input type="text" disabled={true} class="form-control" id="username" placeholder="שם משתמש" bind:value={username}>
                                                     </div>
                                             </div>
                                             <div class="info">
@@ -185,6 +212,58 @@ import { onDestroy } from 'svelte';
                                         </CardBody>
                                     </Card>
                                 </div>
+                                {#if $userInfoStore && $userInfoStore.isLogin && $userInfoStore.me.is_superuser }
+                                <div class="card-wraper">
+                                    <Card class="">
+                                        <CardHeader>
+                                        <CardTitle>פרטי אדמין</CardTitle>
+                                        </CardHeader>
+                                        <CardBody>
+                                        <CardText>
+                                            <div class="info">
+                                                <div class="info-title">בתור משתמש</div>
+                                                <div class="info-res">
+                                                    <input list="all_users" bind:value={admin_as_user}/>
+                                                    <datalist id="all_users">
+                                                        {#if all_users != undefined }
+                                                            {#each all_users as user}
+                                                                <option data-user="{JSON.stringify(user)}" value="{user.id}">{user.username} - {user.businessName}</option>
+                                                            {/each}
+                                                        {/if}
+                                                    </datalist>
+                                                    
+                                                </div>
+                                            </div>
+                                                {#if userInfoStore && $userInfoStore.me && $userInfoStore.actAs }
+                                                {#if all_users}
+                                                    {#each Object.entries($userInfoStore.actAs) as [key, value]}
+                                                    <div class="info">
+
+                                                        <div class="info-title">
+                                                            <div class="info-title">
+                                                                <label for="{key}-field">{key}</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="info-res">
+                                                            <input disabled id="{key}-field" value={value}/>
+                                                        </div>
+                                                    </div>
+
+                                                    {/each}
+                                                {/if}
+                                                {/if}
+                                            <div class="info">
+                                                <div class="info-res">
+                                                    <button on:click|preventDefault|stopPropagation={refresh_all_users}>רענן משתמשים</button>
+                                                    <button on:click|preventDefault|stopPropagation={update_admin_as_user}>פעל בתור מתשמש</button>
+                                                    <button on:click|preventDefault|stopPropagation={remove_admin_as_user}>חזור לאדמין</button>
+                                                </div>
+                                            </div>
+                                        </CardText>
+                                        </CardBody>
+                                    </Card>
+                                </div>
+                                {/if}
                             </div>  <!-- row -->
                         </form>
             </div>

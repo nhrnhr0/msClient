@@ -1,9 +1,11 @@
 <script context="module">
+  import { writable } from "svelte/store";
+
   import "../app.scss";
   import Navbar from "$lib/Navbar.svelte";
   //import { stateQuery} from './../stores/stores'
 import { onMount } from "svelte";
-  import {all_swipers,userDetailModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore} from './../stores/stores'
+  import {all_swipers,userDetailModalStore,productPhotoModalStore, productCartModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore, productQuestionModalStore} from './../stores/stores'
   
 </script>
 
@@ -19,10 +21,17 @@ import { onMount } from "svelte";
 <ProductModal bind:this={$productModalStore}></ProductModal>
 <ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
 <CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
-<CartModal2 bind:this={$cartModalStore}></CartModal2>
+
 <SuccessModal bind:this={$successModalStore}></SuccessModal>
 <UserDetailsModal bind:this={$userDetailModalStore}></UserDetailsModal>
+<ProductCartModal bind:this={$productCartModalStore}></ProductCartModal>
+<ProductPhotoModal bind:this={$productPhotoModalStore}></ProductPhotoModal>
+<!--
+<SingleAmountModal bind:this={$singleAmountPopupStore}></SingleAmountModal>
+-->
+<ProductQuestionModal bind:this={$productQuestionModalStore}></ProductQuestionModal>
 <Navbar></Navbar>
+
 <!--<div class="hidden">
 <input type="text" bind:value={$stateQuery['product']}> 
 <input type="text" bind:value={$stateQuery['category']}> 
@@ -35,6 +44,11 @@ import { onMount } from "svelte";
   import SuccessModal from '$lib/modals/successModal.svelte';
   import LoginModal from '$lib/modals/loginModal.svelte';
   import UserDetailsModal from '$lib/modals/userDetailsModal.svelte';
+  import ProductCart from '$lib/modals/productCartModal.svelte';
+  import ProductCartModal from '$lib/modals/productCartModal.svelte';
+  import SingleAmountModal from '$lib/modals/singleAmountModal.svelte';
+import ProductQuestionModal from "$lib/modals/productQuestionModal.svelte";
+import ProductPhotoModal from "$lib/modals/productPhotoModal.svelte";
   export const prerender = false;
 </script>
 
@@ -98,6 +112,7 @@ import { onMount } from "svelte";
         </div>
     </footer>
 </div>
+<CartModal2 bind:this={$cartModalStore}></CartModal2>
 
 <style lang="scss">
   .bg-wraper  {
@@ -105,6 +120,7 @@ import { onMount } from "svelte";
     background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url('https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl')!important;
     background-position: center;
     overflow:hidden;
+    padding-top: 78px;
   }
 
   #footer {

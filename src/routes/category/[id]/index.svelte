@@ -6,24 +6,40 @@ import { isNumeric } from "$lib/utils/utils";
     import { ALBUMS_API_URL, CLOUDINARY_URL } from "./../../../api/consts";
     
     
-        export async function load({ params, fetch, session, contex}) {
+        export async function load({ fetch, page, session, contex}) {
             //console.log(page);
             //console.log("load", page.params);
             //let url = ALBUMS_API_URL + page.params.id + "/";
+            let params = page.params;
             let server_url = ALBUMS_API_URL + params.id + '/';
             //console.log(url);
             if(isNumeric(params.id)) {
-                let response = await fetch_wraper(server_url , {"method":"GET"}, fetch);
-                //console.log(response);
-                response.fotter = response.fotter.replace(/(\r\n|\n|\r)/gm, "");
-                return {
-                    props: {
-                        data: response,
+                try {
+                    let response = await fetch_wraper(server_url , {"method":"GET"}, fetch);
+                    //console.log(response);
+                    response.fotter = response.fotter.replace(/(\r\n|\n|\r)/gm, "");
+                    let favicon = `${CLOUDINARY_URL}/c_scale,w_365/c_scale,u_v1649744644:msAssets:image_5_qo7yhx.jpg,w_500/${response?.cimage}`;
+                    response.favicon = favicon;
+                    return {
+                        props: {
+                            data: response,
+                        }
                     }
+                } catch (error) {
+                    console.log(error);
+                    return {
+                        props: {
+
+                        }
+                    };
                 }
             }
             else {
-                
+                return {
+                        props: {
+
+                        }
+                    };
             }
             
             
@@ -45,6 +61,7 @@ import { flashy_page_view } from "$lib/flashy";
     </script>
     <svelte:head>
         <title>{data?.title}</title>
+        <link sizes="60x60" rel="icon" href="{data.favicon}">
         <meta name="description" content={data?.fotter} />
         <meta name="keywords" content={data?.keywords} />
         <meta name="title" content="{data?.title}">
@@ -52,7 +69,7 @@ import { flashy_page_view } from "$lib/flashy";
 
         <meta property="og:title" content={data?.title} />
         <meta property="og:description" content={data?.fotter} />
-        <meta property="og:image" content={CLOUDINARY_URL + 'f_auto,w_auto/' + data?.cimage} />
+        <meta property="og:image" content={data.favicon} />
         <meta property="og:type" content="category" />
         <meta property="og:site_name" content="M.S. Global" />
         <meta property="og:locale" content="IL" />
@@ -61,8 +78,8 @@ import { flashy_page_view } from "$lib/flashy";
         <meta property="twitter:card" content="summary_large_image">
         <meta property="twitter:title" content="{data?.title}">
         <meta property="twitter:description" content="{data?.description}">
-        <meta property="twitter:image" content="{CLOUDINARY_URL + 'f_auto,w_auto/' + data?.cimage}">
+        <meta property="twitter:image" content="{data.favicon}">
         
     </svelte:head>
-
+{@debug}
 <a href="./{data.id}/products/">products</a>

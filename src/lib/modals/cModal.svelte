@@ -20,9 +20,11 @@
     albumsJsonStore,
     campainsStore,
     productModalStore,
+    userInfoStore,
     _modal_z_index_incrementor
   } from './../../stores/stores';
   import {
+Button,
     Dropdown,
     DropdownItem,
     DropdownMenu,
@@ -54,7 +56,10 @@
       }
     });
   }
-
+  let show_prices;
+  $: {
+    show_prices =  ($userInfoStore['me'] && Object.keys($userInfoStore['me']) != 0 && $userInfoStore['me'].show_prices == true)? true : false;
+  }
   export let isModalOpen = false;
   export function toggleModal(push_url = true) {
     isModalOpen = !isModalOpen;
@@ -85,6 +90,8 @@
   import {
     logStore
   } from './../../stores/logStore';
+  import {productCartModalStore} from './../../stores/stores';
+
   import MyCountdown from '$lib/components/MyCountdown.svelte';
   let products = [];
   let current_album = new writable({});
@@ -145,12 +152,13 @@
     });
   }
 
-  function likeBtnClicked(e) {
-    let img = e.currentTarget.parentElement.querySelector('.product-image');
-    let imgData = JSON.parse(e.currentTarget.dataset["img"]);
+  function likeBtnClicked(img) {
+    //console.log('likeBtnClicked', e);
+    //let img = e.currentTarget.parentElement.querySelector('.product-image');
+    let imgData = img;// JSON.parse(e.currentTarget.dataset["img"]);
     if (cartStore.isInCart(imgData) == false) {
       cartStore.addToCart(imgData);
-      flyToCart(img);
+      //flyToCart(img);
       logStore.addLog({
         'a': 'הוסף לעגלה ממודל קטגוריה',
         't': 'add to cart',
@@ -166,34 +174,20 @@
         }
       });
     } else {
-      document.querySelector(`#amount_${imgData.id}`).focus();
-      /*
-      cartStore.removeFromCart(imgData);
-      logStore.addLog(
-                            {
-                                'a': 'הסר מהעגלה ממודל קטגוריה',
-                                't': 'remove from cart',
-                                'f': {
-                                    'type':'category',
-                                    'id':$current_album.id,
-                                    'ti':$current_album.title
-                                },
-                                'w':{
-                                    'type':'product',
-                                    'id':imgData.id,
-                                    'ti':imgData.title, 
-                                }
-                            }
-                            );*/
     }
+    open_edit_amount_dialog(imgData);
+    
+    //open_edit_amount_dialog(imgData.id);
 
     //flyToCart(img);
     //$cartStore[imgData.id] = imgData;
 
 
   }
-
-
+  function open_edit_amount_dialog(product) {
+    console.log('open_edit_amount_dialog', product);
+    $productCartModalStore.toggleModal(product.id);
+  }
   let modal_body;
 
   function changeCategory(alb) {
@@ -305,121 +299,46 @@
   {:then prods} 
     <div class="category-items">
       {#each prods as img}
-        
-  
-  
-  
-  
-      <div class="category-item" data-category-prod-id="{img.id}">
-        <div class="category-item-img-wraper" on:click="{open_product(img)}" >
-          <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
-          <div class="img-title">{img.title}</div>
-        </div>
-        <div  on:click={likeBtnClicked} data-img={JSON.stringify(img)} class="like-btn-wraper">
-          {#if $cartStore[img.id] == undefined}
-          <button  id="categoryModalLikeBtn" class="like-btn">
-            <div class="img-wraper">
-              <div class="btn-product-title">
-                          {img.title}
-              </div>
-              <div class="action">
-                  <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
-                  <div class="text">
-                    הוסף
-                  </div>
-              </div>
-            </div>
+        <div class="category-item" data-category-prod-id="{img.id}">
+          <div class="image-and-title-wraper">
             
-          </button>
-          {:else}
-
-          <button  id="categoryModalLikeBtn" class="like-btn active">
-            <div class="img-wraper">
-              <div class="btn-product-title">
-                          {img.title}
-              </div>
-              <div class="action">
-                  
-
-
-
-                <div class="amount-before">
-                  <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" data-product-id="{img.id}">
-                    <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="24px" height="24px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
-                  </button>
-                    <div class="amount-text">
-                      כמות:
-                    </div>
-                  </div>
-                  <div class="text">
-                      <input id="amount_{img.id}" class="item-amount" pattern="[0-9]*" name="item_amount" min="1" max="9999" type="number" bind:value={$cartStore[img.id].amount} />
-                  </div>
-                  
-
-
-
-
-                
-            </div>
-            </div>
-            
-          </button>
-
-          {/if}
-          <!--
-          <button  id="categoryModalLikeBtn" class:active={$cartStore[img.id] != undefined} class="like-btn">
-            <div class="img-wraper">
-              <div class="btn-product-title">
-                          {img.title}
-              </div>
-              <div class="action">
-              {#if $cartStore[img.id] != undefined}
-                  <img alt="V" src="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png"/>
-                  <div class="text">
-                    נוסף
-                  </div>
-                {:else}
-                  <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
-                  <div class="text">
-                    הוסף
-                  </div>
+            <div class="category-item-img-wraper" on:click="{open_product(img)}" >
+              
+              <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
+              {#if img.out_of_stock}
+                <img src="https://res.cloudinary.com/ms-global/image/upload/v1648713887/msAssets/pngfind.com-pubg-player-png-5352359_1_bepovk.png" class="sold-out-icon" alt="מלאי לא זמין"/>
               {/if}
+              <div class="price-tag" class:active={show_prices && img.out_of_stock == false} >{img.price + '₪'}</div>
             </div>
-            </div>
-            
-          </button>
-          -->
-        </div>
-        <!--
-        <div>
-          <div class="like-btn" name="like-btn">
-            <div class="like-wrapper">
-              <a name="like-btn">
-              <span name="like-btn">
-                TODO:
-              </span></a>
+            <div class="img-title">{img.title}</div>
+          </div>
+          <div data-img={JSON.stringify(img)} class="like-btn-wraper"> <!--    -->
+            <div class="like-btn like-btn-small">
+              <button class:gold={$cartStore[img.id] != undefined} class="action-btn add-to-cart-btn" on:click="{likeBtnClicked(img)}">
+                  {#if $cartStore[img.id] == undefined}
+                    הוסף
+                  {:else}
+                    ✔️ נוסף({$cartStore[img.id].amount})
+                  {/if}
+              </button>
+              <button class="action-btn read-more-btn" on:click={open_product(img)}>
+                  פרטים
+              </button>
             </div>
           </div>
         </div>
-        -->
-      </div>
-  
-  
-  
-  
-  
-  
-  
       {/each}
     </div>
   {/await}
   
   {#if $current_album}
-  <h4 class="category-fotter">
-    {#key $current_album.description}
-      <SvelteMarkdown source={fotter} />
-    {/key}
-    </h4>
+    {#if $userInfoStore.isLogin == false}
+      <h4 class="category-fotter">
+        {#key $current_album.description}
+          <SvelteMarkdown source={fotter} />
+        {/key}
+        </h4>
+    {/if}
   {/if}
   
   
@@ -450,6 +369,18 @@
 
 
 <style lang="scss">
+  .sold-out-icon {
+        position: absolute;
+        z-index: 1;
+        border: none;
+        background: none;
+        //transform: translate(-50%, 0);
+
+        width: 140px;
+        height: auto;
+        top: 30px;
+        right: 0px;
+    }
 
       .like-btn-wraper{
         display: flex;
@@ -468,7 +399,7 @@
         color: white;
         text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
         z-index: 1;
-        height: 75px;
+        //height: 75px;
         font-weight: bold;
         //pointer-events: none;
         text-align: center;
@@ -476,17 +407,12 @@
         //word-break: break-all;
 
 
-        background: #0000007a;
+        //background: #0000007a;
         border-radius: 25px;
         border-top-right-radius: 0px;
         border-top-left-radius: 0;
         border: var(--swiper-slide-border) solid black;
         border-bottom-width: 0px;
-        .text {
-          display:inline-block;
-          font-size: 1.5em;
-          
-        }
         
         &.active {
           @include bg-gradient();
@@ -502,16 +428,27 @@
           justify-content: center;
           align-items: center;
           flex-direction: column;
+          width: 100%;
+          hr {
+            height: 0px;
+            border: 1px solid black;
+            width: 100%;
+            margin: 0px;
+          }
           @media (hover: hover) {
+            /*
             .btn-product-title {
               display:none;
             }
+            hr {
+              display:none;
+            }*/
           }
           img {
             width:40px;
             height: 40px;
           }
-          .btn-product-title {
+          /*.btn-product-title {
             font-size: 1.2em;
             //text-overflow: ellipsis;
             overflow: hidden;
@@ -523,54 +460,173 @@
             
             
             
-          }
+          }*/
           .action {
+            width: 100%;
             display: flex;
-            flex-direction: row;
             justify-content: center;
             align-items: center;
-            .text {
-              display: inline-block;
-              font-size: 1em;
-              input.item-amount {
-                text-align: center;
+            .amount-before {
+              width: 100%;
+              display: flex;
+              justify-content: space-around;
+              align-items: center;
+              flex: 1;
+              .delete-btn {
                 border: none;
-                background: transparent;
-                border-radius: 999999px;
-                border-bottom-left-radius: 0px;
-                border-top-left-radius: 0px;
-                padding: 0;
-                margin: 0;
-                margin-left: 5px;
-                font-weight: bold;
-                direction: rtl;
-                &:focus {
-                  outline: none;
+                background: none;
+                @media screen and (max-width: 357px) and (min-width: 330px){
+                  padding: 0px;
+                }
+                &:hover {
+                  svg {
+                    fill: red;
+                  
+                  }
                 }
               }
-            }
-
-            .amount-before {
-              font-size: 1.2em;
-              display:flex;
-              flex-direction: row;
-              justify-content: center;
-              align-items: center;
-              .delete-btn {
-                display:flex;
+            
+              .amount-text {
+                height: 100%;
+                display: flex;
                 flex-direction: row;
                 justify-content: center;
                 align-items: center;
-                background: none;
-                border: none;
-                svg {
-                  fill: black;
+                color: white;
+                //width: 100%;
+                
+                
+                flex-direction: column;
+                .text {
+                  font-size: 1em;
+                  font-weight: bold;
+                  
+                  width: 100%;
+                  @media screen and (max-width: 1115px) {
+                    font-size: 0.9em;
+                  }
+                  @media screen and (max-width: 1040) {
+                    font-size: 1em;
+                  }
+                  
+                  @media screen and (max-width: 902px){
+                    font-size: 0.8em;
+                  
+                  }
+                  @media screen and (max-width: 840px){
+                    font-size: 1em;
+                    
+                  }
+                  @media screen and (max-width: 690px) {
+                    font-size: 0.8em;
+                  }
+                  @media screen and (max-width: 600px) {
+                    font-size: 0.75em;
+                    font-weight: normal;
+                  }
+                  @media screen and (max-width: 555px) {
+                    font-size: 1em;
+                    font-weight: bold;
+                  }
+                  @media screen and (max-width: 469px) {
+                    font-size: 0.9em;
+                  }
+                  @media screen and (max-width: 439px) {
+                    font-size: 0.75em;
+                  }
+                  @media screen and (max-width: 330px) {
+                    font-size: 1em;
+                  }
+
+                  input.amount-input {
+                    height: 1.5em;
+                    width: 1.5em;
+                    border: none;
+                    text-align: center;
+                    background: none;
+                    font-weight: bold;
+                    outline: none;
+                    width: 100%;;
+                    /** remove arrows https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp*/
+                    /* Chrome, Safari, Edge, Opera */
+                    &::-webkit-outer-spin-button,
+                    &::-webkit-inner-spin-button {
+                      -webkit-appearance: none;
+                      margin: 0;
+                    }
+                    /* Firefox */
+                      -moz-appearance: textfield;
+                  }
                 }
-                &:hover svg {
-                  fill:red;
+                .edit-amount-btn {
+                  font-size: 1.2em;
+                  padding-right: 10%;
+                  padding-left: 10%;
+                  font-weight: bold;
                 }
               }
             }
+            .like-btn-small {
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    width: 100%;
+                    * {
+                        margin: 0;
+                        width: 100%;
+                        flex:1;
+                        flex-grow: 1;
+                        flex-shrink: 0;
+                    }
+                    :global(.add-to-cart-btn){
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+                        display: inline-block;
+                        font-weight: 400;
+                        line-height: 1.5;
+                        color: #212529;
+                        text-align: center;
+                        text-decoration: none;
+                        vertical-align: middle;
+                        cursor: pointer;
+                        user-select: none;
+                        border: 1px solid transparent;
+                        padding: 0.375rem 0.75rem;
+                        font-size: 1rem;
+                        border-radius: 0.25rem;
+                        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+
+                        border-bottom-right-radius: 25px;
+                    }
+                    :global(.read-more-btn) {
+                        width: 100%;
+                        display: inline-block;
+                        font-weight: 400; 
+                        line-height: 1.5;
+                        color: #212529;
+                        text-align: center;
+                        text-decoration: none;
+                        vertical-align: middle;
+                        cursor: pointer;
+                        user-select: none;
+                        border: 1px solid transparent;
+                        padding: 0.375rem 0.75rem;
+                        font-size: 1rem;
+                        border-radius: 0.25rem;
+                        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+                        border-bottom-left-radius: 25px;
+                    }
+                }
           }
           @media (hover: hover){
             .action {
@@ -605,6 +661,9 @@
 /* Modal */
 
 .modal .modal_content {
+  @media screen and (max-width: 400px) {
+    width: 95%;
+  }
   .modal-title {
       font-size: 1.5em;
       overflow: hidden;
@@ -669,7 +728,11 @@
   
   .modal-body{
     overflow-y: scroll;
-    
+    direction: ltr;
+    @media screen and (max-width: 420px) {
+      padding:0.25em;
+      
+    }
     .timer {
       padding-top:15px;
       padding-bottom: 15px;
@@ -684,8 +747,10 @@
       }
     }
   .category-items {
-        display: grid;
-    grid-column: 1fr 1fr 1fr;
+    direction: rtl;
+    display: grid;
+    grid-auto-rows: 1fr;
+    grid-auto-flow: row;
     grid-template-columns: repeat(5, 1fr);
     @media screen and (max-width: 1040px) {
       grid-template-columns: repeat(4, 1fr);
@@ -712,18 +777,42 @@
         }
       }
     }
-    @media screen and (max-width: 490px) {
+    @media screen and (max-width: 555px) {
       grid-template-columns: repeat(2, 1fr);
       //max-width: 155px;
+    }
+    @media screen and (max-width:330px){
+      grid-template-columns: repeat(1, 1fr);
+      .category-item{
+        padding: 25px!important;
+      }
+    }
+    .image-and-title-wraper {
+      position: relative;
     }
     .category-item {
       cursor: pointer;
       padding: 5px;
       flex:1;
-      flex-grow: 0;
-      flex-shrink: 1;
+      height: 100%;
+      width: 100%;
       .category-item-img-wraper {
-        
+        position: relative;
+        .price-tag {
+                    position: absolute;
+                    bottom: 5px;
+                    left:5px;
+                    padding: 5px;
+                    font-weight: bold;
+                    border-radius: 999px;
+                    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+                    display: none;
+                    font-size: x-large;
+                    
+                    &.active {
+                        display: block;
+                    }
+                }
 
         &:hover {
           background-color: black;
@@ -748,58 +837,58 @@
       }
 
       position: relative;
+      .img-title {
+          position: absolute;
+          //display: none;
+          color: white;
+          z-index: 2000;
+          font-size: 1.2em;
+          pointer-events: none;
+          top: 0%;
+          text-align: center;
+          width: 100%;
+          z-index: 9999;
 
+
+          
+          color: white;
+          //text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
+          z-index: 1;
+          font-weight: bold;
+          background: #0000007a;
+          border-radius: 25px;
+          border-bottom-right-radius: 0px;
+          border-bottom-left-radius: 0;
+          border: var(--swiper-slide-border) solid black;
+          border-bottom-width: 0px;
+        }
       .category-item-img-wraper {
-        img {
+
+        img.product-image {
           height: auto;
           /*padding: 5px;*/
           border-radius: 0px;
-          border-top-right-radius: 15px;
-          border-top-left-radius: 15px;
+          border-top-right-radius: 25px;
+          border-top-left-radius: 25px;
 
 
           &:hover {
-            transform: scale(1.0);
+            //transform: scale(1.0);
             mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+            + .img-title {
+              display: block!important;;
+              transition: transform 0.2s;
+              //transform: translate(-50%, -80%);
+              font-weight: 700;
+            }
           }
 
-          &:hover+.img-title {
-            display: block;
-            transition: transform 0.2s;
-            //transform: translate(-50%, -80%);
-            font-weight: 700;
-          }
           
         }
+        
       }
 
-      .img-title {
-        /*position: absolute;
-        display: none;
-        color: white;
-        z-index: 2000;
-        bottom: 50%;
-        transform: translate(-50%, 0%);
-        //top: 0px;
-        font-size: 1.5em;
-
-        left: 50%;
-        pointer-events: none;
-        text-align: center;*/
-        position: absolute;
-        display: none;
-        color: white;
-        z-index: 2000;
-        /* bottom: 50%; */
-        /* transform: translate(-50%, 0%); */
-        font-size: 1.5em;
-        /* left: 50%; */
-        pointer-events: none;
-        top: 50%;
-        text-align: center;
-        width: 100%;
       
-      }
     }
   }
   }

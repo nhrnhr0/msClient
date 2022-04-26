@@ -2,11 +2,15 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL, GET_CSRF_TOKEN_URL,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL} from "./consts";
+import { BASE_URL,GET_ALL_USERS_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
 //import { request_refresh_token } from "./auth";
+
+export async function apiGetAllUsers() {
+    return fetch_wraper(GET_ALL_USERS_URL);
+}
 export function apiSendLogs(logs) {
     let body = {
         logs: logs,
@@ -17,12 +21,14 @@ export function apiSendLogs(logs) {
         body: JSON.stringify(body)
     })
 }
-export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false) {
+
+
+function fetch_wraper_prep(url, requestOptions,headers_json= {}) {
     console.log('fetch_wraper: ', url);
-    let headers_json= {
+    headers_json= Object.assign({}, {
         'Content-Type': 'application/json',
         'Content-Type': 'application/json; charset=UTF-8',
-    }
+    },headers_json);
     
     if(requestOptions && requestOptions.method == "POST") {
         headers_json['X-CSRFToken']= get_csrf_token();
@@ -43,7 +49,83 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
             headers: myHeaders,
             redirect: 'follow'
         },requestOptions);
-    
+    return requestOptions;
+}
+
+
+export async function fetch_wraper_async(url, requestOptions, custom_fetch, isRetry=false) {
+    requestOptions = fetch_wraper_prep(url, requestOptions)
+    let response;
+    try {
+        if(custom_fetch) {
+            response = await custom_fetch(url, requestOptions);
+        }
+        else {
+            response = await fetch(url, requestOptions);
+        }
+    }
+    catch (error) {
+        console.error(error);
+        // expected output: ReferenceError: nonExistentFunction is not defined
+        // Note - error messages will vary depending on browser
+    }
+
+    if(response.status == 401) {
+        let userInfo = get(userInfoStore);
+        userInfo.isLogin = false;
+        userInfo.access = null;
+        userInfoStore.set(userInfo);
+        if(!isRetry) {
+            return fetch_wraper_async(url, requestOptions, custom_fetch, true);
+        }
+    }
+    console.log(url, ' ==> ', response.status);
+    let json = await response.json();
+    return json;
+
+}
+
+export function fetch_wraper_without_json(url, requestOptions,custom_fetch, isRetry = false) {
+    requestOptions = fetch_wraper_prep(url, requestOptions)
+    let response;
+    try {
+        if(custom_fetch) {
+            response = custom_fetch(url, requestOptions);
+        }
+        else {
+            response = fetch(url, requestOptions);
+        }
+    }
+    catch (error) {
+        console.error(error);
+        // expected output: ReferenceError: nonExistentFunction is not defined
+        // Note - error messages will vary depending on browser
+      }
+      return response;
+}
+function formData_fetch_wraper(url, formData){
+    let headers_json = {
+    }
+    if (browser) {
+        if (get(userInfoStore).access) {
+            headers_json['Authorization'] = "Token " +get(userInfoStore).access;
+        }
+        headers_json['X-CSRFToken']= get_csrf_token();
+    }
+        
+    var myHeaders = new Headers(headers_json);
+    var requestOptions = {
+            method: "POST",
+            mode:'cors',
+            credentials: 'include',//'',
+            headers: myHeaders,
+            redirect: 'follow',
+            body: formData
+        };
+    return fetch(url, requestOptions);
+}
+export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false, headers_json={}) {
+    requestOptions = fetch_wraper_prep(url, requestOptions, headers_json)
     let response;
     try {
         if(custom_fetch) {
@@ -69,7 +151,8 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
             }
         }
         console.log(url, ' ==> ', data.status);
-        return data.json()
+        let json = data.json();
+        return json;
     }).then((info)=> {
         /*if(info.code === "token_not_valid") {
             
@@ -84,6 +167,7 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false)
             });
             
         }*/
+        //console.log('info: ', info);
         return info;
     });
 //    return response;
@@ -119,6 +203,8 @@ export async function request_csrf_token() {
     return json_response;
 }
 
+
+
 function set_user_uuid(newUid) {
     localStorage.setItem('uuid', newUid);
 }
@@ -126,10 +212,29 @@ export function get_user_uuid() {
     return localStorage.getItem('uuid');
 }
 
+export async function send_product_photo(formData) {
+    return formData_fetch_wraper(PRODUCT_PHOTO_URL, formData);
+}
+
+export function send_product_question(data) {
+    return fetch_wraper(PRODUCT_QUESTION_URL, {
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+}
+
 export function get_csrf_token() {
     return getCookie('csrftoken');
 }
-
+export function track_cart_to_server(data) {
+    var requestOptions = {
+        method:"POST",
+        body: JSON.stringify(data),
+    };
+    let response 
+    response = fetch_wraper(TRACK_CART_URL, requestOptions);
+    return response;
+}
 export function submit_cart_form(data) {
         var requestOptions = {
             method:"POST",
@@ -154,14 +259,25 @@ export async function adming_get_campains() {
     let json_response = response;
     return json_response;
 }
-
+export async function loadBusinessTypes() {
+    let response;
+    response = await fetch_wraper_async(GET_ALL_BUSINESS_TYPES)
+    return response
+}
+export async function loadAllIntrests() {
+    let response;
+    response = await fetch_wraper_async(GET_ALL_INTERESTS_URL);
+    return response;
+}
 
 export function submit_distribution_lead(data){
     var requestOptions = {
         method:"POST",
         body: JSON.stringify(data),
     };
-    let response 
+    let response;
     response = fetch_wraper(LEAD_DISTRIBUTION_URL, requestOptions);
     return response;
 }
+
+export const maps_key = import.meta.env['VITE_MAPS_API_KEY']

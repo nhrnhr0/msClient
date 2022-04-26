@@ -45,9 +45,8 @@
 
                 .gold-animation{
                     font-size: 32px;
-                    stroke-width: 1.5px;
-                    stroke-color: #000000;
-                    -webkit-text-stroke-width: 1.5px;
+                    stroke-width: 0.5px;
+                    -webkit-text-stroke-width: 0.5px;
                     -webkit-text-stroke-color: #000000;
                     padding-bottom: 0px;
                 }

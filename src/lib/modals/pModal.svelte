@@ -2,10 +2,13 @@
 
 <script>
   import {flyToCart} from './../utils/js/flyToCart';
+  import {productCartModalStore, productQuestionModalStore} from './../../stores/stores';
   import {
     get_album_details
   } from './../../api/api';
   import SvelteMarkdown from 'svelte-markdown';
+  import { Button } from "sveltestrap";
+
 
   import {
     writable
@@ -41,10 +44,12 @@ import {pushMainPage, pushProductState } from './../../stores/urlManager';
 
 import { logStore } from './../../stores/logStore';
     import {Event} from '$lib/utils/js/Event'
-    import {Magnifier} from '$lib/utils/js/Magnifier.js';
+    //import {Magnifier} from '$lib/utils/js/Magnifier.js';
     import { selectTextOnFocus } from '$lib/ui/inputActions';
     import {activeModalsStore } from '$lib/modals/modalManager';
 import MyCountdown from '$lib/components/MyCountdown.svelte';
+import QuestionLabel from '$lib/components/questionLabel.svelte';
+import SingleAmountModal from './singleAmountModal.svelte';
 
   let productData = writable();
   let current_album = writable();
@@ -59,10 +64,12 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
   let campain_title = undefined;
   let campain;
   let priceTable = undefined;
+  const error_title = 'מוצר זה אינו זמין לתצוגה כרגע';
   export let isModalOpen = false;
-  let loadingText = 'טוען...';
+  let placeHolderText = 'טוען...';
   let m, evt;
-
+  let amount_input;
+  let error_loading_product = false;
   let is_image_loaded = false;
 
   export function isOpen() {
@@ -72,9 +79,10 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
   function getProduct() {
     return [_catalogId, _productId];
   }
-  export function setProduct(catalogId, productId, push_url = true) {
+  export function setProduct(catalogId, productId, push_url = true, retry=0) {
     isLoaded = false;
     is_image_loaded = false;
+    placeHolderText = 'טוען...';
     //$stateQuery['product'] = catalogId + ',' + productId;
     
     if(push_url) {
@@ -84,21 +92,41 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
     _catalogId = catalogId;
     modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
     // find album data from id:
-
     current_album.set($albumsJsonStore.filter((val) => {
       return val.id == catalogId;
     })[0]);
 
 
     let productsPromise = get_album_details(catalogId);
+    let productFound = false;
     productsPromise.then((v) => {
       all_products_in_category = v;
+      console.log('all_products_in_category', all_products_in_category);
       for (let i = 0; i < v.length; i++) {
         if (v[i].id == productId) {
           productData.set(v[i]);
-          
+          productFound = true;
+          error_loading_product = false;
+          placeHolderText = 'טוען...';
           break;
         }
+      }
+      if (!productFound) {
+        if(retry < 3) {
+          setProduct(catalogId, productId, push_url, retry+1);
+        }else {
+          error_loading_product = true;
+          placeHolderText = 'מוצר זה אינו זמין כרגע'; 
+          return;
+        }
+      }
+    }).catch((e) => {
+      console.log(e);
+      if(retry < 3) {
+        setProduct(catalogId, productId, push_url, retry+1);
+      }else {
+        error_loading_product = true;
+        return;
       }
     });
   }
@@ -110,7 +138,6 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
       if (all_products_in_category[i].id === $productData.id) {
         let newIndex = ((i + 1) % all_products_in_category.length);
         newProductObj = all_products_in_category[newIndex];
-        console.log('setting new product: ', $current_album.id, all_products_in_category[newIndex].id);
         setProduct($current_album.id, all_products_in_category[newIndex].id);
         break;
       }
@@ -139,7 +166,6 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
         let newIndex = (i - 1);
         newIndex = newIndex >= 0 ? newIndex : all_products_in_category.length - 1;
         newProductObj = all_products_in_category[newIndex];
-        console.log('setting new product: ', $current_album.id, newProductObj.id);
         setProduct($current_album.id, newProductObj.id);
         break;
       }
@@ -157,6 +183,11 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
       }
     });
     
+  }
+
+  let show_prices;
+  $: {
+    show_prices =  ($userInfoStore['me'] && Object.keys($userInfoStore['me']) != 0 && $userInfoStore['me'].show_prices == true)? true : false;
   }
 
   function open_category() {
@@ -189,6 +220,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                             }
                             );
   }
+  let last_product_id = undefined;
 
   productData.subscribe((data) => {
     colorMarkup = '';
@@ -216,11 +248,15 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
       sizeMarkupLocal += `<div class="size-box">${size.size}</div>`;
     }
 
-    console.log('new sizeMarkup: ', sizeMarkupLocal);
-    console.log('new colorMarkup: ', colorMarkupLocal);
     colorMarkup = colorMarkupLocal;
     sizeMarkup = sizeMarkupLocal;
-
+    
+    /*let newProduct= false;
+    let is_magnifier_loaded = false;
+    if (last_product_id != data.id) {
+      newProduct = true;
+      is_magnifier_loaded = false;
+    }
     // waiting for isLoaded=true to init magnifier and retry init if fail after timeout
     setTimeout(()=> {
       
@@ -232,27 +268,31 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
               thumb: `#catalog-image-${$productData.id}`,
               largeWrapper: 'preview', 
               zoomable:true,
-              zoom: 1.5,
+              zoom: 2,
+              mode: 'inside',
               
           });
+          debugger;
+          document.querySelectorAll('.magnifier-lens').forEach((lens)=> {
+            debugger;
+            lens.style.background = '#fff';
+          });
+          is_magnifier_loaded = true;
         }
-        try {
-          init_magnifier();
-        } catch (e) {
-          console.log('error: ', e);
-          setTimeout(()=> {
+        if (!is_magnifier_loaded) {
             init_magnifier();
-            }, 1000);
+            alert('init marginifier');
         }
       }      
 
     },150);
+    */
     setTimeout(()=>{check_if_product_in_any_campain(data);}, 10);
+    last_product_id = data.id;
     isLoaded = true;
   });
 
   function check_if_product_in_any_campain(data) {
-    console.log('check_if_product_in_any_campain: ', data);
     if($campainsStore) {
       for(let i = 0; i < $campainsStore.length; i++) {
         let camp = $campainsStore[i];
@@ -261,14 +301,12 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
           is_in_campain = true;
           campain = camp;
           priceTable = info.priceTable;
-          console.log(info);
           campain_title = camp.album.title;
           campain_id = camp.id;
           break;
         }
       }
     }else {
-      console.log('no campainsStore');
       return false;
     }
   }
@@ -285,11 +323,10 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 
 
   export function toggleModal(push_url=true) {
-    console.log('product toggleModal');
     isModalOpen = !isModalOpen;
     activeModalsStore.modalToggle('pModal', isModalOpen);
     if (isModalOpen == false) {
-      //$stateQuery['product'] = -1;
+      //$stateQuery['product'] = -1;f
       if(push_url) {
         pushMainPage();
       }
@@ -299,7 +336,6 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 
 
   function likeBtnClicked() {
-    console.log('like btn clicked');
     if(cartStore.isInCart($productData) == false) {
       flyToCart(document.querySelector('.product-modal-img'));
       logStore.addLog(
@@ -319,28 +355,13 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                             }
                             );
       cartStore.addToCart($productData);
-    }else {
-      document.querySelector('#productModalLikeBtn .text .item-amount').focus();
-      /*
-      cartStore.removeFromCart($productData);
-      logStore.addLog(
-                            {
-                                'a': 'הסר מעגל ממודל מוצר',
-                                't': 'remove from cart',
-                                'f': {
-                                  'type':'product',
-                                    'id':$productData.id,
-                                    'ti':$productData.title, 
-                                },
-                                'w':{
-                                    'type':'product',
-                                    'id':$productData.id,
-                                    'ti':$productData.title, 
-                                }
-                            }
-                            );
-                            */
+      open_edit_amount_dialog();
     }
+      //
+    /*}else {
+      document.querySelector('#productModalLikeBtn .text .item-amount').focus();
+      
+    }*/
     
     //$cartStore[_productId] = $productData;
     
@@ -350,15 +371,18 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
   let is_under_500px = ()=> { return window && window.matchMedia && window.matchMedia("(max-width:500px)").matches;}
 
   function openProductImageModal(e) {
-    console.log('openProductImageModal');
+    // open image in new tab
+    let src = e.target.src
+    window.open(src);
+    /*
     if(should_use_pImg_modal()) {
       $productImageModalStore.setProduct($productData);
       $productImageModalStore.toggleModal();
-    }
-
+    }*/
   }
 
-  function remove_from_cart()  {
+  function remove_from_cart(e)  {
+    e.stopPropagation();
     cartStore.removeFromCart($productData);
       logStore.addLog(
                             {
@@ -377,6 +401,14 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                             }
                             );
   }
+
+  function open_edit_amount_dialog() {
+    if(cartStore.isInCart($productData) == false) {
+      return false;
+    }
+    $productCartModalStore.toggleModal($productData.id);
+    
+  }
 </script>
 
 
@@ -384,8 +416,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 
 <div style="z-index: {modal_zIndex};" id="productModal" class="modal" class:active={isModalOpen}>
   <div style="z-index: {modal_zIndex+5};" class="overlay" on:click={toggleModal}></div>
-
-  {#if isLoaded && isModalOpen && $productData && $productData.cimage}
+  {#if isLoaded && isModalOpen && $productData && $current_album}
         <div style="z-index: {modal_zIndex+10};" class="modal_content">
             <div class="modal-header">
               <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
@@ -397,8 +428,14 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 
             <div class="modal-body">
                 <div class="inner-body">
+                  
                     <div class="product-detail">
-                        <div class="product-title">{$productData.title}</div>
+                        <div class="product-title">
+                          <div class="title-text">
+                            {$productData.title}
+                          </div>
+                        </div>
+                        
                         <hr>
                         <div class="product-properties">
                             <div class="product-color-wraper">
@@ -469,6 +506,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                           {#if $productData && $productData.description}
                             <SvelteMarkdown source={$productData.description} />
                           {/if}
+                          
                         </div>
                         
                     </div>
@@ -478,16 +516,33 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                     "
                     >
                       <div class="img-inner-wraper">
-                        <img class:loaded={is_image_loaded} on:load={()=>{is_image_loaded = true}} on:error={()=>{is_image_loaded = false}} class="product-modal-img" on:click={openProductImageModal} alt="{$productData.image}" id="catalog-image-{$productData.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"
-                        data-large-img-url="{CLOUDINARY_URL}f_auto,w_auto/{$productData.cimage}"
-                        data-large-img-wrapper="preview"   
-                        />
+                        
+                        <a href="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}" target="_blank">
+                        <img class:loaded={is_image_loaded} on:load={()=>{is_image_loaded = true}} on:error={()=>{is_image_loaded = false}} class="product-modal-img" 
+                          alt="{$productData.image}" id="catalog-image-{$productData.id}"
+                          src="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
+                          data-large-img-url="{CLOUDINARY_URL}f_auto,w_500,h_500/{$productData.cimage}"
+                          />
+                          {#if $productData.out_of_stock}
+                          <img src="https://res.cloudinary.com/ms-global/image/upload/v1648713887/msAssets/pngfind.com-pubg-player-png-5352359_1_bepovk.png" class="sold-out-icon" alt="מלאי לא זמין"/>
+                        {/if}
+                          
+                        </a>
+                        {#if is_image_loaded}
+                          <button class="question-button btn btn-primary" on:click={()=> {$productQuestionModalStore.openModal($productData.id,$productData.title);}} >
+                            יש לך שאלה?
+                          </button>
+                        
+                          <div class="price-tag" class:active={show_prices && $productData.out_of_stock == false} >{$productData.price + '₪'}</div>
+                        {/if}
                       </div>
+                      
                   </div>
-
-                </div>
-                <div class="magnifier-preview-wraper">
-                  <div class="magnifier-preview example heading" id="preview"></div>
+                  <!--
+                  <div class="magnifier-preview-wraper">
+                    <div class="magnifier-preview example heading" id="preview"></div>
+                  </div>
+                  -->
                 </div>
             </div>
 
@@ -497,32 +552,56 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                     <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="prev">
                 </button>
 
-                <div  on:click={likeBtnClicked} class="like-btn-wraper">
-                {#if $cartStore[_productId] == undefined}
-                    <button  id="productModalLikeBtn" class="like-btn">
-                      <div class="img-wraper">
-                        <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
+
+
+                <div  class="like-btn-wraper">
+                  {#if $cartStore[_productId] == undefined}
+                      <button  on:click={likeBtnClicked} id="productModalLikeBtn" class="like-btn">
+                        <div class="text">
+                          הוסף לסל
                       </div>
-                      <div class="text">
-                          הוסף
-                      </div>
-                    </button>
-                {:else}
-                    <button  id="productModalLikeBtn" class="like-btn active">
-                      <div class="amount-before">
-                        <button class="delete-btn" on:click|stopPropagation="{remove_from_cart}" >
-                          <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="32px" height="32px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
-                        </button>
-                        <div class="amount-text">
-                          כמות: 
+                      <!--
+                        <div class="img-wraper">
+                          <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
                         </div>
-                      </div>
-                      <div class="text">
-                          <input class="item-amount" name="item_amount" pattern="[0-9]*" min="1" max="9999" type="number" bind:value={$cartStore[_productId].amount} />
-                      </div>
-                    </button>
-                {/if}
-                </div> 
+                        -->
+                        
+                      </button>
+                  {:else}
+                      <button on:click|preventDefault="{open_edit_amount_dialog}"  id="productModalLikeBtn" class="like-btn active">
+                        <div class="amount-before">
+                          <Button color="danger" class="delete-btn action-btn" on:click="{remove_from_cart}" >
+                            <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="32px" height="32px"><path d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
+                          </Button>
+                          <label for="edit-btn" class="amount-in-cart-label">כמות בסל: {$cartStore[_productId].amount}</label>
+                          <Button color="primary" class="edit-amount-btn action-btn">ערוך</Button>
+                          <!--
+                          {#if $cartStore[_productId].show_sizes_popup}
+                            <div class="amount-text">
+                              <div class="text">
+                                לחץ לבחירת מידות
+                              </div>
+                              <div class="edit-amount-btn">
+                                  {$cartStore[_productId].amount}
+                              </div>
+                            </div>
+                          {:else}
+                            <div class="amount-text">
+                              <div class="text">
+                                כמות בסל
+                              </div>
+                              <div class="edit-amount-btn">
+                                <input class="amount-input" disabled bind:this={amount_input} type="number" min="1" max="9999" bind:value="{$cartStore[_productId].amount}"/>
+                              </div>
+                            </div>
+                          {/if}
+                          -->
+                        </div>
+                        
+                      </button>
+                  {/if}
+                  </div>
+                 
                 <!--
                 <div  on:click={likeBtnClicked} class="like-btn-wraper">
                     <button  id="productModalLikeBtn" class:active={$cartStore[_productId] != undefined} class="like-btn">
@@ -555,7 +634,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
       <div class="modal-header">
         <button title="Close" on:click={toggleModal} class="close-btn">x</button>
           <button
-                  class="title btn btn-outline-dark">{loadingText}
+                  class="title btn btn-outline-dark">{placeHolderText}
               </button>
           <button title="Close" on:click={toggleModal} class="close-btn">x</button>
             
@@ -563,15 +642,41 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 
       <div class="modal-body">
           <div class="inner-body">
+            {#if error_loading_product}
               <div class="product-detail">
-                  <div class="product-title">{loadingText}</div>
+                <div class="product-title">{error_title}</div>
+                <hr>
+                <div class="product-properties">
+                    <div class="product-color-wraper">
+                        <div class="product-color"></div>
+                    </div>
+                    <div class="product-size-wraper">
+                        <div class="product-size"></div>
+                    </div>
+                    <!--
+                    <div class="product-packing-wraper">
+                        <div class="product-packing">{loadingText}</div>
+                    </div>
+                    -->
+                </div>
+                <hr>
+                
+                <div class="product-description">
+                </div>
+                
+              </div>
+              <div class="img-wraper">  
+              </div>            
+            {:else}
+              <div class="product-detail">
+                  <div class="product-title">{placeHolderText}</div>
                   <hr>
                   <div class="product-properties">
                       <div class="product-color-wraper">
-                          <div class="product-color">{loadingText}</div>
+                          <div class="product-color">{placeHolderText}</div>
                       </div>
                       <div class="product-size-wraper">
-                          <div class="product-size">{loadingText}</div>
+                          <div class="product-size">{placeHolderText}</div>
                       </div>
                       <!--
                       <div class="product-packing-wraper">
@@ -582,39 +687,26 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
                   <hr>
                   
                   <div class="product-description">
-                    {loadingText}
+                    {placeHolderText}
                   </div>
                   
+                </div>
+                <div class="img-wraper">  
+                    <Spinner
+                  size="200"
+                  speed="750"
+                  color="#A82124"
+                  thickness="2"
+                  gap="40"
+              />
               </div>
-              <div class="img-wraper">  
-                  <Spinner
-                size="200"
-                speed="750"
-                color="#A82124"
-                thickness="2"
-                gap="40"
-            /></div>
+            {/if}
           </div>
       </div>
 
 
       <div class="modal-fotter">
-          <button id="modal-prev-btn" class="btn modal-nav-btn" on:click={prevClick}>
-              <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="prev">
-          </button>
-          <div  on:click={likeBtnClicked} class="like-btn-wraper">
-              <button  id="productModalLikeBtn" class="like-btn">
-                <div class="img-wraper">
-                  <img alt="plus" src="https://res.cloudinary.com/ms-global/image/upload/v1635236678/msAssets/icons8-plus-48_tlk4bt.png"/>
-                </div>
-                <div class="text">
-                  {loadingText}
-                </div>
-              </button>
-            </div>
-          <button id="modal-next-btn" class="btn modal-nav-btn" on:click={nextClick}>
-              <img src="https://catalog.ms-global.co.il/static/assets/catalog/imgs/icons8-arrow-48.png" alt="next">
-          </button>
+          
       </div>
   </div>
     {/if}
@@ -623,20 +715,33 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 
 
 <style lang="scss">
-    @import '$lib/utils/css/magnifier.css';
+    //@import '$lib/utils/css/magnifier.css';
+    .sold-out-icon {
+        position: absolute;
+        z-index: 1;
+        border: none;
+        background: none;
+        //transform: translate(-50%, 0);
 
+        width: 140px;
+        height: auto;
+        top: 30px;
+        right: 0px;
+    }
     .like-btn-wraper{
       
-      width: 300px;
+      width: auto;
       height: auto;
-      @media (min-width: 820px) {
+      flex:1;
+      max-width: 100%;
+      /*@media (min-width: 820px) {
           & .like-btn:not(.active) .text::after {
-            content: ' להצעת מחיר'
+            content: ' לסל';
             
           }
-      }
+      }*/
       @media screen and (max-width: 819px) {
-        width: 200px;
+        //width: 200px;
         .amount-text {
           display: none;
         }
@@ -654,48 +759,95 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
       }*/
       
       .like-btn {
+        margin: auto;
+        background-color: var(--buy-btn-color);
+        border: 1px solid var(--buy-btn-color);
+        &:hover, &:focus {
+              background-color: var(--buy-btn-color-hover);
+              border: 1px solid var(--buy-btn-color-hover);
+              box-shadow: 0 0 0 0.2rem var(--buy-btn-color-hover);
+          }
         &.active {
+          background-color: rgba(122, 117, 117, 0.589);
+          border: transparent;
+          &:hover, &:focus {
+                background-color: rgba(105, 99, 99, 0.589);
+                border: 1px solid rgba(105, 99, 99, 0.589);
+                box-shadow: none;
+                //box-shadow: 0 0 0 0.2rem rgba(105, 99, 99, 0.589);
+            }
           //border: 1px solid red;
-          background: rgba(255, 255, 255, 0.478);
-          color:rgb(70, 70, 70);
+          
+          //background: rgba(255, 255, 255, 0.478);
+          //color:rgb(70, 70, 70);
+          .amount-before {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            
+            .amount-text {
+              height: 100%;
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              align-items: center;
+              flex:1;
+              .text {
+                font-size: 0.8em;
+                color: rgb(70, 70, 70);
+                font-weight: bold;
+                @media screen and (max-width: 550px) {
+                  font-size: 0.7em;
+                }
+                @media screen and (max-width: 500px) {
+                  font-size: 0.65em;
+                  
+                }
+              }
+              .edit-amount-btn {
+                font-size: 0.8em;
+                padding-right: 10%;
+                padding-left: 10%;
+                color: rgb(70, 70, 70);
+                font-weight: bold;
+                .amount-input {
+                  width: 100%;
+                  height: 100%;
+                  border: none;
+                  text-align: center;
+                  font-weight: bold;
+                  background: none;
+                }
 
+                
+              }
+            }
+          }
         }
         @media screen and (max-width: 450px) {
           font-size: 0.8em;
         }
+        
         .text {
-          display:inline-block;
-          font-size: 1.7em;
-          input.item-amount {
-            //width: 40px;
-            //height: 40px;
-            width: 120px;
-            @media (max-width: 820px) {
-              width: auto;
-            }
-            text-align: center;
-            border: none;
-            background: transparent;
-            border-radius: 999999px;
-            border-bottom-left-radius: 0px;
-            border-top-left-radius: 0px;
-            padding: 0;
-            
-            margin: 0;
-            margin-left: 5px;
-            
-            font-weight: bold;
-            &:focus {
-              outline: none;
-            }
-          }
+          //flex: 1;
+          font-size: 1.5em;
+          color: black;
+          text-shadow: none;
+          text-align: center;
         }
         .img-wraper {
-          width:43px;
-          height: 43px;
+          display: inline-block!important;
+          flex:0!important;
+          width:30px;
+          height: 30px;
           display: inline-flex;
           justify-content: center;
           align-items: center;
+          img {
+            width: auto;
+            height: 100%;
+          }
         }
         .amount-before {
           font-size: 1.7em;
@@ -703,6 +855,20 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
           flex-direction: row;
           justify-content: center;
           align-items: center;
+          :global(.action-btn) {
+            width: 58px;
+            height: 46px;
+            margin: 5px;
+          }
+          .amount-in-cart-label {
+            text-shadow: none;
+            font-size: smaller;
+            color: black;
+
+          }
+          :global(.edit-amount-btn) {
+            //font-weight: bold;
+          }
           .delete-btn {
             display:flex;
             flex-direction: row;
@@ -714,7 +880,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
               fill: black;
             }
             &:hover svg {
-              fill:red;
+              //fill:red;
             }
           }
         }
@@ -724,12 +890,13 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
         margin-top: 10px;
         margin-bottom: 10px;
         color: white;
-        width: 100%;
+        //width: 50%;
+        min-width: 240px;
         text-shadow: -1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, 1px 0 0 #000, 1px 1px 0 #000, 0 1px 0 #000, -1px 1px 0 #000, -1px 0 0 #000;
         z-index: 1;
         font-weight: bold;
         text-align: center;
-        background: #0000007a;
+        //background: #0000007a;
         border-radius: 25px;
 
 
@@ -833,6 +1000,21 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 }
 */
 #productModal {
+  .question-button {
+                /*border: 1px solid #444;
+                border-radius: 5px;
+                padding: 5px;
+                display: inline;
+                background: none;
+                color: #444;
+                font-size: 1.2em;
+                font-weight: bolder;
+                transition: all 0.2s ease;
+                &:hover, &:focus {
+                  background: #444;
+                  color: white;
+                }*/
+              }
 .modal_content {
   display: flex;
   flex-direction: column;
@@ -840,6 +1022,13 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
   height: 90vh;
   height: calc(90vh - calc(90vh - 90%));
   overflow: hidden;
+
+  background: url('https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634461664/msAssets/wall_bg_az5xzl');
+    background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url('https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634461664/msAssets/wall_bg_az5xzl');
+    background-position: center;
+    //background: linear-gradient( rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) ),url('../imgs/catalogBg1.jpeg');
+    overflow: hidden;
+    text-align: right;
   @media screen and (max-width: 768px) {
     width: 94%;
     //height: 85%;
@@ -872,6 +1061,7 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
   .modal-body {
       //background-color: rgba(255, 255, 255, 0.6);
       //background-blend-mode: lighten;
+        direction: ltr;
         min-height: 63vh;
         height: 63vh;
         width: 100%;
@@ -886,26 +1076,16 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
           overflow-y: auto;
         }
 
-        .magnifier-preview-wraper {
-          position: absolute;
-          width: 100%;
-          top: 0px;
-          height: 100%;
-          width: 50%;
-          pointer-events: none;
-          
-          .magnifier-preview {
-            width: 100%;
-            height: 100%;
-            line-height: 30px;
-            pointer-events: none;
-          }
-        }
 
         .inner-body {
+          direction: rtl;
           height: auto;
           display: flex;
           flex-direction: row;
+          @media screen and (max-width:1250px) {
+            font-size: x-small;
+            
+          }
           @media screen and (max-width: 1100px) {
             position: relative;
             overflow: unset;
@@ -918,16 +1098,29 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 
 
         .product-detail {
+          
           .product-title {
-            font-size: 2em;
-            font-weight: bolder;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            .title-text {
+              font-size: 2em;
+              font-weight: bolder;
+            }
+            
+            }
+            @media screen and (max-width: 850px) {
+              font-size: 0.8rem;
+            }
+            @media screen and (max-width: 500px) {
+              
             }
             overflow-y: auto;
-            
             //padding-right: 5px;
-            flex: 1;
+            flex: 2;
             min-width: 35%;
             padding-left: 10px;
+            
             @media screen and (max-width: 1100px) {
               flex:3;
               padding-left: 10px;
@@ -938,7 +1131,9 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
               padding-left: 10px;
               overflow-y: auto;
               .product-title {
-                font-size: 1.7em;
+                .title-text {
+                  font-size: 1.7em;
+                }
               }
             }
 
@@ -1100,6 +1295,9 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 
         .img-wraper {
             flex: 1;
+            @media screen and (max-width: 1250px) {
+              flex: 1;
+            }
             
             @media screen and (max-width: 1100px) {
               flex:2;
@@ -1110,14 +1308,35 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
               //padding-bottom: 100%;
               
             }
-            cursor: pointer;
+            //cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             .img-inner-wraper{
               position: relative;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              .question-button {
+                margin-top: 25px;
+                width: auto;
+              }
+              .price-tag {
+                    position: absolute;
+                    top:5px;
+                    left:5px;
+                    padding: 5px;
+                    font-weight: bold;
+                    border-radius: 999px;
+                    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+                    display: none;
+                    font-size: x-large;
+                    &.active {
+                        display: block;
+                    }
+                }
             }
-            img {
+            img.product-modal-img {
               @include bg-image;
               //float: left;
               //border-radius: 15px;
@@ -1125,8 +1344,8 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
               line-height: 30px;
               
               
-              width: auto;
-              height: 100%;
+              width: 100%;
+              height: auto;
               @media screen and (max-width: 1100px) {
                 width: 100%;
                 height: auto;
@@ -1140,10 +1359,12 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
         }
     }
     .modal-fotter {
-      justify-content: space-evenly;
+      justify-content: center;
       height: 69px;
       overflow: hidden;
       align-items: center;
+      position: relative;
+      background: none;
       .btn {
         padding: 0px;
         //outline: none;
@@ -1151,8 +1372,11 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
       }
 
       .modal-nav-btn {
+        position: absolute;
         img {
           width: 60px;
+          
+          
           @media screen and (max-width: 450px) {
             width: auto;
           }
@@ -1161,11 +1385,23 @@ import MyCountdown from '$lib/components/MyCountdown.svelte';
 
       #modal-next-btn {
         transform: rotate(180deg);
+        left: 25px;
+        @media screen and (max-width: 450px) {
+          left: 4px;
+        }
+      }
+      #modal-prev-btn {
+        right: 25px;
+        @media screen and (max-width: 450px) {
+          right: 4px;
+        }
       }
 
       #modal-add-btn {
         cursor: pointer;
-
+        
+        
+        
         /*a {
           padding: 5px !important;
           border-top-left-radius: 25px;

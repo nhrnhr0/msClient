@@ -1,9 +1,12 @@
 import { browser } from "$app/env";
-import { flashy_update_cart } from "$lib/flashy";
+import { update_cart_to_server } from "$lib/flashy";
 import { writable, get } from "svelte/store";
+import {cartModalStore} from "./../stores/stores";
+
 let initCart = {};
+const LOCAL_STORE_NAME = "cart5";
 if(browser) {
-    initCart=JSON.parse(localStorage.getItem('cart'));
+    initCart=JSON.parse(localStorage.getItem(LOCAL_STORE_NAME));
     if(!initCart) {
         initCart={}   
     }
@@ -15,9 +18,22 @@ const createCartStore = () => {
         subscribe,
         set,
         removeFromCart: function(product) {
+          this.removeFromCartById(product.id);
+        },
+        removeFromCartById: function(id) {
           let cart = get(this);
-          delete cart[product.id];
+          delete cart[id];
           set(cart);
+        },
+        getProduct: function(productId) {
+            let cart = get(this);
+            return cart[productId];
+        },
+        setProduct: function(product) {
+          const store = get(this);
+          store[product.id] = product;
+          set(store);
+          return store[product.id];
         },
         addToCart: function(product) {
           const store = get(this);
@@ -26,9 +42,16 @@ const createCartStore = () => {
             if(store[product.id]) {
               exist = true;
             } else {
-              product.amount = 1;
+              product.amount = 0;
+              product.print = false;
+              product.embro = false;
               store[product.id] = product;
               set(store);
+            }
+            if (Object.keys(store).length == 1) {
+                if (get(cartModalStore).isOpen() == false) {
+                  get(cartModalStore).toggleModal();
+                }
             }
             return exist;
           }
@@ -36,7 +59,9 @@ const createCartStore = () => {
         isInCart: function(product) {
           const store = get(this);
           if(product && product.id) {
-            return store[product.id] ? true : false;
+            let ret = store[product.id] != undefined? true : false;
+            console.log(ret);
+            return ret;
           }
           return false;
         },
@@ -48,10 +73,17 @@ const createCartStore = () => {
   }
 
 export const cartStore = createCartStore();//writable(initCart);
+let _updated_to_server = false;
 cartStore.subscribe((value) => {
     if (browser) {
-      window.localStorage.setItem('cart', JSON.stringify(value));
-      flashy_update_cart(value);
+      window.localStorage.setItem(LOCAL_STORE_NAME, JSON.stringify(value));
+      if(_updated_to_server == false) {
+        _updated_to_server = true;
+        setTimeout(() => {
+          _updated_to_server = false;
+          update_cart_to_server(get(cartStore));
+        }, 3000);
+      }
     }
   });
 
@@ -59,4 +91,4 @@ cartStore.subscribe((value) => {
 
 
 
-export const cartObjStore = writable({});
+export const cartDomElementStore = writable({});

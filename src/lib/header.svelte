@@ -3,7 +3,7 @@
 <div class="header-1" id="header">
     <div class="inner-header">
         <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
-            alt="M.S. Global" width="400px" height="162px" style="max-width: 100%;" />
+            alt="M.S. Global" width="250px" height="auto" style="max-width: 100%;" />
         <div class="text">
             שיווק &bull; פרסום &bull; מכירות
         </div>
@@ -22,19 +22,9 @@
                 media="(max-width: 767px)"
                 sizes="(max-width: 334px) 100vw, 334px"
                 srcset="
-                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_200/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 200w,
-                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_334/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 334w">
-                <source
-                media="(min-width: 768px) and (max-width: 991px)"
-                sizes="(max-width: 636px) 70vw, 445px"
-                srcset="
-                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_445/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 445w">
-                <source
-                media="(min-width: 992px) and (max-width: 1199px)"
-                sizes="(max-width: 988px) 60vw, 593px"
-                srcset="
-                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_596/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 596w,
-                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_593/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 593w">
+                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_500/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 500w,
+                https://res.cloudinary.com/ms-global/image/upload/f_auto,h_334,c_crop,g_center,w_634/v1634462230/msAssets/bg_ppl_img_pwk06i.jpg 634w">
+                
                 <img
                 sizes="(max-width: 2560px) 40vw, 1024px"
                 srcset="
@@ -44,9 +34,11 @@
                 alt="">
                 </picture>
         <div class="content">
+            <!--
             <div class="title">
                 נשמח לעמוד לשירותכם
             </div>
+            -->
         </div>
     </div>
 </div>
@@ -54,16 +46,16 @@
 <style lang="scss">
     .header-1 {
         margin-left: 20px;
-        padding-top: 50px;
+        //padding-top: 50px;
         margin-right: 20px;
-        padding-bottom: 50px;
+        //padding-bottom: 50px;
 
         .inner-header {
-            text-shadow: -2px -1px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+            //text-shadow: -2px -1px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
             /*font-family: 'Rounded Mplus 1c';*/
-            color: #FFD880;
+            color: black;
             text-align: center;
-            font-size: 3.5rem;
+            font-size: 1.35rem;
             font-weight: bold;
             position: relative;
 
@@ -71,11 +63,10 @@
             padding-bottom: 2%;
 
             @media screen and (max-width:640px) {
-                font-size: 2.5rem;
-            }
-
-            @media screen and (max-width:500px) {
-                font-size: 2rem;
+                font-size: 0.8rem;
+                img {
+                    width:150px;
+                }
             }
         }
     }
@@ -83,10 +74,11 @@
     .header-2 {
         .header-image {
             position: relative;
-
+            filter: brightness(0.8);
             .class-bg-image {
                 width: 100vw;
-                border:1px solid red;
+                //border:1px solid red;
+                filter: contrast(0.657);
                 img {
                     width: 100%;
                     height: auto;
@@ -110,7 +102,7 @@
 
                 .text {}
             }
-
+            /*
             @media screen and (max-width:640px) {
                 .content {
                     .title {
@@ -125,7 +117,7 @@
                         font-size: 40px;
                     }
                 }
-            }
+            }*/
         }
 
     }
