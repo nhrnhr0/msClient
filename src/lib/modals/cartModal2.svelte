@@ -129,6 +129,7 @@ import { Spinner } from "sveltestrap";
 			state = 1;
 		}
     }
+	let sidebar_top = 0;
     export function toggleModal() {
         isModalOpen = !isModalOpen;
 		let main_wraper_element = document.querySelector('#main_wraper');
@@ -142,6 +143,11 @@ import { Spinner } from "sveltestrap";
 			if (!is_under_700px) {
 				main_wraper_element.style = `width: calc(100vw - 315px);position: absolute;left: 0px;`
 				main_navbar_wraper.style = `width: calc(100vw - 315px);left: 0px;`
+				sidebar_top = 0;
+			}else {
+				//debugger;
+				//document.querySelector('#sidebar-cart').style = `top: 62px;`
+				sidebar_top = 62;
 			}
 			//sidebar_cart_element.style = `z-index: ${modal_zIndex*5};`
 
@@ -437,7 +443,7 @@ import { Spinner } from "sveltestrap";
 	{/if}
 	{#if isModalOpen}
 		<div class="sidebar-cart-wraper">
-            <aside on:click|preventDefault={()=>{}} transition:fly="{{x:340}}" id="sidebar-cart">
+            <aside on:click|preventDefault={()=>{}} transition:fly="{{x:340}}" id="sidebar-cart" style:top={sidebar_top + 'px'}>
                 <main>
                     <button class="close-button" on:click="{()=>{toggleModal();}}">X</button>
                     <h2>מוצרים שאהבתי<span class="count">{Object.keys($cartStore).length}</span></h2>
@@ -928,6 +934,9 @@ $gray-1200: #131314;
 		display: block;
 		position: relative;
 		z-index: 0;
+		@media screen and (max-width: 700px) {
+			height: calc(100vh - 193px - 62px);
+		}
 
 		/*&:after {
 			background: linear-gradient(180deg, transparent, $primary);
@@ -1270,6 +1279,11 @@ $gray-1200: #131314;
 					margin-left: 0px;
 				}
 			}
+		}
+
+		@media screen and (max-width: 700px) {
+			bottom: 62px;
+			
 		}
 	}
 }
