@@ -455,8 +455,12 @@ import SingleAmountModal from './singleAmountModal.svelte';
                                   כמות בקרטון: {$productData.amountCarton}
                                 </div>
                               {/if}
+                              
                             </div>
-
+                            {#if $userInfoStore?.me?.is_superuser}
+                                
+                            ברקוד פיזי?{$productData.has_physical_barcode? '✅':'❌'}
+                          {/if}
 
                             <!--
                             {#if $userInfoStore.isLogin}
