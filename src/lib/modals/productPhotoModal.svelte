@@ -96,12 +96,12 @@
                                 <div class="form-group md-flex-colum">
                                     <div class="form-control">
                                         <label for="buy_price">אני קונה את המוצר כרגע ב</label>
-                                        <input id="buy_price_input" name="buy_price" required="{false}" placeholder="{5.90}"  type="number">
+                                        <input id="buy_price_input" name="buy_price" required="{false}" step=".01" placeholder="{5.90}"  type="number">
                                     </div>
 
                                     <div class="form-control">
                                         <label for="buy_price">אני רוצה את המוצר ב</label>
-                                        <input id="want_price_input" name="want_price" required="{false}" placeholder="{4.5}"  type="number">
+                                        <input id="want_price_input" name="want_price" required="{false}" step=".01" placeholder="{4.5}"  type="number">
                                     </div>
                                 </div>
                                 <div class="form-group">
