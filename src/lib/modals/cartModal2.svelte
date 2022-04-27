@@ -269,7 +269,7 @@ import { Spinner } from "sveltestrap";
 									<tr>
 										<th>מוצר</th>
 										<th class="hide-on-md">ברקוד</th>
-										<th class="hide-on-md">האם יש ברקוד פיזי</th>
+										<th class="">האם יש ברקוד פיזי</th>
 										{#if $userInfoStore?.me?.is_superuser}
 										<th class="hide-on-md">הדפסה</th>
 										<th class="hide-on-md">רקמה</th>
@@ -298,7 +298,7 @@ import { Spinner } from "sveltestrap";
 										<td class="hide-on-md">
 											{item?.barcode || ''}
 										</td>
-										<td class="hide-on-md">
+										<td class="">
 											{item.has_physical_barcode? '✅':'❌'}
 										</td>
 										{#if $userInfoStore?.me?.is_superuser}
@@ -1287,7 +1287,6 @@ $gray-1200: #131314;
 		}
 	}
 }
-
 .hide-on-md {
 	@media (max-width: 1000px) {
 		display: none;
