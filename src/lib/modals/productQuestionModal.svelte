@@ -40,7 +40,17 @@ import { send_product_question } from "./../../api/api";
             
         });
     }
+    let last_open_time = undefined;
     export function openModal(_product_id, _product_title) {
+        if (last_open_time) {
+            let time_diff = Date.now() - last_open_time;
+            if (time_diff < 500) {
+                return;
+            }
+        }
+        last_open_time = Date.now();
+
+
         console.log('openModal', _product_id, _product_title);
         product_id = _product_id
         product_title = _product_title;
@@ -58,6 +68,12 @@ import { send_product_question } from "./../../api/api";
     }
     export function closeModal(e) {
         console.log('closeModal', e);  
+        if (last_open_time) {
+            let time_diff = Date.now() - last_open_time;
+            if (time_diff < 500) {
+                return;
+            }
+        }
         isModalOpen = false;
         activeModalsStore.modalToggle('productQuestionModal', isModalOpen);
     }
