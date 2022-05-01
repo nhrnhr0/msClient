@@ -1,7 +1,8 @@
 <script>
   import {
     colorsJsonStore,
-    sizesJsonStore
+    sizesJsonStore,
+userInfoStore
   } from "./../../stores/stores";
   import {selectTextOnFocus,fullNumbersOnly} from "$lib/ui/inputActions";
   import {
@@ -255,6 +256,16 @@
       $cartStore[product_id].amount = 0;
     }
   }
+  function admin_edit_price(e) {
+    if ($userInfoStore && $userInfoStore.isLogin && $userInfoStore.me && $userInfoStore.me.is_superuser) {
+      let prom = prompt('ערוך מחיר', $cartStore[product_id].price);
+			if(prom) {
+				$cartStore[product_id].price = parseFloat(prom);
+        e.stopPropagation();
+        e.preventDefault();
+			}
+    }
+  }
 </script>
 
 
@@ -272,11 +283,15 @@
 
     <div class="modal-body">
       {#if is_loaded && $cartStore[product_id] != undefined}
+      
       <div class="product-grid-wraper">
         
         {#if $cartStore[product_id].show_sizes_popup}
           <div class="product-attributes">
             <div class="product-details">
+              <div on:click={admin_edit_price} class="product-price">
+                {$cartStore[product_id]?.price}₪
+              </div>
               <div class="product-title-wraper">
                 <div class="product-img">
                   <img width="150" height="150" src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[product_id].cimage}" alt="{$cartStore[product_id].title}">
@@ -600,7 +615,7 @@
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      @media screen and (max-width: 780px) {
+      @media screen and (max-width: 1100px) {
         width:100%;
       }
       table.product-table {

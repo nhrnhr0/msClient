@@ -5,21 +5,54 @@ campainsStore,
 userInfoStore,
         _modal_z_index_incrementor
     } from './../../stores/stores';
+    import { cartStore } from './../../stores/cartStore';
     import {Input}  from 'sveltestrap';
     import Spinner from 'svelte-spinner';
 import { request_login, request_whoAmI } from './../../api/auth';
 import {activeModalsStore } from '$lib/modals/modalManager';
+import { get_album_details } from './../../api/api';
 
     let modal_zIndex = 0;
     let isModalOpen;
     let username, password;
     let error_detail = '';
     let is_requesting = false;
+    async function update_cart_pricess() {
+        
+        // iterate $cartStore keys and add price to the object's key
+        for(let itemIdx in $cartStore) {
+            debugger;
+            let item = $cartStore[itemIdx];
+            let price = item.price;
+            
+            
+            if (price == 0) {
+                //let itemWithPrice = album.filter(item => item.id == item.id);
+                let found = false;
+                for(let album_id in item.albums) {
+                    let album = await get_album_details(album_id);
+                    for (let i = 0; i < album.length; i++) {
+                        if (album[i].id == item.id) {
+                            price = album[i].price;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) break;
+                }
+                //let price = itemWithPrice.price
+                $cartStore[itemIdx].price = price
+                $cartStore[itemIdx] = {...$cartStore[itemIdx]}
+            }
+        }
+        
+        
+    }
     function login() {
         is_requesting = true;
         error_detail = '';
         let response = request_login(username, password);
-        response.then(data=> {
+        response.then(async data=> {
             if(data['detail']) {
                 error_detail = data['detail']
             }else if(data['non_field_errors'] && data['non_field_errors'].length > 0) {
@@ -31,6 +64,9 @@ import {activeModalsStore } from '$lib/modals/modalManager';
                 $userInfoStore.me=me;
                 $userInfoStore.isLogin=true;
                 update_campains_with_local_data(me.campains)
+                if (me.show_prices) {
+                    await update_cart_pricess();
+                }
                 setTimeout(()=> {
                         toggleModal();
                         location.reload();

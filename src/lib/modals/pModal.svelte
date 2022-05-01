@@ -460,7 +460,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
                             <!--
                             {#if $userInfoStore.isLogin}
-                              <div class="product-packing-wraper"><b><u>שיטת אריזה: </u>
+                              <div class="product-כ-wraper"><b><u>שיטת אריזה: </u>
                               <span class="product-packing">{$productData.packing_type}</span>
                             </b></div>
                             {/if}
@@ -477,14 +477,17 @@ import SingleAmountModal from './singleAmountModal.svelte';
                                     </th>
                                     
                                   </tr>
-                                  <tr class="headers">
-                                    <td>כמות
-                                      </td>
-                                    <td>מחיר ליח'
-                                      </td>
-                                    <td>מחיר ממולץ לצרכן
-                                      </td>
-                                  </tr>
+                                  {#if priceTable.length}
+                                    <tr class="headers">
+                                    
+                                      <td>כמות
+                                        </td>
+                                      <td>מחיר ליח'
+                                        </td>
+                                      <td>מחיר ממולץ לצרכן
+                                        </td>
+                                    </tr>
+                                  {/if}
                                   </thead>
                                   <tbody>
                                     {#each priceTable as price}

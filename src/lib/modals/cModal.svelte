@@ -682,14 +682,18 @@ Button,
           max-height: 80vh;
           overflow-y: auto;
           left: 0%!important;
-          @media screen and (max-width: 900px) {
+          @media screen and (max-width: 1100px) {
+            grid-template-columns: repeat(4, 1fr);
+            
+          }
+          @media screen and (max-width: 975px) {
             grid-template-columns: repeat(3, auto);
           }
-          @media screen and (max-width: 600px) {
+          @media screen and (max-width: 770px) {
             grid-template-columns: repeat(2, auto);
             
           }
-          @media screen and (max-width: 400px) {
+          @media screen and (max-width: 530px) {
             grid-template-columns: repeat(1, 1fr);
           }
 
