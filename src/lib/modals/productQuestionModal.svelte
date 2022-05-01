@@ -1,6 +1,7 @@
 <script>
     import {
 successModalStore,
+        userInfoStore,
         _modal_z_index_incrementor
     } from "./../../stores/stores";
     import { selectTextOnFocus } from '$lib/ui/inputActions';
@@ -22,8 +23,11 @@ import { send_product_question } from "./../../api/api";
     function question_submit(e) {
         e.preventDefault();
         let form = e.target;
+        debugger;
+        form.reportValidity();
         let formData = new FormData(form);
         let data = {};
+        debugger;
         formData.forEach((value, key) => {
             data[key] = value;
         });
@@ -103,6 +107,17 @@ import { send_product_question } from "./../../api/api";
             is_disabled = false;
         }*/
     }
+
+    let email_input;
+    let phone_input;
+    let email_is_empty = true;
+    let phone_is_empty = true;
+    $: {
+        email_is_empty = email_input == '' || email_input == undefined;
+    }
+    $: {
+        phone_is_empty = phone_input == '' || phone_input == undefined;
+    }
 </script>
 
 
@@ -118,13 +133,41 @@ import { send_product_question } from "./../../api/api";
             </div>
             <div class="modal-body">
                 <form action="product-question" method="POST" on:submit="{question_submit}">
+                    {#if $userInfoStore == undefined || $userInfoStore.isLogin == false}
+                        <div class="user-info">
+                            <div class="input-wraper-input">
+                                <div class="input-label-text">שם</div>
+                                <input class="text-input" name="name" required={true} type="text" placeholder="שם" />
+                            </div>
+                            <div class="input-wraper-input">
+                                <div class="input-label-text">שם העסק</div>
+                                <input class="text-input" name="buissnes_name" required={true} type="text" placeholder="שם העסק" />
+                            </div>
+                            <div class="input-wraper-input">
+                                <div class="input-label-text">טלפון</div>
+                                <input class="text-input" name="phone" bind:value="{phone_input}" required={email_is_empty} type="text" placeholder="טלפון" />
+                            </div>
+                            <div class="input-wraper-input">
+                                <div class="input-label-text">דוא"ל</div>
+                                <input class="text-input" name="email" bind:value="{email_input}" required={phone_is_empty} type="text" placeholder='דוא"ל' />
+                            </div>
+                        </div>
+                    {/if}
                     <div class="row">
                         <div class="input-wraper">
                             <textarea on:input="{text_changed}" id="popup_input" class="text-input" type="number" placeholder="נשמח לעמוד לשירותכם בהקדם"></textarea>
+                            
                             <input type="hidden" name="product_id" value="{product_id}">
                             <input type="hidden" name="product_title" value="{product_title}">
+
                         </div>
                     </div>
+
+
+                    
+
+
+
                     <div class="row">
                         <div class="action-wraper">
                             <button disabled={is_sending || value == ''} class="btn btn-primary" type="submit">
@@ -166,6 +209,28 @@ import { send_product_question } from "./../../api/api";
             .text-input {
                 width: 100%;
                 height: 100%;
+            }
+        }
+        .user-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            //text-align: center;
+            justify-content: center;
+            
+            padding-bottom: 9px;
+            gap: 10px;
+            .input-wraper-input {
+                width: 100%;
+                height: 100%;
+                //border: 1px solid red;
+                .input-label-text {
+                    font-size: 1.2em;
+                    margin-bottom: 5px;
+                }
+                .text-input {
+                    width: 100%;
+                }
             }
         }
 
