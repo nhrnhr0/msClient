@@ -6,3 +6,4 @@ node_modules
 msClientBuild/
 msClientBuildTest/
 my-output-directory
+.env
