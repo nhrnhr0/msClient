@@ -24,7 +24,8 @@ import { get_album_details } from './../../api/api';
             debugger;
             let item = $cartStore[itemIdx];
             let price = item.price;
-            
+            console.log('product: ', item);
+            console.log('price: ', price);
             
             if (price == 0) {
                 //let itemWithPrice = album.filter(item => item.id == item.id);
