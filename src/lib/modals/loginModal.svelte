@@ -31,7 +31,7 @@ import { get_album_details } from './../../api/api';
                 let found = false;
                 for(let album_idx in item.albums) {
                     let album_id = item.albums[album_idx];
-                    let album = await get_album_details(album_id);
+                    let album = await get_album_details(album_id, undefined, true);
                     for (let i = 0; i < album.length; i++) {
                         if (album[i].id == item.id) {
                             price = album[i].price;
