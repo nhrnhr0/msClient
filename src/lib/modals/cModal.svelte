@@ -305,6 +305,11 @@ Button,
             <div class="category-item-img-wraper" on:click="{open_product(img)}" >
               
               <img class="product-image" width="250px" height="250px" src="{CLOUDINARY_URL}f_auto,w_auto/{img.cimage}" alt="{img.description}" />
+              {#if $userInfoStore && $userInfoStore.isLogin && $userInfoStore.me && $userInfoStore.me.is_superuser}
+                  <div class="phisical_barcode-icon">
+                      {img.has_physical_barcode? '✅':'❌'}
+                  </div>
+              {/if}
               {#if img.out_of_stock}
                 <img src="https://res.cloudinary.com/ms-global/image/upload/v1648713887/msAssets/pngfind.com-pubg-player-png-5352359_1_bepovk.png" class="sold-out-icon" alt="מלאי לא זמין"/>
               {/if}
@@ -658,6 +663,14 @@ Button,
 }
 
 
+.phisical_barcode-icon {
+        position: absolute;
+        top: 90%;
+        right: 10px;
+        width: 20px;
+        height: 20px;
+        z-index: 1;
+    }
 /* Modal */
 
 .modal .modal_content {
