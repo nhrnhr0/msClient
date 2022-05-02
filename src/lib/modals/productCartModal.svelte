@@ -340,7 +340,7 @@ userInfoStore
                         
                           {#if $cartStore[product_id].varients.length == 0}
                             <div class="cell-wraper">
-                              <input class="size-input cls-cell" class:has-focus-error={show_add_amount_focus_error} type="number" on:blur="{input_blur_activate}" on:focus="{(e)=> {input_focus_activate(e, `${color}.${size}`);}}" placeholder="כמות" bind:value="{$cartStore[product_id].mentries[color][size].quantity}" min="0" max="9999" >
+                              <input class="size-input cls-cell" data-color="{color}" data-size="{size}" class:has-focus-error={show_add_amount_focus_error} type="number" on:blur="{input_blur_activate}" on:focus="{(e)=> {input_focus_activate(e, `${color}.${size}`);}}" placeholder="כמות" bind:value="{$cartStore[product_id].mentries[color][size].quantity}" min="0" max="9999" >
                             </div>
                           {:else}
                           
@@ -405,8 +405,9 @@ userInfoStore
                     -->
                     <!-- td with the calculated total quantity of each size in mentries -->
                     
-                      {#each Object.keys($cartStore[product_id].mentries[Object.keys($cartStore[product_id].mentries)[0]]) as size_id}
-                        <td class="total-cell">
+                      <!-- {#each  Object.keys($cartStore[product_id].mentries[Object.keys($cartStore[product_id].mentries)[0]]) as size_id} -->
+                      {#each $cartStore[product_id].sizes as size_id}
+                        <td class="total-cell" data-size-id="{size_id}">
                           <div>
                           <!-- calculate the sum of cartStore[$cartStore[product_id].id].mentries[X][size_id].quantity -->
                           {#if $cartStore[product_id].varients.length == 0}
