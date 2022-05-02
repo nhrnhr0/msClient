@@ -179,8 +179,8 @@ export function apiSearchProducts(keyword) {
     const url = SEARCH_API_URL + '?q=' + encodeURIComponent(keyword);
     return fetch_wraper(url);
 }
-export function get_album_details(albumId, server_fetch) {
-    if(albumsData[albumId]) {
+export function get_album_details(albumId, server_fetch, force_new=false) {
+    if(albumsData[albumId] && !force_new) {
         return albumsData[albumId];
     }
     else {

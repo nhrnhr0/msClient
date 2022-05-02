@@ -29,7 +29,8 @@ import { get_album_details } from './../../api/api';
             if (price == 0) {
                 //let itemWithPrice = album.filter(item => item.id == item.id);
                 let found = false;
-                for(let album_id in item.albums) {
+                for(let album_idx in item.albums) {
+                    let album_id = item.albums[album_idx];
                     let album = await get_album_details(album_id);
                     for (let i = 0; i < album.length; i++) {
                         if (album[i].id == item.id) {
