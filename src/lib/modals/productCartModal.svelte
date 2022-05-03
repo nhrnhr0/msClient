@@ -1,7 +1,8 @@
 <script>
   import {
     colorsJsonStore,
-    sizesJsonStore
+    sizesJsonStore,
+userInfoStore
   } from "./../../stores/stores";
   import {selectTextOnFocus,fullNumbersOnly} from "$lib/ui/inputActions";
   import {
@@ -255,6 +256,16 @@
       $cartStore[product_id].amount = 0;
     }
   }
+  function admin_edit_price(e) {
+    if ($userInfoStore && $userInfoStore.isLogin && $userInfoStore.me && $userInfoStore.me.is_superuser) {
+      let prom = prompt('ערוך מחיר', $cartStore[product_id].price);
+			if(prom) {
+				$cartStore[product_id].price = parseFloat(prom);
+        e.stopPropagation();
+        e.preventDefault();
+			}
+    }
+  }
 </script>
 
 
@@ -272,11 +283,17 @@
 
     <div class="modal-body">
       {#if is_loaded && $cartStore[product_id] != undefined}
+      
       <div class="product-grid-wraper">
-        
+        {#if $userInfoStore && $userInfoStore.isLogin && $userInfoStore.me && $userInfoStore.me.is_superuser}
+        <div on:click={admin_edit_price} class="product-price">
+          {$cartStore[product_id]?.price}₪
+        </div>
+        {/if}
         {#if $cartStore[product_id].show_sizes_popup}
           <div class="product-attributes">
             <div class="product-details">
+              
               <div class="product-title-wraper">
                 <div class="product-img">
                   <img width="150" height="150" src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[product_id].cimage}" alt="{$cartStore[product_id].title}">
@@ -325,7 +342,7 @@
                         
                           {#if $cartStore[product_id].varients.length == 0}
                             <div class="cell-wraper">
-                              <input class="size-input cls-cell" class:has-focus-error={show_add_amount_focus_error} type="number" on:blur="{input_blur_activate}" on:focus="{(e)=> {input_focus_activate(e, `${color}.${size}`);}}" placeholder="כמות" bind:value="{$cartStore[product_id].mentries[color][size].quantity}" min="0" max="9999" >
+                              <input class="size-input cls-cell" data-color="{color}" data-size="{size}" class:has-focus-error={show_add_amount_focus_error} type="number" on:blur="{input_blur_activate}" on:focus="{(e)=> {input_focus_activate(e, `${color}.${size}`);}}" placeholder="כמות" bind:value="{$cartStore[product_id].mentries[color][size].quantity}" min="0" max="9999" >
                             </div>
                           {:else}
                           
@@ -390,8 +407,9 @@
                     -->
                     <!-- td with the calculated total quantity of each size in mentries -->
                     
-                      {#each Object.keys($cartStore[product_id].mentries[Object.keys($cartStore[product_id].mentries)[0]]) as size_id}
-                        <td class="total-cell">
+                      <!-- {#each  Object.keys($cartStore[product_id].mentries[Object.keys($cartStore[product_id].mentries)[0]]) as size_id} -->
+                      {#each $cartStore[product_id].sizes as size_id}
+                        <td class="total-cell" data-size-id="{size_id}">
                           <div>
                           <!-- calculate the sum of cartStore[$cartStore[product_id].id].mentries[X][size_id].quantity -->
                           {#if $cartStore[product_id].varients.length == 0}
@@ -600,7 +618,7 @@
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      @media screen and (max-width: 780px) {
+      @media screen and (max-width: 1100px) {
         width:100%;
       }
       table.product-table {
