@@ -618,7 +618,7 @@ on:change={(event) => {
         //transform: translate(-50%, 0);
 
         width: 35%;
-        height: aut o;
+        height: auto;
         top: 30px;
         right: 0px;
     }
