@@ -285,13 +285,15 @@ userInfoStore
       {#if is_loaded && $cartStore[product_id] != undefined}
       
       <div class="product-grid-wraper">
-        
+        {#if $userInfoStore && $userInfoStore.isLogin && $userInfoStore.me && $userInfoStore.me.is_superuser}
+        <div on:click={admin_edit_price} class="product-price">
+          {$cartStore[product_id]?.price}₪
+        </div>
+        {/if}
         {#if $cartStore[product_id].show_sizes_popup}
           <div class="product-attributes">
             <div class="product-details">
-              <div on:click={admin_edit_price} class="product-price">
-                {$cartStore[product_id]?.price}₪
-              </div>
+              
               <div class="product-title-wraper">
                 <div class="product-img">
                   <img width="150" height="150" src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[product_id].cimage}" alt="{$cartStore[product_id].title}">
