@@ -1,10 +1,10 @@
 <script context="module">
-    import { userInfoStore } from './../stores/stores';
+    import { userInfoStore } from '.../../stores/stores';
     
 </script>
 <script>
     import { onMount } from "svelte"
-    import { adming_get_campains } from './../api/api';
+    import { adming_get_campains } from '.../../api/api';
 import { browser } from '$app/env';
     let campains_promise = adming_get_campains();
     // redirect user to the main page if they are not superusers

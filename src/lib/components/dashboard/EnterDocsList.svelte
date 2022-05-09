@@ -1,0 +1,86 @@
+
+<script>
+import { admin_get_enter_docs } from './../../../api/api'
+
+import { onMount } from "svelte";
+
+
+    let enter_docs_promise;// admin_get_enter_docs();
+    onMount(()=> {
+        enter_docs_promise = admin_get_enter_docs();
+        console.log(enter_docs_promise);
+    })
+</script>
+
+
+<h1 class="header-title">טפסי הכנסה למלאי</h1>
+<table>
+    <thead>
+        <tr>
+            <th>מספר הכנסה</th>
+            <th>תאריך הכנסה</th>
+            <th>מספר חשבונית</th>
+            <th>ספק</th>
+            <th>מחסן</th>
+            <th>מכניס ההזמנה</th>
+            <th>האם מוכל</th>
+        </tr>
+    </thead>
+    <tbody>
+        {#if enter_docs_promise}
+            {#await enter_docs_promise}
+                loading...
+            {:then enter_docs}
+                {#each enter_docs as enter_doc}
+                <tr>
+                    <td><a href="/dashboard/inv/doc-stock-enter/{enter_doc.id}">{enter_doc.id}</a></td>
+                    <td>{new Date(enter_doc.created_at).toLocaleString('he-IL')}</td>
+                    <td>{enter_doc.docNumber}</td>
+                    <td>{enter_doc.provider_name}</td>
+                    <td>{enter_doc.warehouse_name}</td>
+                    <td>{enter_doc.username}</td>
+                    <td>{enter_doc.isAplied? '✅':'❌'}</td>
+                </tr>
+                {/each}
+            {:catch error}
+                {error.message}
+            {/await}
+        {/if}
+    </tbody>
+</table>
+
+<style lang="scss">
+    .header-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+        thead {
+            tr {
+                th {
+                    text-align: center;
+                    background-color: #f5f5f5;
+                }
+            }
+        }
+        tbody {
+            tr {
+                td {
+                    text-align: center;
+                    
+                }
+                &:nth-child(odd) {
+                    background-color: #b3b3b3;
+                }
+
+                &:nth-child(even) {
+                    background-color: #d3d3d3;
+                }
+            }
+        }
+    }
+</style>

@@ -8,6 +8,16 @@ import { browser } from '$app/env';
 import { get} from 'svelte/store';
 //import { request_refresh_token } from "./auth";
 
+export function admin_get_enter_docs() {
+    return fetch_wraper(`${BASE_URL}/inv/doc-stock-list-api`, {
+        method: "GET",
+    });
+}
+export function get_doc_stock_enter(doc_id) {
+    return fetch_wraper(`${BASE_URL}/inv/doc-stock-detail-api/${doc_id}`, {
+        method: "GET",
+    });
+}
 export async function apiGetAllUsers() {
     return fetch_wraper(GET_ALL_USERS_URL);
 }
