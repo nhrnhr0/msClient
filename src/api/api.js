@@ -2,15 +2,24 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL,GET_ALL_USERS_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL} from "./consts";
+import { BASE_URL,GET_ALL_USERS_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL, SEARCH_PPN_API_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
 //import { request_refresh_token } from "./auth";
-
+export function apiSearchPPN(keyword, provider) {
+    const url = SEARCH_PPN_API_URL + '?q=' + encodeURIComponent(keyword) + '&provider=' + encodeURIComponent(provider);
+    return fetch_wraper(url);
+}
 export function admin_get_enter_docs() {
     return fetch_wraper(`${BASE_URL}/inv/doc-stock-list-api`, {
         method: "GET",
+    });
+}
+export function addPPNToEnterDoc(data) {
+    return fetch_wraper(`${BASE_URL}/inv/enter-doc/add-doc-stock-enter-ppn`, {
+        method: "POST",
+        body: JSON.stringify(data)
     });
 }
 export function get_doc_stock_enter(doc_id) {
@@ -185,6 +194,14 @@ export function fetch_wraper(url, requestOptions, custom_fetch, isRetry = false,
 export function api_get_user_campains() {
     return fetch_wraper(USER_GET_CAMPAINS_URL);
 }
+// export function getAllProviders() {
+//     return fetch_wraper(GET_ALL_PROVIDERS_URL);
+// }
+// export function apiSearchProviders(keyword) {
+//     const url = SEARCH_PROVIDERS_API_URL + '?q=' + encodeURIComponent(keyword);
+//     return fetch_wraper(url);
+// }
+
 export function apiSearchProducts(keyword) {
     const url = SEARCH_API_URL + '?q=' + encodeURIComponent(keyword);
     return fetch_wraper(url);

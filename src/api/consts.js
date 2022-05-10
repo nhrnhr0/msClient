@@ -41,11 +41,13 @@ export const LOGS_URL = BASE_URL + '/api/logs/';
 export const ADMIN_GET_ALL_CAMPAINS_URL = ADMIN_API_URL + '/get-all-campaigns/';
 export const USER_GET_CAMPAINS_URL = BASE_API_URL + 'get-user-campains/';
 export const GET_ALL_USERS_URL = BASE_URL + '/api/get-all-users/';
-
+// export const SEARCH_PROVIDERS_API_URL = BASE_URL + '/search-providers';
+// export const GET_ALL_PROVIDERS_URL = BASE_URL + '/svelte/api/providers/';
 // CRM
 export const LEAD_DISTRIBUTION_URL = BASE_API_URL + 'lead-distribution/';
 export const GET_ALL_INTERESTS_URL = CRM_BASE_API + 'get-all-interests/';
 export const GET_ALL_BUSINESS_TYPES = CRM_BASE_API + 'get-all-business-types/'
+export const SEARCH_PPN_API_URL = BASE_URL + '/search-ppn';
 
 //http://127.0.0.1:8000/api/token/
 //export const OG_META_ALBUMS_URL = BASE_API_URL + 'og-meta-albums/';
