@@ -11,7 +11,14 @@ import { onMount } from "svelte";
         let quantity = parseInt(e.target.value);
         let size = parseInt(e.target.dataset.size);
         let color = parseInt(e.target.dataset.color);
-        let verient = parseInt(e.target.dataset.verient);
+        let verient_str = e.target.dataset.verient;
+        let verient = null;
+        if(verient_str) {
+            verient = parseInt(verient_str);
+        }
+        
+
+        debugger;
         let entry = entries.find(entry => entry.size == size && entry.color == color && entry.verient == verient);
         if (entry) {
             console.log('entry found');
@@ -59,7 +66,9 @@ import { onMount } from "svelte";
             {#each product.sizes as size_id}
               <th class="size-header">{$sizesJsonStore[size_id]?.size}</th>
             {/each}
+            <!--
             <th class="delete-cell-style">מחק</th>
+            -->
           </tr>
         </thead>
         <tbody>
@@ -103,14 +112,100 @@ import { onMount } from "svelte";
                       </td>
                       
                     {/each}
+                    <!--
                     <td class="delete-cell-style">
                       <button class="remove-button">
                         <svg xmlns="http://www.w3.org/2000/svg" on:click={clear_sizes_entries(color)}  width="16px" height="16px" viewBox="0 0 32 36"><path fill="currentColor" d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"/></svg>
                       </button>
-                    </td>
+                    </td>-->
                   </tr>
                   
                 {/each}
+
+                <tr>
+                  <td class="total-cell">
+                    <div>
+                      סך הכל:
+                    </div>
+                  </td>
+                  {#if product.varients.length != 0}
+                    <td class="total-cell">
+                      <div>-</div>
+                    </td>
+                  {/if}
+
+                    <!--
+                      cartStore[$productData.id].mentries[color_id][size_id].quantity
+                    -->
+                    <!-- td with the calculated total quantity of each size in mentries -->
+                    
+                      <!-- {#each  Object.keys($cartStore[product_id].mentries[Object.keys($cartStore[product_id].mentries)[0]]) as size_id} -->
+                      {#each product.sizes as size_id}
+                        <td class="total-cell" data-size-id="{size_id}">
+                          <div>
+                          <!-- calculate the sum of cartStore[$cartStore[product_id].id].mentries[X][size_id].quantity -->
+                          {#if product.varients.length == 0}
+                            {
+                              entries.reduce((acc, entry) => {
+                                return acc + (entry.size == size_id? entry.quantity:0);
+                              }, 0)
+                            }
+                          <!--
+                            { Object.keys($cartStore[prouct.id].mentries).reduce((acc, curr) => {
+                              return acc + ($cartStore[$cartStore[product_id].id].mentries[curr][size_id].quantity || 0);
+                            }, 0)}
+                            -->
+                          {:else}
+                          {
+                            entries.reduce((acc, entry) => {
+                              return acc + (entry.size == size_id? entry.quantity:0);
+                            }, 0)
+                          }
+                          <!--
+                            { Object.keys($cartStore[$cartStore[product_id].id].mentries).reduce((acc, curr) => {
+                              let sum = 0;
+                              for(let i = 0; i < $cartStore[product_id].varients.length; i++){
+                                sum += ($cartStore[$cartStore[product_id].id].mentries[curr][size_id][$cartStore[product_id].varients[i].id].quantity || 0);
+                              }
+                              return acc + sum;
+                            }, 0)}
+                          -->
+                          {/if}
+                          </div>
+                        </td>
+                      {/each}
+                      <td class="total-cell">
+                        <div>
+                          {entries.reduce((acc, entry) => {
+                            return acc + entry.quantity;
+                          }, 0)}
+                        </div>
+                      </td>
+                    
+                  
+                  <!--
+                    {#each Object.keys($productData.mentries[color_entry]) as size_id}
+                      
+                        {$productData.mentries[color_entry][size_id].quantity}
+                      </td>
+                    {/each}
+                    -->
+                </tr>
         </tbody>
     </table>
 {/if}
+
+<style lang="scss">
+  .total-cell {
+  div {
+    font-weight: bold;
+    background-color: rgba(34, 34, 34, 0.746);
+    //min-width: 80px;
+    color:white;
+    border: 1px solid #777777;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+  }
+}
+</style>

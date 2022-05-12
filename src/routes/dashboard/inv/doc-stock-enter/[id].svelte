@@ -25,14 +25,21 @@ import { BASE_URL } from "@src/api/consts";
 import SizeColorEdit from "@src/lib/components/dashboard/SizeColorEdit.svelte";
 import SizeColorTable from "@src/lib/components/dashboard/SizeColorTable.svelte";
 import { writable } from "svelte/store";
-import { save_enter_doc_edit_to_server } from "@src/api/api";
+import { save_enter_doc_edit_to_server, remove_product_from_enter_doc_api } from "@src/api/api";
+import { Spinner } from "sveltestrap";
+import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
     let doc_promise;
     let doc_data = writable(undefined);
     let grouped_items;
     export let id;
     onMount(async () => {
+        get_all_warehouses();
         reload_doc_info();
     });
+    let warehouses;
+    async function get_all_warehouses() {
+        warehouses = await get_warehouses_api();
+    }
     async function searchPPN(keyword) {
         let json = await apiSearchPPN(keyword, $doc_data.provider_name);
         let data = json;
@@ -64,6 +71,7 @@ import { save_enter_doc_edit_to_server } from "@src/api/api";
             let buy_price = e.buy_price;
             inp_product_form_cost = buy_price;
             inp_product_form_barcode = barcode;
+            inp_product_form_warehouse = e.default_warehouse
             inp_product_image = e.product_image;
             console.log('ppn_selected_fill_form: ', e);
             isPPNSelected = true;
@@ -76,34 +84,87 @@ import { save_enter_doc_edit_to_server } from "@src/api/api";
     let inp_selected_ppn = '';
     let inp_product_form_cost = '';
     let inp_product_form_barcode = '';
+    let inp_product_form_warehouse = '';
     let inp_product_image
     let selectedPPNToAdd;
+    let sending_data_to_server = false;
     function save_document_to_server() {
         let data = {
             id: id,
             doc_data: $doc_data
         }
-        save_enter_doc_edit_to_server(data);
+        sending_data_to_server = true;
+        let result = save_enter_doc_edit_to_server(data);
+        debugger;
+        result.then((dat) => {
+            debugger;
+            set_load_info(dat);
+            sending_data_to_server = false;
+        }).catch((e) => {
+            debugger;
+            alert(e);
+            sending_data_to_server = false;
+        });
     }
 
     function add_product_to_enter_document(e) {
         e.preventDefault();
         if(isPPNSelected) {
+            sending_data_to_server = true;
             let data = {
                 item_id: inp_selected_ppn,
                 item_cost: inp_product_form_cost,
                 item_barcode: inp_product_form_barcode,
+                item_warehouse: inp_product_form_warehouse,
                 doc_id: id,
             };
             console.log('item: ', data);
             addPPNToEnterDoc(data).then((new_doc_data) => {
-                set_load_info(new_doc_data)
+                set_load_info(new_doc_data);
+                
+            }).finally(() => {
+                sending_data_to_server = false;
             });
         }else {
             alert('Please select PPN');
         }
     }
 
+    function remove_product_from_enter_doc(item_id) {
+        let data = {
+            item_id: item_id,
+            doc_id: id,
+        };
+        console.log('item: ', data);
+        let result = confirm('Are you sure you want to remove this item?');
+        if(result) {
+            sending_data_to_server = true;
+            remove_product_from_enter_doc_api(data).then((new_doc_data) => {
+                set_load_info(new_doc_data)
+            }).finally(() => {
+                sending_data_to_server = false;
+            });
+        }
+
+    }
+    function insert_doc_to_inventory() {
+        let data = {
+            id: id,
+            doc_data: $doc_data
+        }
+        console.log('item: ', data);
+        let result = confirm('Are you sure you want to insert this document to inventory?');
+        if(result) {
+            sending_data_to_server = true;
+            save_enter_doc_edit_to_server(data).then((new_doc_data) => {
+                set_load_info(new_doc_data)
+                insert_doc_to_inventory_api($doc_data.id);
+
+            }).finally(() => {
+                sending_data_to_server = false;
+            });
+        }
+    }
 </script>
 <form action="/dashboard/inv/doc-stock-enter/[id]/edit" method="POST">
 <table class="header-table">
@@ -113,8 +174,8 @@ import { save_enter_doc_edit_to_server } from "@src/api/api";
             <th>מספר חשבונית</th>
             <th>ספק</th>
             <th>תאריך</th>
-            <th>מחסן</th>
             <th>תיאור</th>
+            <th>ערוך</th>
         </tr>
     </thead>
     <tbody>
@@ -122,13 +183,18 @@ import { save_enter_doc_edit_to_server } from "@src/api/api";
                 
                 {#if $doc_data}
                     <td>{$doc_data.id}</td>
-                    <td><input type="text" bind:value={$doc_data.docNumber} /></td>
+                    <td>{$doc_data.docNumber}</td>
                     <td>
                         {$doc_data.provider_name}
                     </td>
                     <td>{new Date($doc_data.created_at).toLocaleString('he-IL')}</td>
-                    <td>{$doc_data.warehouse_name}</td>
                     <td>{$doc_data.description}</td>
+                    <td>
+                        <a href="{BASE_URL}/admin/inventory/docstockenter/{$doc_data.id}/change/"
+                        onclick="window.open('{BASE_URL}/admin/inventory/docstockenter/{$doc_data.id}/change/?_to_field=id&_popup=1', 
+                            'newwindow', 
+                            'width=800,height=500'); 
+                                return false;">ערוך</a>
                 {/if}
                 
                 </tr>
@@ -137,25 +203,51 @@ import { save_enter_doc_edit_to_server } from "@src/api/api";
     <table class="items">
         <thead>
             <tr>
-                <th>id</th>
+                <th>תמונה</th>
+                <th>ברקוד</th>
                 <th>שם בחשבונית</th>
                 <th>מוצר אצלנו</th>
-                <th>מחיר אחרון</th>
+                <th>מחיר קנייה (ללא מע"מ)</th>
+                <th> מחסן</th>
                 <th>כמות כוללת</th>
+                <th>מחק</th>
             </tr>
         </thead>
         <tbody>
             {#if $doc_data}
                 {#each $doc_data.items as item}
-                    <tr>
-                        <td>{item.id}</td>
+                    <tr class="part-1">
+                        <td><img width="50px" height="50px" src={CLOUDINARY_URL + item.ppn.product.cimage} alt="{item.ppn.product.title}" /></td>
+                        <td><input type="text" bind:value={item.barcode}/></td>
                         <td>{item.ppn.providerProductName}</td>
                         <td>{item.ppn.product.title}</td>
-                        <td>{item.price}</td>
+                        <td>₪<input type="number" step="0.01" bind:value={item.price} /></td>
+                        <td>
+                            {#if warehouses}
+                            <select bind:value={item.warehouse}>
+                                {#each warehouses as warehouse}
+                                    <option  value="{warehouse.id}" selected={item.warehouse == warehouse.id} >{warehouse.name}</option>
+                                {/each}
+                            </select>
+                            {/if}
+                        </td>
                         <td>{item.total_quantity}</td>
+                        <td>
+                            <button class="btn btn-danger" disabled={sending_data_to_server} on:click={() => {
+
+                                remove_product_from_enter_doc(item.id);
+                            }}>
+                                מחק
+                            </button>
+                            <!--
+                            <a href="{BASE_URL}/admin/inventory/productenteritems/{item.id}/delete/" class="btn btn-danger"
+                            onclick="window.open('{BASE_URL}/admin/inventory/productenteritems/{item.id}/delete?_to_field=id&_popup=1', 
+                            'newwindow', 
+                            'width=800,height=500'); 
+                                return false;">מחק</a>-->
                     </tr>
-                    <tr>
-                        <td colspan="5">
+                    <tr  class="part-2">
+                        <td colspan="8">
                             <!--
                             <SizeColorEdit product={item.ppn.product} entries={item.entries}/>
                             -->
@@ -178,8 +270,19 @@ import { save_enter_doc_edit_to_server } from "@src/api/api";
             {/if}
         </tbody>
     </table>
-    <button on:click={save_document_to_server} >שמור</button>
-    {JSON.stringify($doc_data)}
+    <div class="floating-submit-container">
+        <button class="btn btn-primary" disabled={sending_data_to_server} on:click={save_document_to_server} >
+            {#if sending_data_to_server || $doc_data == undefined}
+                <Spinner />
+            {:else}
+                שמור     
+            {/if}
+        </button>
+
+        <button class="btn btn-secondary" on:click="{insert_doc_to_inventory}"
+        >הכנס מסמך למלאי</button>
+    </div>
+    
     <form action="POST" on:submit="{add_product_to_enter_document}">
         <h3>הוסף מוצר לטופס</h3>
         <div class="form-group">
@@ -209,17 +312,33 @@ import { save_enter_doc_edit_to_server } from "@src/api/api";
 
 
             <label for="cost_price">מחיר עלות (ללא מע"מ)</label>
-            <input type="text" bind:value={inp_product_form_cost}  disabled step="0.01" name="cost_price" />
+            <input type="text" bind:value={inp_product_form_cost}  disabled={!isPPNSelected} step="0.01" name="cost_price" />
 
             <label for="barcode">ברקוד</label>
-            <input type="text" bind:value={inp_product_form_barcode} disabled name="barcode" />
+            
+            <input type="text" bind:value={inp_product_form_barcode} disabled={!isPPNSelected} name="barcode" />
+            <label for="warehouse">מחסן</label>
+            {#if warehouses}
+                <select disabled={!isPPNSelected} bind:value="{inp_product_form_warehouse}">
+                    {#each warehouses as warehouse}
+                        <option  value="{warehouse.id}" selected={inp_product_form_warehouse == warehouse.id} >{warehouse.name}</option>
+                    {/each}
+                </select>
+            {/if}
+            
             {#if isPPNSelected}
                 <a href="{BASE_URL}/admin/inventory/ppn/{inp_selected_ppn}/change/" target="_blank"
                 onclick="window.open('{BASE_URL}/admin/inventory/ppn/{inp_selected_ppn}/change?_to_field=id&_popup=1', 
                             'newwindow', 
                             'width=800,height=500'); 
                                 return false;">ערוך מוצר</a>
-                <button type="submit">הוסף</button>
+                <button type="submit">
+                    {#if sending_data_to_server}
+                        <Spinner />
+                    {:else}
+                        הוסף
+                    {/if}
+                </button>
             {/if}
         </div>
     </form>
@@ -261,12 +380,37 @@ import { save_enter_doc_edit_to_server } from "@src/api/api";
     </form>
 
 <style lang="scss">
+    tr.part-1 {
+        background-color: #3f3f3f;
+        color:white;
+    }
+    tr.part-2 {
+        background-color: #d8d8d8;
+        td {
+            
+            :global(table.product-table) {
+                
+                margin: auto;
+                :global(tr) {
+                    :global(td) {
+                        border: 1px solid black;
+                    }
+                }
+            }
+        }
+    }
+    .floating-submit-container {
+        position: fixed;
+        bottom: 20px;
+        left: 10px;
+        z-index: 9999;
+    }
     table.header-table {
         width: 100%;
         border-collapse: collapse;
         text-align: center;
         thead {
-            background-color: #f2f2f2;
+            background-color: #5dff48;
             tr{
                 th {
                     padding: 10px;
