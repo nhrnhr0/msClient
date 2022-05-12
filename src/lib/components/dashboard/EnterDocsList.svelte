@@ -3,12 +3,12 @@
 import { admin_get_enter_docs } from './../../../api/api'
 
 import { onMount } from "svelte";
+import { BASE_URL } from '@api/consts';
 
 
     let enter_docs_promise;// admin_get_enter_docs();
     onMount(()=> {
         enter_docs_promise = admin_get_enter_docs();
-        console.log(enter_docs_promise);
     })
 </script>
 
@@ -24,6 +24,7 @@ import { onMount } from "svelte";
             <th>מחסן</th>
             <th>מכניס ההזמנה</th>
             <th>האם מוכל</th>
+            <th>ערוך</th>
         </tr>
     </thead>
     <tbody>
@@ -40,6 +41,12 @@ import { onMount } from "svelte";
                     <td>{enter_doc.warehouse_name}</td>
                     <td>{enter_doc.username}</td>
                     <td>{enter_doc.isAplied? '✅':'❌'}</td>
+                    <td><a href="{BASE_URL}/admin/inventory/docstockenter/{enter_doc.id}/change/"
+                        onclick="window.open('{BASE_URL}/admin/inventory/docstockenter/{enter_doc.id}/change/?_to_field=id&_popup=1', 
+                            'newwindow', 
+                            'width=800,height=500'); 
+                                return false;">ערוך</a></td>
+                    
                 </tr>
                 {/each}
             {:catch error}

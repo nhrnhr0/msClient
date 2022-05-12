@@ -1,6 +1,8 @@
 
 <script context="module">
     // load function:
+
+    export const prerender = false;
     export async function load({ page, fetch, session, stuff }) {
         /*console.log('params: ', page.params);
         console.log('fetch: ', fetch);
@@ -21,15 +23,18 @@ import { apiSearchPPN,addPPNToEnterDoc } from "@src/api/api";
 import { onMount } from "svelte";
 import { BASE_URL } from "@src/api/consts";
 import SizeColorEdit from "@src/lib/components/dashboard/SizeColorEdit.svelte";
+import SizeColorTable from "@src/lib/components/dashboard/SizeColorTable.svelte";
+import { writable } from "svelte/store";
+import { save_enter_doc_edit_to_server } from "@src/api/api";
     let doc_promise;
-    let doc_data;
+    let doc_data = writable(undefined);
     let grouped_items;
     export let id;
     onMount(async () => {
         reload_doc_info();
     });
     async function searchPPN(keyword) {
-        let json = await apiSearchPPN(keyword, doc_data.provider_name);
+        let json = await apiSearchPPN(keyword, $doc_data.provider_name);
         let data = json;
         console.log(data);
         return data;
@@ -44,7 +49,7 @@ import SizeColorEdit from "@src/lib/components/dashboard/SizeColorEdit.svelte";
     }
 
     function set_load_info(new_doc_data) {
-        doc_data = new_doc_data;
+        doc_data.set(new_doc_data)
     }
 
 
@@ -73,7 +78,13 @@ import SizeColorEdit from "@src/lib/components/dashboard/SizeColorEdit.svelte";
     let inp_product_form_barcode = '';
     let inp_product_image
     let selectedPPNToAdd;
-
+    function save_document_to_server() {
+        let data = {
+            id: id,
+            doc_data: $doc_data
+        }
+        save_enter_doc_edit_to_server(data);
+    }
 
     function add_product_to_enter_document(e) {
         e.preventDefault();
@@ -109,15 +120,15 @@ import SizeColorEdit from "@src/lib/components/dashboard/SizeColorEdit.svelte";
     <tbody>
                 <tr>
                 
-                {#if doc_data}
-                    <td>{doc_data.id}</td>
-                    <td><input type="text" bind:value={doc_data.docNumber} /></td>
+                {#if $doc_data}
+                    <td>{$doc_data.id}</td>
+                    <td><input type="text" bind:value={$doc_data.docNumber} /></td>
                     <td>
-                        {doc_data.provider_name}
+                        {$doc_data.provider_name}
                     </td>
-                    <td>{new Date(doc_data.created_at).toLocaleString('he-IL')}</td>
-                    <td>{doc_data.warehouse_name}</td>
-                    <td>{doc_data.description}</td>
+                    <td>{new Date($doc_data.created_at).toLocaleString('he-IL')}</td>
+                    <td>{$doc_data.warehouse_name}</td>
+                    <td>{$doc_data.description}</td>
                 {/if}
                 
                 </tr>
@@ -134,8 +145,8 @@ import SizeColorEdit from "@src/lib/components/dashboard/SizeColorEdit.svelte";
             </tr>
         </thead>
         <tbody>
-            {#if doc_data}
-                {#each doc_data.items as item}
+            {#if $doc_data}
+                {#each $doc_data.items as item}
                     <tr>
                         <td>{item.id}</td>
                         <td>{item.ppn.providerProductName}</td>
@@ -145,7 +156,12 @@ import SizeColorEdit from "@src/lib/components/dashboard/SizeColorEdit.svelte";
                     </tr>
                     <tr>
                         <td colspan="5">
-                            <SizeColorEdit product={item.ppn.product} />
+                            <!--
+                            <SizeColorEdit product={item.ppn.product} entries={item.entries}/>
+                            -->
+                            {#if item.entries}
+                                <SizeColorTable product={item.ppn.product} bind:entries={item.entries}/>
+                            {/if}
                         </td>
                     </tr>
                 {/each}
@@ -162,7 +178,8 @@ import SizeColorEdit from "@src/lib/components/dashboard/SizeColorEdit.svelte";
             {/if}
         </tbody>
     </table>
-
+    <button on:click={save_document_to_server} >שמור</button>
+    {JSON.stringify($doc_data)}
     <form action="POST" on:submit="{add_product_to_enter_document}">
         <h3>הוסף מוצר לטופס</h3>
         <div class="form-group">
@@ -197,13 +214,23 @@ import SizeColorEdit from "@src/lib/components/dashboard/SizeColorEdit.svelte";
             <label for="barcode">ברקוד</label>
             <input type="text" bind:value={inp_product_form_barcode} disabled name="barcode" />
             {#if isPPNSelected}
-                <a href='{BASE_URL}/admin/inventory/ppn/{inp_selected_ppn}/change/' target="_blank">ערוך מוצר</a>
+                <a href="{BASE_URL}/admin/inventory/ppn/{inp_selected_ppn}/change/" target="_blank"
+                onclick="window.open('{BASE_URL}/admin/inventory/ppn/{inp_selected_ppn}/change?_to_field=id&_popup=1', 
+                            'newwindow', 
+                            'width=800,height=500'); 
+                                return false;">ערוך מוצר</a>
                 <button type="submit">הוסף</button>
             {/if}
         </div>
     </form>
     <form action="/dashboard/inv/create-new-ppn" method="POST">
         <h3>הוסף ppn לא קיים</h3>
+        <a href="{BASE_URL}/admin/inventory/ppn/add/" target="_blank" 
+        onclick="window.open('{BASE_URL}/admin/inventory/ppn/add?_to_field=id&_popup=1',
+                    'newwindow',
+                    'width=800,height=500');
+                        return false;">הוסף ppn לא קיים</a>
+                        <!--
         <label for="ppn_name">שם בחשבונית</label>
         <input type="text" name="ppn_name" id="ppn_name" />
         <AutoComplete  id="newPPNEnteryInput" loadingText="מחפש מוצרים..."
@@ -230,6 +257,7 @@ import SizeColorEdit from "@src/lib/components/dashboard/SizeColorEdit.svelte";
         <label for="site_product"></label>
         <input type="text" name="site_product" placeholder="מוצר אצלנו">
         <input type="submit" value="צור PPN">
+        -->
     </form>
 
 <style lang="scss">
