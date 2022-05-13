@@ -165,6 +165,23 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
             });
         }
     }
+
+
+
+
+    // new products funtionality:
+    let inp_new_product_name = '';
+    let inp_new_product_price = '';
+    let inp_new_product_barcode1 = '';
+    let inp_new_product_barcode2 = '';
+    let inp_new_product_comments = '';
+
+
+
+
+
+
+
 </script>
 <form action="/dashboard/inv/doc-stock-enter/[id]/edit" method="POST">
 <table class="header-table">
@@ -283,8 +300,13 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
         >הכנס מסמך למלאי</button>
     </div>
     
-    <form action="POST" on:submit="{add_product_to_enter_document}">
+    <form class="add-product-to-doc" action="POST" on:submit="{add_product_to_enter_document}">
         <h3>הוסף מוצר לטופס</h3>
+        <h6><a href="{BASE_URL}/admin/inventory/ppn/add/" target="_blank" 
+            onclick="window.open('{BASE_URL}/admin/inventory/ppn/add?_to_field=id&_popup=1',
+                        'newwindow',
+                        'width=800,height=500');
+                            return false;">הוסף ppn לא קיים</a></h6>
         <div class="form-group">
             {#if isPPNSelected && inp_product_image}
                 <img width="50px" height="50px" src="{CLOUDINARY_URL + inp_product_image}" alt="">
@@ -342,44 +364,97 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
             {/if}
         </div>
     </form>
-    <form action="/dashboard/inv/create-new-ppn" method="POST">
-        <h3>הוסף ppn לא קיים</h3>
-        <a href="{BASE_URL}/admin/inventory/ppn/add/" target="_blank" 
-        onclick="window.open('{BASE_URL}/admin/inventory/ppn/add?_to_field=id&_popup=1',
-                    'newwindow',
-                    'width=800,height=500');
-                        return false;">הוסף ppn לא קיים</a>
-                        <!--
-        <label for="ppn_name">שם בחשבונית</label>
-        <input type="text" name="ppn_name" id="ppn_name" />
-        <AutoComplete  id="newPPNEnteryInput" loadingText="מחפש מוצרים..."
-                            create={false} showLoadingIndicator=true noResultsText=""
-                            searchFunction={searchPPN} delay={200}
-                            localFiltering="{false}" labelFieldName="providerProductName"
-                            valueFieldName="providerProductName" bind:selectedItem={selectedPPNToAdd}
-                        >
-                        <div slot="item" let:item={item} let:label={label}>
-                            <div class="search-item">
-                                <div class="inner">
-                                    <div class="label">
-                                        {item.providerProductName} - 
-                                        <span>{item.product_name}</span>
-                                    </div>
-                                </div>
-                            </div>
+        
+
+        <div class="products-not-in-website">
+            <h3>מוצרים שאינם באתר</h3>
+            {#if $doc_data}
+                <div class="form-group">
+                    <fieldset>
+                        <legend>שורה חדשה</legend>
+                    <div class="new-line">
+                    <label for="product_name">שם מוצר</label>
+                    <input type="text" bind:value={inp_new_product_name} name="product_name" />
+                    <label for="product_price">מחיר</label>
+                    <input type="text" bind:value={inp_new_product_price} name="product_price" />
+                    <label for="product_barcode">ברקוד</label>
+                    <input type="text" bind:value={inp_new_product_barcode1} name="product_barcode" />
+                    <label for="product_barcode2">ברקוד נוסף</label>
+                    <input type="text" bind:value={inp_new_product_barcode2} name="product_barcode2" />
+                    <label for="comments">הערות</label>
+                    <textarea name="comments" bind:value="{inp_new_product_comments}"></textarea>
+                    <button on:click="{()=>{$doc_data.new_products = [...$doc_data.new_products,
+                        {product_name: inp_new_product_name,
+                        product_price: inp_new_product_price,
+                        product_barcode1: inp_new_product_barcode1,
+                        product_barcode2: inp_new_product_barcode2,
+                        product_comments: inp_new_product_comments,}];
+                        inp_new_product_name = '';
+                        inp_new_product_price = '';
+                        inp_new_product_barcode1 = '';
+                        inp_new_product_barcode2 = '';
+                        inp_new_product_comments = '';}}" class="btn btn-primary" type="button">הוסף</button>
+                    </div>
+                    </fieldset>
+                </div>
+                <div class="form-group">
+                    
+                    <fieldset>
+                        <legend>שורות קיימות</legend>
+                        {#each $doc_data.new_products as newProduct}
+                        
+                        <div class="exist-line">
+                            <label for="product_name">שם מוצר</label>
+                            <input type="text" bind:value={newProduct.product_name} name="product_name" />
+                            <label for="product_price">מחיר</label>
+                            <input type="text" bind:value={newProduct.produc_price} name="product_price" />
+                            <label for="product_barcode">ברקוד</label>
+                            <input type="text" bind:value={newProduct.product_barcode1} name="product_barcode" />
+                            <label for="product_barcode2">ברקוד נוסף</label>
+                            <input type="text" bind:value={newProduct.product_barcode2} name="product_barcode2" />
+                            <label for="comments">הערות</label>
+                            <textarea name="comments" bind:value={newProduct.product_comments} ></textarea>
+                            <button class="btn btn-danger" on:click="{()=>{$doc_data.new_products = $doc_data.new_products.filter(product=>product != newProduct);}}" type="button">מחק</button>
+                            
                         </div>
-                        </AutoComplete>
-        <label for="barcode"> ברקוד</label>
-        <input type="text" name="barcode" value="">
-        <label for="price">מחיר עלות</label>
-        <input type="number" step="0.01" name="cost_price" placeholder="מחיר עלות">
-        <label for="site_product"></label>
-        <input type="text" name="site_product" placeholder="מוצר אצלנו">
-        <input type="submit" value="צור PPN">
-        -->
-    </form>
+                        <br>
+                        {/each}
+                    </fieldset>
+                </div>
+            {/if}
+        </div>
 
 <style lang="scss">
+    .products-not-in-website {
+        padding-bottom: 80px;
+        .new-line {
+            margin-top: 35px;
+            margin-bottom: 35px;
+            border-radius: 25px;
+            background-color: #9b9b9b;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .exist-line {
+            border-radius: 25px;
+            background-color: #cccaca;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+        }
+    }
+    form.add-product-to-doc {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+        background-color: #d4d4d4;
+        margin-left: 15px;
+        margin-right: 15px;
+    }
     tr.part-1 {
         background-color: #3f3f3f;
         color:white;
@@ -410,7 +485,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
         border-collapse: collapse;
         text-align: center;
         thead {
-            background-color: #5dff48;
+            background-color: #9b9b9b;
             tr{
                 th {
                     padding: 10px;
