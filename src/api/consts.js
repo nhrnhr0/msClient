@@ -51,6 +51,8 @@ export const SEARCH_PPN_API_URL = BASE_URL + '/search-ppn';
 export const ENTER_DOC_EDIT_URL = BASE_URL + '/enter-doc-edit/';
 export const ENTER_DOC_REMOVE_PRODUCT = BASE_URL + '/enter-doc-remove-product/';
 export const ENTER_DOC_INSERT_INVENTORY_URL = BASE_URL + '/enter-doc-insert-inventory/';
+export const GET_ALL_INVENTORY = BASE_URL + '/get-all-inventory-api/';
+export const INVENTORY_EDIT_ENTRY_URL = BASE_URL + '/inventory-edit-entry/';
 //http://127.0.0.1:8000/api/token/
 //export const OG_META_ALBUMS_URL = BASE_API_URL + 'og-meta-albums/';
 

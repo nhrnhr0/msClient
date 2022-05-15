@@ -191,6 +191,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
             <th>מספר חשבונית</th>
             <th>ספק</th>
             <th>תאריך</th>
+            <th>מחסן</th>
             <th>תיאור</th>
             <th>ערוך</th>
         </tr>
@@ -205,6 +206,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                         {$doc_data.provider_name}
                     </td>
                     <td>{new Date($doc_data.created_at).toLocaleString('he-IL')}</td>
+                    <td>{$doc_data.warehouse_name}</td>
                     <td>{$doc_data.description}</td>
                     <td>
                         <a href="{BASE_URL}/admin/inventory/docstockenter/{$doc_data.id}/change/"
@@ -225,7 +227,6 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                 <th>שם בחשבונית</th>
                 <th>מוצר אצלנו</th>
                 <th>מחיר קנייה (ללא מע"מ)</th>
-                <th> מחסן</th>
                 <th>כמות כוללת</th>
                 <th>מחק</th>
             </tr>
@@ -239,6 +240,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                         <td>{item.ppn.providerProductName}</td>
                         <td>{item.ppn.product.title}</td>
                         <td>₪<input type="number" step="0.01" bind:value={item.price} /></td>
+                        <!--
                         <td>
                             {#if warehouses}
                             <select bind:value={item.warehouse}>
@@ -248,6 +250,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                             </select>
                             {/if}
                         </td>
+                        -->
                         <td>{item.total_quantity}</td>
                         <td>
                             <button class="btn btn-danger" disabled={sending_data_to_server} on:click={() => {

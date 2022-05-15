@@ -2,11 +2,17 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL,GET_ALL_USERS_URL,ENTER_DOC_EDIT_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL, SEARCH_PPN_API_URL, ENTER_DOC_REMOVE_PRODUCT, ENTER_DOC_INSERT_INVENTORY_URL} from "./consts";
+import { BASE_URL,INVENTORY_EDIT_ENTRY_URL,GET_ALL_USERS_URL,ENTER_DOC_EDIT_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL, SEARCH_PPN_API_URL, ENTER_DOC_REMOVE_PRODUCT, ENTER_DOC_INSERT_INVENTORY_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
 //import { request_refresh_token } from "./auth";
+
+export async function update_stock_entry(entryId, data){ 
+    let url = INVENTORY_EDIT_ENTRY_URL + entryId;
+    fetch_wraper(url, {method: "POST", body: JSON.stringify(data)});
+}
+
 export async function get_warehouses_api() {
     let url = BASE_URL + "/get-all-warehouses-api/";
     return fetch_wraper(url);

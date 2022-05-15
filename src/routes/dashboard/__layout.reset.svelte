@@ -16,6 +16,8 @@ import { browser } from "$app/env";
       method: 'GET',
       redirect: 'follow'
     }, fetch)
+
+    
     let json = await response
     let logos_json = json.logos
     let albums_json = json.albums
@@ -37,6 +39,13 @@ import { browser } from "$app/env";
         sizesJsonStore.set(sizes_ret);
         colorsJsonStore.set(colors_ret);
     })
+
+    let selectedTab = 2;
+    function selectTab(tab) {
+        console.log('clicked')
+        selectedTab = tab;
+
+    }
 </script>
   <svelte:head>
     <!-- import 
@@ -51,4 +60,50 @@ import { browser } from "$app/env";
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.13.0/pivot.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.13.0/pivot.min.css">
   </svelte:head>
+
+  <nav>
+    <div class="nav-wrapper">
+        <ul class="nav-mobile">
+            <li data-tab-id="1" on:click={()=>{selectTab(1)}} class:active={selectedTab == 1}>
+                <a href="/dashboard/inv" >
+                מלאי
+                </a>
+            </li>
+            <li data-tab-id="2" on:click={()=>{selectTab(2)}} class:active={selectedTab == 2}>
+                <a href="/dashboard/doc-stock-enter" >
+                טפסי הכנסה למלאי
+                </a>
+            </li>
+            <li data-tab-id="3" on:click={()=>{selectTab(3)}} class:active={selectedTab == 3}>
+                <a href="#" >
+                טפסי הוצאה מהמלאי
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<style lang="scss">
+  nav {
+      .nav-wrapper {
+          .nav-mobile {
+              display: flex;
+              flex-direction: row;
+              justify-content: space-around;
+              align-items: center;
+              list-style: none;
+              li {
+                  background-color: #f5f5f5;
+                  padding: 7px;
+                  border-radius: 5px;
+                  cursor: pointer;
+                  &.active {
+                      background-color: #ffc107;
+                  }
+              }
+          }
+      }
+  }
+
+</style>
 <slot></slot>

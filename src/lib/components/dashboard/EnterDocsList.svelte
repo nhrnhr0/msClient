@@ -34,7 +34,7 @@ import { BASE_URL } from '@api/consts';
             {:then enter_docs}
                 {#each enter_docs as enter_doc}
                 <tr>
-                    <td><a href="/dashboard/inv/doc-stock-enter/{enter_doc.id}">{enter_doc.id}</a></td>
+                    <td><a href="/dashboard/doc-stock-enter/{enter_doc.id}">{enter_doc.id}</a></td>
                     <td>{new Date(enter_doc.created_at).toLocaleString('he-IL')}</td>
                     <td>{enter_doc.docNumber}</td>
                     <td>{enter_doc.provider_name}</td>
