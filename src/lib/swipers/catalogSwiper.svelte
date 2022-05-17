@@ -44,6 +44,7 @@ import { logStore } from './../../stores/logStore';
 import { selectTextOnFocus } from '$lib/ui/inputActions';
 import SvelteTooltip from 'svelte-tooltip';
 import QuestionLabel from '$lib/components/questionLabel.svelte';
+import { activeModalsStore } from '$lib/modals/modalManager';
 let mouse_over_right_arrow = false;
 let mouse_over_left_arrow = false;
 
@@ -310,8 +311,10 @@ let mouse_over_left_arrow = false;
         cartStore.removeFromCartById(productId);
     }
     function open_category_modal() {
-        $categoryModalStore.toggleModal();
-        $categoryModalStore.setAlbum(album);
+        if (activeModalsStore.isOpen('pModal') == false) {
+            $categoryModalStore.toggleModal();
+            $categoryModalStore.setAlbum(album);
+        }
     }
     function open_edit_amount_dialog(product_id) {
         //$productCartModalStore.set_product(product_id);
