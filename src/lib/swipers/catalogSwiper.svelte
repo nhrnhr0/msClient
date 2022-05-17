@@ -356,6 +356,7 @@ let mouse_over_left_arrow = false;
     }
 
     function background_click(e) {
+        e.preventDefault();
         console.log('background_click: ', e);
         let classs = e.target.classList
         if(classs.contains('lazy-swiper-wraper') || classs.contains('swiper') || classs.contains('swiper-wrapper') || classs.contains('swiper-pagination')) {

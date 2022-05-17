@@ -107,15 +107,19 @@ import SingleAmountModal from './singleAmountModal.svelte';
           productData.set(v[i]);
           productFound = true;
           error_loading_product = false;
+          console.log('found product to load ', v[i]);
           placeHolderText = 'טוען...';
           break;
         }
       }
       if (!productFound) {
+        console.log('product not found');
         if(retry < 3) {
+          console.log('retry loading product ', retry, ' of ', 3);
           setProduct(catalogId, productId, push_url, retry+1);
         }else {
           error_loading_product = true;
+          console.log('error loading product');
           placeHolderText = 'מוצר זה אינו זמין כרגע'; 
           return;
         }
@@ -123,9 +127,11 @@ import SingleAmountModal from './singleAmountModal.svelte';
     }).catch((e) => {
       console.log(e);
       if(retry < 3) {
+        console.log('[catch] retry loading product ', retry, ' of ', 3);
         setProduct(catalogId, productId, push_url, retry+1);
       }else {
         error_loading_product = true;
+        console.log('[catch] error loading product');
         return;
       }
     });
