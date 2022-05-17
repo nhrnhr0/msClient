@@ -25,6 +25,7 @@
     LOGOS_API_URL,
     MAIN_PAGE_API
   } from './../api/consts';
+
   import {
     api_get_user_campains, fetch_wraper
   } from './../api/api'
@@ -148,9 +149,11 @@
 {#if ($userInfoStore == undefined || $userInfoStore.isLogin == false)}
   <CartDisclaimer />
 {/if}
+{#if $userInfoStore.isLogin == true && $userInfoStore.me && $userInfoStore.me.show_prices == true}
 <div class="tax-text">
   המחירים באתר אינם כוללים מע"מ
 </div>
+{/if}
 <!--
 <FavoritesSidePopup />
 -->
@@ -199,6 +202,7 @@ import { bind } from 'svelte/internal';
 import { stateQuery} from './../stores/queryStore'
 import { logStore } from "../stores/logStore";
 import { campainsStore } from '../stores/stores';
+
 import {sl_disable, sl_enable} from "$lib/utils/scroll-lock";
 import CallToActionForm from '$lib/components/CallToActionForm.svelte';
 import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
