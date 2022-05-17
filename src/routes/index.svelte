@@ -276,6 +276,11 @@ import { flashy_page_view } from "$lib/flashy";
       console.log('user is loged in, updating campains');
       
       update_campains_with_local_data(csrf_response.whoAmI.campains);
+      let username = $userInfoStore.me.username;
+      window.$crisp.push(["set", "user:nickname", [username]]);
+      window.$crisp.push(["set", "user:email", [$userInfoStore.me.email]]);
+      window.$crisp.push(["set", "user:phone", [$userInfoStore.me.phone]]);
+
     }else {
       console.log('user is not loged in');
       $userInfoStore = {
@@ -320,7 +325,6 @@ import { flashy_page_view } from "$lib/flashy";
     window.addEventListener('scroll', () => {
       document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
     });
-
 
   });
 
