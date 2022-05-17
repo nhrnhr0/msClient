@@ -10,4 +10,4 @@ export $(grep -v '^#' .env | xargs)
 sudo git pull
 sudo npm i
 npm run build
-sudo pm2 restart svelte
+pm2 restart svelte
