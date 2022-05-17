@@ -311,11 +311,8 @@ let mouse_over_left_arrow = false;
         cartStore.removeFromCartById(productId);
     }
     function open_category_modal() {
-        debugger;
-        if (activeModalsStore.isOpen('pModal') == false || activeModalsStore.isOpen('pModal') == undefined) {
             $categoryModalStore.toggleModal();
             $categoryModalStore.setAlbum(album);
-        }
     }
     function open_edit_amount_dialog(product_id) {
         //$productCartModalStore.set_product(product_id);
@@ -362,7 +359,7 @@ let mouse_over_left_arrow = false;
         console.log('background_click: ', e);
         let classs = e.target.classList
         if(classs.contains('lazy-swiper-wraper') || classs.contains('swiper') || classs.contains('swiper-wrapper') || classs.contains('swiper-pagination')) {
-            open_category_modal();
+            //open_category_modal();
             return;
         }
         /*if(e.target.classList.contains('swiper-button-prev') || e.target.classList.contains('swiper-button-next')) {
