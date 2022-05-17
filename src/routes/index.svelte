@@ -25,6 +25,7 @@
     LOGOS_API_URL,
     MAIN_PAGE_API
   } from './../api/consts';
+
   import {
     api_get_user_campains, fetch_wraper
   } from './../api/api'
@@ -148,6 +149,11 @@
 {#if ($userInfoStore == undefined || $userInfoStore.isLogin == false)}
   <CartDisclaimer />
 {/if}
+{#if $userInfoStore.isLogin == true && $userInfoStore.me && $userInfoStore.me.show_prices == true}
+<div class="tax-text">
+  המחירים באתר אינם כוללים מע"מ
+</div>
+{/if}
 <!--
 <FavoritesSidePopup />
 -->
@@ -196,6 +202,7 @@ import { bind } from 'svelte/internal';
 import { stateQuery} from './../stores/queryStore'
 import { logStore } from "../stores/logStore";
 import { campainsStore } from '../stores/stores';
+
 import {sl_disable, sl_enable} from "$lib/utils/scroll-lock";
 import CallToActionForm from '$lib/components/CallToActionForm.svelte';
 import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
@@ -269,6 +276,11 @@ import { flashy_page_view } from "$lib/flashy";
       console.log('user is loged in, updating campains');
       
       update_campains_with_local_data(csrf_response.whoAmI.campains);
+      let username = $userInfoStore.me.username;
+      window.$crisp.push(["set", "user:nickname", [username]]);
+      window.$crisp.push(["set", "user:email", [$userInfoStore.me.email]]);
+      window.$crisp.push(["set", "user:phone", [$userInfoStore.me.phone]]);
+
     }else {
       console.log('user is not loged in');
       $userInfoStore = {
@@ -313,7 +325,6 @@ import { flashy_page_view } from "$lib/flashy";
     window.addEventListener('scroll', () => {
       document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
     });
-
 
   });
 
@@ -397,7 +408,17 @@ import { flashy_page_view } from "$lib/flashy";
 </script>
 
 <style lang="scss">
+  .tax-text {
+    font-size: larger;
+    color: #000000;
+    font-weight: bold;
+    margin-top: 5px;
+    width: 100%;
 
+    margin: auto;
+    text-align: center;
+    font-family: inherit;
+  }
 
 
 </style>
