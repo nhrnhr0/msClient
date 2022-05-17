@@ -148,6 +148,9 @@
 {#if ($userInfoStore == undefined || $userInfoStore.isLogin == false)}
   <CartDisclaimer />
 {/if}
+<div class="tax-text">
+  המחירים באתר אינם כוללים מע"מ
+</div>
 <!--
 <FavoritesSidePopup />
 -->
@@ -397,7 +400,17 @@ import { flashy_page_view } from "$lib/flashy";
 </script>
 
 <style lang="scss">
+  .tax-text {
+    font-size: larger;
+    color: #000000;
+    font-weight: bold;
+    margin-top: 5px;
+    width: 100%;
 
+    margin: auto;
+    text-align: center;
+    font-family: inherit;
+  }
 
 
 </style>
