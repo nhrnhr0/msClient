@@ -311,7 +311,8 @@ let mouse_over_left_arrow = false;
         cartStore.removeFromCartById(productId);
     }
     function open_category_modal() {
-        if (activeModalsStore.isOpen('pModal') == false) {
+        debugger;
+        if (activeModalsStore.isOpen('pModal') == false || activeModalsStore.isOpen('pModal') == undefined) {
             $categoryModalStore.toggleModal();
             $categoryModalStore.setAlbum(album);
         }
