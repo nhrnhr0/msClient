@@ -461,6 +461,13 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
 <div style="z-index: {modal_zIndex};" id="productModal" class="modal" class:active={isModalOpen}>
   <div style="z-index: {modal_zIndex+5};" class="overlay" on:click={toggleModal}></div>
+  <div class="top" style="z-index: 9999">
+  isLoaded: {isLoaded}<br>
+  isModalOpen: {isModalOpen}<br>
+  $productData: {JSON.stringify($productData)}<br>
+  $current_album: {JSON.stringify($current_album)}<br>
+</div>
+
   {#if isLoaded && isModalOpen && $productData && $current_album}
         <div style="z-index: {modal_zIndex+10};" class="modal_content">
             <div class="modal-header">
