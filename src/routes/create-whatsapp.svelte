@@ -1,0 +1,305 @@
+<script context="module">
+
+
+
+</script>
+<script>
+import { CLOUDINARY_URL } from "./../api/consts";
+
+import AutoComplete from "simple-svelte-autocomplete";
+import { Spinner } from "sveltestrap";
+import { userInfoStore } from "./../stores/stores";
+import { apiSearchProducts } from "./../api/api";
+        let selectedProducts = [];
+        let searchValue = '';
+        const IMAGE_LOCATIONS = {
+            0: [
+                {x: 30, y: 27, max_width:330},
+            ],
+            1: [
+                {x: 2, y: 5, max_width:350},
+                {x: 60, y: 5, max_width:350},
+            ],
+            2: [
+                {x: 4, y: 5, max_width:250},
+                {x: 70, y: 5, max_width:250},
+                {x: 40, y: 27, max_width:250},
+            ],
+            3: [
+                {x: 4, y: 5, max_width:200},
+                {x: 70, y: 5, max_width:200},
+                {x: 14, y: 50, max_width:200},
+                {x: 56, y: 50, max_width:200},
+            ],
+            4: [
+                {x: 2, y: 1, max_width:220},
+                {x: 70, y: 1, max_width:220},
+                {x: 40, y: 27, max_width:220},
+                {x: 2, y: 47, max_width:220},
+                {x: 70, y: 47, max_width:220},
+            ],
+            5: [
+                {x: 2, y: 5, max_width:200},
+                {x: 75, y: 5, max_width:200},
+                {x: 40, y: 23, max_width:150},
+                {x: 2, y: 47, max_width:200},
+                {x: 70, y: 47, max_width:200},
+                {x: 40, y: 62, max_width:150},
+            ]
+        }
+        function autocompleteItemSelected (item){
+            if(item != undefined) {
+                console.log('autocompleteItemSelected: ', item);
+                selectedProducts = selectedProducts.filter(p => p != null);
+                selectedProducts.push(item);
+                
+                let locations = IMAGE_LOCATIONS[selectedProducts.length - 1]
+                
+                for(let i = 0; i < selectedProducts.length; i++) {
+                    let loc = locations[i];
+                    selectedProducts[i].location = loc;
+                }
+                
+                searchValue = '';
+                selectedProducts = [...new Set(selectedProducts)];
+            }
+        }
+        async function searchProducts(keyword) {
+            let json = await apiSearchProducts(keyword);
+            let data = json;
+            let albums = [];
+            let album = undefined;
+            let items = data.all;
+            return items;
+        }
+        function downloadURI(uri, name) {
+            var link = document.createElement("a");
+            
+            link.download = name;
+            link.href = uri;
+            document.body.appendChild(link);
+            link.click();   
+            //after creating link you should delete dynamic link
+            //clearDynamicLink(link); 
+        }
+        function download() {
+            window.html2canvas(document.querySelector("#capture"), {allowTaint:false,useCORS:true}).then(canvas => {
+                //document.body.appendChild(canvas)
+                
+                var myImage = canvas.toDataURL();
+                downloadURI(myImage, "MaSimulation.png");
+            });
+        }
+</script>
+
+<svelte:head>
+    <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</svelte:head>
+{#if $userInfoStore.isLogin && $userInfoStore.me.is_superuser}
+
+    <div class="page">
+        <div class="part part-1">
+
+        
+    <AutoComplete id="search_input" on:focus loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש מוצרים..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:value={searchValue}  >
+        <div slot="loading" let:loadingText={loadingText}>
+            <Spinner
+                size="sm"
+                speed="750"
+                unit="em"
+                color="#A82124"
+                thickness="2"
+            />
+            <span>{loadingText}</span>
+            <!-- spinner -->
+            
+        </div>
+        <div slot="item" let:item={item} let:label={label}>
+            {#if item.item_count}
+                <div class="list-category">
+                    <div class="search-item">
+                        {item.title} ({item.item_count})
+
+                    </div>
+                </div>
+            {:else}
+                <div class="search-item">
+                    <img alt="{item.title}" style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
+
+                    {@html label}
+                </div>
+            {/if}
+        </div>
+    </AutoComplete>
+<br>
+    {#if selectedProducts.length > 0}
+    <div class="selected-products">
+        {#each selectedProducts as item}
+            {#if item != null}
+                <div class="selected-product ">
+                    <div class="selected-product-image">
+                        <img alt="{item.title}" style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
+                    </div>
+                    <div class="selected-product-title">{item.title}</div>
+                    <div class="selected-product-remove" on:click={() => {
+                        selectedProducts.splice(selectedProducts.indexOf(item), 1);
+                        selectedProducts = [...new Set(selectedProducts)];
+                        let locations = IMAGE_LOCATIONS[selectedProducts.length - 1]
+                
+                        for(let i = 0; i < selectedProducts.length; i++) {
+                            let loc = locations[i];
+                            selectedProducts[i].location = loc;
+                        }
+                        
+                    }}>מחק
+                    </div>
+                </div>
+            {/if}
+        {/each}
+    </div>
+    {/if}
+    </div>
+    <div  id="capture" class="part part-2">
+        <img on:load="{(e)=> {
+            console.log('on:load: ', e);
+        }}" crossorigin="anonymous" src="https://res.cloudinary.com/ms-global/image/upload/v1652862614/msAssets/WhatsApp_Image_2022-05-18_at_10.39.56_AM_rdb8o7.jpg" alt="">
+        <div class="selected-wraper">
+            {#each selectedProducts as item, idx}
+                {#if item != null}
+                    <div style="--item-x:{item.location.x};--item-y:{item.location.y};max-width:{item.location.max_width}px;" class="item selected-product-item">
+                        <img crossorigin="anonymous" alt="{item.title}" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
+                        <div class="selected-product-title-on-image">{item.title}</div>
+                    </div>
+                {/if}
+            {/each}
+        </div>
+        <!--
+        {#each selectedProducts as item, idx}
+            {#if item != null}
+                
+                <div style="--item-idx:{(idx-1)};--row-idx:{parseInt((idx-1)/3)};--col-idx:{parseInt((idx-1)%3)}" class="selected-product-on-image">
+                    {idx}
+                    <div class="selected-product-image-on-image">
+                        <img alt="{item.title}" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
+                    </div>
+                    <div class="selected-product-title-on-image">{item.title}</div>
+                    
+                </div>
+            {/if}
+        {/each}
+        -->
+    </div>
+</div>
+<button on:click={download}>הורד</button>
+{/if}
+
+<style lang="scss">
+    .selected-wraper {
+        /*display: grid;
+        grid-template-columns: repeat(var(--var-num-rows), 1fr);*/
+        position: absolute;
+        top: 0px;
+        //height: calc(390px);
+        height: 100%;
+        width: 100%;
+        .item {
+            position: absolute;
+            top: calc(var(--item-y) * 1%);
+            left: calc(var(--item-x) * 1%);
+            
+            img {
+                //width: 100%;
+                /*max-width: 100%;
+                max-height: 100%;*/
+            }
+            .selected-product-title-on-image {
+                text-align: center;
+                font-size: larger;
+                font-weight: bold;
+                background: rgba(0, 0, 0, 0.5);
+                color: white;
+            }
+        }
+    }
+    .selected-product-on-image {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 150px;
+        height: 150px;
+        border-radius: 5px;
+        margin: 5px;
+        position: relative;
+        z-index: 1;
+        position: absolute;
+        
+        .selected-product-image-on-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 5px;
+            }
+        }
+    }
+    .selected-products {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        margin-top: 10px;
+        .selected-product {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            .selected-product-title {
+                font-size: 14px;
+                font-weight: bold;
+                margin-right: 10px;
+            }
+            .selected-product-image {
+                margin-right: 10px;
+                img {
+                    height: 25px;
+                }
+            }
+            .selected-product-remove {
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: bold;
+                margin-right: 10px;
+            }
+        }
+    }
+    .page {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        .part {
+            flex:1;
+            margin-bottom: 10px;
+            
+        }
+        .part-1 {
+            margin-right: 10px;
+        }
+        .part-2 {
+            position: relative;
+            //margin-left: 10px;
+            img {
+                width: 100%;
+                //height: 100%;
+            }
+        }
+    }
+</style>
