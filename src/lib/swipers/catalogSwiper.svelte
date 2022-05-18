@@ -44,6 +44,7 @@ import { logStore } from './../../stores/logStore';
 import { selectTextOnFocus } from '$lib/ui/inputActions';
 import SvelteTooltip from 'svelte-tooltip';
 import QuestionLabel from '$lib/components/questionLabel.svelte';
+import { activeModalsStore } from '$lib/modals/modalManager';
 let mouse_over_right_arrow = false;
 let mouse_over_left_arrow = false;
 
@@ -310,8 +311,8 @@ let mouse_over_left_arrow = false;
         cartStore.removeFromCartById(productId);
     }
     function open_category_modal() {
-        $categoryModalStore.toggleModal();
-        $categoryModalStore.setAlbum(album);
+            $categoryModalStore.toggleModal();
+            $categoryModalStore.setAlbum(album);
     }
     function open_edit_amount_dialog(product_id) {
         //$productCartModalStore.set_product(product_id);
@@ -358,7 +359,7 @@ let mouse_over_left_arrow = false;
         console.log('background_click: ', e);
         let classs = e.target.classList
         if(classs.contains('lazy-swiper-wraper') || classs.contains('swiper') || classs.contains('swiper-wrapper') || classs.contains('swiper-pagination')) {
-            open_category_modal();
+            //open_category_modal();
             return;
         }
         /*if(e.target.classList.contains('swiper-button-prev') || e.target.classList.contains('swiper-button-next')) {
@@ -398,7 +399,8 @@ let mouse_over_left_arrow = false;
 
     </button>
 </div>
-<div class="lazy-swiper-wraper" on:focus="{clickable_category_mouse_enter}" on:mouseover="{clickable_category_mouse_enter}" on:blur="{clickable_category_mouse_enter}" on:mouseleave="{clickable_category_mouse_leave}"  on:click={(e)=>{background_click(e)}} class:active="{isInView}" class:loaded="{isLoaded}"
+<!-- on:focus="{clickable_category_mouse_enter}" on:mouseover="{clickable_category_mouse_enter}" on:blur="{clickable_category_mouse_enter}" on:mouseleave="{clickable_category_mouse_leave}"  on:click={(e)=>{background_click(e)}} -->
+<div class="lazy-swiper-wraper"class:active="{isInView}" class:loaded="{isLoaded}"
 use:inview="{inview_options}"
 
 on:change={(event) => {

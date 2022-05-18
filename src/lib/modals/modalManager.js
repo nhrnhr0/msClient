@@ -43,8 +43,15 @@ const createActiveModals = () => {
                 }
             }
             return false;
-        }
-    }
+        },
+        isOpen: (modal) => {
+            let modals = get(this);
+            if(modals == undefined) {
+                modals = {};
+            }
+            return modals[modal] && modals[modal] === true;
+        },
+    };
 }
 export const activeModalsStore = createActiveModals();
 //export let tempModalStore = new writable();

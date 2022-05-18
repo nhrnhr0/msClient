@@ -96,7 +96,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
       return val.id == catalogId;
     })[0]);
 
-
+    debugger;
     let productsPromise = get_album_details(catalogId);
     let productFound = false;
     productsPromise.then((v) => {
@@ -107,15 +107,19 @@ import SingleAmountModal from './singleAmountModal.svelte';
           productData.set(v[i]);
           productFound = true;
           error_loading_product = false;
+          console.log('found product to load ', v[i]);
           placeHolderText = 'טוען...';
           break;
         }
       }
       if (!productFound) {
+        console.log('product not found');
         if(retry < 3) {
+          console.log('retry loading product ', retry, ' of ', 3);
           setProduct(catalogId, productId, push_url, retry+1);
         }else {
           error_loading_product = true;
+          console.log('error loading product');
           placeHolderText = 'מוצר זה אינו זמין כרגע'; 
           return;
         }
@@ -123,9 +127,11 @@ import SingleAmountModal from './singleAmountModal.svelte';
     }).catch((e) => {
       console.log(e);
       if(retry < 3) {
+        console.log('[catch] retry loading product ', retry, ' of ', 3);
         setProduct(catalogId, productId, push_url, retry+1);
       }else {
         error_loading_product = true;
+        console.log('[catch] error loading product');
         return;
       }
     });
@@ -321,9 +327,39 @@ import SingleAmountModal from './singleAmountModal.svelte';
     return false;
   }
 
-
+  function closeModal() {
+        if (last_open_time) {
+            let time_diff = Date.now() - last_open_time;
+            if (time_diff < 750) {
+                return false;
+            }
+        }
+        return true;
+    }
+    let last_open_time ;
+  function openModal() {
+      if (last_open_time) {
+          let time_diff = Date.now() - last_open_time;
+          if (time_diff < 750) {
+              return false;
+          }
+      }
+      last_open_time = Date.now();
+      return true;
+    }
   export function toggleModal(push_url=true) {
+    debugger;
     isModalOpen = !isModalOpen;
+    if(isModalOpen) {
+      openModal();
+    }
+    else {
+      if (closeModal() == false) {
+        isModalOpen = true;
+      }
+    }
+    
+    console.log('pModal toggle', isModalOpen)
     activeModalsStore.modalToggle('pModal', isModalOpen);
     if (isModalOpen == false) {
       //$stateQuery['product'] = -1;f
@@ -331,6 +367,15 @@ import SingleAmountModal from './singleAmountModal.svelte';
         pushMainPage();
       }
     }
+
+
+    if (last_open_time) {
+            let time_diff = Date.now() - last_open_time;
+            if (time_diff < 500) {
+                return;
+            }
+        }
+        last_open_time = Date.now();
 
   }
 
@@ -416,6 +461,13 @@ import SingleAmountModal from './singleAmountModal.svelte';
 
 <div style="z-index: {modal_zIndex};" id="productModal" class="modal" class:active={isModalOpen}>
   <div style="z-index: {modal_zIndex+5};" class="overlay" on:click={toggleModal}></div>
+  <div class="top" style="z-index: 9999">
+  isLoaded: {isLoaded}<br>
+  isModalOpen: {isModalOpen}<br>
+  $productData: {JSON.stringify($productData)}<br>
+  $current_album: {JSON.stringify($current_album)}<br>
+</div>
+
   {#if isLoaded && isModalOpen && $productData && $current_album}
         <div style="z-index: {modal_zIndex+10};" class="modal_content">
             <div class="modal-header">

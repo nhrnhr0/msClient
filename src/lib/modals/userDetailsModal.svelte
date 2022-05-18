@@ -97,6 +97,7 @@ import { apiGetAllUsers } from './../../api/api';
     }
 
     function logout() {
+        window.$crisp.push(["do", "session:reset"]);
             request_logout().then((response) => {
                 if (response.status === "success") {
                     
