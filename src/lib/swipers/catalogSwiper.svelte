@@ -399,7 +399,8 @@ let mouse_over_left_arrow = false;
 
     </button>
 </div>
-<div class="lazy-swiper-wraper" on:focus="{clickable_category_mouse_enter}" on:mouseover="{clickable_category_mouse_enter}" on:blur="{clickable_category_mouse_enter}" on:mouseleave="{clickable_category_mouse_leave}"  on:click={(e)=>{background_click(e)}} class:active="{isInView}" class:loaded="{isLoaded}"
+<!-- on:focus="{clickable_category_mouse_enter}" on:mouseover="{clickable_category_mouse_enter}" on:blur="{clickable_category_mouse_enter}" on:mouseleave="{clickable_category_mouse_leave}"  on:click={(e)=>{background_click(e)}} -->
+<div class="lazy-swiper-wraper"class:active="{isInView}" class:loaded="{isLoaded}"
 use:inview="{inview_options}"
 
 on:change={(event) => {
