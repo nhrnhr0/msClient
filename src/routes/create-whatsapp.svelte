@@ -14,41 +14,34 @@ import { apiSearchProducts } from "./../api/api";
         let searchValue = '';
         const IMAGE_LOCATIONS = {
             0: [
-                {x: 30, y: 27, max_width:330},
+                {left: 261, top: 110, bottom: 'auto', right:'auto', max_width:35},
             ],
             1: [
-                {x: 2, y: 5, max_width:350},
-                {x: 60, y: 5, max_width:350},
+                {left: 4, top: 5, right: 'auto', bottom:0, max_width:35},
+                {left: 'auto', top: 5, right: 4, bottom:0, max_width:35},
             ],
             2: [
-                {x: 4, y: 5, max_width:250},
-                {x: 70, y: 5, max_width:250},
-                {x: 40, y: 27, max_width:250},
+                {left: 4, top: 5, right: 'auto', bottom:0, max_width:30},
+                {left: 'auto', top: 5, right: 4, bottom:0, max_width:30},
+                {left: 290, top: 110, bottom: 'auto', right:'auto', max_width:30},
             ],
             3: [
-                {x: 4, y: 5, max_width:200},
-                {x: 70, y: 5, max_width:200},
-                {x: 14, y: 50, max_width:200},
-                {x: 56, y: 50, max_width:200},
+                {left: 4, top: 0, right: 'auto', bottom:'auto', max_width:25},
+                {left: 'auto', top: 0, right: 4, bottom:'auto', max_width:25},
+                {left: 150, top:'auto', right:'auto', bottom: 5, max_width:20},
+                {left: 'auto', top: 'auto', right: 150, bottom: 5, max_width:20},
             ],
             4: [
-                {x: 2, y: 1, max_width:220},
-                {x: 70, y: 1, max_width:220},
-                {x: 40, y: 27, max_width:220},
-                {x: 2, y: 47, max_width:220},
-                {x: 70, y: 47, max_width:220},
+                
+                {left: 4, top: 0, right: 'auto', bottom:'auto', max_width:25},
+                {left: 'auto', top: 0, right: 4, bottom:'auto', max_width:25},
+                {left: 150, top:'auto', right:'auto', bottom: 5, max_width:20},
+                {left: 'auto', top: 'auto', right: 150, bottom: 5, max_width:20},
+                {left: 330, top: 110, bottom: 'auto', right:'auto', max_width:20},
             ],
-            5: [
-                {x: 2, y: 5, max_width:200},
-                {x: 75, y: 5, max_width:200},
-                {x: 40, y: 23, max_width:150},
-                {x: 2, y: 47, max_width:200},
-                {x: 70, y: 47, max_width:200},
-                {x: 40, y: 62, max_width:150},
-            ]
         }
         function autocompleteItemSelected (item){
-            if(item != undefined) {
+            if(item != undefined && selectedProducts.length < 5) {
                 console.log('autocompleteItemSelected: ', item);
                 selectedProducts = selectedProducts.filter(p => p != null);
                 selectedProducts.push(item);
@@ -135,28 +128,81 @@ import { apiSearchProducts } from "./../api/api";
 <br>
     {#if selectedProducts.length > 0}
     <div class="selected-products">
-        {#each selectedProducts as item}
-            {#if item != null}
-                <div class="selected-product ">
-                    <div class="selected-product-image">
-                        <img alt="{item.title}" style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
-                    </div>
-                    <div class="selected-product-title">{item.title}</div>
-                    <div class="selected-product-remove" on:click={() => {
-                        selectedProducts.splice(selectedProducts.indexOf(item), 1);
-                        selectedProducts = [...new Set(selectedProducts)];
-                        let locations = IMAGE_LOCATIONS[selectedProducts.length - 1]
-                
-                        for(let i = 0; i < selectedProducts.length; i++) {
-                            let loc = locations[i];
-                            selectedProducts[i].location = loc;
-                        }
+        <table>
+            <thead>
+                <tr>
+                    <th>תמונה</th>
+                    <th>מוצר</th>
+                    <th>top</th>
+                    <th>left</th>
+                    <th>right</th>
+                    <th>bottom</th>
+                    <th>max_width</th>
+                    <th>מחק</th>
+                </tr>
+            </thead>
+            <tbody>
+                {#each selectedProducts as item}
+                    {#if item != null}
+                        <tr>
+                            <td>
+                                <img alt="{item.title}" style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
+                            </td>
+                            <td>
+                                {item.title}
+                            </td>
+                            <td>
+                                <input type="number" bind:value={item.location.top}/>
+                            </td>
+                            <td>
+                                <input type="number" bind:value={item.location.left} />
+                            </td>
+                            <td>
+                                <input type="number" bind:value={item.location.right} />
+                            </td>
+                            <td>
+                                <input type="number" bind:value={item.location.bottom} />
+                            </td>
+                            <td>
+                                <input type="number" bind:value={item.location.max_width} />
+                            </td>
+                            <td>
+                                <button class="selected-product-remove" on:click={(e) => {
+                                    e.preventDefault(); 
+                                    selectedProducts.splice(selectedProducts.indexOf(item), 1);
+                                    selectedProducts = [...new Set(selectedProducts)];
+                                    let locations = IMAGE_LOCATIONS[selectedProducts.length - 1]
+                            
+                                    for(let i = 0; i < selectedProducts.length; i++) {
+                                        let loc = locations[i];
+                                        selectedProducts[i].location = loc;
+                                    }
+                                    
+                                }}>מחק
+                                </button>
+                            </td>
+                        <!--<div class="selected-product ">
+                            <div class="selected-product-image">
+                                <img alt="{item.title}" style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
+                            </div>
+                            <div class="selected-product-title">{item.title}</div>
+                            <div class="selected-product-remove" on:click={() => {
+                                selectedProducts.splice(selectedProducts.indexOf(item), 1);
+                                selectedProducts = [...new Set(selectedProducts)];
+                                let locations = IMAGE_LOCATIONS[selectedProducts.length - 1]
                         
-                    }}>מחק
-                    </div>
-                </div>
-            {/if}
-        {/each}
+                                for(let i = 0; i < selectedProducts.length; i++) {
+                                    let loc = locations[i];
+                                    selectedProducts[i].location = loc;
+                                }
+                                
+                            }}>מחק
+                            </div>
+                            top: <input type="number" bind:value="{item.location.top}" />
+                        </div>-->
+                    {/if}
+                {/each}
+        </tbody>
     </div>
     {/if}
     </div>
@@ -167,7 +213,7 @@ import { apiSearchProducts } from "./../api/api";
         <div class="selected-wraper">
             {#each selectedProducts as item, idx}
                 {#if item != null}
-                    <div style="--item-x:{item.location.x};--item-y:{item.location.y};max-width:{item.location.max_width}px;" class="item selected-product-item">
+                    <div style="--item-top:{item.location.top};--item-left:{item.location.left};--item-right:{item.location.right};--item-bottom:{item.location.bottom};max-width:{item.location.max_width}%;" class="item selected-product-item">
                         <img crossorigin="anonymous" alt="{item.title}" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
                         <div class="selected-product-title-on-image">{item.title}</div>
                     </div>
@@ -205,8 +251,10 @@ import { apiSearchProducts } from "./../api/api";
         width: 100%;
         .item {
             position: absolute;
-            top: calc(var(--item-y) * 1%);
-            left: calc(var(--item-x) * 1%);
+            top: calc(var(--item-top) * 1px);
+            left: calc(var(--item-left) * 1px);
+            right: calc(var(--item-right) * 1px);
+            bottom: calc(var(--item-bottom) * 1px);
             
             img {
                 //width: 100%;
@@ -281,20 +329,24 @@ import { apiSearchProducts } from "./../api/api";
     }
     .page {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         flex-wrap: wrap;
         justify-content: flex-start;
         align-items: flex-start;
         .part {
-            flex:1;
+            
             margin-bottom: 10px;
             
         }
+        
         .part-1 {
+            flex:1;
             margin-right: 10px;
         }
         .part-2 {
             position: relative;
+            width: 870px;
+            height: 505px;
             //margin-left: 10px;
             img {
                 width: 100%;
