@@ -9,7 +9,7 @@ if(browser) {
     $body = document.querySelector('body');
     scrollPosition = 0;
     $body.ontouchstart = function(e) {
-        e.preventDefault();
+        //e.preventDefault();
     }
 }
 function getScrollbarWidth() {

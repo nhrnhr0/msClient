@@ -279,7 +279,7 @@ import { flashy_page_view } from "$lib/flashy";
       let username = $userInfoStore.me.username;
       window.$crisp.push(["set", "user:nickname", [username]]);
       window.$crisp.push(["set", "user:email", [$userInfoStore.me.email]]);
-      window.$crisp.push(["set", "user:phone", [$userInfoStore.me.phone]]);
+      //window.$crisp.push(["set", "user:phone", [$userInfoStore.me.phone]]);
 
     }else {
       console.log('user is not loged in');

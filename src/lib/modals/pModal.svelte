@@ -96,7 +96,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
       return val.id == catalogId;
     })[0]);
 
-
+    debugger;
     let productsPromise = get_album_details(catalogId);
     let productFound = false;
     productsPromise.then((v) => {
@@ -356,7 +356,6 @@ import SingleAmountModal from './singleAmountModal.svelte';
     else {
       if (closeModal() == false) {
         isModalOpen = true;
-        return;
       }
     }
     
