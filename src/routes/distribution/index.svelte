@@ -1,9 +1,11 @@
 <script>
 import { onMount } from "svelte";
 
-import { submit_distribution_lead,loadAllIntrests,loadBusinessTypes, maps_key } from "./../../api/api";
+import { submit_distribution_lead,loadAllIntrests,loadBusinessTypes, maps_key, loadBusinessTypesGroups } from "./../../api/api";
 import AutoComplete from "simple-svelte-autocomplete";
 import {Spinner} from 'sveltestrap';
+import { prevent_default } from "svelte/internal";
+import About from "$lib/about.svelte";
 
     let business_types = [];// = ['אבטחה','הייטק','הפקות/ חיי לילה','חברות ניקיון וכוח אדם ','חקלאים/ גדש','לולים','מוסכים','מטבחים/ מסעדות','מלונאות','מנהל חינוך','מנהל תרבות','מנהל קורונה','מסגריות/ רתכים','מפעל/ תעשייה ','נגריות','נוי/ גננים','רפתות', 'בית אריזה', 'טכנאי/מתקין','תחזוקה','נאמן בטיחות', 'אחר - פרט למטה', ];
     let _i_want_emails = true;
@@ -15,13 +17,17 @@ import {Spinner} from 'sveltestrap';
     let intrests = [];
     let selected_intrests = [];
     let business_input;
+    let business_types_groups;
     onMount(async ()=> {
         loaded = false;
+        debugger;
         intrests = await loadAllIntrests();
         business_types = await loadBusinessTypes();
+        business_types_groups = await loadBusinessTypesGroups();
         console.log('intrests: ', intrests);
         console.log('business types: ', business_types)
         loaded = true;
+        
         /*window.$(document).ready(function() {
             
             setTimeout(()=>{
@@ -87,12 +93,30 @@ import {Spinner} from 'sveltestrap';
     }*/
     let hasCustomInBusinessType = false;
     let business_type_results;
-    let instrests_results;
+    let instrests_results = [];
+    let instrests_results2 = [];
     $: {
         console.log('business_type_results: ', business_type_results);
         if (business_type_results != undefined) {
             hasCustomInBusinessType = business_type_results.find(x => x === 'אחר - פרט למטה') != undefined;
         }
+    }
+
+    function add_bulk_intrests(intrestsToAdd, e) {
+        e.preventDefault();
+        debugger;
+        let newIntrests = [...instrests_results2]
+        intrestsToAdd.forEach(intrest => {
+            let item = {
+                name: intrest['title']?intrest['title']: intrest['name'],
+            }
+            if(newIntrests.filter((v)=>{return v.name == item.name}).length == 0){
+                newIntrests.push(item);
+            }
+        });
+        setTimeout(() => {
+            instrests_results2 = [...newIntrests];
+        }, 10);
     }
 
 </script>
@@ -120,6 +144,7 @@ import {Spinner} from 'sveltestrap';
             }, 200);
             
         }
+        
 
     </script>
 </svelte:head>
@@ -203,9 +228,35 @@ import {Spinner} from 'sveltestrap';
                                 <input autocomplete="off" required="{true}" type="text" name="business-type-other" id="business_type_other" placeholder="פרט על סוג העסק שלך">
                         {/if}
                         <input required="{true}" type="text" name="address" id="address" placeholder="כתובת">
-
+                        {#if business_types_groups && business_types_groups.length > 0}
+                        <div class="business-types-groups-btns">
+                            <button on:click={(e)=>{e.preventDefault(); add_bulk_intrests(intrests, e)}}> הכל </button>
+                            {#each business_types_groups as business_types_group}
+                            <button on:click={(e)=>{e.preventDefault(); add_bulk_intrests(business_types_group.intrests,e)}}>{business_types_group.name}</button>
+                            {/each}
+                        </div>
+                                <!-- <button on:click="{(e)=>{
+                                    e.preventDefault();
+                                    debugger;
+                                    let newIntrests = [...instrests_results2]
+                                    let intrestsToAdd = business_types_group.intrests;
+                                    intrestsToAdd.forEach(intrest => {
+                                        let item = {
+                                            name: intrest['title'],
+                                        }
+                                        if(newIntrests.filter((v)=>{return v.name == item.name}).length == 0){
+                                            newIntrests.push(item);
+                                        }
+                                    });
+                                    setTimeout(() => {
+                                        instrests_results2 = [...newIntrests];
+                                    }, 10);
+                                    
+                                }}">{business_types_group.name}</button>
+                            {/each} -->
+                        {/if}
                         <AutoComplete multiple={true} id="intrested" items={intrests} createText="לא נמצאו תוצאות"
-                                create=false placeholder="מוצרים מעניינים" className="autocomplete-cls" delay=200 localFiltering="{false}"  labelFieldName="name" valueFieldName="name" bind:value={instrests_results}  >
+                                create=false placeholder="מוצרים מעניינים" className="autocomplete-cls" delay=200 localFiltering="{false}"  labelFieldName="name" valueFieldName="name" bind:selectedItem={instrests_results2} bind:value={instrests_results}  >
                                 <!--
                                     <div slot="loading" let:loadingText={loadingText}>
                                         <Spinner
@@ -228,6 +279,8 @@ import {Spinner} from 'sveltestrap';
                                     <span class="delete-tag" on:click|preventDefault="{unselectItem(item)}">x</span>
                                 </div>
                             </AutoComplete>
+
+                            {JSON.stringify(instrests_results)}
                         </fieldset>
                         
                         <fieldset>
@@ -260,6 +313,13 @@ import {Spinner} from 'sveltestrap';
 </div>
 
 <style lang="scss">
+    .business-types-groups-btns {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+        margin-top: 20px;
+    }
     :global(.autocomplete-cls) {
         height: auto!important;
         :global(.input-container){
