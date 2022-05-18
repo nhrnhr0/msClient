@@ -327,9 +327,40 @@ import SingleAmountModal from './singleAmountModal.svelte';
     return false;
   }
 
-
+  function closeModal() {
+        if (last_open_time) {
+            let time_diff = Date.now() - last_open_time;
+            if (time_diff < 750) {
+                return false;
+            }
+        }
+        return true;
+    }
+    let last_open_time ;
+  function openModal() {
+      if (last_open_time) {
+          let time_diff = Date.now() - last_open_time;
+          if (time_diff < 750) {
+              return false;
+          }
+      }
+      last_open_time = Date.now();
+      return true;
+    }
   export function toggleModal(push_url=true) {
+    debugger;
     isModalOpen = !isModalOpen;
+    if(isModalOpen) {
+      openModal();
+    }
+    else {
+      if (closeModal() == false) {
+        isModalOpen = true;
+        return;
+      }
+    }
+    
+    console.log('pModal toggle', isModalOpen)
     activeModalsStore.modalToggle('pModal', isModalOpen);
     if (isModalOpen == false) {
       //$stateQuery['product'] = -1;f
@@ -337,6 +368,15 @@ import SingleAmountModal from './singleAmountModal.svelte';
         pushMainPage();
       }
     }
+
+
+    if (last_open_time) {
+            let time_diff = Date.now() - last_open_time;
+            if (time_diff < 500) {
+                return;
+            }
+        }
+        last_open_time = Date.now();
 
   }
 
