@@ -10,31 +10,31 @@ import AutoComplete from "simple-svelte-autocomplete";
 import { Spinner } from "sveltestrap";
 import { userInfoStore } from "./../stores/stores";
 import { apiSearchProducts } from "./../api/api";
+const STEP = 3;
         let selectedProducts = [];
         let searchValue = '';
         const IMAGE_LOCATIONS = {
             0: [
-                {left: 261, top: 110, bottom: 'auto', right:'auto', max_width:35},
+                {left: 261, top: 110,  max_width:35},
             ],
             1: [
-                {left: 4, top: 5, right: 'auto', bottom:0, max_width:35},
-                {left: 'auto', top: 5, right: 4, bottom:0, max_width:35},
+                {left: 4, top: 5 ,  max_width:35},
+                {left: 561, top: 5,  max_width:35},
             ],
             2: [
-                {left: 4, top: 5, right: 'auto', bottom:0, max_width:30},
-                {left: 'auto', top: 5, right: 4, bottom:0, max_width:30},
-                {left: 290, top: 110, bottom: 'auto', right:'auto', max_width:30},
+                {left: 4, top: 5, max_width:30},
+                {left: 600, top: 5, max_width:30},
+                {left: 290, top: 140, max_width:30},
             ],
             3: [
-                {left: 4, top: 0, right: 'auto', bottom:'auto', max_width:25},
-                {left: 'auto', top: 0, right: 4, bottom:'auto', max_width:25},
-                {left: 150, top:'auto', right:'auto', bottom: 5, max_width:20},
-                {left: 'auto', top: 'auto', right: 150, bottom: 5, max_width:20},
+                {left: 4, top: 0, max_width:25},
+                {left: 600, top: 0, max_width:25},
+                {left: 150, top:251, max_width:20},
+                {left: 550, top: 251, max_width:20},
             ],
             4: [
-                
-                {left: 4, top: 0, right: 'auto', bottom:'auto', max_width:25},
-                {left: 'auto', top: 0, right: 4, bottom:'auto', max_width:25},
+                {left: 4, top: 0, max_width:25},
+                {left: 600, top: 0,  max_width:25},
                 {left: 150, top:'auto', right:'auto', bottom: 5, max_width:20},
                 {left: 'auto', top: 'auto', right: 150, bottom: 5, max_width:20},
                 {left: 330, top: 110, bottom: 'auto', right:'auto', max_width:20},
@@ -135,8 +135,10 @@ import { apiSearchProducts } from "./../api/api";
                     <th>מוצר</th>
                     <th>top</th>
                     <th>left</th>
+                    <!--
                     <th>right</th>
                     <th>bottom</th>
+                    -->
                     <th>max_width</th>
                     <th>מחק</th>
                 </tr>
@@ -152,19 +154,34 @@ import { apiSearchProducts } from "./../api/api";
                                 {item.title}
                             </td>
                             <td>
+                                
                                 <input type="number" bind:value={item.location.top}/>
+                                <button on:click="{()=>{item.location.top += STEP}}" style="transform:rotate(90deg)">
+                                    <img height="15px" width="15px" src="https://res.cloudinary.com/ms-global/image/upload/v1652882957/msAssets/right-arrow_2_sig23y.png"  alt="">
+                                </button>
+                                <button on:click="{()=>{item.location.top -= STEP}}" style="transform:rotate(-90deg)">
+                                    <img height="15px" width="15px" src="https://res.cloudinary.com/ms-global/image/upload/v1652882957/msAssets/right-arrow_2_sig23y.png"  alt="">
+                                </button>
                             </td>
                             <td>
+                                
                                 <input type="number" bind:value={item.location.left} />
-                            </td>
-                            <td>
-                                <input type="number" bind:value={item.location.right} />
-                            </td>
-                            <td>
-                                <input type="number" bind:value={item.location.bottom} />
+                                <button on:click="{()=>{item.location.left += STEP}}" style="">
+                                    <img height="15px" width="15px" src="https://res.cloudinary.com/ms-global/image/upload/v1652882957/msAssets/right-arrow_2_sig23y.png"  alt="">
+                                </button>
+                                <button on:click="{()=>{item.location.left -= STEP}}" style="transform:rotate(180deg)">
+                                    <img height="15px" width="15px" src="https://res.cloudinary.com/ms-global/image/upload/v1652882957/msAssets/right-arrow_2_sig23y.png"  alt="">
+                                </button>
+                                
                             </td>
                             <td>
                                 <input type="number" bind:value={item.location.max_width} />
+                                <button on:click="{()=>{item.location.max_width++}}">
+                                    +
+                                </button>
+                                <button on:click="{()=>{item.location.max_width--}}">
+                                    -
+                                </button>
                             </td>
                             <td>
                                 <button class="selected-product-remove" on:click={(e) => {
