@@ -8,7 +8,8 @@ import { onMount } from "svelte";
     
     $: loaded = product && $sizesJsonStore && $sizesJsonStore.length != 0 && $colorsJsonStore && $colorsJsonStore.length != 0;
     function amount_changed_event(e) {
-        let quantity = parseInt(e.target.value);
+      debugger;
+        let quantity = parseInt(e.target.value) || 0;
         let size = parseInt(e.target.dataset.size);
         let color = parseInt(e.target.dataset.color);
         let verient_str = e.target.dataset.verient;

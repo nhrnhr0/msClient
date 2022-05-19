@@ -1,10 +1,12 @@
 <script context="module">
     import { userInfoStore } from '.../../stores/stores';
+
     
 </script>
 <script>
     import { onMount } from "svelte"
     import { adming_get_campains } from '.../../api/api';
+    
 import { browser } from '$app/env';
     let campains_promise = adming_get_campains();
     // redirect user to the main page if they are not superusers
@@ -23,6 +25,7 @@ import { browser } from '$app/env';
 </script>
 <!-- only show content if the user is useruser -->
 {#if $userInfoStore.isLogin && $userInfoStore.me.is_superuser}
+
 <main>
     <h1 class="title">dashboard</h1>
     <!--

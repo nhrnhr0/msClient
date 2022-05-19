@@ -4,16 +4,29 @@ import { admin_get_enter_docs } from './../../../api/api'
 
 import { onMount } from "svelte";
 import { BASE_URL } from '@api/consts';
-
+  import { getContext } from 'svelte';
+  const { open } = getContext('simple-modal');
+  import CreateEnterDocPopup from '@lib/popups/CreateEnterDocPopup.svelte';
+  const showSurprise = () => open(Popup, { message: "It's a modal!" });
 
     let enter_docs_promise;// admin_get_enter_docs();
     onMount(()=> {
-        enter_docs_promise = admin_get_enter_docs();
+        refresh_data();
     })
+
+    function refresh_data() {
+        debugger;
+        enter_docs_promise = admin_get_enter_docs();
+    }
+
+    function create_new_enter_doc_btn(e) {
+        
+        open(CreateEnterDocPopup, { refresh: refresh_data })
+    }
 </script>
 
 
-<h1 class="header-title">טפסי הכנסה למלאי</h1>
+<h1 class="header-title">טפסי הכנסה למלאי <button class="btn btn-primary" on:click={create_new_enter_doc_btn}>צור חדש</button> </h1>
 <table>
     <thead>
         <tr>

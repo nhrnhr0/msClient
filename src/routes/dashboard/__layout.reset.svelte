@@ -1,6 +1,7 @@
 <script context="module">
 
 import { onMount } from "svelte";
+import Modal from 'svelte-simple-modal';
 
   
   export let sizes;
@@ -106,4 +107,6 @@ import { browser } from "$app/env";
   }
 
 </style>
+<Modal>
 <slot></slot>
+</Modal>

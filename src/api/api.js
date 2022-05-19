@@ -2,7 +2,7 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL,INVENTORY_EDIT_ENTRY_URL,GET_ALL_USERS_URL,ENTER_DOC_EDIT_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL, SEARCH_PPN_API_URL, ENTER_DOC_REMOVE_PRODUCT, ENTER_DOC_INSERT_INVENTORY_URL} from "./consts";
+import { BASE_URL,INVENTORY_EDIT_ENTRY_URL,GET_ALL_USERS_URL,ENTER_DOC_EDIT_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL, SEARCH_PPN_API_URL, ENTER_DOC_REMOVE_PRODUCT, ENTER_DOC_INSERT_INVENTORY_URL, SEARCH_PROVIDERS_API_URL, SEARCH_WAREHOUSES_URL, CREATE_ENTER_DOC_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
@@ -10,7 +10,7 @@ import { get} from 'svelte/store';
 
 export async function update_stock_entry(entryId, data){ 
     let url = INVENTORY_EDIT_ENTRY_URL + entryId;
-    fetch_wraper(url, {method: "POST", body: JSON.stringify(data)});
+    return fetch_wraper(url, {method: "POST", body: JSON.stringify(data)});
 }
 
 export async function get_warehouses_api() {
@@ -36,6 +36,17 @@ export function remove_product_from_enter_doc_api(data) {
     });
 }
 
+
+export function apiSubmitCreateDocStockEnter(data) {
+    return fetch_wraper(CREATE_ENTER_DOC_URL, {
+        method: "POST",
+        body: JSON.stringify(data)
+    });
+}
+export function apiSearchWarehouses(keyword) {
+    let url = SEARCH_WAREHOUSES_URL + "?q=" + keyword;
+    return fetch_wraper(url);
+}
 
 export function apiSearchPPN(keyword, provider) {
     const url = SEARCH_PPN_API_URL + '?q=' + encodeURIComponent(keyword) + '&provider=' + encodeURIComponent(provider);
@@ -227,10 +238,10 @@ export function api_get_user_campains() {
 // export function getAllProviders() {
 //     return fetch_wraper(GET_ALL_PROVIDERS_URL);
 // }
-// export function apiSearchProviders(keyword) {
-//     const url = SEARCH_PROVIDERS_API_URL + '?q=' + encodeURIComponent(keyword);
-//     return fetch_wraper(url);
-// }
+export function apiSearchProviders(keyword) {
+    const url = SEARCH_PROVIDERS_API_URL + '?q=' + encodeURIComponent(keyword);
+    return fetch_wraper(url);
+}
 
 export function apiSearchProducts(keyword) {
     const url = SEARCH_API_URL + '?q=' + encodeURIComponent(keyword);

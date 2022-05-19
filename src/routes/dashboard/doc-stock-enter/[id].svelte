@@ -115,7 +115,6 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                 item_id: inp_selected_ppn,
                 item_cost: inp_product_form_cost,
                 item_barcode: inp_product_form_barcode,
-                item_warehouse: inp_product_form_warehouse,
                 doc_id: id,
             };
             console.log('item: ', data);
@@ -342,6 +341,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
             <label for="barcode">ברקוד</label>
             
             <input type="text" bind:value={inp_product_form_barcode} disabled={!isPPNSelected} name="barcode" />
+            <!--
             <label for="warehouse">מחסן</label>
             {#if warehouses}
                 <select disabled={!isPPNSelected} bind:value="{inp_product_form_warehouse}">
@@ -350,6 +350,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                     {/each}
                 </select>
             {/if}
+            -->
             
             {#if isPPNSelected}
                 <a href="{BASE_URL}/admin/inventory/ppn/{inp_selected_ppn}/change/" target="_blank"
@@ -386,12 +387,16 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                     <input type="text" bind:value={inp_new_product_barcode2} name="product_barcode2" />
                     <label for="comments">הערות</label>
                     <textarea name="comments" bind:value="{inp_new_product_comments}"></textarea>
-                    <button on:click="{()=>{$doc_data.new_products = [...$doc_data.new_products,
-                        {product_name: inp_new_product_name,
-                        product_price: inp_new_product_price,
-                        product_barcode1: inp_new_product_barcode1,
-                        product_barcode2: inp_new_product_barcode2,
-                        product_comments: inp_new_product_comments,}];
+                    <button on:click="{()=>{
+                        if(! $doc_data.new_products) {
+                            $doc_data.new_products = [];
+                        }
+                        $doc_data.new_products = [...$doc_data.new_products,
+                            {product_name: inp_new_product_name,
+                            product_price: inp_new_product_price,
+                            product_barcode1: inp_new_product_barcode1,
+                            product_barcode2: inp_new_product_barcode2,
+                            product_comments: inp_new_product_comments,}];
                         inp_new_product_name = '';
                         inp_new_product_price = '';
                         inp_new_product_barcode1 = '';
@@ -404,6 +409,8 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                     
                     <fieldset>
                         <legend>שורות קיימות</legend>
+
+                    {#if $doc_data.new_products}
                         {#each $doc_data.new_products as newProduct}
                         
                         <div class="exist-line">
@@ -422,6 +429,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                         </div>
                         <br>
                         {/each}
+                    {/if}
                     </fieldset>
                 </div>
             {/if}

@@ -34,8 +34,7 @@ import StockEditPopup from './StockEditPopup.svelte';
             layout:"fitColumns", //fit columns to width of table (optional)
             columns:[ //Define Table Columns
                 {title:"מספר הכנסה", field:"id", sorter:"number", align:"center"},
-                {title:"נוצר ב", field:"created_at", width:150},
-                {title:"עודכן ב", field:"updated_at", width:150},
+                
                 {title:"מחסן", field:"warehouse_name",headerFilter:true},
                 {title:'ספק', field:'provider_name',headerFilter:true},
                 {title:"שם מוצר", field:"product_name",headerFilter:true},
@@ -55,6 +54,8 @@ import StockEditPopup from './StockEditPopup.svelte';
                     };
                     return button
                 }, headerFilter:false},
+                {title:"נוצר ב", field:"created_at", width:150},
+                {title:"עודכן ב", field:"updated_at", width:150},
             ],
         });
     });
