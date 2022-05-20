@@ -17,6 +17,7 @@
     "sass": "^1.42.1",
     "simple-svelte-autocomplete": "^2.2.3",
     "svelte": "^3.46.0",
+    "svelte-dnd-action": "^0.9.18",
     "svelte-fa": "^2.3.3",
     "svelte-lazy": "^1.0.12",
     "svelte-loading-spinners": "^0.1.7",
