@@ -2,7 +2,7 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL,GET_ALL_USERS_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL} from "./consts";
+import { BASE_URL,GET_ALL_USERS_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,GET_ALL_BUSINESS_TYPES_GROUPS,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
@@ -263,6 +263,12 @@ export async function loadBusinessTypes() {
     let response;
     response = await fetch_wraper_async(GET_ALL_BUSINESS_TYPES)
     return response
+}
+
+export async function loadBusinessTypesGroups() {
+    let response;
+    response = await fetch_wraper_async(GET_ALL_BUSINESS_TYPES_GROUPS);
+    return response;
 }
 export async function loadAllIntrests() {
     let response;
