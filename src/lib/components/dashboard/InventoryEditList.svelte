@@ -113,40 +113,49 @@ import {flip} from "svelte/animate";
     }
 
     let selectedKeys = [];
-
+    let showInventoryGroups = false;
 </script>
 <svelte:head>
     <link href="https://unpkg.com/tabulator-tables@5.2.4/dist/css/tabulator.min.css" rel="stylesheet">
 </svelte:head>
 <div>
-    <div class="headers-grouping">
-        <div class="dnd-zone" use:dndzone="{{items: HEADER_KEYS_WITH_IDS,}}" on:consider="{handleDndConsider}" on:finalize="{handleDndConsider}">
-            {#each HEADER_KEYS_WITH_IDS as item(item.id)}
-                <div class="drop-item">
-                    <div>{item.name}</div>
+    <button class:active={showInventoryGroups} on:click="{()=>{console.log('button click');showInventoryGroups = !showInventoryGroups;}}" class="accordion">קבוצות מלאים</button>
+    <div class="panel" class:active={showInventoryGroups}>
+        <div class="headers-grouping">
+            <div class="content">
+            <h3>שדות לבחירה</h3>
+            <div class="dnd-zone" use:dndzone="{{items: HEADER_KEYS_WITH_IDS,}}" on:consider="{handleDndConsider}" on:finalize="{handleDndConsider}">
+                {#each HEADER_KEYS_WITH_IDS as item(item.id)}
+                    <div class="drop-item">
+                        <div>{item.name}</div>
+                    </div>
+                {/each}
+            </div>
+            </div>
+            <div class="content">
+                <h3>קבוצות רצויות</h3>
+                <div class="dnd-zone" use:dndzone="{{items: selectedKeys,}}" on:consider="{handleDndConsiderResult}" on:finalize="{handleDndConsiderResult}">
+                    {#each selectedKeys as item(item.id)}
+                        <div class="drop-item">
+                            <div>{item.name}</div>
+                        </div>
+                    {/each}
                 </div>
-            {/each}
+            </div>
+        <!--
+            <div class="headers-grouping-options">
+                {#each HEADER_KEYS as header,i}
+                    <div class="headers-grouping-option">
+                        <input data-key={header} data-id={i} on:click="{headerKeyClicked}" type="checkbox" >
+                            {header}
+                    </div>
+                {/each}
+            </div>
+            <div class="headers-droping-area">
+                <DragableEditList bind:list={selectedGropingKeys} />
+            </div>
+        -->
         </div>
-        <div class="dnd-zone" use:dndzone="{{items: selectedKeys,}}" on:consider="{handleDndConsiderResult}" on:finalize="{handleDndConsiderResult}">
-            {#each selectedKeys as item(item.id)}
-                <div class="drop-item">
-                    <div>{item.name}</div>
-                </div>
-            {/each}
-        </div>
-    <!--
-        <div class="headers-grouping-options">
-            {#each HEADER_KEYS as header,i}
-                <div class="headers-grouping-option">
-                    <input data-key={header} data-id={i} on:click="{headerKeyClicked}" type="checkbox" >
-                        {header}
-                </div>
-            {/each}
-        </div>
-        <div class="headers-droping-area">
-            <DragableEditList bind:list={selectedGropingKeys} />
-        </div>
-    -->
     </div>
     <select id="filter-field-1">
         <option></option>
@@ -176,11 +185,55 @@ import {flip} from "svelte/animate";
 <div bind:this={tableDom} id="example-table"></div>
 
 <style lang="scss">
+.accordion {
+    &:before {
+        content: '>>';
+        
+    }
+    &.active {
+        &:before {
+            content: '↓';
+        }
+    }
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: right;
+  outline: none;
+  font-size: 15px;
+  transition: 0.4s;
+  &.active, &:hover {
+    background-color: #ccc; 
+    }
+}
+
+
+.panel {
+  padding: 0 18px;
+  display: none;
+  background-color: white;
+  overflow: hidden;
+  &.active {
+    display: block;
+    }
+}
+
+
+
+
+
+
     .headers-grouping {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
+        .content {
+            height: 100%;
+        }
         .dnd-zone {
             flex:1;
             min-height: 150px;
