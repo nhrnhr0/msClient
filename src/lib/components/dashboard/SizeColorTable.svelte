@@ -4,6 +4,7 @@ import { onMount } from "svelte";
 
     export let product;
     export let entries;
+    export let disabled = false;
     let loaded = false;
     
     $: loaded = product && $sizesJsonStore && $sizesJsonStore.length != 0 && $colorsJsonStore && $colorsJsonStore.length != 0;
@@ -100,11 +101,11 @@ import { onMount } from "svelte";
                     -->
                             {#each product.varients as {id, name}, idx}
                             <div class="cell-wraper">
-                                <input on:change={amount_changed_event} value={entries.find(entry => entry.size == size && entry.color == color && entry.verient == id)?.quantity || ''} data-verient={id} data-color="{color}" data-size="{size}" id="input_entery_{product.id}_{size}_{color}_{id}" class="size-input cls-cell" type="number" placeholder="כמות" min="0" max="9999" > <!--bind:value="{product.mentries[color][size][id].quantity}" -->
+                                <input disabled={disabled} on:change={amount_changed_event} value={entries.find(entry => entry.size == size && entry.color == color && entry.verient == id)?.quantity || ''} data-verient={id} data-color="{color}" data-size="{size}" id="input_entery_{product.id}_{size}_{color}_{id}" class="size-input cls-cell" type="number" placeholder="כמות" min="0" max="9999" > <!--bind:value="{product.mentries[color][size][id].quantity}" -->
                             </div>
                             {:else}
                             <div class="cell-wraper">
-                                <input on:change={amount_changed_event} value={entries.find(entry => entry.size == size && entry.color == color && entry.verient == id)?.quantity || ''} class="size-input cls-cell" data-verient="" data-color="{color}" data-size="{size}" placeholder="כמות" min="0" max="9999" >
+                                <input disabled={disabled} on:change={amount_changed_event} value={entries.find(entry => entry.size == size && entry.color == color && entry.verient == id)?.quantity || ''} class="size-input cls-cell" data-verient="" data-color="{color}" data-size="{size}" placeholder="כמות" min="0" max="9999" >
                             </div>
                             {/each}
                           

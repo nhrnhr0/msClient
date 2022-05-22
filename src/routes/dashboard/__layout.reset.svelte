@@ -2,6 +2,7 @@
 
 import { onMount } from "svelte";
 import Modal from 'svelte-simple-modal';
+import { NotificationDisplay } from '@beyonk/svelte-notifications'
 
   
   export let sizes;
@@ -12,6 +13,7 @@ import Modal from 'svelte-simple-modal';
 import { fetch_wraper,get_album_details } from "@src/api/api";
 import { MAIN_PAGE_API } from "@src/api/consts";
 import { browser } from "$app/env";
+import { page } from "$app/stores";
     onMount(async()=> {
         let response = await fetch_wraper(MAIN_PAGE_API, {
       method: 'GET',
@@ -40,13 +42,6 @@ import { browser } from "$app/env";
         sizesJsonStore.set(sizes_ret);
         colorsJsonStore.set(colors_ret);
     })
-
-    let selectedTab = 2;
-    function selectTab(tab) {
-        console.log('clicked')
-        selectedTab = tab;
-
-    }
 </script>
   <svelte:head>
     <!-- import 
@@ -61,21 +56,22 @@ import { browser } from "$app/env";
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.13.0/pivot.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.13.0/pivot.min.css">
   </svelte:head>
+  <NotificationDisplay />
 
   <nav>
     <div class="nav-wrapper">
         <ul class="nav-mobile">
-            <li data-tab-id="1" on:click={()=>{selectTab(1)}} class:active={selectedTab == 1}>
+            <li data-tab-id="1" class:active={$page.path.includes('/dashboard/inv')}>
                 <a href="/dashboard/inv" >
                 מלאי
                 </a>
             </li>
-            <li data-tab-id="2" on:click={()=>{selectTab(2)}} class:active={selectedTab == 2}>
+            <li data-tab-id="2" class:active={$page.path.includes('/dashboard/doc-stock-enter')}>
                 <a href="/dashboard/doc-stock-enter" >
                 טפסי הכנסה למלאי
                 </a>
             </li>
-            <li data-tab-id="3" on:click={()=>{selectTab(3)}} class:active={selectedTab == 3}>
+            <li data-tab-id="3"class:active={$page.path.includes('/dashboard/doc-stock-out')}>
                 <a href="#" >
                 טפסי הוצאה מהמלאי
                 </a>
@@ -107,6 +103,6 @@ import { browser } from "$app/env";
   }
 
 </style>
-<Modal>
+<Modal classWindow="my-class-window">
 <slot></slot>
 </Modal>

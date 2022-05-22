@@ -105,6 +105,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
             alert(e);
             sending_data_to_server = false;
         });
+        return result;
     }
 
     function add_product_to_enter_document(e) {
@@ -118,12 +119,15 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                 doc_id: id,
             };
             console.log('item: ', data);
-            addPPNToEnterDoc(data).then((new_doc_data) => {
+            save_document_to_server().then(()=> {
+                addPPNToEnterDoc(data).then((new_doc_data) => {
                 set_load_info(new_doc_data);
-                
-            }).finally(() => {
-                sending_data_to_server = false;
-            });
+                    //e.target.reset();  // reset form
+                }).finally(() => {
+                    sending_data_to_server = false;
+                });
+            })
+            
         }else {
             alert('Please select PPN');
         }
@@ -157,7 +161,11 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
             sending_data_to_server = true;
             save_enter_doc_edit_to_server(data).then((new_doc_data) => {
                 set_load_info(new_doc_data)
-                insert_doc_to_inventory_api($doc_data.id);
+                insert_doc_to_inventory_api($doc_data.id).then((new_doc_data) => {
+                    set_load_info(new_doc_data)
+                }).finally(() => {
+                    sending_data_to_server = false;
+                });
 
             }).finally(() => {
                 sending_data_to_server = false;
@@ -208,11 +216,15 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                     <td>{$doc_data.warehouse_name}</td>
                     <td>{$doc_data.description}</td>
                     <td>
-                        <a href="{BASE_URL}/admin/inventory/docstockenter/{$doc_data.id}/change/"
-                        onclick="window.open('{BASE_URL}/admin/inventory/docstockenter/{$doc_data.id}/change/?_to_field=id&_popup=1', 
-                            'newwindow', 
-                            'width=800,height=500'); 
-                                return false;">ערוך</a>
+                        {#if $doc_data.isAplied}
+                            לא ניתן לערוך
+                        {:else}
+                            <a href="{BASE_URL}/admin/inventory/docstockenter/{$doc_data.id}/change/"
+                            onclick="window.open('{BASE_URL}/admin/inventory/docstockenter/{$doc_data.id}/change/?_to_field=id&_popup=1', 
+                                'newwindow', 
+                                'width=800,height=500'); 
+                                    return false;">ערוך</a>
+                        {/if}
                 {/if}
                 
                 </tr>
@@ -235,10 +247,10 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                 {#each $doc_data.items as item}
                     <tr class="part-1">
                         <td><img width="50px" height="50px" src={CLOUDINARY_URL + item.ppn.product.cimage} alt="{item.ppn.product.title}" /></td>
-                        <td><input type="text" bind:value={item.barcode}/></td>
+                        <td><input type="text" disabled={$doc_data.isAplied} bind:value={item.barcode}/></td>
                         <td>{item.ppn.providerProductName}</td>
                         <td>{item.ppn.product.title}</td>
-                        <td>₪<input type="number" step="0.01" bind:value={item.price} /></td>
+                        <td>₪<input type="number" step="0.01" disabled={$doc_data.isAplied} bind:value={item.price} /></td>
                         <!--
                         <td>
                             {#if warehouses}
@@ -252,7 +264,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                         -->
                         <td>{item.total_quantity}</td>
                         <td>
-                            <button class="btn btn-danger" disabled={sending_data_to_server} on:click={() => {
+                            <button class="btn btn-danger" disabled={sending_data_to_server || ($doc_data && $doc_data.isAplied)} on:click={() => {
 
                                 remove_product_from_enter_doc(item.id);
                             }}>
@@ -271,7 +283,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                             <SizeColorEdit product={item.ppn.product} entries={item.entries}/>
                             -->
                             {#if item.entries}
-                                <SizeColorTable product={item.ppn.product} bind:entries={item.entries}/>
+                                <SizeColorTable disabled={$doc_data.isAplied} product={item.ppn.product} bind:entries={item.entries}/>
                             {/if}
                         </td>
                     </tr>
@@ -290,7 +302,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
         </tbody>
     </table>
     <div class="floating-submit-container">
-        <button class="btn btn-primary" disabled={sending_data_to_server} on:click={save_document_to_server} >
+        <button class="btn btn-primary" disabled={sending_data_to_server || ($doc_data && $doc_data.isAplied)} on:click={save_document_to_server} >
             {#if sending_data_to_server || $doc_data == undefined}
                 <Spinner />
             {:else}
@@ -298,7 +310,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
             {/if}
         </button>
 
-        <button class="btn btn-secondary" on:click="{insert_doc_to_inventory}"
+        <button disabled={($doc_data && $doc_data.isAplied)} class="btn btn-secondary" on:click="{insert_doc_to_inventory}"
         >הכנס מסמך למלאי</button>
     </div>
     
@@ -314,7 +326,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                 <img width="50px" height="50px" src="{CLOUDINARY_URL + inp_product_image}" alt="">
             {/if}
             <label for="sku_ppn_name">שם בחשבונית</label>
-            <AutoComplete  id="newPPNEnteryInput" loadingText="מחפש מוצרים..."
+            <AutoComplete disabled={$doc_data && $doc_data.isAplied} id="newPPNEnteryInput" loadingText="מחפש מוצרים..."
                 create={false} showLoadingIndicator=true noResultsText=""
                 searchFunction={searchPPN} delay={200}
                 localFiltering="{false}" labelFieldName="providerProductName"
@@ -322,11 +334,21 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                 onChange={(e) => {ppn_selected_fill_form(e)}}
                 >
                 <div slot="item" let:item={item} let:label={label}>
-                    <div class="search-item">
+                    <div class="ppn-search-item">
                         <div class="inner">
                             <div class="label">
-                                {item.providerProductName} - 
-                                <span>{item.product_name}</span>
+                                <div class="img">
+                                    <img width="50px" height="50px" src="{CLOUDINARY_URL + item.product_image}" alt="">
+                                </div>
+                                <div class="info">
+                                    <div class="title">
+                                        <b>{item.product_name}</b>
+                                    </div>
+                                    <div class="subtitles">
+                                        <span>מק"ט: <b>{item.providerProductName || ''}</b></span>
+                                        <span>ברקוד: <b>{item.barcode || ''}</b></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -378,15 +400,15 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                         <legend>שורה חדשה</legend>
                     <div class="new-line">
                     <label for="product_name">שם מוצר</label>
-                    <input type="text" bind:value={inp_new_product_name} name="product_name" />
+                    <input disabled={$doc_data.isAplied} type="text" bind:value={inp_new_product_name} name="product_name" />
                     <label for="product_price">מחיר</label>
-                    <input type="text" bind:value={inp_new_product_price} name="product_price" />
+                    <input disabled={$doc_data.isAplied} type="text" bind:value={inp_new_product_price} name="product_price" />
                     <label for="product_barcode">ברקוד</label>
-                    <input type="text" bind:value={inp_new_product_barcode1} name="product_barcode" />
+                    <input disabled={$doc_data.isAplied} type="text" bind:value={inp_new_product_barcode1} name="product_barcode" />
                     <label for="product_barcode2">ברקוד נוסף</label>
-                    <input type="text" bind:value={inp_new_product_barcode2} name="product_barcode2" />
+                    <input disabled={$doc_data.isAplied} type="text" bind:value={inp_new_product_barcode2} name="product_barcode2" />
                     <label for="comments">הערות</label>
-                    <textarea name="comments" bind:value="{inp_new_product_comments}"></textarea>
+                    <textarea disabled={$doc_data.isAplied} name="comments" bind:value="{inp_new_product_comments}"></textarea>
                     <button on:click="{()=>{
                         if(! $doc_data.new_products) {
                             $doc_data.new_products = [];
@@ -401,7 +423,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                         inp_new_product_price = '';
                         inp_new_product_barcode1 = '';
                         inp_new_product_barcode2 = '';
-                        inp_new_product_comments = '';}}" class="btn btn-primary" type="button">הוסף</button>
+                        inp_new_product_comments = '';}}" disabled={($doc_data && $doc_data.isAplied)} class="btn btn-primary" type="button">הוסף</button>
                     </div>
                     </fieldset>
                 </div>
@@ -436,6 +458,17 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
         </div>
 
 <style lang="scss">
+    :global(.ppn-search-item) {
+        .inner {
+            .label {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-direction: row;
+            }
+        }
+        
+    }
     .products-not-in-website {
         padding-bottom: 80px;
         .new-line {

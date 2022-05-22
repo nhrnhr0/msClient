@@ -4,10 +4,16 @@
     import { onMount } from 'svelte';
     export let data;
     import {TabulatorFull as Tabulator} from 'tabulator-tables';
+    import Modal from 'svelte-simple-modal';
+
 import DragableEditList from '../DragableEditList.svelte';
 import StockEditPopup from './StockEditPopup.svelte';
 import {flip} from "svelte/animate";
     import {dndzone} from "svelte-dnd-action";
+    import { getContext } from 'svelte';
+
+    const { open } = getContext('simple-modal');
+
     let tableDom;
 
     let table;
@@ -41,6 +47,7 @@ import {flip} from "svelte/animate";
     onMount(()=> {
         //create Tabulator on DOM element with id "example-table"
         table = new Tabulator("#example-table", {
+            textDirection:"rtl",
             height:'auto', // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
             data:data, //assign data to table
             layout:"fitColumns", //fit columns to width of table (optional)
@@ -67,16 +74,31 @@ import {flip} from "svelte/animate";
                     };
                     return button
                 }, headerFilter:false},
-                {title:"נוצר ב", field:"created_at", width:150},
-                {title:"עודכן ב", field:"updated_at", width:150},
+                {title:"נוצר ב", field:"created_at", width:150,formatter:dateCellFormatter, headerFilter:false},
+                {title:"עודכן ב", field:"updated_at", width:150,formatter:dateCellFormatter, headerFilter:false},
             ],
         });
     });
 
+    function dateCellFormatter(cell, formatterParams, onRendered){
+                    // input: 2022-05-19T16:18:38.644219+03:00
+                    // output: 19/05/2022 16:18:38
+                    let date = new Date(cell.getValue()).toLocaleString('he-IL');
+                    return date;
+                }
+
     function openStockEditPopup(id, data){
         id_stock_to_edit = id;
         data_stock_to_edit = data;
-        show_stock_edit_popup = true;
+        /*show_stock_edit_popup = true;*/
+        //open(CreateEnterDocPopup, { refresh: refresh_data })
+        open(StockEditPopup, {
+            originalData:data_stock_to_edit,
+            stockId:id_stock_to_edit, 
+            replaceData: replaceData,
+            updateData: updateData,
+        })
+        
     }
     function closeStockEditPopup(){
         show_stock_edit_popup = false;
@@ -112,8 +134,40 @@ import {flip} from "svelte/animate";
         selectedKeys = e.detail.items;
     }
 
+    function replaceData(data){
+        let original = data.originalData;
+        let newData = data.replaceData;
+        debugger;
+        table.updateOrAddData(newData);
+    }
+    function updateData(data) {
+        let newData = data;
+        debugger;
+        if(isIterable(newData) == false){
+            newData = [newData];
+        }
+        table.updateOrAddData(newData);
+    }
+
+    function isIterable(input) {  
+        if (input === null || input === undefined) {
+            return false
+        }
+
+        return typeof input[Symbol.iterator] === 'function'
+    }
+
     let selectedKeys = [];
     let showInventoryGroups = false;
+    let show_empty_stock = false;
+    $: {
+        if (show_empty_stock && table) {
+            table.clearFilter('quantity');
+        }else if(table){
+            
+            table.setFilter('quantity', '>', 0);
+        }
+    }
 </script>
 <svelte:head>
     <link href="https://unpkg.com/tabulator-tables@5.2.4/dist/css/tabulator.min.css" rel="stylesheet">
@@ -157,6 +211,7 @@ import {flip} from "svelte/animate";
         -->
         </div>
     </div>
+    <!--
     <select id="filter-field-1">
         <option></option>
         <option value="created_at">נוצר ב</option>
@@ -180,8 +235,19 @@ import {flip} from "svelte/animate";
     <input id="filter-value" type="text" placeholder="value to filter">
   
     <button id="filter-clear">Clear Filter</button>
+-->
   </div>
-    <StockEditPopup bind:is_open={show_stock_edit_popup} originalData={data_stock_to_edit} stockId={id_stock_to_edit} ></StockEditPopup>
+  <div class="checkbox">
+        <input bind:checked="{show_empty_stock}" id="show_empty_stock" type="checkbox">
+        <label for="show_empty_stock">הצג מקומות עם מלאי 0</label>
+  </div>
+  <!--
+    <StockEditPopup on:table_replace={replaceData} bind:is_open={show_stock_edit_popup} originalData={data_stock_to_edit} stockId={id_stock_to_edit} ></StockEditPopup>
+    -->
+    <!--<Modal
+    styleWindow={{ border: '1px solid red', boxShadow: '0 2px 5px 0 rgba(0, 0, 0, 0.15)' }}
+    >
+    </Modal>-->
 <div bind:this={tableDom} id="example-table"></div>
 
 <style lang="scss">

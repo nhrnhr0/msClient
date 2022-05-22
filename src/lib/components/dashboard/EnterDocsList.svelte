@@ -15,7 +15,6 @@ import { BASE_URL } from '@api/consts';
     })
 
     function refresh_data() {
-        debugger;
         enter_docs_promise = admin_get_enter_docs();
     }
 
