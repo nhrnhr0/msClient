@@ -44,6 +44,7 @@ export const GET_ALL_USERS_URL = BASE_URL + '/api/get-all-users/';
 export const SEARCH_PROVIDERS_API_URL = BASE_URL + '/search-providers';
 export const SEARCH_WAREHOUSES_URL = BASE_URL + '/search-warehouses';
 export const CREATE_ENTER_DOC_URL = BASE_URL + '/inv/create-enter-doc/';
+export const GET_ALL_ORDERS = BASE_URL + '/api/get-all-orders';
 // export const GET_ALL_PROVIDERS_URL = BASE_URL + '/svelte/api/providers/';
 // CRM
 export const LEAD_DISTRIBUTION_URL = BASE_API_URL + 'lead-distribution/';
@@ -58,6 +59,7 @@ export const INVENTORY_EDIT_ENTRY_URL = BASE_URL + '/inventory-edit-entry/';
 export const INVENTORY_MANUAL_UPDATE_ENTRY_URL = BASE_URL + '/inventory-manual-update-entry/';
 //http://127.0.0.1:8000/api/token/
 //export const OG_META_ALBUMS_URL = BASE_API_URL + 'og-meta-albums/';
+export const MORDER_GET_API = BASE_URL + '/morders/api-get-order-data';
 
 export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
 

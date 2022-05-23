@@ -2,13 +2,15 @@
       import AutoComplete from "simple-svelte-autocomplete";
 import { apiSearchProviders,apiSearchWarehouses,apiSubmitCreateDocStockEnter } from "@src/api/api";
 import { Spinner } from "sveltestrap";
-import { getContext } from 'svelte';
+import { getContext, onMount } from 'svelte';
+import { warhousesJsonStore } from "@src/stores/stores";
+import { get_warehouses_api } from "@src/api/api";
 
 const { open, close } = getContext('simple-modal');
   export let refresh;
       let inp_invoice_number;
       let inp_description;
-
+      let warehouses;
       let selectedProvider;
       function autocompleteProviderSelected(provider) {
         selectedProvider = provider;
@@ -46,6 +48,16 @@ const { open, close } = getContext('simple-modal');
           close()
         });
       }
+
+      onMount(async ()=> {
+        alert('onMount');
+        if($warhousesJsonStore == undefined) {
+          let reponse = await get_warehouses_api();
+          debugger;
+          alert(reponse);
+          $warhousesJsonStore.set(reponse.data);
+        }
+      })
 </script>
   
 <div class="header">

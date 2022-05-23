@@ -7,6 +7,7 @@ import { BASE_URL } from '@api/consts';
   import { getContext } from 'svelte';
   const { open } = getContext('simple-modal');
   import CreateEnterDocPopup from '@lib/popups/CreateEnterDocPopup.svelte';
+import { Spinner } from 'sveltestrap';
   const showSurprise = () => open(Popup, { message: "It's a modal!" });
 
     let enter_docs_promise;// admin_get_enter_docs();
@@ -42,7 +43,7 @@ import { BASE_URL } from '@api/consts';
     <tbody>
         {#if enter_docs_promise}
             {#await enter_docs_promise}
-                loading...
+                <Spinner></Spinner>
             {:then enter_docs}
                 {#each enter_docs as enter_doc}
                 <tr>
@@ -83,6 +84,7 @@ import { BASE_URL } from '@api/consts';
                 th {
                     text-align: center;
                     background-color: #f5f5f5;
+                    padding: 0.5rem;
                 }
             }
         }
@@ -90,7 +92,7 @@ import { BASE_URL } from '@api/consts';
             tr {
                 td {
                     text-align: center;
-                    
+                    padding: 0.5rem;
                 }
                 &:nth-child(odd) {
                     background-color: #b3b3b3;

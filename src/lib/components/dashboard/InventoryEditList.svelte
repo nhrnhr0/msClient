@@ -53,26 +53,35 @@ import {flip} from "svelte/animate";
             layout:"fitColumns", //fit columns to width of table (optional)
             groupBy: ['warehouse_name', 'product_name'],
             columns:[ //Define Table Columns
-                {title:"מספר הכנסה", field:"id", sorter:"number", align:"center"},
+                {title:"id", field:"id", sorter:"number", align:"center"},
                 
                 {title:"מחסן", field:"warehouse_name",headerFilter:true},
                 {title:'ספק', field:'provider_name',headerFilter:true},
                 {title:"שם מוצר", field:"product_name",headerFilter:true},
                 {title:'ברקוד', field:'barcode',headerFilter:true},
+                {title:"ברקוד פיזי", field:"has_phisical_barcode",headerFilter:true, formatter:function(cell, formatterParams){
+                    return cell.getValue() ? '✅' : '❌';
+                }},
                 {title:"צבע", field:"color_name",headerFilter:true},
                 {title:"מידה", field:"size_name",headerFilter:true},
                 {title:"מודל", field:"verient_name",headerFilter:true},
                 {title:"כמות", field:"quantity",headerFilter:true},
                 {title:"מחיר ממוצע ליח", field:"avgPrice",headerFilter:true},
                 {title: "ערוך", field: "edit", formatter: function(cell, formatterParams){
+                    let buttonWraper = document.createElement('div');
+                    buttonWraper.classList.add('edit-button-wrapper');
                     let button = window.document.createElement('button');
+                    button.classList.add('btn-secondary');
+                    button.classList.add('btn');
+                    button.classList.add('edit-btn');
                     button.innerHTML = 'ערוך';
                     button.onclick = function(){
                         console.log(cell.getData().id);
                         
                         openStockEditPopup(cell.getData().id,cell.getData());
                     };
-                    return button
+                    buttonWraper.appendChild(button);
+                    return buttonWraper;
                 }, headerFilter:false},
                 {title:"נוצר ב", field:"created_at", width:150,formatter:dateCellFormatter, headerFilter:false},
                 {title:"עודכן ב", field:"updated_at", width:150,formatter:dateCellFormatter, headerFilter:false},
@@ -172,6 +181,7 @@ import {flip} from "svelte/animate";
 <svelte:head>
     <link href="https://unpkg.com/tabulator-tables@5.2.4/dist/css/tabulator.min.css" rel="stylesheet">
 </svelte:head>
+{JSON.stringify(data)}
 <div>
     <button class:active={showInventoryGroups} on:click="{()=>{console.log('button click');showInventoryGroups = !showInventoryGroups;}}" class="accordion">קבוצות מלאים</button>
     <div class="panel" class:active={showInventoryGroups}>
@@ -251,6 +261,11 @@ import {flip} from "svelte/animate";
 <div bind:this={tableDom} id="example-table"></div>
 
 <style lang="scss">
+    :global(.edit-button-wrapper) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 .accordion {
     &:before {
         content: '>>';

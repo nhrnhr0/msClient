@@ -72,8 +72,8 @@ import { page } from "$app/stores";
                 </a>
             </li>
             <li data-tab-id="3"class:active={$page.path.includes('/dashboard/doc-stock-out')}>
-                <a href="#" >
-                טפסי הוצאה מהמלאי
+                <a href="/dashboard/doc-stock-out" >
+                    טפסי הזמנות
                 </a>
             </li>
         </ul>

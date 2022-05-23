@@ -2,7 +2,7 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL,INVENTORY_MANUAL_UPDATE_ENTRY_URL,INVENTORY_EDIT_ENTRY_URL,GET_ALL_USERS_URL,ENTER_DOC_EDIT_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL, SEARCH_PPN_API_URL, ENTER_DOC_REMOVE_PRODUCT, ENTER_DOC_INSERT_INVENTORY_URL, SEARCH_PROVIDERS_API_URL, SEARCH_WAREHOUSES_URL, CREATE_ENTER_DOC_URL} from "./consts";
+import { BASE_URL,INVENTORY_MANUAL_UPDATE_ENTRY_URL,INVENTORY_EDIT_ENTRY_URL,GET_ALL_USERS_URL,ENTER_DOC_EDIT_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL, SEARCH_PPN_API_URL, ENTER_DOC_REMOVE_PRODUCT, ENTER_DOC_INSERT_INVENTORY_URL, SEARCH_PROVIDERS_API_URL, SEARCH_WAREHOUSES_URL, CREATE_ENTER_DOC_URL, MORDER_GET_API} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
@@ -64,6 +64,13 @@ export function apiSearchPPN(keyword, provider) {
     const url = SEARCH_PPN_API_URL + '?q=' + encodeURIComponent(keyword) + '&provider=' + encodeURIComponent(provider);
     return fetch_wraper(url);
 }
+
+
+export async function apiGetMOrder(order_id) {
+    const response = await fetch_wraper(`${MORDER_GET_API}/${order_id}`, {});
+    return response;
+}
+
 export function admin_get_enter_docs() {
     return fetch_wraper(`${BASE_URL}/inv/doc-stock-list-api`, {
         method: "GET",

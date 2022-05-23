@@ -73,6 +73,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
             inp_product_form_barcode = barcode;
             inp_product_form_warehouse = e.default_warehouse
             inp_product_image = e.product_image;
+            inp_product_form_has_phisical_barcode = e.has_phisical_barcode;
             console.log('ppn_selected_fill_form: ', e);
             isPPNSelected = true;
         }else {
@@ -84,6 +85,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
     let inp_selected_ppn = '';
     let inp_product_form_cost = '';
     let inp_product_form_barcode = '';
+    let inp_product_form_has_phisical_barcode = false;
     let inp_product_form_warehouse = '';
     let inp_product_image
     let selectedPPNToAdd;
@@ -235,6 +237,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
             <tr>
                 <th>תמונה</th>
                 <th>ברקוד</th>
+                <th>ברקוד פיזי</th>
                 <th>שם בחשבונית</th>
                 <th>מוצר אצלנו</th>
                 <th>מחיר קנייה (ללא מע"מ)</th>
@@ -247,7 +250,8 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                 {#each $doc_data.items as item}
                     <tr class="part-1">
                         <td><img width="50px" height="50px" src={CLOUDINARY_URL + item.ppn.product.cimage} alt="{item.ppn.product.title}" /></td>
-                        <td><input type="text" disabled={$doc_data.isAplied} bind:value={item.barcode}/></td>
+                        <td><input type="text" disabled={$doc_data.isAplied} bind:value={item.ppn.barcode}/></td>
+                        <td><input type="checkbox" disabled={$doc_data.isAplied} bind:checked={item.ppn.has_phisical_barcode}/></td>
                         <td>{item.ppn.providerProductName}</td>
                         <td>{item.ppn.product.title}</td>
                         <td>₪<input type="number" step="0.01" disabled={$doc_data.isAplied} bind:value={item.price} /></td>
@@ -347,6 +351,8 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                                     <div class="subtitles">
                                         <span>מק"ט: <b>{item.providerProductName || ''}</b></span>
                                         <span>ברקוד: <b>{item.barcode || ''}</b></span>
+                                        <br>
+                                        <span>ברקוד פיזי? {item.has_phisical_barcode?'✔️':'❌'}</span>
                                     </div>
                                 </div>
                             </div>
@@ -363,6 +369,12 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
             <label for="barcode">ברקוד</label>
             
             <input type="text" bind:value={inp_product_form_barcode} disabled={!isPPNSelected} name="barcode" />
+
+            
+            <input type="checkbox" bind:checked={inp_product_form_has_phisical_barcode} disabled={!isPPNSelected} name="has_phisical_barcode" />
+            <label for="has_phisical_barcode">
+                קיים ברקוד פיזי
+            </label>
             <!--
             <label for="warehouse">מחסן</label>
             {#if warehouses}
@@ -463,7 +475,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
             .label {
                 display: flex;
                 align-items: center;
-                justify-content: space-between;
+                justify-content: flex-start;
                 flex-direction: row;
             }
         }

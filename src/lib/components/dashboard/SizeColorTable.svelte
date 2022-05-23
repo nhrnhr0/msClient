@@ -58,6 +58,7 @@ import { onMount } from "svelte";
     */
 </script>
 {#if product && entries && loaded}
+  {#if product.show_sizes_popup}
     <table class="product-table">
         <thead>
           <tr>
@@ -195,6 +196,28 @@ import { onMount } from "svelte";
                 </tr>
         </tbody>
     </table>
+  {:else}
+    <table class="product-table">
+      <thead>
+        <tr>
+          <th>
+            כמות
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div>
+              <div class="cell-wraper">
+                <input disabled={disabled} on:change={amount_changed_event} value={entries.find(entry => entry.size == 86 && entry.color == 76 && entry.verient == null)?.quantity || ''} data-verient={null} data-color="{76}" data-size="{86}" class="size-input cls-cell" type="number" placeholder="כמות" min="0" max="9999" >
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  {/if}
 {/if}
 
 <style lang="scss">
