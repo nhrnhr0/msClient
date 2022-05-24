@@ -536,6 +536,7 @@
                       class="arrow-left"
                       width="32px"
                       height="32px"
+                      alt="right arrow"
                       src="/right-arrow-hover.png"
                     />
                   </button>
