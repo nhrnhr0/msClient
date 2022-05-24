@@ -9,6 +9,9 @@
         <thead>
             <tr>
                 <th>
+                    id
+                </th>
+                <th>
                     תאריך הזמנה
                 </th>
                 <th>
@@ -39,6 +42,9 @@
             
                 {#each orders as order}
                 <tr>
+                    <td>
+                        {order.id}
+                    </td>
                     <td>
                         {new Date(order.created).toLocaleString('he-IL')}
                     </td>

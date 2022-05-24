@@ -17,8 +17,10 @@ import { onMount } from "svelte";
     
 </script>
 <script>
+import { CLOUDINARY_URL } from "@api/consts";
 import { page } from "$app/stores";
 import { Spinner } from "sveltestrap";
+import MorderProductEdit from "$lib/components/dashboard/doc_stock_out/MorderProductEdit.svelte";
 async function load_order_from_server(_id) {
         let resp = await apiGetMOrder(_id);
         console.log('resp:', resp);
@@ -49,11 +51,7 @@ async function load_order_from_server(_id) {
 
     onMount(async ()=> {
         id = $page.params.id;
-        debugger;
         await load_order_from_server(id);
-
-        debugger;
-
         headersTable = new Tabulator("#headers-table", {
             data:headers_data,
             //autoColumns:true,
@@ -74,7 +72,7 @@ async function load_order_from_server(_id) {
             ]
         });
 
-        productsTable = new Tabulator('#productsTable', {
+        /*productsTable = new Tabulator('#productsTable', {
             data:products_data,
             layout:"fitColumns",
             textDirection:"rtl",
@@ -90,7 +88,7 @@ async function load_order_from_server(_id) {
             ]
         })
 
-        function products_formatter(cell, formatterParams, onRendered) {
+        function products_formrubhקונatter(cell, formatterParams, onRendered) {
             let products = cell.getValue();
             let row = cell.getRow()._row.element;
             debugger;
@@ -104,7 +102,7 @@ async function load_order_from_server(_id) {
             element.innerHTML = html;
             row.appendChild(element);
             
-        }
+        }*/
     });
     
 
@@ -116,18 +114,114 @@ async function load_order_from_server(_id) {
 </svelte:head>
 {#if data}
     <div id="headers-table"></div>
-    <div id="productsTable"></div>
-    {JSON.stringify(data)}
+    <table id="productsTable" class="products-table">
+        <thead>
+            <tr>
+                <th>
+                    תמונה
+                </th>
+                <th>
+                    שם מוצר
+                </th>
+                <th>
+                    מחיר (ללא מע"מ)
+                </th>
+                <th>
+                    הדפסה
+                </th>
+                <th>
+                    רקמה
+                </th>
+                <th>
+                    חשוב להזמנה
+                </th>
+                <th>
+                    ברקוד
+                </th>
+                <th>
+                    הערות
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {#each products_data as product}
+                <tr class="view">
+                    <td>
+                        <img width="50px" height="50px" src="{CLOUDINARY_URL + product.product_cimage}" alt="">
+                    </td>
+                    <td>
+                        {product.product_name}
+                    </td>
+                    <td>
+                        <input type="number" bind:value={product.price} /> ₪
+                    </td>
+                    <td>
+                        <input type="checkbox" bind:checked={product.prining} />
+                        <input type="text" bind:value={product.prining_comment} disabled={!product.prining} />
+                    </td>
+                    <td>
+                        <input type="checkbox" bind:checked={product.embroidery} />
+                        <input type="text" bind:value={product.embroidery_comment} disabled={!product.embroidery} />
+                    </td>
+                    <td>
+                        <input type="checkbox" bind:checked={product.ergent} />
+                    </td>
+                    <td>
+                        {product.pbarcode || ''}
+                    </td>
+                    <td>
+                        <input type="text" bind:value={product.comment} />
+                    </td>
+                </tr>
+                <tr class="fold">
+                    <td colspan="8">
+                        <MorderProductEdit product={product} />
+                </tr>
+            {/each}
+        </tbody>
+    </table>
+
+    
 {:else}
     <Spinner></Spinner>
 {/if}
 
 <style lang="scss">
-    :global(.products-table) {
+    /*:global(.products-table) {
         background-color: blue;
         border: 1px solid red;;
-    }
+    }*/
     #headers-table{
         width: 100%;
     }
+
+    :global(.products-table) {
+        width: 100%;
+        thead {
+            background-color: #f5f5f5;
+            tr {
+                th {
+                    padding: 10px;
+                    border-bottom: 1px solid #eaeaea;
+                }
+            }
+        }
+        tbody {
+            tr {
+                td {
+                    padding: 10px;
+                    border-bottom: 1px solid #eaeaea;
+                }
+                &:nth-child(even) {
+                    background: rgb(221, 221, 221);
+                }
+                &:hover {
+                    background: #ccc;
+                }
+            }
+            
+
+            
+    }
+}
 </style>
