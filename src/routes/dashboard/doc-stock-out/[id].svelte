@@ -176,6 +176,7 @@ async function load_order_from_server(_id) {
                 <tr class="fold">
                     <td colspan="8">
                         <MorderProductEdit product={product} />
+                    </td>
                 </tr>
             {/each}
         </tbody>

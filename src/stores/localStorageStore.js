@@ -1,14 +1,16 @@
 import { browser } from "$app/env";
-import { SIZES_API_URL,COLORS_API_URL,VARIANTS_API_URL } from "@src/api/consts";
+import { WAREHOUSES_API_URL,SIZES_API_URL,COLORS_API_URL,VARIANTS_API_URL } from "@src/api/consts";
 import { fetch_wraper } from "@src/api/api";
+
 
 const keyUrlPairs = {
     "sizes": {url: SIZES_API_URL},
     "colors": {url: COLORS_API_URL},
     "varients": {url:VARIANTS_API_URL},
+    "warehouses": {url:WAREHOUSES_API_URL},
 }
 
-export async function getLocalStorageStore (key) {
+export async function getLocalStorageStore(key) {
         if(browser) {
             // set cache lifetime in seconds
             var cachelife = 5; 

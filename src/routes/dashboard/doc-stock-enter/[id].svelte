@@ -118,6 +118,7 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                 item_id: inp_selected_ppn,
                 item_cost: inp_product_form_cost,
                 item_barcode: inp_product_form_barcode,
+                has_phisical_barcode: inp_product_form_has_phisical_barcode,
                 doc_id: id,
             };
             console.log('item: ', data);

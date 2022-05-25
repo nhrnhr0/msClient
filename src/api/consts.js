@@ -24,6 +24,7 @@ export const PRODUCTS_API_URL = BASE_API_URL + 'images/';
 export const SIZES_API_URL = BASE_API_URL + 'sizes/';
 export const COLORS_API_URL = BASE_API_URL + 'colors/';
 export const VARIANTS_API_URL = BASE_API_URL + 'get-all-variants/';
+export const WAREHOUSES_API_URL = BASE_URL + '/get-all-warehouses-api/'
 export const LOGOS_API_URL = BASE_API_URL + 'logos/';
 export const GET_CSRF_TOKEN_URL = BASE_URL + '/api/set_csrf_token';
 export const CONTACT_FORM_URL = BASE_URL + '/contact-form';
@@ -61,7 +62,7 @@ export const INVENTORY_MANUAL_UPDATE_ENTRY_URL = BASE_URL + '/inventory-manual-u
 //http://127.0.0.1:8000/api/token/
 //export const OG_META_ALBUMS_URL = BASE_API_URL + 'og-meta-albums/';
 export const MORDER_GET_API = BASE_URL + '/morders/api-get-order-data';
-
+export const MORDER_EDIT_ADD_PRODUCT_ENTRIES = BASE_URL + '/morders/edit-order-add-product-entries/v2';
 export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
 
 

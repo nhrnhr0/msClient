@@ -3,8 +3,7 @@
 import { apiSearchProviders,apiSearchWarehouses,apiSubmitCreateDocStockEnter } from "@src/api/api";
 import { Spinner } from "sveltestrap";
 import { getContext, onMount } from 'svelte';
-import { warhousesJsonStore } from "@src/stores/stores";
-import { get_warehouses_api } from "@src/api/api";
+import { getLocalStorageStore } from "@src/stores/localStorageStore";
 
 const { open, close } = getContext('simple-modal');
   export let refresh;
@@ -12,6 +11,7 @@ const { open, close } = getContext('simple-modal');
       let inp_description;
       let warehouses;
       let selectedProvider;
+      let  ALL_WAREHOUSES = [];
       function autocompleteProviderSelected(provider) {
         selectedProvider = provider;
       }
@@ -22,14 +22,14 @@ const { open, close } = getContext('simple-modal');
       }
 
 
-      let selectedWarehouse;
-      async function searchWarehouse(keyword) {
+      let selectedWarehouse = 1;
+      /*async function searchWarehouse(keyword) {
         let warehouses = await apiSearchWarehouses(keyword)
         return warehouses;
       } 
       function autocompleteWarehouseSelected(warehouse) {
         selectedWarehouse = warehouse;
-      }
+      }*/
 
 
 
@@ -50,13 +50,8 @@ const { open, close } = getContext('simple-modal');
       }
 
       onMount(async ()=> {
-        alert('onMount');
-        if($warhousesJsonStore == undefined) {
-          let reponse = await get_warehouses_api();
-          debugger;
-          alert(reponse);
-          $warhousesJsonStore.set(reponse.data);
-        }
+        ALL_WAREHOUSES = await getLocalStorageStore('warehouses');
+        console.log('ALL_WAREHOUSES: ', ALL_WAREHOUSES);
       })
 </script>
   
@@ -103,7 +98,11 @@ const { open, close } = getContext('simple-modal');
     </div>
     <div class="form-group">
       <label for="warehouse">מחסן</label>
-      
+      <select bind:value={selectedWarehouse} class="form-control" id="warehouse">
+        {#each ALL_WAREHOUSES as warehouse}
+          <option value={warehouse.id} >{warehouse.name}</option>
+        {/each}
+      <!--
       <AutoComplete tabindex={'1'} id="warhouse_search_input" loadingText="מחפש מחסנים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteWarehouseSelected} create=true placeholder="חיפוש מחסנים..." className="autocomplete-cls" searchFunction={searchWarehouse} delay=200 localFiltering="{false}" labelFieldName="name" valueFieldName="value" bind:value={selectedWarehouse}  >
         <div slot="loading">
             <Spinner
@@ -114,13 +113,14 @@ const { open, close } = getContext('simple-modal');
                 thickness="2"
             />
             <span>טוען...</span>
-            <!-- spinner -->
             
         </div>
         <div slot="item" let:item={item} let:label={label}>
           {@html label}
         </div>
     </AutoComplete>
+    -->
+
     </div>
     <button type="submit" class="btn btn-primary">שלח</button>
 
