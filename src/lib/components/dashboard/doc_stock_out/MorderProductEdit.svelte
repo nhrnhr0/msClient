@@ -22,6 +22,7 @@ import { morder_edit_add_product_entries } from "@src/api/api";
     let ALL_VARIENTS;
     let done_loading = false;
     let colors_varients_cartesian = [];
+    let available_inventory_cartesian = [];
 
     function refreshData() {
         let sizesSet =new Set();
@@ -34,6 +35,21 @@ import { morder_edit_add_product_entries } from "@src/api/api";
             sizesSet.add(size);
             colorsSet.add(color);
             verientsSet.add(varient);
+        }
+        let ppn__barcodes = new Set();
+        let ppn__has_phisical_barcodes = new Set();
+        let ppn__providers = new Set();
+        for(let i = 0; i < product.available_inventory.length; i++) {
+            let color = product.available_inventory[i].color || 76;
+            let size = product.available_inventory[i].size || 86;
+            let varient = product.available_inventory[i].varient;
+
+            sizesSet.add(size);
+            colorsSet.add(color);
+            verientsSet.add(varient);
+            ppn__barcodes.add(product.available_inventory[i].ppn__barcode);
+            ppn__has_phisical_barcodes.add(product.available_inventory[i].ppn__has_phisical_barcode);
+            ppn__providers.add(product.available_inventory[i].ppn__provider__name);
         }
         debugger;
         let verientsArr = Array.from(verientsSet);
@@ -56,12 +72,22 @@ import { morder_edit_add_product_entries } from "@src/api/api";
         console.log('creating cartesian from ', color_objs, verient_objs);
         verient_objs = verient_objs.filter(verient => verient != undefined);
         //verient_objs = verient_objs.filter(verient => verient != undefined);
+        ppn__barcodes = Array.from(ppn__barcodes);
+        ppn__has_phisical_barcodes = Array.from(ppn__has_phisical_barcodes);
+        ppn__providers = Array.from(ppn__providers);
+
         debugger;
         if (verient_objs.length > 0) {
             colors_varients_cartesian = cartesian(color_objs, verient_objs);
+            available_inventory_cartesian = cartesian(color_objs, verient_objs, ppn__barcodes, ppn__has_phisical_barcodes, ppn__providers);
+
         } else {
             colors_varients_cartesian = color_objs.map(color => [color]);
+            available_inventory_cartesian = cartesian(color_objs, ppn__barcodes, ppn__has_phisical_barcodes, ppn__providers);
+
         }
+
+
     }
 
     onMount(async()=>{ 
@@ -150,9 +176,36 @@ import { morder_edit_add_product_entries } from "@src/api/api";
                 <th>
                     סוג
                 </th>
-                <th colspan="{colors_varients_cartesian[0].length}">
-                    מידות
-                </th>
+                {#if colors_varients_cartesian[0].length == 1}
+                    <th>
+                        צבע
+                    </th>
+                    <th>
+                        ברקוד
+                    </th>
+                    <th>
+                        ברקוד פיזי
+                    </th>
+                    <th>
+                        ספק
+                    </th>
+                {:else}
+                    <th>
+                        צבע
+                    </th>
+                    <th>
+                        מודל
+                    </th>
+                    <th>
+                        ברקוד
+                    </th>
+                    <th>
+                        ברקוד פיזי
+                    </th>
+                    <th>
+                        ספק
+                    </th>
+                    {/if}
                 {#each size_objs as size}
                     <th>
                         {size.size}
@@ -181,20 +234,22 @@ import { morder_edit_add_product_entries } from "@src/api/api";
                             </td>
                     {/each}
                     
-                    
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
                     {#each size_objs as size}
                         <td>
                             <input class="amount-input" type="text" data-size-id={size.id} data-color-id={colors_varients_iter[0].id} 
                                 data-varient-id={colors_varients_iter[1]?.id}
                                 value="{product.entries.find(entry => entry.size == size.id && entry.color == colors_varients_iter[0].id && entry.varient == colors_varients_iter[1]?.id)?.quantity}" />
-                            
-                            
                         </td> 
                     {/each}
+                    
                 </tr>
+                <!--
                 <tr>
                     <td style="color:red;">מלאי</td>
-                    {#each colors_varients_iter as corlor_varient}
+                    {#each colors_varients_iter as corlor_varient, idx}
                         <td>
                             <div class="color-wraper">
                                 {#if corlor_varient.color}
@@ -204,13 +259,67 @@ import { morder_edit_add_product_entries } from "@src/api/api";
                             </div>
                         </td>
                     {/each}
-                    {#each size_objs as size}
+                    {#each available_inventory_cartesian as available_inventory_iter, idx}
+                        
+                        {#each available_inventory_iter as available_inventory}
+                                    <td>
+                                        {available_inventory}
+                                    </td>
+                                {/each}
+                                {#each size_objs as size}
+                                
+                                    <td>
+                                        {product.available_inventory.find(entry => entry.size == size.id && entry.color == colors_varients_iter[0].id && entry.varient == colors_varients_iter[1]?.id)?.total}
+                                    </td>
+                                
+                                {/each}
+                    {/each}
+
+                </tr>
+                -->
+            {/each}
+
+            {#each available_inventory_cartesian as available_inventory_iter, idx}
+                <tr>
+                    <td style="color: red;">
+                        מלאי
+                    </td>
+                    
+                    {#each available_inventory_iter as available_inventory}
                         <td>
-                            
+                            {#if typeof available_inventory === 'object' && available_inventory !== null}
+                                <div class="color-wraper">
+                                    {#if available_inventory.color}
+                                        <div class="color-box" style="background-color:{available_inventory.color}"></div>
+                                    {/if}
+                                    {available_inventory.name}
+                                </div>
+                            {:else if typeof available_inventory == "boolean"}
+                                {#if available_inventory}
+                                    ✅
+                                {:else}
+                                    ❌
+                                {/if}
+                            {:else}
+                                {available_inventory || '-'}
+                            {/if}
+
                         </td>
                     {/each}
+                    {#each size_objs as size}
+                        <td>
+
+                            {#if available_inventory_iter[1]?.id}
+                                {product.available_inventory.find(entry => entry.size == size.id && entry.color == available_inventory_iter[0].id && entry.varient == available_inventory_iter[1]?.id && entry.ppn__barcode == available_inventory_iter[2] && entry.ppn__has_phisical_barcode == available_inventory_iter[3] && entry.ppn__provider__name == available_inventory_iter[4])?.total}
+                            {:else}
+                                {product.available_inventory.find(entry => entry.size == size.id && entry.color == available_inventory_iter[0].id && entry.ppn__barcode == available_inventory_iter[1] && entry.ppn__has_phisical_barcode == available_inventory_iter[2] && entry.ppn__provider__name == available_inventory_iter[3])?.total}
+                            {/if}
+                        </td>
+                    {/each}
+
                 </tr>
             {/each}
+
             
     </table>
     </div>
