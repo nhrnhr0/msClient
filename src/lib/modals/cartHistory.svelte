@@ -4,6 +4,7 @@
   import { fetch_wraper } from "../../api/api";
   import { CART_HISTORY_URL } from "../../api/consts";
   import { onMount } from "svelte";
+  import Spinner from "svelte-spinner";
 
   let isLoading = false;
 
@@ -53,10 +54,36 @@
           class="close-btn left">x</button
         >
       </div>
-      <div class="modal-body">Modal body</div>
+      <div class="modal-body">
+        {#if isLoading}
+          <div class="loader-wraper">
+            <Spinner
+              size="40"
+              speed="750"
+              color="#A82124"
+              thickness="2"
+              gap="40"
+            />
+          </div>
+        {:else}
+          Modal body
+        {/if}
+      </div>
     </div>
   </div>
 </div>
 
 <style>
+  .loader-wraper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .modal-body {
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 32px;
+    padding-bottom: 32px;
+  }
 </style>
