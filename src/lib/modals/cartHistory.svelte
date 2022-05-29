@@ -1,6 +1,28 @@
 <script>
   import { fly, fade } from "svelte/transition";
   import { cartHistoryModalStore } from "../../stores/stores";
+  import { fetch_wraper } from "../../api/api";
+  import { CART_HISTORY_URL } from "../../api/consts";
+  import { onMount } from "svelte";
+
+  let isLoading = false;
+
+  onMount(async () => {
+    isLoading = true;
+    try {
+      $cartHistoryModalStore.cartHistory = await fetch_wraper(
+        CART_HISTORY_URL,
+        { method: "GET" }
+      );
+      console.log($cartHistoryModalStore.cartHistory);
+    } catch (error) {
+      console.error(
+        "There was an error while fetching the cart history",
+        error
+      );
+    }
+    isLoading = false;
+  });
 </script>
 
 <div

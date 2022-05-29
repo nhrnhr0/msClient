@@ -23,12 +23,14 @@ export let all_swipers = writable([]);
 export let successModalStore = writable();
 
 function createCartHistoryStore() {
-  const { subscribe, update } = writable({
+  const { subscribe, update, set } = writable({
     showModal: false,
+    cartHistory: [],
   });
 
   return {
     subscribe,
+    set,
     openModal: () => update((state) => ({ ...state, showModal: true })),
     closeModal: () => update((state) => ({ ...state, showModal: false })),
   };
