@@ -17,15 +17,15 @@ import { onMount } from "svelte";
     
 </script>
 <script>
+    
 import { CLOUDINARY_URL } from "@api/consts";
 import { page } from "$app/stores";
-import { Spinner } from "sveltestrap";
+import { Label, Spinner } from "sveltestrap";
+import MorderProductEdit2 from "$lib/components/dashboard/doc_stock_out/MorderProductEdit2.svelte";
 import MorderProductEdit from "$lib/components/dashboard/doc_stock_out/MorderProductEdit.svelte";
-async function load_order_from_server(_id) {
-        let resp = await apiGetMOrder(_id);
-        console.log('resp:', resp);
-        data  = JSON.parse(JSON.stringify(resp));
-        headers_data = [{
+let loading = false;
+function setNewData(data) {
+    headers_data = [{
             id: data.id,
             agent: data.agent,
             agent_name: data.agent_name,
@@ -41,7 +41,31 @@ async function load_order_from_server(_id) {
         }];
 
         products_data = data.products;
+}
+async function load_order_from_server(_id) {
+        loading = true;
+        let resp = await apiGetMOrder(_id);
+        console.log('resp:', resp);
+        data  = JSON.parse(JSON.stringify(resp));
+        setNewData(data);
+        loading = false;
     }
+
+function save_order_to_server(e) {
+    e.preventDefault();
+    loading = true;
+    console.log('data:', data);
+    apiGetMOrder(data.id, data, "POST").then(
+        function(resp) {
+            debugger;
+            console.log('resp:', resp);
+            data  = resp
+            setNewData(data);
+        }
+    ).finally(function() {
+        loading = false;
+    });
+}
     let data;
     let headers_data;
     let products_data;
@@ -157,11 +181,11 @@ async function load_order_from_server(_id) {
                     </td>
                     <td>
                         <input type="checkbox" bind:checked={product.prining} />
-                        <input type="text" bind:value={product.prining_comment} disabled={!product.prining} />
+                        <textarea type="text" bind:value={product.priningComment} disabled={!product.prining} />
                     </td>
                     <td>
                         <input type="checkbox" bind:checked={product.embroidery} />
-                        <input type="text" bind:value={product.embroidery_comment} disabled={!product.embroidery} />
+                        <textarea type="text" bind:value={product.embroideryComment} disabled={!product.embroidery} />
                     </td>
                     <td>
                         <input type="checkbox" bind:checked={product.ergent} />
@@ -170,12 +194,24 @@ async function load_order_from_server(_id) {
                         {product.pbarcode || ''}
                     </td>
                     <td>
-                        <input type="text" bind:value={product.comment} />
+                        <textarea type="text" bind:value={product.comment} />
                     </td>
                 </tr>
                 <tr class="fold">
                     <td colspan="8">
                         <MorderProductEdit product={product} />
+                        <!--<MorderProductEdit2 
+                            data={product.entries}
+                            rows={[
+                                {key: 'color_name', label: 'צבע'},
+                                {key: 'varient_name', label: 'מודל',},
+                                /*{key: 'barcode', label: 'ברקוד', },
+                                {key: 'has_phisical_barocde',label: 'ברקוד פיזי',},
+                                {key: 'provider', label: 'ספק',},*/
+                                ]}
+                            col = {{key: 'size_name', label: 'גודל'}}
+                            val= {{key: 'quantity' , label: 'כמות'}}
+                            />-->
                     </td>
                 </tr>
             {/each}
@@ -187,7 +223,20 @@ async function load_order_from_server(_id) {
     <Spinner></Spinner>
 {/if}
 
+<button disabled={loading} class="float-save-btn btn btn-primary" on:click={save_order_to_server}>
+    {#if loading}
+        <Spinner></Spinner>
+    {:else}
+        עדכן מידע לשרת
+    {/if}
+</button>
+
 <style lang="scss">
+    .float-save-btn {
+        position: fixed;
+        bottom: 15px;
+        left: 15px;
+    }
     /*:global(.products-table) {
         background-color: blue;
         border: 1px solid red;;

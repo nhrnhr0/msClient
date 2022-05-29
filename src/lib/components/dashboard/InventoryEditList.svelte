@@ -181,7 +181,6 @@ import {flip} from "svelte/animate";
 <svelte:head>
     <link href="https://unpkg.com/tabulator-tables@5.2.4/dist/css/tabulator.min.css" rel="stylesheet">
 </svelte:head>
-{JSON.stringify(data)}
 <div>
     <button class:active={showInventoryGroups} on:click="{()=>{console.log('button click');showInventoryGroups = !showInventoryGroups;}}" class="accordion">קבוצות מלאים</button>
     <div class="panel" class:active={showInventoryGroups}>

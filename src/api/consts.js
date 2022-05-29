@@ -61,7 +61,7 @@ export const INVENTORY_EDIT_ENTRY_URL = BASE_URL + '/inventory-edit-entry/';
 export const INVENTORY_MANUAL_UPDATE_ENTRY_URL = BASE_URL + '/inventory-manual-update-entry/';
 //http://127.0.0.1:8000/api/token/
 //export const OG_META_ALBUMS_URL = BASE_API_URL + 'og-meta-albums/';
-export const MORDER_GET_API = BASE_URL + '/morders/api-get-order-data';
+export const MORDER_GET_API = BASE_URL + '/morders/api-get-order-data2';
 export const MORDER_EDIT_ADD_PRODUCT_ENTRIES = BASE_URL + '/morders/edit-order-add-product-entries/v2';
 export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
 

@@ -25,6 +25,7 @@ import { morder_edit_add_product_entries } from "@src/api/api";
     let available_inventory_cartesian = [];
 
     function refreshData() {
+        debugger;
         let sizesSet =new Set();
         let colorsSet = new Set();
         let verientsSet = new Set();
@@ -34,7 +35,7 @@ import { morder_edit_add_product_entries } from "@src/api/api";
             let varient = product.entries[i].varient;
             sizesSet.add(size);
             colorsSet.add(color);
-            verientsSet.add(varient);
+            verientsSet.add(varient || undefined);
         }
         let ppn__barcodes = new Set();
         let ppn__has_phisical_barcodes = new Set();
@@ -42,26 +43,24 @@ import { morder_edit_add_product_entries } from "@src/api/api";
         for(let i = 0; i < product.available_inventory.length; i++) {
             let color = product.available_inventory[i].color || 76;
             let size = product.available_inventory[i].size || 86;
-            let varient = product.available_inventory[i].varient;
+            let varient = product.available_inventory[i].verient;
 
             sizesSet.add(size);
             colorsSet.add(color);
-            verientsSet.add(varient);
+            verientsSet.add(varient || undefined);
             ppn__barcodes.add(product.available_inventory[i].ppn__barcode);
             ppn__has_phisical_barcodes.add(product.available_inventory[i].ppn__has_phisical_barcode);
             ppn__providers.add(product.available_inventory[i].ppn__provider__name);
         }
-        debugger;
-        let verientsArr = Array.from(verientsSet);
+        /*let verientsArr = Array.from(verientsSet);
         if(verientsArr.length == 1 && verientsArr[0] == null) {
             verientsArr = [];
-        }
+        }*/
         
         sizes_ids = Array.from(sizesSet);
         colors_ids = Array.from(colorsSet);
         verients_ids = Array.from(verientsSet);
         size_objs = sizes_ids.map(id => ALL_SIZES.find(size => size.id == id));
-        debugger;
         size_objs.sort((a, b) =>{
             return (b.code.localeCompare(a.code))
         });
@@ -70,22 +69,20 @@ import { morder_edit_add_product_entries } from "@src/api/api";
         verient_objs = verients_ids.map(id => ALL_VARIENTS.find(verient => verient.id == id));
         // replace undefined with empty string in verient_objs
         console.log('creating cartesian from ', color_objs, verient_objs);
-        verient_objs = verient_objs.filter(verient => verient != undefined);
+        //verient_objs = verient_objs.filter(verient => verient != undefined);
         //verient_objs = verient_objs.filter(verient => verient != undefined);
         ppn__barcodes = Array.from(ppn__barcodes);
         ppn__has_phisical_barcodes = Array.from(ppn__has_phisical_barcodes);
         ppn__providers = Array.from(ppn__providers);
 
-        debugger;
-        if (verient_objs.length > 0) {
-            colors_varients_cartesian = cartesian(color_objs, verient_objs);
-            available_inventory_cartesian = cartesian(color_objs, verient_objs, ppn__barcodes, ppn__has_phisical_barcodes, ppn__providers);
+        //if (verient_objs.length > 0) {
+        colors_varients_cartesian = cartesian(color_objs, verient_objs);
+        available_inventory_cartesian = cartesian(color_objs, verient_objs, ppn__barcodes, ppn__has_phisical_barcodes, ppn__providers);
 
-        } else {
+        /*} else {
             colors_varients_cartesian = color_objs.map(color => [color]);
             available_inventory_cartesian = cartesian(color_objs, ppn__barcodes, ppn__has_phisical_barcodes, ppn__providers);
-
-        }
+        }*/
 
 
     }
@@ -96,7 +93,6 @@ import { morder_edit_add_product_entries } from "@src/api/api";
         ALL_COLORS = await getLocalStorageStore('colors');
         ALL_VARIENTS = await getLocalStorageStore('varients');
 
-        debugger;
         refreshData();
         //
         done_loading = true;
@@ -142,6 +138,75 @@ import { morder_edit_add_product_entries } from "@src/api/api";
         
 
     }
+
+    /**
+     * 
+     * @param data [{color: , size: , varient: , ppn__barcode: , ppn__has_phisical_barcode: , ppn__provider__name: }]
+     * @param values 
+     */
+    function findAndReturnValue(data, values,target) {
+        if (values.length == 6) {
+            console.log('inventory:');
+        }
+        let ret = undefined;
+        let found = false;
+        let foundErr;
+        let foundIndex = -1;
+        for(let i = 0; i < data.length; i++) {
+            foundErr = false;
+            for(let j = 0; j < values.length; j++) {
+                if(data[i][values[j].val] != values[j].key) {
+                    foundErr = true;
+                    break;
+                }
+            }
+            if(!foundErr) {
+                found = true;
+                foundIndex = i;
+                ret = data[i];
+                break;
+            }
+        }
+        console.log(JSON.stringify(ret));
+        if (ret) {
+            if (target) {
+                return [ret[target], foundIndex];
+            }else {
+                return [ret, foundIndex];
+            }
+        }else {
+            return [undefined, -1];
+        }
+    }
+
+
+    function taken_amount_changed(e) {
+        let target = e.target;
+        let idx = target.dataset.idx;
+        let val = parseInt(target.value);
+        //let entry = product.entries[idx];
+        product.available_inventory[idx].taken = val;
+        debugger;
+        product.available_inventory[idx] = {...product.available_inventory[idx]};
+        
+        console.log('taken_amount_changed:', target);
+    }
+    function order_amount_changed(e) {
+        let target = e.target;
+        let colorId = target.dataset.colorId;
+        let sizeId = target.dataset.sizeId;
+        let varientId = target.dataset.varientId;
+        debugger;
+        for(let i = 0; i < product.entries.length; i++) {
+            if(product.entries[i].color == colorId && product.entries[i].size == sizeId && product.entries[i].varient == varientId) {
+                
+                product.entries[i].quantity = parseInt(target.value);
+                break;
+            }
+        }
+
+
+    }
 </script>
 {#if done_loading}
     <div class="sub-tr">
@@ -176,20 +241,6 @@ import { morder_edit_add_product_entries } from "@src/api/api";
                 <th>
                     סוג
                 </th>
-                {#if colors_varients_cartesian[0].length == 1}
-                    <th>
-                        צבע
-                    </th>
-                    <th>
-                        ברקוד
-                    </th>
-                    <th>
-                        ברקוד פיזי
-                    </th>
-                    <th>
-                        ספק
-                    </th>
-                {:else}
                     <th>
                         צבע
                     </th>
@@ -205,7 +256,6 @@ import { morder_edit_add_product_entries } from "@src/api/api";
                     <th>
                         ספק
                     </th>
-                    {/if}
                 {#each size_objs as size}
                     <th>
                         {size.size}
@@ -226,10 +276,12 @@ import { morder_edit_add_product_entries } from "@src/api/api";
                     {#each colors_varients_iter as corlor_varient}
                             <td>
                                 <div class="color-wraper">
-                                    {#if corlor_varient.color}
+                                    
+                                    {#if corlor_varient?.color}
                                         <div class="color-box" style="background-color:{corlor_varient.color}"></div>
                                     {/if}
-                                    {corlor_varient.name}
+                                    {corlor_varient?.name || ''}
+                                    
                                 </div>
                             </td>
                     {/each}
@@ -241,8 +293,20 @@ import { morder_edit_add_product_entries } from "@src/api/api";
                         <td>
                             <input class="amount-input" type="text" data-size-id={size.id} data-color-id={colors_varients_iter[0].id} 
                                 data-varient-id={colors_varients_iter[1]?.id}
-                                value="{product.entries.find(entry => entry.size == size.id && entry.color == colors_varients_iter[0].id && entry.varient == colors_varients_iter[1]?.id)?.quantity}" />
+                                    value={findAndReturnValue(product.entries, [{
+                                        key: size.id,
+                                        val: 'size',},
+                                        {key: colors_varients_iter[0].id,
+                                        val: 'color',},
+                                        {key: colors_varients_iter[1]?.id,
+                                        val: 'varient',}
+                                        ], 'quantity')[0] || ''}
+                                    on:input={order_amount_changed}
+                                />
+                                <!-- value="{product.entries.find(entry => entry.size == size.id && entry.color == colors_varients_iter[0].id && entry.varient == colors_varients_iter[1]?.id)?.quantity}" /> -->
+                                
                         </td> 
+                        
                     {/each}
                     
                 </tr>
@@ -307,20 +371,100 @@ import { morder_edit_add_product_entries } from "@src/api/api";
                         </td>
                     {/each}
                     {#each size_objs as size}
+                        {@const [entry, idx] = findAndReturnValue(product.available_inventory, 
+                            [
+                                {key: size.id,val: 'size',},
+                                {key: available_inventory_iter[0].id, val: 'color',},
+                                {key: available_inventory_iter[1]?.id, val: 'verient',},
+                                {key: available_inventory_iter[2], val: 'ppn__barcode'},
+                                {key: available_inventory_iter[3], val: 'ppn__has_phisical_barcode',},
+                                {key: available_inventory_iter[4], val: 'ppn__provider__name',},
+                            ], undefined)}
+                            {@debug entry}
                         <td>
+                            <div class="input-max-div">
+                                {entry?.taken}
+                                <input data-row={JSON.stringify(entry)}  data-idx="{idx}" type="number" class="amount-input" data-size-id={size.id} data-color-id={available_inventory_iter[0].id}
+                                    disabled={!entry?.total} value={entry?.taken} max="{entry?.total || 0}" on:input={(e)=>{taken_amount_changed(e);}}
+                                    />
+                                    /
+                                <div>{entry?.total || '-'}</div>
+                            </div>
+                            <input type="range" class="amount-input" data-idx="{idx}"  data-size-id={size.id} data-color-id={available_inventory_iter[0].id}
+                                data-varient-id={available_inventory_iter[1]?.id} min="0" max="{entry?.total || 0}" value={entry?.taken || 0} 
+                                disabled={!entry?.total} on:input={(e)=>{taken_amount_changed(e);}}
+                                />
 
+                                
+                                <!--{findAndReturnValue(product.available_inventory, 
+                                    [
+                                        {key: size.id,val: 'size',},
+                                        {key: available_inventory_iter[0].id, val: 'color',},
+                                        {key: available_inventory_iter[1]?.id, val: 'verient',},
+                                        {key: available_inventory_iter[2], val: 'ppn__barcode'},
+                                        {key: available_inventory_iter[3], val: 'ppn__has_phisical_barcode',},
+                                        {key: available_inventory_iter[4], val: 'ppn__provider__name',},
+                                    ], 'total') || '-'} -->
+                            
+                            <!--
                             {#if available_inventory_iter[1]?.id}
                                 {product.available_inventory.find(entry => entry.size == size.id && entry.color == available_inventory_iter[0].id && entry.varient == available_inventory_iter[1]?.id && entry.ppn__barcode == available_inventory_iter[2] && entry.ppn__has_phisical_barcode == available_inventory_iter[3] && entry.ppn__provider__name == available_inventory_iter[4])?.total}
                             {:else}
                                 {product.available_inventory.find(entry => entry.size == size.id && entry.color == available_inventory_iter[0].id && entry.ppn__barcode == available_inventory_iter[1] && entry.ppn__has_phisical_barcode == available_inventory_iter[2] && entry.ppn__provider__name == available_inventory_iter[3])?.total}
                             {/if}
+                            -->
+                        
                         </td>
+                        
                     {/each}
 
                 </tr>
             {/each}
-
-            
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        {#each size_objs as size}
+                            
+                            <td>
+                                <div class="proggress-cell">
+                                    <progress value="{product.available_inventory.filter(entry => entry.size == size.id).reduce((acc, entry) => acc + parseInt(entry?.taken || '0'), 0)}" 
+                                        max="{product.entries.filter(entry => entry.size == size.id).reduce((acc, entry) => acc + parseInt(entry?.quantity || '0'), 0)}"> 
+                                    </progress>
+                                    <div class="text">
+                                        {product.available_inventory.filter(entry => entry.size == size.id).reduce((acc, entry) => acc + parseInt(entry?.taken || '0'), 0)}
+                                        מתוך
+                                        {product.entries.filter(entry => entry.size == size.id).reduce((acc, entry) => acc + parseInt(entry?.quantity || '0'), 0)}
+                                    </div>
+                                </div>
+                            </td>
+                        {/each}
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td colspan={size_objs.length}>
+                            <div class="proggress-cell">
+                                <progress value="{product.available_inventory.reduce((acc, entry) => acc + parseInt(entry?.taken || '0'), 0)}" 
+                                    max="{product.entries.reduce((acc, entry) => acc + parseInt(entry?.quantity || '0'), 0)}"> 
+                                    </progress>
+                                <div class="text">
+                                    {product.available_inventory.reduce((acc, entry) => acc + parseInt(entry?.taken || '0'), 0)}
+                                    מתוך
+                                    {product.entries.reduce((acc, entry) => acc + parseInt(entry?.quantity || '0'), 0)}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
     </table>
     </div>
 {:else}
@@ -328,6 +472,15 @@ import { morder_edit_add_product_entries } from "@src/api/api";
 {/if}
 
 <style lang="scss">
+    .input-max-div{
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        justify-content: center;
+        > * {
+            flex: 1;
+        }
+    }
     .color-wraper {
         display: flex;
         justify-content: space-between;

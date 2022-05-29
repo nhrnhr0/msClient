@@ -68,8 +68,12 @@ export function apiSearchPPN(keyword, provider) {
 }
 
 
-export async function apiGetMOrder(order_id) {
-    const response = await fetch_wraper(`${MORDER_GET_API}/${order_id}`, {});
+export async function apiGetMOrder(order_id, data, method="GET") {
+    const response = await fetch_wraper(`${MORDER_GET_API}/${order_id}`, {
+        body: JSON.stringify(data),
+        method: method,
+    });
+
     return response;
 }
 
