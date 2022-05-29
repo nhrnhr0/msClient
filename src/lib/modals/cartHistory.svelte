@@ -5,8 +5,20 @@
   import { CART_HISTORY_URL } from "../../api/consts";
   import { onMount } from "svelte";
   import Spinner from "svelte-spinner";
+  import { formatToLocalDate } from "../../lib/utils/utils";
 
   let isLoading = false;
+  let cartHistoryHeadings = [
+    { labelEn: "name", labelHb: "שֵׁם" },
+    { labelEn: "businessName", labelHb: "שם עסק" },
+    { labelEn: "email", labelHb: "אימייל" },
+    { labelEn: "phone", labelHb: "טלפון" },
+    { labelEn: "created_date", labelHb: "תאריך יצירה" },
+    { labelEn: "agent_id", labelHb: "סוֹכֵן" },
+    { labelEn: "doneOrder", labelHb: "הזמנה הושלמה" },
+    { labelEn: "message", labelHb: "הוֹדָעָה" },
+    { labelEn: "productsRaw", labelHb: "מוצרים" },
+  ];
 
   onMount(async () => {
     isLoading = true;
@@ -66,14 +78,37 @@
             />
           </div>
         {:else}
-          Modal body
+          <table class="history-table">
+            <thead>
+              <tr>
+                {#each cartHistoryHeadings as cartHistoryHeading}
+                  <th>{cartHistoryHeading.labelHb}</th>
+                {/each}
+              </tr>
+            </thead>
+            <tbody>
+              {#each $cartHistoryModalStore.cartHistory as cartHistory}
+                <tr>
+                  {#each cartHistoryHeadings as cartHistoryHeading}
+                    {#if cartHistoryHeading.labelEn === "productsRaw"}
+                      <td> <button>View</button></td>
+                    {:else if cartHistoryHeading.labelEn === "created_date"}
+                      <td>{formatToLocalDate(cartHistory["created_date"])}</td>
+                    {:else}
+                      <td>{cartHistory[cartHistoryHeading.labelEn]}</td>
+                    {/if}
+                  {/each}
+                </tr>
+              {/each}
+            </tbody>
+          </table>
         {/if}
       </div>
     </div>
   </div>
 </div>
 
-<style>
+<style lang="scss">
   .loader-wraper {
     position: absolute;
     top: 50%;
@@ -85,5 +120,16 @@
     padding-right: 16px;
     padding-top: 32px;
     padding-bottom: 32px;
+  }
+  .history-table {
+    width: 100%;
+    th {
+      text-align: center;
+      border: 1px solid #555;
+    }
+    td {
+      text-align: center;
+      border: 1px solid #555;
+    }
   }
 </style>
