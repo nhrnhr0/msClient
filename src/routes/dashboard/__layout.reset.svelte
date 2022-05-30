@@ -1,20 +1,20 @@
 <script context="module">
 
-import { onMount } from "svelte";
+//import { onMount } from "svelte";
 import Modal from 'svelte-simple-modal';
 import { NotificationDisplay } from '@beyonk/svelte-notifications'
 
   
-  export let sizes;
-  export let colors;
+  /*export let sizes;
+  export let colors;*/
 </script>
 <script>
-    import { colorsJsonStore, sizesJsonStore } from "@src/stores/stores";
-import { fetch_wraper,get_album_details } from "@src/api/api";
-import { MAIN_PAGE_API } from "@src/api/consts";
-import { browser } from "$app/env";
+    //import { colorsJsonStore, sizesJsonStore } from "@src/stores/stores";
+//import { fetch_wraper,get_album_details } from "@src/api/api";
+//import { MAIN_PAGE_API } from "@src/api/consts";
+//import { browser } from "$app/env";
 import { page } from "$app/stores";
-    onMount(async()=> {
+    /*onMount(async()=> {
         let response = await fetch_wraper(MAIN_PAGE_API, {
       method: 'GET',
       redirect: 'follow'
@@ -41,7 +41,7 @@ import { page } from "$app/stores";
         console.log('sizes: ', sizes_ret)
         sizesJsonStore.set(sizes_ret);
         colorsJsonStore.set(colors_ret);
-    })
+    })*/
 </script>
   <svelte:head>
     <!-- import 
@@ -73,7 +73,7 @@ import { page } from "$app/stores";
             </li>
             <li data-tab-id="3"class:active={$page.path.includes('/dashboard/doc-stock-out')}>
                 <a href="/dashboard/doc-stock-out" >
-                    טפסי הזמנות
+                    עגלות
                 </a>
             </li>
         </ul>

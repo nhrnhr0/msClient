@@ -1,15 +1,21 @@
 <script>
-import { colorsJsonStore,sizesJsonStore } from "@src/stores/stores";
+//import { colorsJsonStore,sizesJsonStore } from "@src/stores/stores";
+import { getLocalStorageStore } from "@src/stores/localStorageStore";
 import { onMount } from "svelte";
 
     export let product;
     export let entries;
     export let disabled = false;
     let loaded = false;
+    let sizesJson = undefined;
+    let colorsJson = undefined;
+    onMount(async() => {
+      sizesJson = await getLocalStorageStore('sizes');
+      colorsJson =await getLocalStorageStore('colors');
+    });
     
-    $: loaded = product && $sizesJsonStore && $sizesJsonStore.length != 0 && $colorsJsonStore && $colorsJsonStore.length != 0;
+    $: loaded = product && sizesJson && sizesJson.length != 0 && colorsJson && colorsJson.length != 0;
     function amount_changed_event(e) {
-      debugger;
         let quantity = parseInt(e.target.value) || 0;
         let size = parseInt(e.target.dataset.size);
         let color = parseInt(e.target.dataset.color);
@@ -67,7 +73,7 @@ import { onMount } from "svelte";
               <th class="const-size-cell">מודל</th>
             {/if}
             {#each product.sizes as size_id}
-              <th class="size-header">{$sizesJsonStore[size_id]?.size}</th>
+              <th class="size-header">{sizesJson.find(size=>size.id == size_id)?.size}</th>
             {/each}
             <!--
             <th class="delete-cell-style">מחק</th>
@@ -75,11 +81,17 @@ import { onMount } from "svelte";
           </tr>
         </thead>
         <tbody>
-            {#each product.colors as color, color_idx}
+            {#each product.colors as colorId, color_idx}
                   <!-- color: 84 -->
                   <tr>
                     <td class="sticky-col">
-                      <div class="color-box" ><div class="inner" style="background-color: {$colorsJsonStore[color].color}"></div>{$colorsJsonStore[color].name}</div>
+                      <div class="color-box">
+                        <div class="inner" style="background-color: {colorsJson.find(clr => clr.id == colorId)?.color}">
+                        </div>
+                        {colorsJson.find(clr => clr.id == colorId)?.name}
+                      
+                    </div>
+                    
                     </td>
                     {#if product.varients.length != 0}
                       <td>
@@ -102,11 +114,11 @@ import { onMount } from "svelte";
                     -->
                             {#each product.varients as {id, name}, idx}
                             <div class="cell-wraper">
-                                <input disabled={disabled} on:change={amount_changed_event} value={entries.find(entry => entry.size == size && entry.color == color && entry.verient == id)?.quantity || ''} data-verient={id} data-color="{color}" data-size="{size}" id="input_entery_{product.id}_{size}_{color}_{id}" class="size-input cls-cell" type="number" placeholder="כמות" min="0" max="9999" > <!--bind:value="{product.mentries[color][size][id].quantity}" -->
+                                <input disabled={disabled} on:change={amount_changed_event} value={entries.find(entry => entry.size == size && entry.color == colorId && entry.verient == id)?.quantity || ''} data-verient={id} data-color="{colorId}" data-size="{size}" id="input_entery_{product.id}_{size}_{colorId}_{id}" class="size-input cls-cell" type="number" placeholder="כמות" min="0" max="9999" > <!--bind:value="{product.mentries[color][size][id].quantity}" -->
                             </div>
                             {:else}
                             <div class="cell-wraper">
-                                <input disabled={disabled} on:change={amount_changed_event} value={entries.find(entry => entry.size == size && entry.color == color && entry.verient == id)?.quantity || ''} class="size-input cls-cell" data-verient="" data-color="{color}" data-size="{size}" placeholder="כמות" min="0" max="9999" >
+                                <input disabled={disabled} on:change={amount_changed_event} value={entries.find(entry => entry.size == size && entry.color == colorId && entry.verient == id)?.quantity || ''} class="size-input cls-cell" data-verient="" data-color="{colorId}" data-size="{size}" placeholder="כמות" min="0" max="9999" >
                             </div>
                             {/each}
                           
@@ -221,6 +233,18 @@ import { onMount } from "svelte";
 {/if}
 
 <style lang="scss">
+  .color-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    .inner {
+      border-radius: 999px;
+      padding: 5px;
+      width: 15px;
+      height: 15px;
+    }
+  }
   .total-cell {
   div {
     font-weight: bold;

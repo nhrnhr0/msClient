@@ -13,6 +13,7 @@ if(browser) {
 }
 
 const createCartStore = () => {
+  debugger;
     const { subscribe, set, update } = writable(initCart);
     return {
         subscribe,

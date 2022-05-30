@@ -22,7 +22,6 @@ import AutoComplete from "simple-svelte-autocomplete";
 import { apiSearchPPN,addPPNToEnterDoc } from "@src/api/api";
 import { onMount } from "svelte";
 import { BASE_URL } from "@src/api/consts";
-import SizeColorEdit from "@src/lib/components/dashboard/SizeColorEdit.svelte";
 import SizeColorTable from "@src/lib/components/dashboard/SizeColorTable.svelte";
 import { writable } from "svelte/store";
 import { save_enter_doc_edit_to_server, remove_product_from_enter_doc_api } from "@src/api/api";
