@@ -4,13 +4,19 @@
     historyProductsModalStore,
     cartHistoryModalStore,
   } from "../../stores/stores";
+  import { cartStore } from "../../stores/cartStore";
   import { CLOUDINARY_URL } from "../../api/consts";
   import { flip } from "svelte/animate";
   import { scrollFix } from "$lib/ui/scrollFix";
   import { selectTextOnFocus } from "$lib/ui/inputActions";
 
   const handleAddProductsToCart = () => {
-    console.log("Add products to the cart");
+    let producstArray = Object.keys(
+      $historyProductsModalStore.historyProducts
+    ).map((key) => $historyProductsModalStore.historyProducts[key]);
+    producstArray.forEach((product) => cartStore.addToCart(product));
+    $historyProductsModalStore.historyProducts = {};
+    historyProductsModalStore.closeModal();
   };
 </script>
 
