@@ -1,6 +1,6 @@
-import * as dayjs from "dayjs";
+/*import * as dayjs from "dayjs";
 import * as localizedFormat from "dayjs/plugin/localizedFormat";
-dayjs.extend(localizedFormat);
+dayjs.extend(localizedFormat);*/
 
 export function isNumeric(str) {
   if (typeof str != "string") return false; // we only process strings!
@@ -10,6 +10,6 @@ export function isNumeric(str) {
   ); // ...and ensure strings of whitespace fail
 }
 
-export function formatToLocalDate(date) {
+/*export function formatToLocalDate(date) {
   return dayjs(date).format("lll");
-}
+}*/

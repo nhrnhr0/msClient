@@ -8,17 +8,18 @@
   import { CART_HISTORY_URL } from "../../api/consts";
   import { onMount } from "svelte";
   import Spinner from "svelte-spinner";
-  import { formatToLocalDate } from "../../lib/utils/utils";
+  //import { formatToLocalDate } from "../../lib/utils/utils";
 
   let isLoading = false;
   let cartHistoryHeadings = [
-    { labelEn: "name", labelHb: "שֵׁם" },
+    /*{ labelEn: "name", labelHb: "שֵׁם" },
     { labelEn: "businessName", labelHb: "שם עסק" },
     { labelEn: "email", labelHb: "אימייל" },
-    { labelEn: "phone", labelHb: "טלפון" },
+    { labelEn: "phone", labelHb: "טלפון" },*/
     { labelEn: "created_date", labelHb: "תאריך יצירה" },
-    { labelEn: "agent_id", labelHb: "סוֹכֵן" },
-    { labelEn: "doneOrder", labelHb: "הזמנה הושלמה" },
+    {labelEn: "creator", labelHb: "יוצר ההזמנה"},
+    /*{ labelEn: "agent_id", labelHb: "סוֹכֵן" },
+    { labelEn: "doneOrder", labelHb: "הזמנה הושלמה" },*/
     { labelEn: "message", labelHb: "הוֹדָעָה" },
     { labelEn: "productsRaw", labelHb: "מוצרים" },
   ];
@@ -60,7 +61,7 @@
           }}
           class="close-btn right">x</button
         >
-        <h5 class="modal-title">לקופה</h5>
+        <h5 class="modal-title">עגלות אחרונות</h5>
         <button
           title="Close"
           on:click={() => {
@@ -91,11 +92,11 @@
             </thead>
             <tbody>
               {#each $cartHistoryModalStore.cartHistory as cartHistory}
-                <tr>
+                <tr class:feture={cartHistory['agent_id'] != null}>
                   {#each cartHistoryHeadings as cartHistoryHeading}
                     {#if cartHistoryHeading.labelEn === "productsRaw"}
                       <td>
-                        <button
+                        <button class="btn btn-primary"
                           on:click={() => {
                             $historyProductsModalStore.historyProducts =
                               JSON.parse(cartHistory.productsRaw ?? "{}");
@@ -105,11 +106,13 @@
                               "$historyProductsModalStore.historyProducts: ",
                               $historyProductsModalStore.historyProducts
                             );
-                          }}>View</button
+                          }}>הצג</button
                         ></td
                       >
                     {:else if cartHistoryHeading.labelEn === "created_date"}
-                      <td>{formatToLocalDate(cartHistory["created_date"])}</td>
+                      <td>{new Date(cartHistory["created_date"]).toLocaleString("he-il")}</td>
+                    {:else if cartHistoryHeading.labelEn === "creator"}
+                      <td>{cartHistory['agent__name'] || cartHistory['name'] || cartHistory["agent__client__businessName"] || ''}</td>
                     {:else}
                       <td>{cartHistory[cartHistoryHeading.labelEn]}</td>
                     {/if}
