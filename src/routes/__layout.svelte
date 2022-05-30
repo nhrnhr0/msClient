@@ -22,6 +22,7 @@
     userInfoStore,
     productQuestionModalStore,
     cartHistoryModalStore,
+    historyProductsModalStore,
   } from "./../stores/stores";
 </script>
 
@@ -43,6 +44,7 @@
   import ProductQuestionModal from "$lib/modals/productQuestionModal.svelte";
   import ProductPhotoModal from "$lib/modals/productPhotoModal.svelte";
   import CartHistory from "$lib/modals/cartHistory.svelte";
+  import HistoryProducts from "$lib/modals/historyProducts.svelte";
   export const prerender = false;
 </script>
 
@@ -65,6 +67,9 @@
 <!-- Show and hide cart history modal based on value in the store -->
 {#if $cartHistoryModalStore.showModal}
   <CartHistory />
+{/if}
+{#if $historyProductsModalStore.showModal}
+  <HistoryProducts />
 {/if}
 <Navbar />
 

@@ -1,6 +1,9 @@
 <script>
   import { fly, fade } from "svelte/transition";
-  import { cartHistoryModalStore } from "../../stores/stores";
+  import {
+    cartHistoryModalStore,
+    historyProductsModalStore,
+  } from "../../stores/stores";
   import { fetch_wraper } from "../../api/api";
   import { CART_HISTORY_URL } from "../../api/consts";
   import { onMount } from "svelte";
@@ -91,7 +94,20 @@
                 <tr>
                   {#each cartHistoryHeadings as cartHistoryHeading}
                     {#if cartHistoryHeading.labelEn === "productsRaw"}
-                      <td> <button>View</button></td>
+                      <td>
+                        <button
+                          on:click={() => {
+                            $historyProductsModalStore.historyProducts =
+                              JSON.parse(cartHistory.productsRaw ?? "{}");
+                            historyProductsModalStore.openModal();
+                            cartHistoryModalStore.closeModal();
+                            console.log(
+                              "$historyProductsModalStore.historyProducts: ",
+                              $historyProductsModalStore.historyProducts
+                            );
+                          }}>View</button
+                        ></td
+                      >
                     {:else if cartHistoryHeading.labelEn === "created_date"}
                       <td>{formatToLocalDate(cartHistory["created_date"])}</td>
                     {:else}

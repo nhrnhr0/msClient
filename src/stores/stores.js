@@ -38,6 +38,22 @@ function createCartHistoryStore() {
 
 export const cartHistoryModalStore = createCartHistoryStore();
 
+function createHistoryProductsStore() {
+  const { subscribe, update, set } = writable({
+    showModal: false,
+    historyProducts: {},
+  });
+
+  return {
+    subscribe,
+    set,
+    openModal: () => update((state) => ({ ...state, showModal: true })),
+    closeModal: () => update((state) => ({ ...state, showModal: false })),
+  };
+}
+
+export const historyProductsModalStore = createHistoryProductsStore();
+
 export let cartHistoryModal = writable({
   showModal: false,
 });
