@@ -132,7 +132,7 @@
             disabled={Object.keys($historyProductsModalStore.historyProducts)
               .length === 0}
           >
-            לקופה
+            הוסף מוצרים לעגלה
           </button>
         </div>
       </div>
