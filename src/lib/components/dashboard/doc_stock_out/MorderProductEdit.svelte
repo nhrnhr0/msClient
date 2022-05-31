@@ -75,7 +75,10 @@
         verients_ids = Array.from(verientsSet);
         size_objs = sizes_ids.map(id => ALL_SIZES.find(size => size.id == id));
         size_objs.sort((a, b) => {
-            return (b.code.localeCompare(a.code))
+            let ret = (b.code.localeCompare(a.code))
+            if (ret == 0) {
+                return (b.id - a.id);
+            }
         });
         color_objs = colors_ids.map(id => ALL_COLORS.find(color => color.id == id));
 
@@ -205,14 +208,48 @@
         }
     }
 
+    /*function toOrder_amount_changed(e) {
+        let target = e.target;
+        let idx = target.dataset.idx;
+        debugger;
+        let val = parseInt(target.value);
+        if (isNaN(val)) {
+            val = 0;
+        }
+        if(idx == -1) {
+            let color = target.dataset.colorId;
+            let size = target.dataset.sizeId;
+            let varient = target.dataset.varientId;
+            debugger;
+            let newEntry = {
+                color:parseInt(color),
+                size: parseInt(size),
+                verient: varient? parseInt(varient) : null,
+                toOrder: val,
+                ppn__barcode: target.dataset.ppnBarcode,
+                ppn__has_phisical_barcode: target.dataset.ppnhasphisicalbarcode == "true",
+                ppn__provider__name : target.dataset.ppnprovidername
 
+            }
+            product.available_inventory.push(newEntry);
+        }else {
+            product.available_inventory[idx].toOrder = val;
+            product.available_inventory[idx] = {
+                ...product.available_inventory[idx]
+            };
+        }
+    }*/
     function taken_amount_changed(e) {
         let target = e.target;
         let idx = target.dataset.idx;
         let val = parseInt(target.value);
         //let entry = product.entries[idx];
-        product.available_inventory[idx].taken = val;
-        debugger;
+        if(val > product.available_inventory[idx].total) {
+            product.available_inventory[idx].taken = product.available_inventory[idx].total
+            target.value = product.available_inventory[idx].total;
+        }else {
+            product.available_inventory[idx].taken = val;
+        }
         product.available_inventory[idx] = {
             ...product.available_inventory[idx]
         };
@@ -277,8 +314,8 @@
             {:else}
                 <form class="order-add-entries-form" on:submit="{add_to_products_entries_form_submit}">
                     <input type="hidden" name="entry_id" value={product['id']} />
-                    <input type="hidden" name="color" value={product['entries'][0].color} />
-                    <input type="hidden" name="varient" value={product['entries'][0].varient} />
+                    <input type="hidden" name="color" value={product['entries'][0]?.color || 76} />
+                    <input type="hidden" name="varient" value={product['entries'][0]?.varient || null} />
                     <select name="size" class="form-control">
                         {#each ALL_SIZES as size}
                             <option value={size.id}>{size.size}</option>
@@ -298,8 +335,8 @@
             {:else}
                 <form class="order-add-entries-form" on:submit="{add_to_products_entries_form_submit}">
                     <input type="hidden" name="entry_id" value={product['id']} />
-                    <input type="hidden" name="size" value={product['entries'][0].size} />
-                    <input type="hidden" name="varient" value={product['entries'][0].varient} />
+                    <input type="hidden" name="size" value={product['entries'][0].size || 108} />
+                    <input type="hidden" name="varient" value={product['entries'][0].varient || null} />
                     <select name="color" class="form-control">
                         {#each ALL_COLORS as color}
                             <option value={color.id}>
@@ -321,8 +358,8 @@
             {:else}
                 <form class="order-add-entries-form" on:submit="{add_to_products_entries_form_submit}">
                     <input type="hidden" name="entry_id" value={product['id']} />
-                    <input type="hidden" name="color" value={product['entries'][0].color} />
-                    <input type="hidden" name="size" value={product['entries'][0].size} />
+                    <input type="hidden" name="color" value={product['entries'][0]?.color || 76} />
+                    <input type="hidden" name="size" value={product['entries'][0]?.size || 108} />
                     <select name="varient" class="form-control">
                         {#each ALL_VARIENTS as varient}
                             <option value={varient.id}>{varient.name}</option>
@@ -486,41 +523,39 @@
                                     {key: available_inventory_iter[4], val: 'ppn__provider__name',},
                                 ], undefined)}
                             <td>
+                                מלאי:
                                 {#if entry?.frozen}
-                                    מלאי קפוא להזמנות אחרות: {entry.frozen}
+                                    (קפוא {entry.frozen})
                                 {/if}
                                 <div class="input-max-div">
-                                    
                                     <input data-row={JSON.stringify(entry)}  data-idx="{idx}" type="number" class="amount-input" data-size-id={size.id} data-color-id={available_inventory_iter[0].id}
-                                        disabled={!entry?.total} value={entry?.taken} max="{entry?.total || 0}" on:input={(e)=>{taken_amount_changed(e);}}
+                                        disabled={!entry?.total} value={entry?.taken} max={entry?.total || 0} on:input={(e)=>{taken_amount_changed(e);}}
                                         />
                                         /
                                     <div>{entry?.total || '-'}</div>
                                 </div>
-                                <input type="range" class="amount-input" data-idx="{idx}"  data-size-id={size.id} data-color-id={available_inventory_iter[0].id}
-                                    data-varient-id={available_inventory_iter[1]?.id} min="0" max="{entry?.total || 0}" value={entry?.taken || 0} 
+                                <div class="range-wraper">
+                                    <!-- class:overdraft={entry?.taken - entry?.total > 0}-->
+                                <input type="range" class="amount-input-range" data-idx="{idx}"  data-size-id={size.id} data-color-id={available_inventory_iter[0].id}
+                                    data-varient-id={available_inventory_iter[1]?.id} min="0" max={entry?.total || 0} value={entry?.taken || 0} 
                                     disabled={!entry?.total} on:input={(e)=>{taken_amount_changed(e);}}
                                     />
-
-                                    
-                                    <!--{findAndReturnValue(product.available_inventory, 
-                                        [
-                                            {key: size.id,val: 'size',},
-                                            {key: available_inventory_iter[0].id, val: 'color',},
-                                            {key: available_inventory_iter[1]?.id, val: 'verient',},
-                                            {key: available_inventory_iter[2], val: 'ppn__barcode'},
-                                            {key: available_inventory_iter[3], val: 'ppn__has_phisical_barcode',},
-                                            {key: available_inventory_iter[4], val: 'ppn__provider__name',},
-                                        ], 'total') || '-'} -->
-                                
+                                </div>
                                 <!--
-                                {#if available_inventory_iter[1]?.id}
-                                    {product.available_inventory.find(entry => entry.size == size.id && entry.color == available_inventory_iter[0].id && entry.varient == available_inventory_iter[1]?.id && entry.ppn__barcode == available_inventory_iter[2] && entry.ppn__has_phisical_barcode == available_inventory_iter[3] && entry.ppn__provider__name == available_inventory_iter[4])?.total}
-                                {:else}
-                                    {product.available_inventory.find(entry => entry.size == size.id && entry.color == available_inventory_iter[0].id && entry.ppn__barcode == available_inventory_iter[1] && entry.ppn__has_phisical_barcode == available_inventory_iter[2] && entry.ppn__provider__name == available_inventory_iter[3])?.total}
+                                להזמנה מספקים:
+                                <div class="input-max-div">
+                                    <input data-row={JSON.stringify(entry)}   data-varient-id={available_inventory_iter[1]?.id} data-idx="{idx}" type="number" class="amount-input" data-size-id={size.id} data-color-id={available_inventory_iter[0].id} 
+                                    value={entry?.toOrder || 0} on:input={(e)=>{toOrder_amount_changed(e);}}
+                                    data-ppn-barcode={available_inventory_iter[2]} data-ppnHasPhisicalBarcode={available_inventory_iter[3]}
+                                    data-ppnProviderName={available_inventory_iter[4]}
+                                        />
+                                </div>
+                                
+                                {#if entry?.frozen}
+                                            <br>
+                                            מלאי קפוא להזמנות אחרות:
                                 {/if}
                                 -->
-                            
                             </td>
                             
                         {/each}
@@ -539,11 +574,11 @@
                                 
                                 <td>
                                     <div class="proggress-cell">
-                                        <progress value="{product.available_inventory.filter(entry => entry.size == size.id).reduce((acc, entry) => acc + parseInt(entry?.taken || '0'), 0)}" 
-                                            max="{product.entries.filter(entry => entry.size == size.id).reduce((acc, entry) => acc + parseInt(entry?.quantity || '0'), 0)}"> 
+                                        <progress value="{product.available_inventory.filter(entry => entry.size == size.id).reduce((acc, entry) => acc + (parseInt(entry?.taken || '0')), 0)}" 
+                                            max="{product.entries.filter(entry => entry.size == size.id).reduce((acc, entry) => acc + parseInt(entry?.quantity || '0'), 0)}">
                                         </progress>
                                         <div class="text">
-                                            {product.available_inventory.filter(entry => entry.size == size.id).reduce((acc, entry) => acc + parseInt(entry?.taken || '0'), 0)}
+                                            {product.available_inventory.filter(entry => entry.size == size.id).reduce((acc, entry) => acc + (parseInt(entry?.taken || '0')), 0)}
                                             מתוך
                                             {product.entries.filter(entry => entry.size == size.id).reduce((acc, entry) => acc + parseInt(entry?.quantity || '0'), 0)}
                                         </div>
@@ -560,14 +595,55 @@
                             <td></td>
                             <td colspan={size_objs.length}>
                                 <div class="proggress-cell">
-                                    <progress value="{product.available_inventory.reduce((acc, entry) => acc + parseInt(entry?.taken || '0'), 0)}" 
+                                    <progress value="{product.available_inventory.reduce((acc, entry) => acc + parseInt(entry?.taken || '0') + parseInt(entry?.toOrder || '0'), 0)}" 
                                         max="{product.entries.reduce((acc, entry) => acc + parseInt(entry?.quantity || '0'), 0)}"> 
                                         </progress>
                                     <div class="text">
-                                        {product.available_inventory.reduce((acc, entry) => acc + parseInt(entry?.taken || '0'), 0)}
+                                        {product.available_inventory.reduce((acc, entry) => acc + parseInt(entry?.taken || '0') + parseInt(entry?.toOrder || '0'), 0)}
                                         מתוך
                                         {product.entries.reduce((acc, entry) => acc + parseInt(entry?.quantity || '0'), 0)}
                                     </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan={size_objs.length + 6}>
+                                <h5>השלמות מספקים</h5>
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            <td>
+                                <button>
+                                    הוסף ספק
+                                </button>
+                                <button>
+                                    הוסף מידה
+                                </button>
+                                <button>
+                                    הוסף תכונה
+                                </button>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan={size_objs.length + 6}>
+                                <div class="progress-table">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>ספק</th>
+                                                <th>חייב ברקוד פיזי?</th>
+                                                {#each size_objs as size}
+                                                    <th>{size.size}</th>
+                                                {/each}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
                                 </div>
                             </td>
                         </tr>
@@ -579,6 +655,29 @@
 {/if}
 
 <style lang="scss">
+    .range-wraper {
+        position: relative;
+        .amount-input-range {
+            width: 100%;
+            //background: red;
+
+            &.overdraft {
+                &::-webkit-slider-runnable-track {
+                    background: red;
+                
+                }
+            }
+            
+            
+        }
+        .input-max-inventiry {
+            border: 1px solid red;
+            position: absolute;
+            top: 0px;
+            left: var(--pos);
+        }
+    }
+    
     .input-max-div{
         display: flex;
         flex-direction: row-reverse;

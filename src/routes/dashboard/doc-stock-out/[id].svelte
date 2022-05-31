@@ -3,6 +3,7 @@
 <script context="module">
 import { apiGetMOrder } from "@src/api/api";
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
+import AutoComplete from "simple-svelte-autocomplete";
 
 import { onMount } from "svelte";
     export function load({ fetch, page, session, contex }) {
@@ -23,6 +24,7 @@ import { page } from "$app/stores";
 import { Label, Spinner } from "sveltestrap";
 import MorderProductEdit from "$lib/components/dashboard/doc_stock_out/MorderProductEdit.svelte";
 import { BASE_URL } from "@api/consts";
+import { apiAddNewProductToMorder, apiSearchProducts } from "@api/api";
 let loading = false;
 function setNewData(data) {
     debugger;
@@ -165,7 +167,43 @@ function save_order_to_server(e) {
         }
         return domEl;
     }
-    
+    function autocompleteItemSelected(val) {
+        console.log('autocompleteItemSelected: ' , val);
+        selectedProduct = val;
+    }
+
+    let selectedProduct;
+    let addNewProductFormSubmitSending = false;
+    function addNewProductFormSubmit(e) {
+        e.preventDefault();
+        addNewProductFormSubmitSending = true;
+        let sendData = {};
+        sendData['order_id'] = data.id;
+        sendData['product_id'] = selectedProduct.id;
+        console.log('data: ', sendData);
+        apiAddNewProductToMorder(sendData).then((newEntry)=> {
+            e.target.reset();
+            data.products.push(newEntry.data);
+            console.log('newEntry: ', newEntry);
+            console.log('data.products', data.products);
+            data.products.sort((a, b)=> {
+                return a.product.title.localeCompare(b.product.title);
+            });
+            products_data = [...data.products];
+        }).catch(err=>{
+            console.log(err);
+        }).finally(()=>{
+            addNewProductFormSubmitSending = false;
+        });
+        
+        //productAmountEditModel.hide();
+    }
+
+    async function searchProducts(keyword) {
+            let json = await apiSearchProducts(keyword);
+            let data = json;
+            return data.all
+        }
 </script>
 <svelte:head>
     <link href="https://unpkg.com/tabulator-tables@5.2.4/dist/css/tabulator.min.css" rel="stylesheet">
@@ -173,22 +211,85 @@ function save_order_to_server(e) {
     {#if data}
     
 
+    
+
+
+
         <div id="headers-table"></div>
+
+        <div id="new-product-form">
+            <h3>הוסף מוצר</h3>
+            <form method="post" on:submit="{addNewProductFormSubmit}">
+                <div class="form-group">
+                    <label for="product_name">שם מוצר</label>
+                    <div class="search-wraper">
+                        
+                        <AutoComplete id="search_input" on:focus loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value">
+                            <div slot="item" let:item={item} let:label={label}>
+                                <div class="search-item">
+                                    <div class="inner">
+                                        <img alt="{item.title}" style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
+                                        {@html label}
+                                    </div>
+                                </div>
+                            </div>
+                        </AutoComplete>
+                    {#if selectedProduct}
+                        <div class="selected-product">
+                            <div class="inner">
+                                <img alt="{selectedProduct?.title}" style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{selectedProduct?.cimage}" />
+                                {@html selectedProduct?.title}
+                            </div>
+                        </div>
+                    
+                        <button>
+                        {#if addNewProductFormSubmitSending }
+                            <Spinner></Spinner>
+                        {:else}
+                            הוסף
+                        {/if}</button>
+                    {:else}
+                        <button disabled>הוסף</button>
+                    {/if}
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        
         <div class="freeze-inventry">
-            <h3 style="text-align:center;">
-                להקפיא מלאי?
+            <h6 style="text-align:center;">
+                הקפא מלאי
                 <label class="switch">
                     <input bind:checked={data.freezeTakenInventory} type="checkbox">
                     <span class="slider"></span>
                 </label>
-            </h3>
-            <h3 style="text-align:center;">
-                הפוך להזמנה
+                הפשר מלאי
+            </h6>
+            <h6 style="text-align:center;">
+                הזמנה
                 <label class="switch">
                     <input bind:checked={data.isOrder} type="checkbox">
                     <span class="slider"></span>
                 </label>
-            </h3>
+                הצעת מחיר
+            </h6>
+            <h6 style="text-align:center;">
+                שלח חוסרים לספקים
+                <label class="switch">
+                    <input bind:checked={data.sendProviders} type="checkbox">
+                    <span class="slider"></span>
+                </label>
+                חכה
+            </h6>
+            <h6 style="text-align:center;">
+                התחל ליקוט
+                <label class="switch">
+                    <input bind:checked={data.startCollecting} type="checkbox">
+                    <span class="slider"></span>
+                </label>
+                חכה
+            </h6>
         </div>
         <table id="productsTable" class="products-table">
             <thead>
