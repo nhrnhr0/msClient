@@ -22,6 +22,7 @@ import { CLOUDINARY_URL } from "@api/consts";
 import { page } from "$app/stores";
 import { Label, Spinner } from "sveltestrap";
 import MorderProductEdit from "$lib/components/dashboard/doc_stock_out/MorderProductEdit.svelte";
+import { BASE_URL } from "@api/consts";
 let loading = false;
 function setNewData(data) {
     debugger;
@@ -81,6 +82,7 @@ function save_order_to_server(e) {
     let errorMessage = undefined;
     export let id;
 
+
     onMount(async ()=> {
         id = $page.params.id;
         errorMessage = undefined;
@@ -108,6 +110,7 @@ function save_order_to_server(e) {
                 {title: 'סטטוס', field: 'status', editor:"select", editorParams:{values:['new', 'done'],multiselect:false}},
                 {title: 'שם לקוח', field: 'client_businessName'},
                 {title: 'סוכן', field:'agent_name'},
+                {title: 'ערוך', formatter:a_link_edit_formatter, editor:false},
                 //{title: 'מוצרים', field:'products', formatter:products_formatter},
             ]
         });
@@ -148,6 +151,19 @@ function save_order_to_server(e) {
 
     function il_date_formatter(cell, formatterParams, onRendered){
         return new Date(cell.getValue()).toLocaleString("he-IL");
+    }
+
+    function a_link_edit_formatter(cell, formatterParams, onRendered){
+        let domEl = document.createElement('a');
+        domEl.innerText = 'ערוך';
+        domEl.href = `${BASE_URL}/admin/morders/morder/${cell.getRow().getData().id}/change/?_to_field=id&_popup=1`;
+        domEl.target = '_blank';
+        domEl.onclick = function(e) {
+            debugger;
+            window.open(`${BASE_URL}/admin/morders/morder/${cell.getRow().getData().id}/change/?_to_field=id&_popup=1`, 'newwindow', 'width=800,height=500');
+            return false;
+        }
+        return domEl;
     }
     
 </script>
