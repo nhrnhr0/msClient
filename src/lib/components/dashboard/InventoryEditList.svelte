@@ -11,6 +11,7 @@ import StockEditPopup from './StockEditPopup.svelte';
 import {flip} from "svelte/animate";
     import {dndzone} from "svelte-dnd-action";
     import { getContext } from 'svelte';
+    import {dateCellFormatter} from '@src/lib/utils/utils';
 
     const { open } = getContext('simple-modal');
 
@@ -89,12 +90,7 @@ import {flip} from "svelte/animate";
         });
     });
 
-    function dateCellFormatter(cell, formatterParams, onRendered){
-                    // input: 2022-05-19T16:18:38.644219+03:00
-                    // output: 19/05/2022 16:18:38
-                    let date = new Date(cell.getValue()).toLocaleString('he-IL');
-                    return date;
-                }
+
 
     function openStockEditPopup(id, data){
         id_stock_to_edit = id;
@@ -260,6 +256,12 @@ import {flip} from "svelte/animate";
 <div bind:this={tableDom} id="example-table"></div>
 
 <style lang="scss">
+    #example-table {
+        width: 100%;
+        height: 100%;
+        max-width: 95vw;
+        margin: auto;
+    }
     :global(.edit-button-wrapper) {
         display: flex;
         justify-content: center;

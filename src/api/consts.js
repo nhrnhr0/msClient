@@ -65,7 +65,8 @@ export const MORDER_GET_API = BASE_URL + '/morders/api-get-order-data2';
 export const MORDER_EDIT_ADD_PRODUCT_ENTRIES = BASE_URL + '/morders/edit-order-add-product-entries/v2';
 export const MORDER_ADD_NEW_PRODUCT = BASE_URL + '/morders/api-edit-order/add-new-product'
 
-
+export const MORDER_LIST_ORDERS_TO_COLLECT = BASE_URL + '/morders/list-orders-to-collect'
+export const MORDER_GET_ORDER_DETAIL_TO_COLLECT = BASE_URL + '/morders/get-order-detail-to-collect'
 
 export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
 

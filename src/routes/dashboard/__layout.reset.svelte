@@ -76,6 +76,11 @@ import { page } from "$app/stores";
                     עגלות
                 </a>
             </li>
+            <li data-tab-id="4"class:active={$page.path.includes('/dashboard/orders-collection')}>
+                <a href="/dashboard/orders-collection" >
+                    ליקוט
+                </a>
+            </li>
         </ul>
     </div>
 </nav>
