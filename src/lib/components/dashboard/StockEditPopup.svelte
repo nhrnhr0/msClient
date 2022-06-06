@@ -15,6 +15,8 @@ const { close } = getContext('simple-modal');
     export let originalData;
     export let replaceData,updateData;
     import { createEventDispatcher } from 'svelte';
+import { fetch_wraper } from '@src/api/api';
+import { GET_STOCK_BY_ID_URL } from '@src/api/consts';
 
     const dispatch = createEventDispatcher();
 
@@ -34,8 +36,18 @@ const { close } = getContext('simple-modal');
     let historyPromise;
     onMount(async() => {
         console.log('====> onMount', stockId);
+        if (originalData == undefined) {
+            
+            originalData = await get_stock_data();
+        }
         historyPromise = apiGetInventoryHistory(stockId);
     });
+
+    async function get_stock_data() {
+    return await fetch_wraper(GET_STOCK_BY_ID_URL + stockId, {
+        method: 'GET',
+    });
+    }
 
     function closeModal() {
         //is_open = false;
@@ -244,7 +256,9 @@ const { close } = getContext('simple-modal');
                 </div>
             </div>
             </div>
-        
+    
+            {:else if stockId && originalData == undefined} 
+            <Spinner></Spinner>
     {/if}
     </div>
 </div>

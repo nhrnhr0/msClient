@@ -57,6 +57,7 @@ export const ENTER_DOC_EDIT_URL = BASE_URL + '/enter-doc-edit/';
 export const ENTER_DOC_REMOVE_PRODUCT = BASE_URL + '/enter-doc-remove-product/';
 export const ENTER_DOC_INSERT_INVENTORY_URL = BASE_URL + '/enter-doc-insert-inventory/';
 export const GET_ALL_INVENTORY = BASE_URL + '/get-all-inventory-api/';
+export const GET_STOCK_BY_ID_URL = BASE_URL + '/get-stock-by-id-api/';
 export const INVENTORY_EDIT_ENTRY_URL = BASE_URL + '/inventory-edit-entry/';
 export const INVENTORY_MANUAL_UPDATE_ENTRY_URL = BASE_URL + '/inventory-manual-update-entry/';
 //http://127.0.0.1:8000/api/token/
@@ -67,6 +68,7 @@ export const MORDER_ADD_NEW_PRODUCT = BASE_URL + '/morders/api-edit-order/add-ne
 
 export const MORDER_LIST_ORDERS_TO_COLLECT = BASE_URL + '/morders/list-orders-to-collect'
 export const MORDER_GET_ORDER_DETAIL_TO_COLLECT = BASE_URL + '/morders/get-order-detail-to-collect'
+
 
 export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
 
