@@ -44,7 +44,7 @@ const { open } = getContext('simple-modal');
         let table = new Tabulator('#taken', {
             data: data['taken'],
             layout: 'fitColumns',
-            height: '100%',
+            //height: '100%',
             width: '100%',
             columns: [
                 { title: 'מזהה הזמנה', field: 'orderItem__morder', formatter:function(cell, formatterParams) {
@@ -86,14 +86,24 @@ const { open } = getContext('simple-modal');
                     //return a - b.getData().size__code; //you must return the difference between the two values
                 }},
                 { title: 'מודל', field: 'varient__name' },
-                {title: 'כמות', field: 'quantity'},
+                {title: 'כמות לאיסוף', field: 'quantity'},
+                {title: 'נשאר לאסוף', field: 'quantity', formatter:function(cell, formatterParams) {
+                    let collected = cell.getData().collected__quantity;
+                    if (collected) {
+                        debugger;
+                        collected = collected;//.map(x => x.quantity).reduce((a, b) => a + b, 0);
+                    }else {
+                        collected = 0;
+                    }
+                    return cell.getValue() - collected;
+                }},
             ],
             rowFormatter:function(row){
                 let rowData = row.getData();
                     let filters = {
                         has_physical_barcode: true,
                         provider: true,
-                        barcode: true,
+                        //barcode: true,
                         color: true,
                         size: true,
                         varient: true,
@@ -104,19 +114,22 @@ const { open } = getContext('simple-modal');
                         let label = document.createElement('label');
                         label.innerText = labelTxt;
                         let input = document.createElement('input');
-                        input.readOnly = true;
+                        
                         input.type = 'checkbox';
                         input.checked = filters[field];
                         wraper.addEventListener('click', function (e) {
                             console.log('click: ', e);
                             let inputEl = e.currentTarget.querySelector('input')
+                            if(e.target == inputEl) {
+                                inputEl.checked = !inputEl.checked;
+                            }
                             inputEl.checked = !inputEl.checked;
                             filters[field] = inputEl.checked;
                             let entryStocks = data['stocks'].filter(x=>(
                                 x.ppn__product__id == rowData.orderItem__product__id && 
                                 (x.ppn__has_phisical_barcode == rowData.has_physical_barcode || !filters.has_physical_barcode) &&
                                 (x.ppn__provider == rowData.provider || !filters.provider) &&
-                                (x.ppn__barcode == rowData.barcode || !filters.barcode) &&
+                                //(x.ppn__barcode == rowData.barcode || !filters.barcode) &&
                                 (x.color__id == rowData.color__id || !filters.color) && 
                                 (x.size__id == rowData.size__id || !filters.size) &&
                                 (x.verient__id == rowData.varient__id || !filters.varient)
@@ -130,7 +143,7 @@ const { open } = getContext('simple-modal');
                     }
                     let barcodeFizi_button = create_toggle('צריך ברקוד פיזי', 'has_physical_barcode');
                     let provider_button = create_toggle('ספק', 'provider');
-                    let barcode_button = create_toggle('ברקוד', 'barcode');
+                    //let barcode_button = create_toggle('ברקוד', 'barcode');
                     let color_button = create_toggle('צבע', 'color');
                     let size_button = create_toggle('גודל', 'size');
                     let varient_button = create_toggle('מודל', 'varient');
@@ -142,7 +155,7 @@ const { open } = getContext('simple-modal');
                     buttonWraper.style.gap = '10px';
                     buttonWraper.appendChild(barcodeFizi_button);
                     buttonWraper.appendChild(provider_button);
-                    buttonWraper.appendChild(barcode_button);
+                    //buttonWraper.appendChild(barcode_button);
                     buttonWraper.appendChild(color_button);
                     buttonWraper.appendChild(size_button);
                     buttonWraper.appendChild(varient_button);
@@ -379,29 +392,36 @@ const { open } = getContext('simple-modal');
         });
     }
 
-    function update_collected_quantity(id, value,order_id) {
-        debugger;
+    function update_collected_quantity(id, value,takenInventory_id,stock_entry_id) {
         let row = data['stocks'].find(x=>x.id == id);
         //et rowData = row.getData();
         if(row.collected == undefined) {
             row.collected = {};
         }
-        row.collected[order_id] = value;
+        row.collected[takenInventory_id] = value;
         console.log(data['stocks']);
         //row.updateData(rowData);
     }
-    function draw_inventory_tbody(domTbody,entryStocks, order_id) {
-        domTbody.innerHTML = '';
+    function draw_inventory_tbody(domTbody,entryStocks, takenInventory_id) {
+        domTbody.textContent  = '';
         if(entryStocks.length > 0) {
             
             entryStocks.forEach(stock=>{
                 let input = document.createElement('input');
                 input.type = 'number';
-                input.value = stock.collected;
+                //input.value = stock.collected;
                 input.min = 0;
+                let takenInventoryItem = data['taken'].find(e=>e.id==takenInventory_id)
+                if(takenInventoryItem.collected__warehouseStock__id == stock.id) {
+                    input.value = takenInventoryItem.quantity;
+                }else {
+                    //input.value = 0;
+                }
+
                 input.max = stock.quantity;
                 input.addEventListener('change', ()=>{
-                    update_collected_quantity(stock.id, input.value,order_id);
+                    let stock_entry_id = stock.id;
+                    update_collected_quantity(stock.id, input.value,takenInventory_id, stock_entry_id);
                 });
                 let trEl = document.createElement('tr');
                 let tdEl_stock_id = document.createElement('td');
@@ -416,7 +436,6 @@ const { open } = getContext('simple-modal');
                 // put emojies in the cell
                 tdEl_has_phisical_barcode.innerText = stock.ppn__has_phisical_barcode? '✅' : '❌';
                 let tdEl_color = document.createElement('td');
-                debugger;
                 tdEl_color.innerHTML = `
                 <div style="display:flex;justify-content:start;align-items:center">
                     <div style="width:25px;height:25px;background-color:${stock.color__color};border:1px solid black;"></div>
@@ -515,13 +534,16 @@ const { open } = getContext('simple-modal');
         border-collapse: collapse;
         width: 100%;
         text-align: center;
+        height: 350px;
         :global(thead) {
             background-color: #333;
             color: white;
             font-weight: bold;
             
         }
+            
         :global(tbody) {
+            
             background-color: rgb(29, 28, 28);
             color:white;
             :global(tr:nth-child(even)) {
@@ -531,6 +553,7 @@ const { open } = getContext('simple-modal');
                 border: 1px solid rgb(202, 202, 202);
                 padding: 5px;
             }
+            
         }
     }
 </style>

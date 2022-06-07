@@ -50,7 +50,7 @@
             colorsSet.add(color);
             verientsSet.add(varient || undefined);
         }
-        let ppn__barcodes = new Set();
+        //let ppn__barcodes = new Set();
         let ppn__has_phisical_barcodes = new Set();
         let ppn__providers = new Set();
         for (let i = 0; i < product.available_inventory.length; i++) {
@@ -61,7 +61,7 @@
             sizesSet.add(size);
             colorsSet.add(color);
             verientsSet.add(varient || undefined);
-            ppn__barcodes.add(product.available_inventory[i].ppn__barcode);
+            //ppn__barcodes.add(product.available_inventory[i].ppn__barcode);
             ppn__has_phisical_barcodes.add(product.available_inventory[i].ppn__has_phisical_barcode);
             ppn__providers.add(product.available_inventory[i].ppn__provider__name);
         }
@@ -87,14 +87,14 @@
         console.log('creating cartesian from ', color_objs, verient_objs);
         //verient_objs = verient_objs.filter(verient => verient != undefined);
         //verient_objs = verient_objs.filter(verient => verient != undefined);
-        ppn__barcodes = Array.from(ppn__barcodes);
+        //ppn__barcodes = Array.from(ppn__barcodes);
         ppn__has_phisical_barcodes = Array.from(ppn__has_phisical_barcodes);
         ppn__providers = Array.from(ppn__providers);
 
         //if (verient_objs.length > 0) {
         colors_varients_cartesian = cartesian(color_objs, verient_objs);
-        available_inventory_cartesian = cartesian(color_objs, verient_objs, ppn__barcodes, ppn__has_phisical_barcodes,
-            ppn__providers);
+        available_inventory_cartesian = cartesian(color_objs, verient_objs, ppn__has_phisical_barcodes,
+            ppn__providers); //ppn__barcodes
 
         /*} else {
             colors_varients_cartesian = color_objs.map(color => [color]);
@@ -388,9 +388,6 @@
                             מודל
                         </th>
                         <th>
-                            ברקוד
-                        </th>
-                        <th>
                             ברקוד פיזי
                         </th>
                         <th>
@@ -428,7 +425,6 @@
                                 </td>
                         {/each}
                         
-                        <td>-</td>
                         <td>-</td>
                         <td>-</td>
                         {#each size_objs as size}
@@ -518,9 +514,9 @@
                                     {key: size.id,val: 'size',},
                                     {key: available_inventory_iter[0].id, val: 'color',},
                                     {key: available_inventory_iter[1]?.id, val: 'verient',},
-                                    {key: available_inventory_iter[2], val: 'ppn__barcode'},
-                                    {key: available_inventory_iter[3], val: 'ppn__has_phisical_barcode',},
-                                    {key: available_inventory_iter[4], val: 'ppn__provider__name',},
+                                    
+                                    {key: available_inventory_iter[2], val: 'ppn__has_phisical_barcode',},
+                                    {key: available_inventory_iter[3], val: 'ppn__provider__name',},
                                 ], undefined)}
                             <td>
                                 מלאי:
@@ -569,7 +565,6 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td></td>
                             {#each size_objs as size}
                                 
                                 <td>
@@ -587,7 +582,7 @@
                             {/each}
                         </tr>
                         <tr>
-                            <td></td>
+                            
                             <td></td>
                             <td></td>
                             <td></td>
