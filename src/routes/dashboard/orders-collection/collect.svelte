@@ -88,10 +88,10 @@ const { open } = getContext('simple-modal');
                 { title: 'מודל', field: 'varient__name' },
                 {title: 'כמות לאיסוף', field: 'quantity'},
                 {title: 'נשאר לאסוף', field: 'quantity', formatter:function(cell, formatterParams) {
-                    let collected = cell.getData().collected__quantity;
-                    if (collected) {
+                    let collected = cell.getData().collected;
+                    if (collected && collected.length > 0) {
                         debugger;
-                        collected = collected;//.map(x => x.quantity).reduce((a, b) => a + b, 0);
+                        collected = collected.map(x => x.quantity).reduce((a, b) => a + b, 0);
                     }else {
                         collected = 0;
                     }
@@ -281,14 +281,16 @@ const { open } = getContext('simple-modal');
                     row.getElement().appendChild(holderEl);
 
                     let domTbody = document.querySelector(`#taken_inventory_${rowData.id}`)
+                    debugger;
                     let entryStocks = data['stocks'].filter(x=>(
-                                x.ppn__product__id == rowData.orderItem__product__id && 
+                                (x.ppn__product__id == rowData.orderItem__product__id && 
                                 (x.ppn__has_phisical_barcode == rowData.has_physical_barcode || !filters.has_physical_barcode) &&
                                 (x.ppn__provider == rowData.provider || !filters.provider) &&
                                 (x.ppn__barcode == rowData.barcode || !filters.barcode) &&
                                 (x.color__id == rowData.color__id || !filters.color) && 
                                 (x.size__id == rowData.size__id || !filters.size) &&
-                                (x.verient__id == rowData.varient__id || !filters.varient)
+                                (x.verient__id == rowData.varient__id || !filters.varient)) ||
+                                (rowData.collected.find(colect=> colect.warehouseStock__id == x.id) != undefined)
                             ));
                     draw_inventory_tbody(domTbody, entryStocks,rowData.id);
                     //table.redraw();
@@ -411,9 +413,13 @@ const { open } = getContext('simple-modal');
                 input.type = 'number';
                 //input.value = stock.collected;
                 input.min = 0;
+                debugger;
                 let takenInventoryItem = data['taken'].find(e=>e.id==takenInventory_id)
-                if(takenInventoryItem.collected__warehouseStock__id == stock.id) {
-                    input.value = takenInventoryItem.quantity;
+                if(takenInventoryItem.collected && takenInventoryItem.collected.length > 0) {
+                    let collected = takenInventoryItem.collected.find(e=>e.warehouseStock__id == stock.id);
+                    if(collected) {
+                        input.value = collected.quantity;
+                    }
                 }else {
                     //input.value = 0;
                 }
