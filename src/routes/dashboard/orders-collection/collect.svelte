@@ -15,11 +15,13 @@ import { CLOUDINARY_URL } from "@src/api/consts";
 import StockEditPopup from "@src/lib/components/dashboard/StockEditPopup.svelte";
 import { getContext } from 'svelte';
 import { BASE_URL } from "@src/api/consts";
+import { notifier } from "@beyonk/svelte-notifications";
+import { Spinner } from "sveltestrap";
 
 const { open } = getContext('simple-modal');
 
     export let data;
-
+    let table;
     async function request_data(ids) {
         let url = MORDER_GET_ORDER_DETAIL_TO_COLLECT + '?orders=' + encodeURIComponent(JSON.stringify(ids));//'dashboard/orders-collection/collect';
         console.log('url: ', url);
@@ -41,7 +43,7 @@ const { open } = getContext('simple-modal');
         }
         console.log('data: ', data);
         // data values:.values('orderItem__morder', 'orderItem__id', 'orderItem__product__id','orderItem__product__title','orderItem__product__title', 'quantity','color','size','varient','barcode','has_physical_barcode','provider',)   
-        let table = new Tabulator('#taken', {
+        table = new Tabulator('#taken', {
             data: data['taken'],
             layout: 'fitColumns',
             //height: '100%',
@@ -126,13 +128,14 @@ const { open } = getContext('simple-modal');
                             inputEl.checked = !inputEl.checked;
                             filters[field] = inputEl.checked;
                             let entryStocks = data['stocks'].filter(x=>(
-                                x.ppn__product__id == rowData.orderItem__product__id && 
+                                (x.ppn__product__id == rowData.orderItem__product__id && 
                                 (x.ppn__has_phisical_barcode == rowData.has_physical_barcode || !filters.has_physical_barcode) &&
                                 (x.ppn__provider == rowData.provider || !filters.provider) &&
                                 //(x.ppn__barcode == rowData.barcode || !filters.barcode) &&
                                 (x.color__id == rowData.color__id || !filters.color) && 
                                 (x.size__id == rowData.size__id || !filters.size) &&
-                                (x.verient__id == rowData.varient__id || !filters.varient)
+                                (x.verient__id == rowData.varient__id || !filters.varient)) ||
+                                (rowData.collected.find(colect=> colect.warehouseStock__id == x.id) != undefined)
                             ));
                             draw_inventory_tbody(document.querySelector(`#taken_inventory_${rowData.id}`), entryStocks, rowData.id);
                         });
@@ -233,7 +236,7 @@ const { open } = getContext('simple-modal');
                     varient_wraper.appendChild(varient_label);
                     */
                     
-                    let htmlTable = '<table class="inventory-table" style="width:100%;">';
+                    let htmlTable = `<table class="inventory-table" style="width:100%;" id="taken_inventory_${rowData.id}">`;
                     htmlTable += `
                         <thead>
                             <tr>
@@ -251,7 +254,7 @@ const { open } = getContext('simple-modal');
                         </thead>
                     `
                     let table = document.createElement('div');
-                    htmlTable += `<tbody id="taken_inventory_${rowData.id}">`;
+                    htmlTable += `<tbody>`;
                     /*onRendered(function() {
                         debugger;
                         
@@ -280,7 +283,7 @@ const { open } = getContext('simple-modal');
                     holderEl.appendChild(wraper);
                     row.getElement().appendChild(holderEl);
 
-                    let domTbody = document.querySelector(`#taken_inventory_${rowData.id}`)
+                    let domTable = document.querySelector(`#taken_inventory_${rowData.id}`)
                     debugger;
                     let entryStocks = data['stocks'].filter(x=>(
                                 (x.ppn__product__id == rowData.orderItem__product__id && 
@@ -292,7 +295,7 @@ const { open } = getContext('simple-modal');
                                 (x.verient__id == rowData.varient__id || !filters.varient)) ||
                                 (rowData.collected.find(colect=> colect.warehouseStock__id == x.id) != undefined)
                             ));
-                    draw_inventory_tbody(domTbody, entryStocks,rowData.id);
+                    draw_inventory_tbody(domTable, entryStocks,rowData.id);
                     //table.redraw();
 
                     return wraper;
@@ -374,38 +377,68 @@ const { open } = getContext('simple-modal');
 
         });
     });
-
+    let seveing_data = false;
     function save_taken_stocks() {
-        let taken_stocks = data['stocks'];
-        fetch_wraper(BASE_URL + `/dashboard/orders-collection/collect/save`, {
-            method: 'POST',
-            body: JSON.stringify(taken_stocks),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(data => {
-            console.log(data);
-            if (data.status == 'ok') {
-                alert('הנתונים נשמרו בהצלחה');
-                location.reload();
-            }
-        }).catch(error => {
-            console.log(error.message);
-        });
+        if(!data) { 
+            notifier.info('חכה לטעינת המידע לפני לחיצה על שמירה');
+            return;
+        }
+        seveing_data = true;
+        setTimeout(()=> {
+            let taken_stocks = data['stocks'];
+            fetch_wraper(BASE_URL + `/dashboard/orders-collection/collect/save`, {
+                method: 'POST',
+                body: JSON.stringify(taken_stocks),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(data => {
+                console.log(data);
+                debugger;
+                if (data.success == 'success') {
+                    notifier.success('הפרטים נשמרו בהצלחה');
+                }
+            }).catch(error => {
+                console.log(error.message);
+
+            }).finally(() => {
+                seveing_data = false;
+            });
+        },0);
     }
 
     function update_collected_quantity(id, value,takenInventory_id,stock_entry_id) {
         let row = data['stocks'].find(x=>x.id == id);
+        debugger;
         //et rowData = row.getData();
         if(row.collected == undefined) {
             row.collected = {};
         }
         row.collected[takenInventory_id] = value;
+
+
+        let takenInventoryItem = data['taken'].find(e=>e.id==takenInventory_id)
+        if(takenInventoryItem.collected == undefined) {
+            takenInventoryItem.collected = {};
+        }
+        let collected = takenInventoryItem.collected.find(e=>e.warehouseStock__id == stock_entry_id);
+        if(collected) {
+            collected.quantity = value;
+        }else {
+            takenInventoryItem.collected.push({
+                warehouseStock__id:stock_entry_id,
+                quantity:value,
+            });
+        }
+
+        //table.replaceData(data['taken']);
         console.log(data['stocks']);
+        
         //row.updateData(rowData);
     }
-    function draw_inventory_tbody(domTbody,entryStocks, takenInventory_id) {
-        domTbody.textContent  = '';
+    function draw_inventory_tbody(domTable,entryStocks, takenInventory_id) {
+        // domTbody.textContent  = '';
+        let newDomTbody = document.createElement('tbody');
         if(entryStocks.length > 0) {
             
             entryStocks.forEach(stock=>{
@@ -471,7 +504,7 @@ const { open } = getContext('simple-modal');
                 trEl.appendChild(tdEl_varient);
                 trEl.appendChild(tdEl_quantity);
                 trEl.appendChild(tdEl_collected);
-                domTbody.appendChild(trEl);
+                newDomTbody.appendChild(trEl);
 
                 
                 /*htmlTbody+= `
@@ -495,6 +528,7 @@ const { open } = getContext('simple-modal');
             });
         }
                         //domTbody.innerHTML = htmlTbody;
+        domTable.replaceChild(newDomTbody, domTable.querySelector('tbody'));
     }
 </script>
 
@@ -505,8 +539,12 @@ const { open } = getContext('simple-modal');
     <div id="taken"></div>
 
     <!-- loating save btn -->
-    <button on:click="{save_taken_stocks}" class="fixed-action-btn btn btn-primary">
-        שמור
+    <button disabled={seveing_data} on:click="{save_taken_stocks}" class="fixed-action-btn btn btn-primary">
+        {#if seveing_data}
+            <Spinner></Spinner>
+        {:else}
+            שמור    
+        {/if}
     </button>
     
 </div>
@@ -514,6 +552,13 @@ const { open } = getContext('simple-modal');
 <style lang="scss">
     #taken {
         padding-bottom: 350px;
+        :global(.tabulator-tableholder) {
+            :global(.tabulator-table) {
+                :global(.tabulator-row) {
+                    height: 550px;
+                }
+            }
+        }
     }
     .fixed-action-btn {
         position: fixed;
