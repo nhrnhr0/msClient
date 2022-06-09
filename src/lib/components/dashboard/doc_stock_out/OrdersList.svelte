@@ -12,22 +12,16 @@
                     id
                 </th>
                 <th>
-                    תאריך הזמנה
-                </th>
-                <th>
-                    מספר הזמנה
-                </th>
-                <th>
                     שם
                 </th>
                 <th>
-                    סטטוס הזמנה
+                    תאריך יצירה
                 </th>
                 <th>
-                    סכום הזמנה
+                    סכום
                 </th>
                 <th>
-                    כמות מוצרים
+                    # מוצרים
                 </th>
                 <th>
                     סוכן
@@ -35,7 +29,22 @@
                 <th>
                     פעולות
                 </th>
-
+                <th>
+                    בליקוט
+                </th>
+                <th>
+                    הזמנות ספקים
+                </th>
+                
+                <th>
+                    הקפא מלאי
+                </th>
+                <th>
+                    הזמנה/<br>הצעת מחיר
+                </th>
+                <th>
+                    ארכיון
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -46,16 +55,10 @@
                         {order.id}
                     </td>
                     <td>
-                        {new Date(order.created).toLocaleString('he-IL')}
-                    </td>
-                    <td>
-                        {order.id}
-                    </td>
-                    <td>
                         {order.name}
                     </td>
                     <td>
-                        {order.status}
+                        {new Date(order.created).toLocaleString('he-IL')}
                     </td>
                     <td>
                         {order.total_price} ₪
@@ -69,6 +72,20 @@
                     <td>
                         <a href="/dashboard/doc-stock-out/{order.id}">פרטי הזמנה</a>
                     </td>
+                    <td>
+                        {order.startCollecting?'✅':'❌'}
+                    </td>
+                    <td>
+                        {order.sendProviders?'✅':'❌'}
+                    </td>
+                    <td>
+                        {order.freezeTakenInventory? '✅':'❌'}
+                    </td>
+                    <td>
+                        {order.isOrder? 'הזמנה' : 'הצעת מחיר'}
+                    </td>
+                    <td>
+                        {order.archive? '✅':'❌'}
                 </tr>
                 {/each}
         </tbody>

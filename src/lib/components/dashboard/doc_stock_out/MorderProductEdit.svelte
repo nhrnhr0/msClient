@@ -6,6 +6,8 @@
     import {
         getLocalStorageStore
     } from "@src/stores/localStorageStore";
+    import AutoComplete from "simple-svelte-autocomplete";
+
 
     import {
         onMount
@@ -17,8 +19,10 @@
         Spinner
     } from "sveltestrap";
     import {
-        morder_edit_add_product_entries
+        morder_edit_add_product_entries,
+        morder_edit_add_provider_entry
     } from "@src/api/api";
+    import { apiSearchProviders } from "@src/api/api";
 
 
     export let product;
@@ -36,6 +40,65 @@
     let done_loading = false;
     let colors_varients_cartesian = [];
     let available_inventory_cartesian = [];
+
+
+
+    
+    // selected results of the autocompeltes
+    let selectedProvider;
+    let selectedSize;
+    let selectedVarient;
+    let selectedColor;
+    let provider_need_phisical_barcode = false;
+    let provider_quantity;
+
+    function addProviderEntry() {
+        let data = {
+            //entry_id: product.id,
+            provider: selectedProvider?.id,
+            size: selectedSize?.id,
+            varient: selectedVarient?.id,
+            color: selectedColor?.id,
+            need_phisical_barcode: provider_need_phisical_barcode,
+            quantity: provider_quantity
+        }
+        morder_edit_add_provider_entry(product.id, data).then((new_providers) => {
+            product.toProviders = new_providers;
+        });
+    }
+
+
+    // search function for the autocompete
+    async function searchProviders(keyword) {
+        let providers = await apiSearchProviders(keyword)
+        return providers;
+    }
+    
+    function searchSizes(keyword) {
+        return ALL_SIZES.filter(size => size.size.toLowerCase().includes(keyword.toLowerCase()));
+    }
+    function searchVarients(keyword) {
+        return ALL_VARIENTS.filter(varient => varient.name.toLowerCase().includes(keyword.toLowerCase()));
+    }
+    function searchColors(keyword) {
+        return ALL_COLORS.filter(color => color.name.toLowerCase().includes(keyword.toLowerCase()));
+    }
+
+    // trigger when autocomplete option is selected (save the selected option):
+    function autocompleteSizeSelected(size) {
+        selectedSize = size;
+    }
+    function autocompleteVarientSelected(varient) {
+        selectedVarient = varient;
+    }
+    
+    function autocompleteProviderSelected(provider) {
+        selectedProvider = provider;
+    }
+    function autocompleteColorSelected(color) {
+        selectedColor = color;
+    }
+    
 
     function refreshData() {
         debugger;
@@ -103,6 +166,7 @@
 
 
     }
+    
 
     onMount(async () => {
         done_loading = false;
@@ -605,21 +669,153 @@
                         <tr>
                             <td colspan={size_objs.length + 6}>
                                 <h5>השלמות מספקים</h5>
+                                <button class="btn btn-secondary">מלא אוטומטית</button>
                             </td>
                             
                         </tr>
                         <tr>
-                            <td>
-                                <button>
-                                    הוסף ספק
-                                </button>
-                                <button>
-                                    הוסף מידה
-                                </button>
-                                <button>
-                                    הוסף תכונה
-                                </button>
+                            <td colspan="{size_objs.length + 6}">
+                                <table>
+                                    <thead>
+                                        <th>ספק</th>
+                                        <th>מידה</th>
+                                        <th>מודל</th>
+                                        <th>צבע</th>
+                                        <th>חייב ברקוד פיזי</th>
+                                        <th>כמות</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <AutoComplete tabindex={'0'} id="provider_search_input" on:focus loadingText="מחפש ספקים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteProviderSelected} create=true placeholder="בחירת ספק..." className="autocomplete-cls" searchFunction={searchProviders} delay=200 localFiltering="{false}" labelFieldName="name" valueFieldName="value" >
+                                                    <div slot="loading">
+                                                        <Spinner
+                                                            size="sm"
+                                                            speed="750"
+                                                            unit="em"
+                                                            color="#A82124"
+                                                            thickness="2"
+                                                        />
+                                                        <span>טוען...</span>
+                                                        <!-- spinner -->
+                                                        
+                                                    </div>
+                                                    <div slot="item" let:item={item} let:label={label}>
+                                                      {@html label}
+                                                    </div>
+                                                </AutoComplete>                
+                                            </td>
+                                            <td>
+                                                <AutoComplete tabindex={'1'} id="size_search_input" on:focus loadingText="מחפש ספקים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteSizeSelected} create=true placeholder="בחירת מידה..." className="autocomplete-cls" searchFunction={searchSizes} delay=200 localFiltering="{false}" labelFieldName="size" valueFieldName="id" >
+                                                    <div slot="loading">
+                                                        <Spinner
+                                                            size="sm"
+                                                            speed="750"
+                                                            unit="em"
+                                                            color="#A82124"
+                                                            thickness="2"
+                                                        />
+                                                        <span>טוען...</span>
+                                                        <!-- spinner -->
+                                                        
+                                                    </div>
+                                                    <div slot="item" let:item={item} let:label={label}>
+                                                      {@html label}
+                                                    </div>
+                                                </AutoComplete>
+                                            </td>
+                                            <td>
+                                                <AutoComplete tabindex={'2'} id="varient_search_input" on:focus loadingText="מחפש מודלים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteVarientSelected} create=true placeholder="בחירת מודל..." className="autocomplete-cls" searchFunction={searchVarients} delay=200 localFiltering="{false}" labelFieldName="name" valueFieldName="id" >
+                                                    <div slot="loading">
+                                                        <Spinner
+                                                            size="sm"
+                                                            speed="750"
+                                                            unit="em"
+                                                            color="#A82124"
+                                                            thickness="2"
+                                                        />
+                                                        <span>טוען...</span>
+                                                        <!-- spinner -->
+                                                        
+                                                    </div>
+                                                    <div slot="item" let:item={item} let:label={label}>
+                                                      {@html label}
+                                                    </div>
+                                                </AutoComplete>
+                
+                                            </td>
+                                            <td>
+                                                <AutoComplete tabindex={'3'} id="color_search_input" on:focus loadingText="מחפש צבעים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteColorSelected} create=true placeholder="בחירת צבע..." className="autocomplete-cls" searchFunction={searchColors} delay=200 localFiltering="{false}" labelFieldName="name" valueFieldName="id" >
+                                                    <div slot="loading">
+                                                        <Spinner
+                                                            size="sm"
+                                                            speed="750"
+                                                            unit="em"
+                                                            color="#A82124"
+                                                            thickness="2"
+                                                        />
+                                                        <span>טוען...</span>
+                                                        <!-- spinner -->
+                                                        
+                                                    </div>
+                                                    <div slot="item" let:item={item} let:label={label}>
+                                                      {@html label}
+                                                    </div>
+                                                </AutoComplete>
+                                                
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" name="need_phisical_barcode" id="need_phisical_barcode" bind:checked="{provider_need_phisical_barcode}" />
+                                            </td>
+                                            <td>
+                                                <input type="number" placeholder="כמות" id="provider_quantity" bind:value="{provider_quantity}" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {#if selectedProvider}
+                                                    <div class="form-selected-cell">
+                                                        <button on:click="{()=> {selectedProvider=undefined}}" class="clear-btn">x</button>
+                                                        {@html selectedProvider.name}
+                                                    </div>
+                                                {/if}
+                                            </td>
+                                            <td>
+                                                {#if selectedSize}
+                                                    <div class="form-selected-cell">
+                                                        <button on:click="{()=> {selectedSize=undefined}}" class="clear-btn">x</button>
+                                                        {@html selectedSize.size}
+                                                    </div>
+                                                {/if}
+                                            </td>
+                                            <td>
+                                                {#if selectedVarient}
+                                                    <div class="form-selected-cell">
+                                                        <button on:click="{()=> {selectedVarient=undefined}}" class="clear-btn">x</button>
+                                                        {@html selectedVarient.name}
+                                                    </div>
+                                                {/if}
+                                            </td>
+                                            <td>
+                                                {#if selectedColor}
+                                                    <div class="form-selected-cell">
+                                                        <button on:click="{()=> {selectedColor=undefined}}" class="clear-btn">x</button>
+                                                        {@html selectedColor.name}
+                                                    </div>
+                                                {/if}
+                                            </td>
+                                            <td>
+                                                
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-secondary" disabled={selectedProvider == undefined || selectedSize == undefined || selectedColor == undefined || provider_quantity == undefined || provider_quantity <= 0}
+                                                    on:click={addProviderEntry}>הוסף</button>
+                                            </td>
 
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
                             </td>
                         </tr>
                         <tr>
@@ -630,6 +826,8 @@
                                             <tr>
                                                 <th>ספק</th>
                                                 <th>חייב ברקוד פיזי?</th>
+                                                <th>צבע</th>
+                                                <th>מודל</th>
                                                 {#each size_objs as size}
                                                     <th>{size.size}</th>
                                                 {/each}

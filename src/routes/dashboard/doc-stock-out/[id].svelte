@@ -24,7 +24,8 @@ import { page } from "$app/stores";
 import { Label, Spinner } from "sveltestrap";
 import MorderProductEdit from "$lib/components/dashboard/doc_stock_out/MorderProductEdit.svelte";
 import { BASE_URL } from "@api/consts";
-import { apiAddNewProductToMorder, apiSearchProducts } from "@api/api";
+import { apiAddNewProductToMorder, apiSearchProducts,apiDeleteProductFromMorder } from "@api/api";
+import { notifier } from "@beyonk/svelte-notifications";
 let loading = false;
 function setNewData(data) {
     debugger;
@@ -107,7 +108,7 @@ function save_order_to_server(e) {
                 /*{title:'id', field:'id'},*/
                 {title:'שם', field:'name'},
                 {title:'אימייל', field:'email'},
-                {title:'הודעה', field:'message',editor:true},
+                {title:'הודעה', field:'message',editor:true, formatter:"textarea",variableHeight:true},
                 {title: 'טפלון', field: 'phone'},
                 {title: 'סטטוס', field: 'status', editor:"select", editorParams:{values:['new', 'done'],multiselect:false}},
                 {title: 'שם לקוח', field: 'client_businessName'},
@@ -174,6 +175,7 @@ function save_order_to_server(e) {
 
     let selectedProduct;
     let addNewProductFormSubmitSending = false;
+    let deleteProductFormSubmitSending = false;
     function addNewProductFormSubmit(e) {
         e.preventDefault();
         addNewProductFormSubmitSending = true;
@@ -190,8 +192,10 @@ function save_order_to_server(e) {
                 return a.product.title.localeCompare(b.product.title);
             });
             products_data = [...data.products];
+            notifier.success('המוצר התווסף בהצלחה');
         }).catch(err=>{
             console.log(err);
+            notifier.error(err.message);
         }).finally(()=>{
             addNewProductFormSubmitSending = false;
         });
@@ -204,6 +208,36 @@ function save_order_to_server(e) {
             let data = json;
             return data.all
         }
+
+
+    function deleteProductPrompt(e) {
+        e.preventDefault();
+        let is_sure = confirm('האם אתה בטוח שברצונך למחוק את המוצר?');
+        if(is_sure) {
+            deleteProductFormSubmitSending = true;
+            let row = e.target.closest('tr');
+            let id = row.dataset.productId;
+            let index = data.products.findIndex(product=>{
+                return product.id == id;
+            });
+            if(index == -1){
+                return;
+            }
+            let product = data.products[index];
+            let sendData = {};
+            sendData['entry_id'] = product.id;
+            apiDeleteProductFromMorder(sendData).then(()=>{
+                data.products.splice(index, 1);
+                products_data = [...data.products];
+                notifier.success('מוצר נמחק בהצלחה');
+            }).catch(err=>{
+                console.log(err);
+                notifier.error('אירעה שגיאה במחיקת המוצר' + err.message);
+            }).finally(()=>{
+                deleteProductFormSubmitSending = false;
+            });
+        }
+    }
 </script>
 <svelte:head>
     <link href="https://unpkg.com/tabulator-tables@5.2.4/dist/css/tabulator.min.css" rel="stylesheet">
@@ -318,11 +352,14 @@ function save_order_to_server(e) {
                     <th>
                         הערות
                     </th>
+                    <th>
+                        מחק
+                    </th>
                 </tr>
             </thead>
             <tbody>
                 {#each products_data as product}
-                    <tr class="view">
+                    <tr class="view" data-product-id={product.id}>
                         <td>
                             <img width="50px" height="50px" src="{CLOUDINARY_URL + product.product_cimage}" alt="">
                         </td>
@@ -349,9 +386,18 @@ function save_order_to_server(e) {
                         <td>
                             <textarea type="text" bind:value={product.comment} />
                         </td>
+                        <td>
+                            <button class="delete-btn" disabled={deleteProductFormSubmitSending} on:click="{deleteProductPrompt}">
+                                {#if deleteProductFormSubmitSending}
+                                    <Spinner></Spinner>
+                                {:else}
+                                    <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="30px" height="30px" class="delete-btn-click-area"><path class="delete-btn-click-area" d="M 10 2 L 9 3 L 4 3 L 4 5 L 5 5 L 5 20 C 5 20.522222 5.1913289 21.05461 5.5683594 21.431641 C 5.9453899 21.808671 6.4777778 22 7 22 L 17 22 C 17.522222 22 18.05461 21.808671 18.431641 21.431641 C 18.808671 21.05461 19 20.522222 19 20 L 19 5 L 20 5 L 20 3 L 15 3 L 14 2 L 10 2 z M 7 5 L 17 5 L 17 20 L 7 20 L 7 5 z M 9 7 L 9 18 L 11 18 L 11 7 L 9 7 z M 13 7 L 13 18 L 15 18 L 15 7 L 13 7 z"/></svg>
+                                {/if}
+                            </button>
+                        </td>
                     </tr>
                     <tr class="fold">
-                        <td colspan="8">
+                        <td colspan="9">
                             <MorderProductEdit bind:product={product} />
                             <!--<MorderProductEdit2 
                                 data={product.entries}
@@ -387,6 +433,16 @@ function save_order_to_server(e) {
 </button>
 
 <style lang="scss">
+    .delete-btn {
+        background: none;
+        border:none;
+        padding: 5px;
+        &:hover {
+            svg {
+                fill: rgb(255, 0, 0);
+            }
+        }
+    }
 
 .switch {
     position: relative;
@@ -446,9 +502,11 @@ function save_order_to_server(e) {
         border: 1px solid red;;
     }*/
     #headers-table{
-        width: 100%;
+        //width: 100%;
         max-width: 95vw;
         margin: 0 auto;
+        min-height: max-content;
+        min-height: 150px;
     }
 
     :global(.products-table) {

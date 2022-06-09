@@ -2,7 +2,7 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL,INVENTORY_MANUAL_UPDATE_ENTRY_URL,INVENTORY_EDIT_ENTRY_URL,GET_ALL_USERS_URL,ENTER_DOC_EDIT_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL, SEARCH_PPN_API_URL, ENTER_DOC_REMOVE_PRODUCT, ENTER_DOC_INSERT_INVENTORY_URL, SEARCH_PROVIDERS_API_URL, SEARCH_WAREHOUSES_URL, CREATE_ENTER_DOC_URL, MORDER_GET_API, MORDER_EDIT_ADD_PRODUCT_ENTRIES, MORDER_ADD_NEW_PRODUCT, MORDER_LIST_ORDERS_TO_COLLECT} from "./consts";
+import { BASE_URL,INVENTORY_MANUAL_UPDATE_ENTRY_URL,INVENTORY_EDIT_ENTRY_URL,GET_ALL_USERS_URL,ENTER_DOC_EDIT_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , MORDER_EDIT_ADD_PROVIDER_ENTRIES,SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL, SEARCH_PPN_API_URL, ENTER_DOC_REMOVE_PRODUCT, ENTER_DOC_INSERT_INVENTORY_URL, SEARCH_PROVIDERS_API_URL, SEARCH_WAREHOUSES_URL, CREATE_ENTER_DOC_URL, MORDER_GET_API, MORDER_EDIT_ADD_PRODUCT_ENTRIES, MORDER_ADD_NEW_PRODUCT,DELETE_PRODUCT_FROM_MORDER_URL, MORDER_LIST_ORDERS_TO_COLLECT} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
@@ -29,6 +29,14 @@ export async function update_stock_entry(entryId,data) {
 export async function move_stock_entry(entryId, data){ 
     let url = INVENTORY_EDIT_ENTRY_URL + entryId;
     return fetch_wraper(url, {method: "POST", body: JSON.stringify(data)});
+}
+
+export async function morder_edit_add_provider_entry(entryId, data) {
+    let url = MORDER_EDIT_ADD_PROVIDER_ENTRIES + entryId;
+    return fetch_wraper(url, {
+        method: "POST",
+        body: JSON.stringify(data)
+    });
 }
 export async function morder_edit_add_product_entries(form_data_obj) {
     return await fetch_wraper(MORDER_EDIT_ADD_PRODUCT_ENTRIES, {method:"POST", body:JSON.stringify(form_data_obj)});
@@ -300,6 +308,11 @@ export async function request_csrf_token() {
     let json_response = response;
     set_user_uuid(json_response['uid']);
     return json_response;
+}
+
+export async function apiDeleteProductFromMorder(data) {
+    let response = await fetch_wraper(DELETE_PRODUCT_FROM_MORDER_URL, {method:"DELETE", body: JSON.stringify(data)});
+    return response;
 }
 
 export async function apiAddNewProductToMorder(data) {

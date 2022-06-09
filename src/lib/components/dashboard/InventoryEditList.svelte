@@ -12,6 +12,7 @@ import {flip} from "svelte/animate";
     import {dndzone} from "svelte-dnd-action";
     import { getContext } from 'svelte';
     import {dateCellFormatter} from '@src/lib/utils/utils';
+import { BASE_URL,CLOUDINARY_URL } from '@src/api/consts';
 
     const { open } = getContext('simple-modal');
 
@@ -58,7 +59,11 @@ import {flip} from "svelte/animate";
                 
                 {title:"מחסן", field:"warehouse_name",headerFilter:true},
                 {title:'ספק', field:'provider_name',headerFilter:true},
-                {title:"שם מוצר", field:"product_name",headerFilter:true},
+                {title:"שם מוצר", field:"product_name",headerFilter:true,width:'150', formatter:function(cell, formatterParams){
+                    // return the image (cimage + BASE_URL) and the title (product_name/cell.getValue())
+                    return `<img width:"25px" height="25px" src="${CLOUDINARY_URL + '/' + cell.getRow().getData().product_image}" title="${cell.getValue()}"/><div>${cell.getValue()}</div>`;
+                    
+                }},
                 {title:'ברקוד', field:'barcode',headerFilter:true},
                 {title:"ברקוד פיזי", field:"has_phisical_barcode",headerFilter:true, formatter:function(cell, formatterParams){
                     return cell.getValue() ? '✅' : '❌';
