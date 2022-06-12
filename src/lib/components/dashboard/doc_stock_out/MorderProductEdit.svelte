@@ -23,6 +23,8 @@
         morder_edit_add_provider_entry
     } from "@src/api/api";
     import { apiSearchProviders } from "@src/api/api";
+import { fastpivot } from "@src/lib/utils/utils";
+import PivotEditTable from "../PivotEditTable.svelte";
 
 
     export let product;
@@ -101,7 +103,6 @@
     
 
     function refreshData() {
-        debugger;
         let sizesSet = new Set();
         let colorsSet = new Set();
         let verientsSet = new Set();
@@ -164,8 +165,10 @@
             available_inventory_cartesian = cartesian(color_objs, ppn__barcodes, ppn__has_phisical_barcodes, ppn__providers);
         }*/
 
-
+        providersData = fastpivot(product.toProviders);
     }
+
+    let providersData;
     
 
     onMount(async () => {
@@ -327,7 +330,6 @@
         let sizeId = target.dataset.sizeId;
         let varientId = target.dataset.varientId;
         let found = false;
-        debugger;
         for (let i = 0; i < product.entries.length; i++) {
             if (product.entries[i].color == colorId && product.entries[i].size == sizeId && product.entries[i]
                 .varient == varientId) {
@@ -820,6 +822,34 @@
                         </tr>
                         <tr>
                             <td colspan={size_objs.length + 6}>
+                                <PivotEditTable bind:data={product.toProviders} rows={['provider__str','color__str','varient__str']}
+                                    colum={'size__str'}
+                                    val={'quantity'}
+                                    
+                                    columSorter={function(arr){
+                                        console.log(arr);
+                                        if(arr.length == 0) return arr;
+                                        return arr.sort(function(a,b){
+                                            debugger;
+                                            let a_val = ALL_SIZES.find(s=>s.size == a).code
+                                            let b_val = ALL_SIZES.find(s=>s.size == b).code;
+                                            return b_val.localeCompare(a_val);
+                                        });
+                                    }}
+
+                                    >
+                                        <div slot="cell"  let:rowData let:rowKey>
+                                            {#if ['provider__str','color__str','varient__str'].includes(rowKey)}
+                                                {JSON.stringify(rowData[rowKey])}
+                                            {:else}
+                                                {#if product.toProviders[rowData[rowKey]] }
+                                                    {product.toProviders[rowData[rowKey]].quantity}
+                                                {/if}
+                                            {/if}
+                                        </div>
+                                    </PivotEditTable>
+                            </td>
+                                <!--
                                 <div class="progress-table">
                                     <table>
                                         <thead>
@@ -828,17 +858,23 @@
                                                 <th>חייב ברקוד פיזי?</th>
                                                 <th>צבע</th>
                                                 <th>מודל</th>
-                                                {#each size_objs as size}
-                                                    <th>{size.size}</th>
+                                                {#each providersData['size__str']._labels as size_label }
+                                                    <th>{size_label}</th>
                                                 {/each}
+                                                
                                             </tr>
                                         </thead>
                                         <tbody>
-
+                                            {#each providersData['size__str']._data as provider_data}
+                                                <tr>
+                                                    <td>{JSON.stringify(provider_data)}</td>
+                                                </tr>
+                                            {/each}
+                                            
                                         </tbody>
                                     </table>
                                 </div>
-                            </td>
+                            -->
                         </tr>
                     </tfoot>
         </table>

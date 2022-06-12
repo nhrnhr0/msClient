@@ -28,7 +28,6 @@ import { apiAddNewProductToMorder, apiSearchProducts,apiDeleteProductFromMorder 
 import { notifier } from "@beyonk/svelte-notifications";
 let loading = false;
 function setNewData(data) {
-    debugger;
     headers_data = [...[{
             id: data.id,
             agent: data.agent,
@@ -49,9 +48,7 @@ function setNewData(data) {
         if(headersTable) {
             headersTable.setData(headers_data);
         }
-
-        debugger;
-}
+    }
 async function load_order_from_server(_id) {
         loading = true;
         let resp = await apiGetMOrder(_id);
@@ -96,7 +93,6 @@ function save_order_to_server(e) {
             errorMessage = e.message;
         }
 
-        debugger;
         headersTable = new Tabulator("#headers-table", {
             data:headers_data,
             //autoColumns:true,
