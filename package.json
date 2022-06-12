@@ -36,6 +36,7 @@
     "env-cmd": "^10.1.0",
     "lodash": "^4.17.21",
     "pivottable": "^2.23.0",
+    "svelte-fragment": "^1.0.1",
     "svelte-inview": "^2.0.2",
     "svelte-json-tree": "^0.1.0",
     "svelte-lazy-image": "^0.2.0",

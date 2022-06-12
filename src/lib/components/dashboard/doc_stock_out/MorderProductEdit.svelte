@@ -25,6 +25,8 @@
     import { apiSearchProviders } from "@src/api/api";
 import { fastpivot } from "@src/lib/utils/utils";
 import PivotEditTable from "../PivotEditTable.svelte";
+import ColorDisplay from "../../ColorDisplay.svelte";
+import fragment from 'svelte-fragment';
 
 
     export let product;
@@ -822,7 +824,8 @@ import PivotEditTable from "../PivotEditTable.svelte";
                         </tr>
                         <tr>
                             <td colspan={size_objs.length + 6}>
-                                <PivotEditTable bind:data={product.toProviders} rows={['provider__str','color__str','varient__str']}
+                                {JSON.stringify(product.toProviders)}
+                                <PivotEditTable bind:data={product.toProviders} rows={['provider__str','color__str','color__color','varient__str', 'force_physical_barcode']}
                                     colum={'size__str'}
                                     val={'quantity'}
                                     
@@ -838,15 +841,23 @@ import PivotEditTable from "../PivotEditTable.svelte";
                                     }}
 
                                     >
-                                        <div slot="cell"  let:rowData let:rowKey>
-                                            {#if ['provider__str','color__str','varient__str'].includes(rowKey)}
-                                                {JSON.stringify(rowData[rowKey])}
-                                            {:else}
-                                                {#if product.toProviders[rowData[rowKey]] }
-                                                    {product.toProviders[rowData[rowKey]].quantity}
-                                                {/if}
+                                        <template use:fragment slot="col-header" let:row>
+                                            hey1 {row}
+                                        </template>
+                                        <template use:fragment slot="row-cell" let:row_data let:row_key>
+                                            hey2
+                                            {#if row_key == 'color__str'}
+                                                <td><ColorDisplay color_name={row_data[row_key]} color_color={row_data['color__color']} /></td>
+                                            {:else if row_key != 'color__color'}
+                                                <td>{row_data[row_key]}</td>
                                             {/if}
-                                        </div>
+                                        </template> 
+                                        <template use:fragment slot="val-cell" let:row_index let:row_key>
+                                            hey3
+                                            <td>
+                                                {product.toProviders[row_index]?.quantity}
+                                            </td>
+                                        </template>
                                     </PivotEditTable>
                             </td>
                                 <!--

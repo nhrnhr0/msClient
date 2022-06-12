@@ -79,10 +79,14 @@
     <thead>
         <tr>
             {#each rows as row}
-                <th>{row}</th>
+                <slot name="row-header" row={row}>
+                    <th>{row}</th>
+                </slot>
             {/each}
             {#each sorted_cols_str as col}
-                <th>{col}</th>
+                <slot name="col-header" col={col}>
+                    <th>{col}</th>
+                </slot>
             {/each}
         </tr>
     </thead>
@@ -104,12 +108,21 @@
                         </slot>
                     </td>
                 {/each}-->
-                {#each rows.concat(sorted_cols_str) as rowKey}
+                {#each rows as rowKey}
                     
-                    <td>
-                        <slot name="cell" rowData={rowData} rowKey={rowKey}>
+                        <slot name="row-cell" row_data={rowData} row_key={rowKey}>
+                            <td>
+                            {rowData[rowKey]}
+                            </td>
                         </slot>
-                    </td>
+                    
+                {/each}
+                {#each sorted_cols_str as rowKey}
+                    
+                        <slot name="val-cell" row_index={rowData[rowKey]} row_key={rowKey}>
+                            <td></td>
+                        </slot>
+                    
                 {/each}
             </tr>
         {/each}
