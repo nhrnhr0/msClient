@@ -27,9 +27,6 @@
                     סוכן
                 </th>
                 <th>
-                    פעולות
-                </th>
-                <th>
                     בליקוט
                 </th>
                 <th>
@@ -52,7 +49,8 @@
                 {#each orders as order}
                 <tr>
                     <td>
-                        {order.id}
+                        <a href="/dashboard/doc-stock-out/{order.id}">{order.id}</a>
+ 
                     </td>
                     <td>
                         {order.name}
@@ -68,9 +66,6 @@
                     </td>
                     <td>
                         {order.agent_name}
-                    </td>
-                    <td>
-                        <a href="/dashboard/doc-stock-out/{order.id}">פרטי הזמנה</a>
                     </td>
                     <td>
                         {order.startCollecting?'✅':'❌'}

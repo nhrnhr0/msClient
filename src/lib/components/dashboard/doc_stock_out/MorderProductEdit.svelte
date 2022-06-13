@@ -57,7 +57,12 @@ import fragment from 'svelte-fragment';
     let provider_need_phisical_barcode = false;
     let provider_quantity;
 
+    let addProviderEntry_sending = false;
     function addProviderEntry() {
+        if (addProviderEntry_sending) {
+            return;
+        }
+        addProviderEntry_sending = true;
         let data = {
             //entry_id: product.id,
             provider: selectedProvider?.id,
@@ -71,6 +76,8 @@ import fragment from 'svelte-fragment';
             if(response['success'] == 'success') {
                 product.toProviders = response.data;
             }
+        }).finally(() => {
+            addProviderEntry_sending = false;
         });
     }
 
@@ -420,11 +427,13 @@ import fragment from 'svelte-fragment';
         }else {
             let entry = product.toProviders[idx];
             entry.quantity = parseInt(val);
+            product.toProviders = [...product.toProviders];
         }
     }
 
 </script>
 {#if done_loading}
+
     <div class="sub-tr">
         <div class="action-buttons">
             {#if !add_new_size_flag}
@@ -723,7 +732,6 @@ import fragment from 'svelte-fragment';
                         <tr>
                             <td colspan={size_objs.length + 6}>
                                 <h5>השלמות מספקים</h5>
-                                <button class="btn btn-secondary">מלא אוטומטית</button>
                             </td>
                             
                         </tr>
@@ -862,8 +870,14 @@ import fragment from 'svelte-fragment';
                                                 
                                             </td>
                                             <td>
-                                                <button class="btn btn-secondary" disabled={selectedProvider == undefined || selectedSize == undefined || selectedColor == undefined || provider_quantity == undefined || provider_quantity <= 0}
-                                                    on:click={addProviderEntry}>הוסף</button>
+                                                <button class="btn btn-secondary" disabled={addProviderEntry_sending == true || selectedProvider == undefined || selectedSize == undefined || selectedColor == undefined || provider_quantity == undefined || provider_quantity <= 0}
+                                                    on:click={addProviderEntry}>
+                                                    {#if addProviderEntry_sending}
+                                                        <Spinner></Spinner>
+                                                    {:else}
+                                                        הוסף
+                                                    {/if}
+                                                </button>
                                             </td>
 
                                         </tr>
@@ -905,7 +919,7 @@ import fragment from 'svelte-fragment';
                                                 <td><ColorDisplay color_name={row_data[row_key]} color_color={row_data['color__color']} /></td>
                                             {:else if row_key != 'color__color'}
                                                 {#if row_key == 'force_physical_barcode'}
-                                                    <td>{row_data[row_key] ? 'כן' : 'לא'}</td>
+                                                    <td>{row_data[row_key] ?  '✅':'❌'}</td>
                                                 {:else}
                                                     <!-- defult case -->
                                                     <td>{row_data[row_key]}</td>

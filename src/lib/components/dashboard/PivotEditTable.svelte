@@ -14,7 +14,9 @@
     let cols_str = new Set([]);
     let pivotData = [];
     let sorted_cols_str;
-    
+
+    let update_key = "key_";
+    let update_key_counter = 0;
 
     $: {
         /**
@@ -41,6 +43,9 @@
          * ]
          * up data change, recreate pivotData:
         */
+        cols_str = new Set([]);
+        pivotData = [];
+        sorted_cols_str = undefined;
         for(let i = 0; i < data.length; i++) {
             let entry = data[i];
             let pivotRow = {};
@@ -52,7 +57,9 @@
             cols_str.add(rowCol);
             pivotData[idx][rowCol] = i;
         }
-        sorted_cols_str = columSorter(Array.from(cols_str));
+        sorted_cols_str = [...columSorter(Array.from(cols_str))];
+        update_key_counter +=1;
+        update_key = "" + update_key_counter.toString();
     }
 
     function get_or_create_pivot_row(pivotRow) {
@@ -75,56 +82,58 @@
         return [rowIdx, pivotData[rowIdx]];
     }
 </script>
-<table class={tableClass}>
-    <thead>
-        <tr>
-            {#each rows as row}
-                <slot name="row-header" row_data={row}>
-                    <th>{row}</th>
-                </slot>
-            {/each}
-            {#each sorted_cols_str as col}
-                <slot name="col-header" col_data={col}>
-                    <th>{col}</th>
-                </slot>
-            {/each}
-        </tr>
-    </thead>
-    <tbody>
-        {#each pivotData as rowData}
-            <tr class="{rowClass}">
-                <!--{#each rows as rowKey}
-                    <td>
-                        {rowData[rowKey]}
-                    </td>
+{#key update_key}
+    <table class={tableClass}>
+        <thead>
+            <tr>
+                {#each rows as row}
+                    <slot name="row-header" row_data={row}>
+                        <th>{row}</th>
+                    </slot>
                 {/each}
                 {#each sorted_cols_str as col}
-                    {@const dataIdx = rowData['cols'][col]}
-                    <td class="{colClass}">
-                        <slot name="cell"  idx={dataIdx} row-data={JSON.stringify(rowData)}>
-                            {#if dataIdx != undefined}
-                                {data[dataIdx][val]}
-                            {/if}
-                        </slot>
-                    </td>
-                {/each}-->
-                {#each rows as rowKey}
-                    
-                        <slot name="row-cell" row_data={rowData} row_key={rowKey}>
-                            <td>
-                            {rowData[rowKey]}
-                            </td>
-                        </slot>
-                    
-                {/each}
-                {#each sorted_cols_str as rowKey}
-                    
-                        <slot name="val-cell" row_index={rowData[rowKey]} row_data={rowData} row_key={rowKey}>
-                            <td></td>
-                        </slot>
-                    
+                    <slot name="col-header" col_data={col}>
+                        <th>{col}</th>
+                    </slot>
                 {/each}
             </tr>
-        {/each}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {#each pivotData as rowData}
+                <tr class="{rowClass}">
+                    <!--{#each rows as rowKey}
+                        <td>
+                            {rowData[rowKey]}
+                        </td>
+                    {/each}
+                    {#each sorted_cols_str as col}
+                        {@const dataIdx = rowData['cols'][col]}
+                        <td class="{colClass}">
+                            <slot name="cell"  idx={dataIdx} row-data={JSON.stringify(rowData)}>
+                                {#if dataIdx != undefined}
+                                    {data[dataIdx][val]}
+                                {/if}
+                            </slot>
+                        </td>
+                    {/each}-->
+                    {#each rows as rowKey}
+                        
+                            <slot name="row-cell" row_data={rowData} row_key={rowKey}>
+                                <td>
+                                {rowData[rowKey]}
+                                </td>
+                            </slot>
+                        
+                    {/each}
+                    {#each sorted_cols_str as rowKey}
+                        
+                            <slot name="val-cell" row_index={rowData[rowKey]} row_data={rowData} row_key={rowKey}>
+                                <td></td>
+                            </slot>
+                        
+                    {/each}
+                </tr>
+            {/each}
+        </tbody>
+    </table>
+{/key}

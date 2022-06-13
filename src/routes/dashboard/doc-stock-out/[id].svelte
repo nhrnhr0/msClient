@@ -61,11 +61,8 @@ async function load_order_from_server(_id) {
 function save_order_to_server(e) {
     e.preventDefault();
     loading = true;
-    console.log('data:', data);
     apiGetMOrder(data.id, data, "POST").then(
         function(resp) {
-            debugger;
-            console.log('resp:', resp);
             data  = resp
             setNewData(data);
             
@@ -158,7 +155,6 @@ function save_order_to_server(e) {
         domEl.href = `${BASE_URL}/admin/morders/morder/${cell.getRow().getData().id}/change/?_to_field=id&_popup=1`;
         domEl.target = '_blank';
         domEl.onclick = function(e) {
-            debugger;
             window.open(`${BASE_URL}/admin/morders/morder/${cell.getRow().getData().id}/change/?_to_field=id&_popup=1`, 'newwindow', 'width=800,height=500');
             return false;
         }
@@ -187,6 +183,12 @@ function save_order_to_server(e) {
             data.products.sort((a, b)=> {
                 return a.product.title.localeCompare(b.product.title);
             });
+            //data.products = 
+            /*
+            data.products.map((product, index)=> {
+                
+            });
+            */
             products_data = [...data.products];
             notifier.success('המוצר התווסף בהצלחה');
         }).catch(err=>{
@@ -197,6 +199,18 @@ function save_order_to_server(e) {
         });
         
         //productAmountEditModel.hide();
+    }
+
+    $: {
+        console.log('products_data updated: ', products_data);
+        products_data && products_data.map((product, index)=> {
+            product.order_sum = product.entries.reduce((acc, entry) => acc + parseInt(entry?.quantity || '0'), 0)
+                product.take_sum = product.available_inventory.reduce((acc, entry) => acc + parseInt(entry?.taken || '0') + parseInt(entry?.toOrder || '0'), 0)
+                product.provider_sum = product.toProviders.reduce((acc, entry) => acc + parseInt(entry?.quantity || '0'), 0)
+                product.take_sum_prc = ((product.take_sum/product.order_sum)*100 || 0).toFixed(2);
+                product.provider_sum_prc = ((product.provider_sum/product.order_sum)*100 || 0).toFixed(2);
+                return product;
+        });
     }
 
     async function searchProducts(keyword) {
@@ -234,6 +248,9 @@ function save_order_to_server(e) {
             });
         }
     }
+
+
+    let fold_states = {};
 </script>
 <svelte:head>
     <link href="https://unpkg.com/tabulator-tables@5.2.4/dist/css/tabulator.min.css" rel="stylesheet">
@@ -324,6 +341,7 @@ function save_order_to_server(e) {
         <table id="productsTable" class="products-table">
             <thead>
                 <tr>
+                    <th width="10px"></th>
                     <th>
                         תמונה
                     </th>
@@ -356,10 +374,13 @@ function save_order_to_server(e) {
             <tbody>
                 {#each products_data as product}
                     <tr class="view" data-product-id={product.id}>
-                        <td>
+                        <td on:click="{()=>{fold_states[product.id]=!fold_states[product.id]}}">
+                            <div class="fold-arrow" class:active={fold_states[product.id]}>
+                            </div>
+                        <td on:click="{()=>{fold_states[product.id]=!fold_states[product.id]}}">
                             <img width="50px" height="50px" src="{CLOUDINARY_URL + product.product_cimage}" alt="">
                         </td>
-                        <td>
+                        <td on:click="{()=>{fold_states[product.id]=!fold_states[product.id]}}">
                             {product.product_name}
                         </td>
                         <td>
@@ -392,8 +413,31 @@ function save_order_to_server(e) {
                             </button>
                         </td>
                     </tr>
-                    <tr class="fold">
-                        <td colspan="9">
+                    <tr>
+                        <td colspan="10">
+                            <div class="progress">
+                                <div class="progress-bar bg-success" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={product.take_sum_prc} style="width:{product.take_sum_prc}%" >{product.take_sum_prc}%
+                                    
+                                </div>
+
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: {product.provider_sum_prc}%" aria-valuenow="{product.provider_sum_prc}" aria-valuemin="0" aria-valuemax="100">{product.provider_sum_prc}%
+
+                                </div>
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: {((100-(parseFloat(product.take_sum_prc)+parseFloat(product.provider_sum_prc))) || 0).toFixed(2)}%" aria-valuemin="0" aria-valuemax="100">{((100-(parseFloat(product.take_sum_prc)+parseFloat(product.provider_sum_prc))) || 0).toFixed(2)}%
+
+                                </div>
+                            </div>
+                            
+                            <div class="text">
+                                {product.take_sum_prc}% מהמלאי + {product.provider_sum_prc}% מהספקים = {(parseFloat(product.take_sum_prc)+parseFloat(product.provider_sum_prc)).toFixed(2)}% מההזמנה
+                                <br>
+                                {product.take_sum} מוצרים מהמלאי + {product.provider_sum} מוצרים מהספקים = {product.take_sum+product.provider_sum} מוצרים מתוך {product.order_sum} מוצרים
+                            </div>
+                            
+                        </td>
+                    </tr>
+                    <tr class="fold" class:active={fold_states[product.id]==true}>
+                        <td colspan="10">
                             <MorderProductEdit bind:product={product} />
                             <!--<MorderProductEdit2 
                                 data={product.entries}
@@ -429,6 +473,76 @@ function save_order_to_server(e) {
 </button>
 
 <style lang="scss">
+.css-tooltip{
+  position: relative;
+  
+}
+//.css-tooltip:hover:after{
+.css-tooltip:after{
+  content:attr(data-tooltip);
+  background:#000;
+  padding:5px;
+  border-radius:3px; 
+  display: inline-block;
+  position: absolute;
+  transform: translate(-50%,-100%); 
+  margin:0 auto;
+  color:#FFF;
+  min-width:100px;
+  min-width:150px;
+  top:-5px;
+  left: 50%;
+  text-align:center;
+}
+//.css-tooltip:hover:before 
+.css-tooltip:before {
+  top:-5px;
+  left: 50%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(0, 0, 0, 0);
+  border-top-color: #000;
+  border-width: 5px;
+  margin-left: -5px;
+       transform: translate(0,0px); 
+}
+
+
+
+    /*.tooltip{ 
+        position:relative;
+        float:right;
+    }
+    .tooltip > .tooltip-inner {background-color: #eebf3f; padding:5px 15px; color:rgb(23,44,66); font-weight:bold; font-size:13px;}
+    .popOver + .tooltip > .tooltip-arrow {	border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid #eebf3f;}*/
+    .fold {
+        display: none;
+        &.active {
+            display: table-row;
+        }
+    }
+    .fold-arrow {
+        /*left: -19px;
+        top: 3px;
+        width: 0;*/
+        height: 0;
+        //border-style: solid;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent; 
+        border-right:16px solid black; 
+        //border-color: transparent transparent transparent black;
+        transition: all 0.2s ease-in;
+
+        &.active {
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 16px solid black;
+        }
+    }
     .delete-btn {
         background: none;
         border:none;
@@ -524,7 +638,7 @@ function save_order_to_server(e) {
                     padding: 10px;
                     border-bottom: 1px solid #eaeaea;
                 }
-                &:nth-child(even) {
+                &:nth-child(3n +1) {
                     background: rgb(221, 221, 221);
                 }
                 &:hover {

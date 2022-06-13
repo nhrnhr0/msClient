@@ -81,6 +81,11 @@ import { page } from "$app/stores";
                     ליקוט
                 </a>
             </li>
+            <li data-tab-id="5"class:active={$page.path.includes('/dashboard/providers-request')}>
+                <a href="/dashboard/providers-request" >
+                    ספקים
+                </a>
+            </li>
         </ul>
     </div>
 </nav>
