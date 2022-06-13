@@ -1,5 +1,5 @@
 import { browser } from "$app/env";
-import { WAREHOUSES_API_URL,SIZES_API_URL,COLORS_API_URL,VARIANTS_API_URL } from "@src/api/consts";
+import { WAREHOUSES_API_URL,SIZES_API_URL,COLORS_API_URL,VARIANTS_API_URL ,BASE_URL} from "@src/api/consts";
 import { fetch_wraper } from "@src/api/api";
 
 
@@ -8,6 +8,7 @@ const keyUrlPairs = {
     "colors": {url: COLORS_API_URL},
     "varients": {url:VARIANTS_API_URL},
     "warehouses": {url:WAREHOUSES_API_URL},
+    "providers": {url:`${BASE_URL}/svelte/api/providers/`},
 }
 
 export async function getLocalStorageStore(key) {

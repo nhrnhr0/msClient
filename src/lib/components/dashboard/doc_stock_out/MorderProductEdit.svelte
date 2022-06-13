@@ -41,6 +41,7 @@ import fragment from 'svelte-fragment';
     let ALL_SIZES;
     let ALL_COLORS;
     let ALL_VARIENTS;
+    let ALL_PROVIDERS;
     let done_loading = false;
     let colors_varients_cartesian = [];
     let available_inventory_cartesian = [];
@@ -66,8 +67,10 @@ import fragment from 'svelte-fragment';
             need_phisical_barcode: provider_need_phisical_barcode,
             quantity: provider_quantity
         }
-        morder_edit_add_provider_entry(product.id, data).then((new_providers) => {
-            product.toProviders = new_providers;
+        morder_edit_add_provider_entry(product.id, data).then((response) => {
+            if(response['success'] == 'success') {
+                product.toProviders = response.data;
+            }
         });
     }
 
@@ -167,10 +170,10 @@ import fragment from 'svelte-fragment';
             available_inventory_cartesian = cartesian(color_objs, ppn__barcodes, ppn__has_phisical_barcodes, ppn__providers);
         }*/
 
-        providersData = fastpivot(product.toProviders);
+        //providersData = fastpivot(product.toProviders);
     }
 
-    let providersData;
+    //let providersData;
     
 
     onMount(async () => {
@@ -178,7 +181,7 @@ import fragment from 'svelte-fragment';
         ALL_SIZES = await getLocalStorageStore('sizes');
         ALL_COLORS = await getLocalStorageStore('colors');
         ALL_VARIENTS = await getLocalStorageStore('varients');
-
+        ALL_PROVIDERS = await getLocalStorageStore('providers');
         refreshData();
         //
         done_loading = true;
@@ -265,7 +268,6 @@ import fragment from 'svelte-fragment';
                 break;
             }
         }
-        console.log(JSON.stringify(ret));
         if (ret) {
             if (target) {
                 return [ret[target], foundIndex];
@@ -354,7 +356,15 @@ import fragment from 'svelte-fragment';
         }
     }
 
-
+    const PROVIDERS_LABELS = {
+'provider__str': 'ספק',
+'color__str': 'צבע',
+'color__color': 'האקס',
+'varient__str': 'מודל',
+'force_physical_barcode': 'חייב ברקוד פיזי',
+'size__str': 'מידה',
+'quantity': 'כמות',
+    }
     /*function remove_color_row(color) {
         if(confirm('אתה בטוח שברצוך להסיר צבע ' + color.name + '?')) {
             morder_edit_remove_color(color.id).then(res => {
@@ -373,6 +383,46 @@ import fragment from 'svelte-fragment';
     function remove_size_col(size) {
 
     }*/
+
+    function providers_input_changed(e) {
+        let target = e.target;
+        let idx = parseInt(target.dataset.rowIdx);
+        let val = parseInt(target.value);
+        let rowData = JSON.parse(target.dataset.rowData);
+        let size_key = target.dataset.rowKey;
+        debugger;
+
+        if(idx === -1) {
+            let provider = ALL_PROVIDERS.find(p => p.label == rowData.provider__str);
+            let color = ALL_COLORS.find(c => c.name == rowData.color__str);
+            let size = ALL_SIZES.find(s => s.size == size_key);
+            let varient = ALL_VARIENTS.find(v => v.name == rowData.varient__str);
+            let force_physical_barcode = rowData.force_physical_barcode == true;
+            
+
+            let newEntry = {
+                color: color.id,
+                color__color: color.color,
+                color__str: color.name,
+                force_physical_barcode: force_physical_barcode,
+                id: undefined,
+                provider: provider.value,
+                provider__str: provider.label,
+                quantity: val,
+                size: size.id,
+                size__code: size.code,
+                size__str: size.size,
+                varient: varient? varient.id : '',
+                varient__str: varient? varient.name : '',
+            }
+            product.toProviders.push(newEntry);
+            product.toProviders = [...product.toProviders];
+        }else {
+            let entry = product.toProviders[idx];
+            entry.quantity = parseInt(val);
+        }
+    }
+
 </script>
 {#if done_loading}
     <div class="sub-tr">
@@ -497,7 +547,7 @@ import fragment from 'svelte-fragment';
                         <td>-</td>
                         {#each size_objs as size}
                             <td>
-                                <input class="amount-input" type="text" data-size-id={size.id} data-color-id={colors_varients_iter[0].id} 
+                                <input class="small-input amount-input" type="text" data-size-id={size.id} data-color-id={colors_varients_iter[0].id} 
                                     data-varient-id={colors_varients_iter[1]?.id}
                                         value={findAndReturnValue(product.entries, [{
                                             key: size.id,
@@ -592,7 +642,7 @@ import fragment from 'svelte-fragment';
                                     (קפוא {entry.frozen})
                                 {/if}
                                 <div class="input-max-div">
-                                    <input data-row={JSON.stringify(entry)}  data-idx="{idx}" type="number" class="amount-input" data-size-id={size.id} data-color-id={available_inventory_iter[0].id}
+                                    <input data-row={JSON.stringify(entry)}  data-idx="{idx}" type="number" class="small-input amount-input" data-size-id={size.id} data-color-id={available_inventory_iter[0].id}
                                         disabled={!entry?.total} value={entry?.taken} max={entry?.total || 0} on:input={(e)=>{taken_amount_changed(e);}}
                                         />
                                         /
@@ -600,7 +650,7 @@ import fragment from 'svelte-fragment';
                                 </div>
                                 <div class="range-wraper">
                                     <!-- class:overdraft={entry?.taken - entry?.total > 0}-->
-                                <input type="range" class="amount-input-range" data-idx="{idx}"  data-size-id={size.id} data-color-id={available_inventory_iter[0].id}
+                                <input type="range" class="small-input amount-input-range" data-idx="{idx}"  data-size-id={size.id} data-color-id={available_inventory_iter[0].id}
                                     data-varient-id={available_inventory_iter[1]?.id} min="0" max={entry?.total || 0} value={entry?.taken || 0} 
                                     disabled={!entry?.total} on:input={(e)=>{taken_amount_changed(e);}}
                                     />
@@ -772,7 +822,7 @@ import fragment from 'svelte-fragment';
                                                 <input type="checkbox" name="need_phisical_barcode" id="need_phisical_barcode" bind:checked="{provider_need_phisical_barcode}" />
                                             </td>
                                             <td>
-                                                <input type="number" placeholder="כמות" id="provider_quantity" bind:value="{provider_quantity}" />
+                                                <input class="small-input" type="number" placeholder="כמות" id="provider_quantity" bind:value="{provider_quantity}" />
                                             </td>
                                         </tr>
                                         <tr>
@@ -824,8 +874,7 @@ import fragment from 'svelte-fragment';
                         </tr>
                         <tr>
                             <td colspan={size_objs.length + 6}>
-                                {JSON.stringify(product.toProviders)}
-                                <PivotEditTable bind:data={product.toProviders} rows={['provider__str','color__str','color__color','varient__str', 'force_physical_barcode']}
+                                <PivotEditTable bind:data={product.toProviders} rows={['provider__str','color__str','color__color', 'varient__str', 'force_physical_barcode']}
                                     colum={'size__str'}
                                     val={'quantity'}
                                     
@@ -833,31 +882,42 @@ import fragment from 'svelte-fragment';
                                         console.log(arr);
                                         if(arr.length == 0) return arr;
                                         return arr.sort(function(a,b){
-                                            debugger;
                                             let a_val = ALL_SIZES.find(s=>s.size == a).code
                                             let b_val = ALL_SIZES.find(s=>s.size == b).code;
                                             return b_val.localeCompare(a_val);
                                         });
-                                    }}
-
-                                    >
-                                        <template use:fragment slot="col-header" let:row>
-                                            hey1 {row}
+                                    }}>
+                                    <template use:fragment slot="not-working" let:col_data>
+                                        not working?!!!!!!!!!!!
+                                    </template>
+                                    <template use:fragment slot="col-header" let:col_data>
+                                        <th>{col_data}</th>
+                                    </template>
+                                        <template use:fragment slot="row-header" let:row_data>
+                                            {#if row_data != 'color__color'}
+                                                <th>
+                                                    {PROVIDERS_LABELS[row_data]}
+                                                </th>
+                                            {/if}
                                         </template>
                                         <template use:fragment slot="row-cell" let:row_data let:row_key>
-                                            hey2
                                             {#if row_key == 'color__str'}
                                                 <td><ColorDisplay color_name={row_data[row_key]} color_color={row_data['color__color']} /></td>
                                             {:else if row_key != 'color__color'}
-                                                <td>{row_data[row_key]}</td>
+                                                {#if row_key == 'force_physical_barcode'}
+                                                    <td>{row_data[row_key] ? 'כן' : 'לא'}</td>
+                                                {:else}
+                                                    <!-- defult case -->
+                                                    <td>{row_data[row_key]}</td>
+                                                {/if}
                                             {/if}
                                         </template> 
-                                        <template use:fragment slot="val-cell" let:row_index let:row_key>
-                                            hey3
+                                        <template use:fragment slot="val-cell" let:row_index let:row_key let:row_data>
                                             <td>
-                                                {product.toProviders[row_index]?.quantity}
+                                                <input class="small-input" type="number" data-row-key={row_key} data-row-idx={row_index!=undefined?row_index:-1} data-row-data={JSON.stringify(row_data)} on:change="{providers_input_changed}" value="{product.toProviders[row_index]?.quantity}" />
                                             </td>
                                         </template>
+                                        
                                     </PivotEditTable>
                             </td>
                                 <!--
@@ -895,6 +955,9 @@ import fragment from 'svelte-fragment';
 {/if}
 
 <style lang="scss">
+    .small-input {
+        max-width: 80px;
+    }
     .range-wraper {
         position: relative;
         .amount-input-range {

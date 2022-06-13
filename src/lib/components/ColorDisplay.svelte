@@ -12,7 +12,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: center;
+        justify-content: start;
         width: 100px;
         height: 30px;
         gap: 5px;

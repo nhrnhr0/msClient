@@ -79,12 +79,12 @@
     <thead>
         <tr>
             {#each rows as row}
-                <slot name="row-header" row={row}>
+                <slot name="row-header" row_data={row}>
                     <th>{row}</th>
                 </slot>
             {/each}
             {#each sorted_cols_str as col}
-                <slot name="col-header" col={col}>
+                <slot name="col-header" col_data={col}>
                     <th>{col}</th>
                 </slot>
             {/each}
@@ -119,7 +119,7 @@
                 {/each}
                 {#each sorted_cols_str as rowKey}
                     
-                        <slot name="val-cell" row_index={rowData[rowKey]} row_key={rowKey}>
+                        <slot name="val-cell" row_index={rowData[rowKey]} row_data={rowData} row_key={rowKey}>
                             <td></td>
                         </slot>
                     
