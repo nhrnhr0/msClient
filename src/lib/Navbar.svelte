@@ -398,49 +398,59 @@ import { logStore } from "./../stores/logStore";
 
                     }
             :global(.dropdown-header) {
-            :global(.category-menu-2){
+            
+                :global(.category-menu-2){
                 :global(.category-menu-2-menu.show) {
                     display: grid;
-                    transform: translate3d(-100%, 44px, 0px);
+                    transform: translate3d(-70%, 32px, 0px)!important;
                     left:-100%;
                     width: 290px;
+                    @media screen and (max-width: 600px) {
+                        transform: translate3d(-20%, 42px, 0px)!important;
+                    }
+                    @media screen and (max-width: 400px) {
+                        transform: translate3d(-0%, 42px, 0px)!important;
+                        width: 110%;
+                    }
                 }
                 :global(.dropdown-menu.show) {
-                    max-height: 45vh;
+                    max-height: 55vh;
                     overflow-y: scroll!important;;
                     padding-top: 15px!important;
+                    
+                        
+                    }
                     :global(.dropdown-item) {
                         display: inline-block;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #212529;
-    text-align: center;
-    text-decoration: none;
-    vertical-align: middle;
-    cursor: pointer;
-    user-select: none;
-    background-color: transparent;
-    border: 1px solid transparent;
-    margin-bottom: 10px;
-    padding: .5rem 1rem;
-    margin-left: auto;
-    margin-right: auto;
-    width: 90%;
-    font-size: 1rem;
-    border-radius: 0.25rem;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    
-    color: #fff;
-    background-color: #212529;
-    border-color: #212529;
+                        font-weight: 400;
+                        line-height: 1.5;
+                        color: #212529;
+                        text-align: center;
+                        text-decoration: none;
+                        vertical-align: middle;
+                        cursor: pointer;
+                        user-select: none;
+                        background-color: transparent;
+                        border: 1px solid transparent;
+                        margin-bottom: 10px;
+                        padding: .5rem 1rem;
+                        margin-left: auto;
+                        margin-right: auto;
+                        width: 90%;
+                        font-size: 1rem;
+                        border-radius: 0.25rem;
+                        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                        
+                        color: #fff;
+                        background-color: #212529;
+                        border-color: #212529;
 
                     }
                 }
             }
-        }
-        }
-        
-        }
+                }
+            }
+            
 
 /*
 :global(.autocomplete-cls)  {
