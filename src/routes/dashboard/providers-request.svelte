@@ -125,10 +125,11 @@ import { notifier } from "@beyonk/svelte-notifications";
 
     function providers_input_changed(e) {
         let target = e.target;
-        let idx = parseInt(target.dataset.rowIdx);
+        let idx = parseInt(target.parentElement.dataset.rowIdx);
         let val = parseInt(target.value);
-        let rowData = JSON.parse(target.dataset.rowData);
-        let size_key = target.dataset.rowKey;
+        debugger;
+        let rowData = JSON.parse(target.parentElement.dataset.rowData);
+        let size_key = target.parentElement.dataset.rowKey;
 
         if(idx === -1) {
             // let provider = providers_dict[rowData.provider];
@@ -200,6 +201,14 @@ import { notifier } from "@beyonk/svelte-notifications";
                 notifier.error('הזמנה לא עודכנה');
             });
     }
+
+
+    function split_provider_btn_click(e) {
+        let target = e.target;
+        let idx = parseInt(target.dataset.rowIdx);
+        let rowData = JSON.parse(target.dataset.rowData);
+        let size_key = target.dataset.rowKey;
+    }
 </script>
 {#if data}
 
@@ -255,9 +264,11 @@ import { notifier } from "@beyonk/svelte-notifications";
         </template> 
 
         <template use:fragment slot="val-cell" let:row_index let:row_key let:row_data>
-            <td>
-                <input class="small-input" type="number" data-row-key={row_key} data-row-idx={row_index!=undefined?row_index:-1} data-row-data={JSON.stringify(row_data)} on:change="{providers_input_changed}" value="{data[row_index]?.quantity}" />
-                    <button class="btn split-btn" class:active={row_index != undefined}>
+            <td  data-row-key={row_key} data-row-idx={row_index!=undefined?row_index:-1} data-row-data={JSON.stringify(row_data)} >
+                <input class="small-input" type="number" value="{data[row_index]?.quantity}" on:change="{providers_input_changed}"/>
+                
+                    <button on:click={split_provider_btn_click} class="btn split-btn" class:active={row_index != undefined}>
+                        {JSON.stringify(data[row_index]&& data[row_index]['id'])}
                         <img src="https://res.cloudinary.com/ms-global/image/upload/v1655204675/msAssets/icon-changelink_utqtio.svg" alt="פצל">
                     </button>
             </td>
