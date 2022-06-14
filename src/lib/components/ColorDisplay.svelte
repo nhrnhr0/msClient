@@ -15,5 +15,8 @@
         width: 100px;
         height: 30px;
         gap: 5px;
+        & .color-display-color {
+            border:1px solid black;
+        }
     }
 </style>

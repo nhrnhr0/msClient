@@ -69,7 +69,8 @@ export const MORDER_ADD_NEW_PRODUCT = BASE_URL + '/morders/api-edit-order/add-ne
 export const DELETE_PRODUCT_FROM_MORDER_URL = BASE_URL + '/morders/api-edit-order/delete-product-from-morder';
 export const MORDER_LIST_ORDERS_TO_COLLECT = BASE_URL + '/morders/list-orders-to-collect'
 export const MORDER_GET_ORDER_DETAIL_TO_COLLECT = BASE_URL + '/morders/get-order-detail-to-collect'
-export const LOAD_ALL_PROVIDER_REQUEST_TO_ORDER = BASE_URL + '/load-all-provider-request'
+export const LOAD_ALL_PROVIDER_REQUEST_TO_ORDER = BASE_URL + '/load-all-provider-request';
+export const UPDATE_PROVIDER_REQUEST_ENTRY = BASE_URL + '/update-provider-request-entry';
 
 export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
 

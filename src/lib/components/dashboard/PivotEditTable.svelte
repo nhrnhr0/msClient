@@ -47,6 +47,7 @@
         pivotData = [];
         sorted_cols_str = undefined;
         for(let i = 0; i < data.length; i++) {
+            console.log(i,'/',data.length);
             let entry = data[i];
             let pivotRow = {};
             for(let r = 0; r < rows.length; r++) {
@@ -66,11 +67,29 @@
         update_key_counter +=1;
         update_key = "" + update_key_counter.toString();
     }
-
+    function cmp(val1, val2) {
+        
+        let response = false;
+        // if((typeof val1 === 'object' &&
+        //     !Array.isArray(val1) &&
+        //     val1 !== null) ||
+        //     (typeof val2 === 'object' &&
+        //     !Array.isArray(val2) &&
+        //     val2 !== null)) {
+                response = JSON.stringify(val1) === JSON.stringify(val2);
+            // }
+        /*else{
+            response = val1 === val2;
+        }*/
+        console.log('cmp', val1, val2, response);
+        return response;
+    }
     function get_or_create_pivot_row(pivotRow) {
+        
         let rowIdx = pivotData.findIndex(row => {
             for(let r = 0; r < rows.length; r++) {
-                if(row[rows[r]] !== pivotRow[rows[r]]) {
+                //console.log('comp: ', row[rows[r]], pivotRow[rows[r]]);
+                if(!cmp(row[rows[r]],pivotRow[rows[r]])){ //if(JSON.stringify(row[rows[r]]) !== JSON.stringify(pivotRow[rows[r]])){
                     return false;
                 }
             }
@@ -88,6 +107,7 @@
     }
 </script>
 {#key update_key}
+
     <table class={tableClass}>
         <thead>
             <tr>
