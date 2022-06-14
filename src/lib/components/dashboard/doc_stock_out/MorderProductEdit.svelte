@@ -916,7 +916,7 @@ import fragment from 'svelte-fragment';
                                         </template>
                                         <template use:fragment slot="row-cell" let:row_data let:row_key>
                                             {#if row_key == 'color__str'}
-                                                <td><ColorDisplay color_name={row_data[row_key]} color_color={row_data['color__color']} /></td>
+                                                <td><ColorDisplay color={{'name': row_data[row_key], 'color': row_data['color__color']}}/></td>
                                             {:else if row_key != 'color__color'}
                                                 {#if row_key == 'force_physical_barcode'}
                                                     <td>{row_data[row_key] ?  '✅':'❌'}</td>
