@@ -57,7 +57,12 @@
             cols_str.add(rowCol);
             pivotData[idx][rowCol] = i;
         }
-        sorted_cols_str = [...columSorter(Array.from(cols_str))];
+        if (columSorter) {
+            sorted_cols_str = [...columSorter(Array.from(cols_str))];
+        }else {
+            sorted_cols_str = [...Array.from(cols_str)];
+        }
+        
         update_key_counter +=1;
         update_key = "" + update_key_counter.toString();
     }
