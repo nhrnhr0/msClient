@@ -10,9 +10,10 @@
     export let colClass = "";
 
     export let columSorter;
+    export let filter_func;
 
     let cols_str = new Set([]);
-    let pivotData = [];
+    export let pivotData = [];
     let sorted_cols_str;
 
     let update_key = "key_";
@@ -47,7 +48,6 @@
         pivotData = [];
         sorted_cols_str = undefined;
         for(let i = 0; i < data.length; i++) {
-            console.log(i,'/',data.length);
             let entry = data[i];
             let pivotRow = {};
             for(let r = 0; r < rows.length; r++) {
@@ -57,6 +57,11 @@
             let rowCol = entry[colum];
             cols_str.add(rowCol);
             pivotData[idx][rowCol] = i;
+            if(pivotData[idx]._original_data_idxs == undefined) {
+                pivotData[idx]._original_data_idxs= new Set([]);
+            }
+            pivotData[idx]._original_data_idxs.add(i);
+            
         }
         if (columSorter) {
             sorted_cols_str = [...columSorter(Array.from(cols_str))];
@@ -81,7 +86,6 @@
         /*else{
             response = val1 === val2;
         }*/
-        console.log('cmp', val1, val2, response);
         return response;
     }
     function get_or_create_pivot_row(pivotRow) {
@@ -97,9 +101,10 @@
         });
         if(rowIdx == -1) {
             let rowData = {};
-            for(let r = 0; r < rows.length; r++) {
+            /*for(let r = 0; r < rows.length; r++) {
                 rowData[rows[r]] = pivotRow[rows[r]];
-            }
+            }*/
+            rowData = {...pivotRow};
             //rowData['cols'] = {};
             rowIdx = pivotData.push(rowData) - 1;
         }
@@ -124,8 +129,8 @@
             </tr>
         </thead>
         <tbody>
-            {#each pivotData as rowData}
-                <tr class="{rowClass}">
+            {#each pivotData as rowData, pivotIdx}
+                <tr class="pivot-tr {rowClass}" class:selected={pivotData[pivotIdx].selected} class:hidden={!filter_func(rowData)}>
                     <!--{#each rows as rowKey}
                         <td>
                             {rowData[rowKey]}
@@ -143,7 +148,7 @@
                     {/each}-->
                     {#each rows as rowKey}
                         
-                            <slot name="row-cell" row_data={rowData} row_key={rowKey}>
+                            <slot name="row-cell" origianl_indexs={sorted_cols_str.map(v=>rowData[v])} pivot_idx={pivotIdx} row_data={rowData} row_key={rowKey}>
                                 <td>
                                 {rowData[rowKey]}
                                 </td>
@@ -162,3 +167,12 @@
         </tbody>
     </table>
 {/key}
+
+<style lang="scss">
+    .pivot-tr {
+        border: 1px solid red;
+        &.hidden {
+            border: 1px solid blue;
+        }
+    }
+</style>

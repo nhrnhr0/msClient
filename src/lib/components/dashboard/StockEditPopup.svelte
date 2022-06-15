@@ -73,7 +73,7 @@ import { GET_STOCK_BY_ID_URL } from '@src/api/consts';
         debugger;
         update_stock_entry(stockId, data).then((val)=> {
             if (val['error']) {
-                notifier.error(val['error']);
+                notifier.danger(val['error']);
             } else {
                 notifier.success("Successfully updated");
                 triggerTableUpdateEvent(val);

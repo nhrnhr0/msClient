@@ -71,7 +71,7 @@ export const MORDER_LIST_ORDERS_TO_COLLECT = BASE_URL + '/morders/list-orders-to
 export const MORDER_GET_ORDER_DETAIL_TO_COLLECT = BASE_URL + '/morders/get-order-detail-to-collect'
 export const LOAD_ALL_PROVIDER_REQUEST_TO_ORDER = BASE_URL + '/load-all-provider-request';
 export const UPDATE_PROVIDER_REQUEST_ENTRY = BASE_URL + '/update-provider-request-entry';
-
+export const CREATE_PROVIDER_DOCS = BASE_URL + '/create-provider-docs';
 export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
 
 

@@ -193,7 +193,7 @@ function save_order_to_server(e) {
             notifier.success('המוצר התווסף בהצלחה');
         }).catch(err=>{
             console.log(err);
-            notifier.error(err.message);
+            notifier.danger(err.message);
         }).finally(()=>{
             addNewProductFormSubmitSending = false;
         });
@@ -242,7 +242,7 @@ function save_order_to_server(e) {
                 notifier.success('מוצר נמחק בהצלחה');
             }).catch(err=>{
                 console.log(err);
-                notifier.error('אירעה שגיאה במחיקת המוצר' + err.message);
+                notifier.danger('אירעה שגיאה במחיקת המוצר' + err.message);
             }).finally(()=>{
                 deleteProductFormSubmitSending = false;
             });
