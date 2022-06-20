@@ -27,7 +27,7 @@
   } from './../api/consts';
 
   import {
-    api_get_user_campains, fetch_wraper
+    api_get_user_campains, fetch_wraper, get_products_info
   } from './../api/api'
   import {
     browser
@@ -207,6 +207,10 @@ import {sl_disable, sl_enable} from "$lib/utils/scroll-lock";
 import CallToActionForm from '$lib/components/CallToActionForm.svelte';
 import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
 import { flashy_page_view } from "$lib/flashy";
+import { page } from "$app/stores";
+import { cartStore } from './../stores/cartStore';
+import { shereCartStore } from "../stores/shereCartStore";
+
 //import FavoritesSidePopup from '$lib/components/FavoritesSidePopup.svelte';
   
   export let colors;
@@ -220,6 +224,27 @@ import { flashy_page_view } from "$lib/flashy";
   
   //export let onLoadCategory;
   //export let onLoadProduct;
+
+  function sum_mentries_qunatity(obj) {
+    let sum = 0
+
+    function traverse(obj) {
+        if(typeof(obj) === 'object') {
+          for(let key in obj) {
+            if(obj.hasOwnProperty('quantity')) {
+              sum += obj['quantity']
+            }
+            else if(obj.hasOwnProperty(key)) {
+              traverse(obj[key])
+            }
+          }
+        }
+      }
+
+    traverse(obj)
+
+    return sum
+  }
   
   onMount(async()=> {
 
@@ -316,7 +341,34 @@ import { flashy_page_view } from "$lib/flashy";
       sessionStorage.removeItem('onLoadTask');
     }
     
+    let pparams = $page;
+    let copy_cart = pparams.query.get('cart_json');
 
+    if(copy_cart) {
+      copy_cart = JSON.parse(copy_cart);
+      let products_ids = Object.keys(copy_cart);
+      console.log('products_ids: ', products_ids);
+      let products_info = await get_products_info(products_ids);
+      console.log('products: ', products_info);
+      let temp_cart = {};
+      for(let i = 0; i < products_info.length; i++) {
+        let product = products_info[i];
+        let product_id = product.id;
+        let product_entries = copy_cart[product_id];
+
+        temp_cart[product_id] = {
+          ...products_info[i],
+          mentries: product_entries.mentries,
+          amount: product_entries.amount
+          //amount: sum_mentries_qunatity(product_entries),
+        };
+      }
+      shereCartStore.setCart(temp_cart);
+      
+    shereCartStore.openModal()
+      //cartStore.set();
+    }
+    /**/
     window.addEventListener('scroll', () => {
       document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
     });

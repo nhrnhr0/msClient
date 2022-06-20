@@ -45,13 +45,14 @@
   import ProductPhotoModal from "$lib/modals/productPhotoModal.svelte";
   import CartHistory from "$lib/modals/cartHistory.svelte";
   import HistoryProducts from "$lib/modals/historyProducts.svelte";
+  import ShereCart from "$lib/modals/shereCart.svelte";
   export const prerender = false;
 </script>
 
 <svelte:head>
   <meta name="theme-color" content="#FFD700" />
 </svelte:head>
-
+<ShereCart />
 <LoginModal bind:this={$loginModalStore} />
 <ProductModal bind:this={$productModalStore} />
 <ProductImageModal bind:this={$productImageModalStore} />
