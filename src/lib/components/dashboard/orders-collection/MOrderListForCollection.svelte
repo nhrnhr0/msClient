@@ -25,11 +25,18 @@ import { BASE_URL } from "@src/api/consts";
         let data =await get_orders_to_collect();
         return data;
     }
-
+    let submiting_to_smartbee = false;
     function send_order_to_smartbee() {
-        let url = BASE_URL + '/dashboard/orders-collection/smartbee/'+selected[0].id;
-        let response = fetch_wraper(url, {"method":"POST"});
-        console.log(response)
+        setTimeout(async()=>{
+            let url = BASE_URL + '/dashboard/orders-collection/smartbee/'+selected[0].id;
+            let response = await fetch_wraper(url, {"method":"POST"});
+            console.log(response)
+            debugger;
+            if(response.success == 'success') {
+                goto('/dashboard/orders-collection/smartbee/'+response.data.result);
+            }
+        },0);
+        submiting_to_smartbee = true;
     }
 
     /*function start_collecting_btn_click() {
@@ -40,7 +47,6 @@ import { BASE_URL } from "@src/api/consts";
     function refresh_table(data) {
         //data = [...data];
         console.log('refresh_table ==> ', data);
-        debugger;
         let table = new Tabulator("#collection-list", {
             textDirection:"rtl",
             height:'auto', // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
@@ -102,7 +108,13 @@ import { BASE_URL } from "@src/api/consts";
 {/if}
 
 {#if selected && selected.length == 1}
-    <button on:click={send_order_to_smartbee}>הפק חשבונית בסמרטבי</button>
+    <button class="btn btn-secondary" disabled={submiting_to_smartbee} on:click={send_order_to_smartbee}>
+        {#if submiting_to_smartbee}
+            <Spinner></Spinner>
+        {:else}
+            הפק חשבונית בסמרטבי
+        {/if}
+    </button>
 {/if}
 <style lang="scss">
     .collection-list {

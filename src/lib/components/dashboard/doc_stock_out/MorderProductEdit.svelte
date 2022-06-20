@@ -118,6 +118,8 @@ import fragment from 'svelte-fragment';
         let sizesSet = new Set();
         let colorsSet = new Set();
         let verientsSet = new Set();
+        debugger;
+
         for (let i = 0; i < product.entries.length; i++) {
             let color = product.entries[i].color || 76;
             let size = product.entries[i].size || 86;
@@ -171,7 +173,6 @@ import fragment from 'svelte-fragment';
         colors_varients_cartesian = cartesian(color_objs, verient_objs);
         available_inventory_cartesian = cartesian(color_objs, verient_objs, ppn__has_phisical_barcodes,
             ppn__providers); //ppn__barcodes
-
         /*} else {
             colors_varients_cartesian = color_objs.map(color => [color]);
             available_inventory_cartesian = cartesian(color_objs, ppn__barcodes, ppn__has_phisical_barcodes, ppn__providers);
@@ -253,6 +254,7 @@ import fragment from 'svelte-fragment';
      * @param values 
      */
     function findAndReturnValue(data, values, target) {
+        debugger;
         if (values.length == 6) {
             console.log('inventory:');
         }
@@ -615,6 +617,7 @@ import fragment from 'svelte-fragment';
                         </td>
                         
                         {#each available_inventory_iter as available_inventory}
+                        
                             <td>
                                 {#if typeof available_inventory === 'object' && available_inventory !== null}
                                     <div class="color-wraper">
@@ -636,6 +639,7 @@ import fragment from 'svelte-fragment';
                             </td>
                         {/each}
                         {#each size_objs as size}
+                            <!--<pre>{alert(JSON.stringify(available_inventory_iter))}</pre>-->
                             {@const [entry, idx] = findAndReturnValue(product.available_inventory, 
                                 [
                                     {key: size.id,val: 'size',},
