@@ -130,7 +130,7 @@
         </thead>
         <tbody>
             {#each pivotData as rowData, pivotIdx}
-                <tr class="pivot-tr {rowClass}" class:selected={pivotData[pivotIdx].selected} class:hidden={!filter_func(rowData)}>
+                <tr class="pivot-tr {rowClass}" class:selected={pivotData[pivotIdx].selected} class:hidden={filter_func != undefined && !filter_func(rowData)}>
                     <!--{#each rows as rowKey}
                         <td>
                             {rowData[rowKey]}
