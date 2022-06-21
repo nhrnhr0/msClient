@@ -1,5 +1,3 @@
-
-
 /*const BASE_SERVER_URL = import.meta.env['VITE_SERVER_LOCATION']
 
 export const SEARCH_API_URL = BASE_SERVER_URL + '/search';
@@ -10,8 +8,6 @@ export const COLORS_API_URL = BASE_API_URL + 'colors/';
 
 
 export const STATIC_BASE = import.meta.env['VITE_STATIC_LOCATION']*/
-
-
 
 export const BASE_URL = import.meta.env['VITE_SERVER_LOCATION'];
 export const CRM_BASE_API = BASE_URL + '/crm-api/';
@@ -73,6 +69,5 @@ export const LOAD_ALL_PROVIDER_REQUEST_TO_ORDER = BASE_URL + '/load-all-provider
 export const UPDATE_PROVIDER_REQUEST_ENTRY = BASE_URL + '/update-provider-request-entry';
 export const CREATE_PROVIDER_DOCS = BASE_URL + '/create-provider-docs';
 export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
-
-
-export const CLOUDINARY_URL = 'https://res.cloudinary.com/ms-global/image/upload/';
+export const CLOUDINARY_URL =
+  "https://res.cloudinary.com/ms-global/image/upload/";

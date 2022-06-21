@@ -34,6 +34,7 @@
     "@rollup/plugin-commonjs": "^21.0.1",
     "@sveltejs/adapter-node": "^1.0.0-next.40",
     "cookie": "^0.4.1",
+    "dayjs": "^1.11.2",
     "env-cmd": "^10.1.0",
     "lodash": "^4.17.21",
     "pivottable": "^2.23.0",
