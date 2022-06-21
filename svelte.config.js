@@ -16,6 +16,8 @@ console.log(import.meta.env);
 console.log('======================================================================================');
 //console.log(process.env['ASSETS_BASE_URL']);
 /** @type {import('@sveltejs/kit').Config} */
+import path from 'path'
+
 const config = {
   kit: {
     appDir: "app",
@@ -46,6 +48,16 @@ const config = {
           },
         },
       },
+      resolve: {
+				alias: {
+                    // these are the aliases and paths to them
+          '@api': path.resolve('./src/api'),
+					'@components': path.resolve('./src/lib/components'),
+					'@lib': path.resolve('./src/lib'),
+					'@utils': path.resolve('./src/lib/utils'),
+          '@src': path.resolve('./src'),
+				}
+			}
 
       /**
        * SvelteKit v1.0.0-next.146 SyntaxError: Cannot use import statement outside a module #2161
