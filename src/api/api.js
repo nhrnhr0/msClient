@@ -8,6 +8,12 @@ import { browser } from '$app/env';
 import { get} from 'svelte/store';
 //import { request_refresh_token } from "./auth";
 
+export async function api_get_smartbee_doc(doc_id) {
+    let url = `${BASE_URL}/get-smartbee-doc/${doc_id}`;
+    let response = await fetch_wraper(url);
+    return response;
+}
+
 export async function apiGetInventoryHistory(entryId) {
     let url = INVENTORY_EDIT_ENTRY_URL + entryId + '/history/';
     return fetch_wraper(url);

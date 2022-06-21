@@ -233,6 +233,9 @@ import { onMount } from "svelte";
 {/if}
 
 <style lang="scss">
+  .product-table {
+    
+  }
   .color-box {
     display: flex;
     flex-direction: row;
