@@ -51,7 +51,7 @@
             let entry = data[i];
             let pivotRow = {};
             for(let r = 0; r < rows.length; r++) {
-                pivotRow[rows[r]] = entry[rows[r]];
+                pivotRow[rows[r]['val']] = entry[rows[r]['val']];
             }
             let [idx, rowData] = get_or_create_pivot_row(pivotRow);
             let rowCol = entry[colum];
@@ -93,7 +93,7 @@
         let rowIdx = pivotData.findIndex(row => {
             for(let r = 0; r < rows.length; r++) {
                 //console.log('comp: ', row[rows[r]], pivotRow[rows[r]]);
-                if(!cmp(row[rows[r]],pivotRow[rows[r]])){ //if(JSON.stringify(row[rows[r]]) !== JSON.stringify(pivotRow[rows[r]])){
+                if(!cmp(row[rows[r]['val']],pivotRow[rows[r]['val']])){ //if(JSON.stringify(row[rows[r]]) !== JSON.stringify(pivotRow[rows[r]])){
                     return false;
                 }
             }
@@ -117,9 +117,11 @@
         <thead>
             <tr>
                 {#each rows as row}
-                    <slot name="row-header" row_data={row}>
-                        <th>{row}</th>
-                    </slot>
+                    {#if row['hidden'] !== true}
+                        <slot name="row-header" row_data={row}>
+                            <th>{row['label']}</th>
+                        </slot>
+                    {/if}
                 {/each}
                 {#each sorted_cols_str as col}
                     <slot name="col-header" col_data={col}>
@@ -130,7 +132,7 @@
         </thead>
         <tbody>
             {#each pivotData as rowData, pivotIdx}
-                <tr class="pivot-tr {rowClass}" class:selected={pivotData[pivotIdx].selected} class:hidden={!filter_func(rowData)}>
+                <tr class="pivot-tr {rowClass}" class:selected={pivotData[pivotIdx].selected} class:hidden={filter_func && !filter_func(rowData)}>
                     <!--{#each rows as rowKey}
                         <td>
                             {rowData[rowKey]}
@@ -146,14 +148,15 @@
                             </slot>
                         </td>
                     {/each}-->
-                    {#each rows as rowKey}
-                        
+                    {#each rows as rowD}
+                        {@const rowKey = rowD['val']}
+                        {#if rowD['hidden'] !== true}
                             <slot name="row-cell" origianl_indexs={sorted_cols_str.map(v=>rowData[v])} pivot_idx={pivotIdx} row_data={rowData} row_key={rowKey}>
                                 <td>
                                 {rowData[rowKey]}
                                 </td>
                             </slot>
-                        
+                        {/if}
                     {/each}
                     {#each sorted_cols_str as rowKey}
                         

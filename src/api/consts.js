@@ -9,6 +9,7 @@ export const COLORS_API_URL = BASE_API_URL + 'colors/';
 
 export const STATIC_BASE = import.meta.env['VITE_STATIC_LOCATION']*/
 
+
 export const BASE_URL = import.meta.env['VITE_SERVER_LOCATION'];
 export const CRM_BASE_API = BASE_URL + '/crm-api/';
 export const BASE_API_URL = BASE_URL  + '/client-api/';
@@ -71,3 +72,6 @@ export const CREATE_PROVIDER_DOCS = BASE_URL + '/create-provider-docs';
 export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
 export const CLOUDINARY_URL =
   "https://res.cloudinary.com/ms-global/image/upload/";
+
+
+export const CART_HISTORY_URL = BASE_URL + 'cart-history'

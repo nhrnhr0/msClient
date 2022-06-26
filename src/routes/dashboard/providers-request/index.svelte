@@ -56,7 +56,39 @@ import SplitProviderPopup from './SplitProviderPopup.svelte';
 import { PROVIDERS_STORE, PROVIDERS_STORE_IDS_AS_KEYS } from "@src/stores/localStorageStore";
 import { CREATE_PROVIDER_DOCS } from "@src/api/consts";
     export let data;
-    let rows = ['morder','product','force_physical_barcode','provider','color','varient']
+    let rows = [
+        {
+            val: 'morder',
+            label: 'מספר הזמנה',
+            hidden: false,
+        },
+        {
+            val: 'product',
+            label: 'מוצר',
+            hidden: false,
+        },
+        {
+            val: 'force_physical_barcode',
+            label: 'ברקוד פיזי',
+            hidden: false,
+        },
+        {
+            val:'provider',
+            label:'ספק',
+            hidden:false,
+        },
+        {
+            val: 'color',
+            label: 'צבע',
+            hidden: false,
+        },
+        {
+            val:'varient',
+            label:'מודל',
+            hidden:false,
+        }];
+
+        //'morder','product','force_physical_barcode','provider','color','varient']
     let colum = ['size']
     let val = ['quantity']
 
@@ -343,7 +375,6 @@ import { CREATE_PROVIDER_DOCS } from "@src/api/consts";
 </script>
 
 {#if data}
-    {JSON.stringify(Array.from(selectedPivotIndexesArr))}
     <PivotEditTable
         bind:data={data}
         bind:pivotData={pivotData}
@@ -364,17 +395,26 @@ import { CREATE_PROVIDER_DOCS } from "@src/api/consts";
         }}>
 
     >
-    <template use:fragment slot="not-working" let:col_data>
-        not working?!!!!!!!!!!!
-    </template>
+    
+    <th slot="col-header" let:col_data>
+        {sizes_dict[col_data].size}
+    </th>
+    <!--
     <template use:fragment slot="col-header" let:col_data>
         <th>{sizes_dict[col_data].size}</th>
     </template>
+    -->
+    <th  slot="row-header" let:row_data>
+        {row_data['label']}
+    </th>
+    <!--
         <template use:fragment slot="row-header" let:row_data>
                 <th>
                     {ROW_LABELS[row_data]}
                 </th>
         </template>
+        -->
+
         <template use:fragment slot="row-cell" let:origianl_indexs let:pivotIdx let:row_data let:row_key>
             {#if row_key == 'color'}
 
@@ -415,7 +455,7 @@ import { CREATE_PROVIDER_DOCS } from "@src/api/consts";
         </template>
 
     </PivotEditTable>
-    <a href="{CREATE_PROVIDER_DOCS}?ids={encodeURI(JSON.stringify(selectedPivotIndexesArr))}" download="ספקים.docx">צור מסמכי ספקים</a>
+    <a href="{CREATE_PROVIDER_DOCS}?ids={encodeURI(JSON.stringify(selectedPivotIndexesArr.map(idx => data[idx].id)))}" download="ספקים.docx">צור מסמכי ספקים</a>
     <!--
     <button on:click="{create_providers_docs}"></button>
     -->
