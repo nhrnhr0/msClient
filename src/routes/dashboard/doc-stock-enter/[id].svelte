@@ -27,6 +27,7 @@ import { writable } from "svelte/store";
 import { save_enter_doc_edit_to_server, remove_product_from_enter_doc_api } from "@src/api/api";
 import { Spinner } from "sveltestrap";
 import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
+import ProvidersFill from "@src/lib/components/dashboard/doc-stock-enter/ProvidersFill.svelte";
     let doc_promise;
     let doc_data = writable(undefined);
     let grouped_items;
@@ -289,6 +290,11 @@ import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
                             {#if item.entries}
                                 <SizeColorTable disabled={$doc_data.isAplied} product={item.ppn.product} bind:entries={item.entries}/>
                             {/if}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="8">
+                            <ProvidersFill product={item.ppn} entries={item.entries} />
                         </td>
                     </tr>
                 {/each}

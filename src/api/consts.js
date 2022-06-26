@@ -72,6 +72,6 @@ export const CREATE_PROVIDER_DOCS = BASE_URL + '/create-provider-docs';
 export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
 export const CLOUDINARY_URL =
   "https://res.cloudinary.com/ms-global/image/upload/";
-
+export const REQUEST_PROVIDER_INFO_URL = BASE_URL + '/request-provider-info';
 
 export const CART_HISTORY_URL = BASE_URL + 'cart-history'
