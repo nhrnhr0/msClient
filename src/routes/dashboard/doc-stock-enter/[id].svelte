@@ -28,6 +28,7 @@ import { save_enter_doc_edit_to_server, remove_product_from_enter_doc_api } from
 import { Spinner } from "sveltestrap";
 import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
 import ProvidersFill from "@src/lib/components/dashboard/doc-stock-enter/ProvidersFill.svelte";
+import { goto } from "$app/navigation";
     let doc_promise;
     let doc_data = writable(undefined);
     let grouped_items;
@@ -164,8 +165,12 @@ import ProvidersFill from "@src/lib/components/dashboard/doc-stock-enter/Provide
             sending_data_to_server = true;
             save_enter_doc_edit_to_server(data).then((new_doc_data) => {
                 set_load_info(new_doc_data)
-                insert_doc_to_inventory_api($doc_data.id).then((new_doc_data) => {
-                    set_load_info(new_doc_data)
+                insert_doc_to_inventory_api($doc_data.id).then((json_reponse) => {
+                    //set_load_info(new_doc_data)
+                    if(json_reponse['status'] == 'success') {
+                        alert('Document inserted to inventory');
+                        goto('/dashboard/doc-stock-enter/done/' + id);
+                    }
                 }).finally(() => {
                     sending_data_to_server = false;
                 });
@@ -294,7 +299,7 @@ import ProvidersFill from "@src/lib/components/dashboard/doc-stock-enter/Provide
                     </tr>
                     <tr>
                         <td colspan="8">
-                            <ProvidersFill product={item.ppn} entries={item.entries} />
+                            <ProvidersFill bind:item={item} bind:freeProviders={$doc_data.freeProviders} />
                         </td>
                     </tr>
                 {/each}

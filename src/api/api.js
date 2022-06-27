@@ -121,6 +121,12 @@ export function get_doc_stock_enter(doc_id) {
         method: "GET",
     });
 }
+export function get_doc_stock_enter_provider_requests(doc_id) {
+    return fetch_wraper(`${BASE_URL}/inv/doc-stock-enter-provider-requests-api/${doc_id}`, {
+        method: "GET",
+    })
+}
+
 export async function get_products_info(product_ids) {
     let url = `${BASE_URL}/get-products-info?product_ids=${product_ids}`;
     let response = await fetch_wraper(url);
