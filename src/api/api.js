@@ -121,6 +121,13 @@ export function get_doc_stock_enter(doc_id) {
         method: "GET",
     });
 }
+
+export function save_doc_stock_enter_provider_requests(data) {
+    return fetch_wraper(`${BASE_URL}/inv/enter-doc/save-doc-stock-enter-provider-requests`, {
+        method: "POST",
+        body: JSON.stringify(data)
+    });
+}
 export function get_doc_stock_enter_provider_requests(doc_id) {
     return fetch_wraper(`${BASE_URL}/inv/doc-stock-enter-provider-requests-api/${doc_id}`, {
         method: "GET",

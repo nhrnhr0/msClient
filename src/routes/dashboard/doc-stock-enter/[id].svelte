@@ -327,6 +327,10 @@ import { goto } from "$app/navigation";
 
         <button disabled={($doc_data && $doc_data.isAplied)} class="btn btn-secondary" on:click="{insert_doc_to_inventory}"
         >הכנס מסמך למלאי</button>
+
+        {#if $doc_data?.isAplied}
+            <button on:click="{()=>{goto('/dashboard/doc-stock-enter/done/' + id);}}" class="btn btn-secondary" >השלם הזמנות</button>
+        {/if}
     </div>
     
     <form class="add-product-to-doc" action="POST" on:submit="{add_product_to_enter_document}">
