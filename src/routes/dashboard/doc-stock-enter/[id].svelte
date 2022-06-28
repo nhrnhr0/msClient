@@ -27,7 +27,7 @@ import { writable } from "svelte/store";
 import { save_enter_doc_edit_to_server, remove_product_from_enter_doc_api } from "@src/api/api";
 import { Spinner } from "sveltestrap";
 import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
-import ProvidersFill from "@src/lib/components/dashboard/doc-stock-enter/ProvidersFill.svelte";
+//import ProvidersFill from "@src/lib/components/dashboard/doc-stock-enter/ProvidersFill.svelte";
 import { goto } from "$app/navigation";
     let doc_promise;
     let doc_data = writable(undefined);
@@ -297,11 +297,13 @@ import { goto } from "$app/navigation";
                             {/if}
                         </td>
                     </tr>
+                    <!--
                     <tr>
                         <td colspan="8">
                             <ProvidersFill bind:item={item} bind:freeProviders={$doc_data.freeProviders} />
                         </td>
                     </tr>
+                    -->
                 {/each}
 
                 <!--

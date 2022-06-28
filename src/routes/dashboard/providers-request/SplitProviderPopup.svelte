@@ -2,7 +2,7 @@
 import { CLOUDINARY_URL } from "@src/api/consts";
 import { PROVIDERS_STORE,PROVIDERS_STORE_IDS_AS_KEYS, } from "@src/stores/localStorageStore";
 import AutoComplete from "simple-svelte-autocomplete";
-import { onDestroy } from "svelte";
+import { onDestroy, onMount } from "svelte";
 import { Spinner } from "sveltestrap";
     /*function autocompleteProviderSelected (provider) {
         selectedProvider = provider;
@@ -22,8 +22,14 @@ import { Spinner } from "sveltestrap";
         new_providers = [...new_providers];
     }
 
+    onMount(()=> {
+        info.original_quantity = info.quantity;
+    })
+
     onDestroy(async() => {
-        update_or_create_func(-1,rowData, size_key, info.quantity);
+        if(info.original_quantity != info.quantity) {
+            update_or_create_func(-1,rowData, size_key, info.quantity);
+        }
         if(new_providers.length > 0) {
             //update_or_create_request_quantity_local(idx, rowData, size_key, val)
             debugger;

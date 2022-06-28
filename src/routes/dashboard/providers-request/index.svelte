@@ -223,7 +223,14 @@ import { CREATE_PROVIDER_DOCS } from "@src/api/consts";
             .then(json => {
                 notifier.success('הזמנה עודכנה בהצלחה');
                 console.log('json', json);
-                data[idx] = json.data;
+                if(json.status == 'success') {
+                    data[idx] = json.data;
+                } else if (json.status == 'Entry deleted') {
+                    data.splice(idx, 1);
+                } else {
+                    notifier.danger('שגיאה בשמירת מידע')
+                }
+                
             }).catch(err => {
                 notifier.danger('הזמנה לא עודכנה');
             });

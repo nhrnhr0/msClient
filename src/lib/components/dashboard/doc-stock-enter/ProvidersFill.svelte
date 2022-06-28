@@ -1,4 +1,4 @@
-
+<!--
 <script>
 import { request_provider_info } from "@src/api/api";
 import { getLocalStorageStore } from "@src/stores/localStorageStore";
@@ -183,3 +183,4 @@ import PivotEditTable from "../PivotEditTable.svelte";
         max-width: 55px;
     }
 </style>
+-->
