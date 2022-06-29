@@ -892,7 +892,34 @@ import fragment from 'svelte-fragment';
                         </tr>
                         <tr>
                             <td colspan={size_objs.length + 6}>
-                                <PivotEditTable bind:data={product.toProviders} rows={['provider__str','color__str','color__color', 'varient__str', 'force_physical_barcode']}
+                                <PivotEditTable bind:data={product.toProviders} 
+                                    rows={[
+                                        {
+                                            val: 'provider__str',
+                                            hidden: false,
+                                            label: 'ספק'
+                                        },
+                                        {
+                                            val: 'color__str',
+                                            hidden: false,
+                                            label: 'צבע'
+                                        },
+                                        {
+                                            val: 'color__color',
+                                            hidden: true,
+                                            label: ''
+                                        },
+                                        {
+                                            val: 'varient__str',
+                                            hidden: false,
+                                            label: 'מודל'
+                                        },
+                                        {
+                                            val: 'force_physical_barcode',
+                                            hidden: false,
+                                            label: 'חייב ברקוד פיזי',
+                                        }
+                                    ]}
                                     colum={'size__str'}
                                     val={'quantity'}
                                     
@@ -905,37 +932,28 @@ import fragment from 'svelte-fragment';
                                             return b_val.localeCompare(a_val);
                                         });
                                     }}>
-                                    <template use:fragment slot="not-working" let:col_data>
-                                        not working?!!!!!!!!!!!
-                                    </template>
-                                    <template use:fragment slot="col-header" let:col_data>
-                                        <th>{col_data}</th>
-                                    </template>
-                                        <template use:fragment slot="row-header" let:row_data>
-                                            {#if row_data != 'color__color'}
-                                                <th>
-                                                    {PROVIDERS_LABELS[row_data]}
-                                                </th>
+                                    <th slot="col-header" let:col_data>
+                                        {col_data}
+                                    </th>
+                                    <th slot="row-header" let:row_data>
+                                            
+                                                    {row_data['label']}
+                                    </th>
+                                    <td slot="row-cell" let:row_data let:row_key>
+                                        {#if row_key == 'color__str'}
+                                            <ColorDisplay color={{'name': row_data[row_key], 'color': row_data['color__color']}}/>
+                                        {:else if row_key != 'color__color'}
+                                            {#if row_key == 'force_physical_barcode'}
+                                                {row_data[row_key] ?  '✅':'❌'}
+                                            {:else}
+                                                <!-- defult case -->
+                                                {row_data[row_key]}
                                             {/if}
-                                        </template>
-                                        <template use:fragment slot="row-cell" let:row_data let:row_key>
-                                            {#if row_key == 'color__str'}
-                                                <td><ColorDisplay color={{'name': row_data[row_key], 'color': row_data['color__color']}}/></td>
-                                            {:else if row_key != 'color__color'}
-                                                {#if row_key == 'force_physical_barcode'}
-                                                    <td>{row_data[row_key] ?  '✅':'❌'}</td>
-                                                {:else}
-                                                    <!-- defult case -->
-                                                    <td>{row_data[row_key]}</td>
-                                                {/if}
-                                            {/if}
-                                        </template> 
-                                        <template use:fragment slot="val-cell" let:row_index let:row_key let:row_data>
-                                            <td>
-                                                <input class="small-input" type="number" data-row-key={row_key} data-row-idx={row_index!=undefined?row_index:-1} data-row-data={JSON.stringify(row_data)} on:change="{providers_input_changed}" value="{product.toProviders[row_index]?.quantity}" />
-                                            </td>
-                                        </template>
-                                        
+                                        {/if}
+                                    </td>
+                                    <td slot="val-cell" let:row_index let:row_key let:row_data>
+                                        <input class="small-input" type="number" data-row-key={row_key} data-row-idx={row_index!=undefined?row_index:-1} data-row-data={JSON.stringify(row_data)} on:change="{providers_input_changed}" value="{product.toProviders[row_index]?.quantity}" />
+                                    </td>
                                     </PivotEditTable>
                             </td>
                                 <!--

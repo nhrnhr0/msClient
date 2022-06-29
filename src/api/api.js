@@ -3,10 +3,18 @@
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
 
-import { BASE_URL,INVENTORY_MANUAL_UPDATE_ENTRY_URL,INVENTORY_EDIT_ENTRY_URL,GET_ALL_USERS_URL,ENTER_DOC_EDIT_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , MORDER_EDIT_ADD_PROVIDER_ENTRIES,SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL, SEARCH_PPN_API_URL, ENTER_DOC_REMOVE_PRODUCT, ENTER_DOC_INSERT_INVENTORY_URL, SEARCH_PROVIDERS_API_URL, SEARCH_WAREHOUSES_URL, CREATE_ENTER_DOC_URL, MORDER_GET_API, MORDER_EDIT_ADD_PRODUCT_ENTRIES, MORDER_ADD_NEW_PRODUCT,DELETE_PRODUCT_FROM_MORDER_URL, MORDER_LIST_ORDERS_TO_COLLECT} from "./consts";
+import { BASE_URL,INVENTORY_MANUAL_UPDATE_ENTRY_URL,INVENTORY_EDIT_ENTRY_URL,GET_ALL_USERS_URL,ENTER_DOC_EDIT_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , MORDER_EDIT_ADD_PROVIDER_ENTRIES,SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL, SEARCH_PPN_API_URL, ENTER_DOC_REMOVE_PRODUCT, ENTER_DOC_INSERT_INVENTORY_URL, SEARCH_PROVIDERS_API_URL, SEARCH_WAREHOUSES_URL, CREATE_ENTER_DOC_URL, MORDER_GET_API, MORDER_EDIT_ADD_PRODUCT_ENTRIES, MORDER_ADD_NEW_PRODUCT,DELETE_PRODUCT_FROM_MORDER_URL, MORDER_LIST_ORDERS_TO_COLLECT, REQUEST_PROVIDER_INFO_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
+
+
+export async function request_provider_info(ppn_id) {
+    let url = REQUEST_PROVIDER_INFO_URL + '/' + ppn_id;
+    let response = await fetch_wraper(url);
+    return response;
+}
+
 //import { request_refresh_token } from "./auth";
 export async function api_get_smartbee_doc(doc_id) {
     let url = `${BASE_URL}/get-smartbee-doc/${doc_id}`;
@@ -113,6 +121,19 @@ export function get_doc_stock_enter(doc_id) {
         method: "GET",
     });
 }
+
+export function save_doc_stock_enter_provider_requests(data) {
+    return fetch_wraper(`${BASE_URL}/inv/enter-doc/save-doc-stock-enter-provider-requests`, {
+        method: "POST",
+        body: JSON.stringify(data)
+    });
+}
+export function get_doc_stock_enter_provider_requests(doc_id) {
+    return fetch_wraper(`${BASE_URL}/inv/doc-stock-enter-provider-requests-api/${doc_id}`, {
+        method: "GET",
+    })
+}
+
 export async function get_products_info(product_ids) {
     let url = `${BASE_URL}/get-products-info?product_ids=${product_ids}`;
     let response = await fetch_wraper(url);
