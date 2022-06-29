@@ -13,6 +13,7 @@ export const STATIC_BASE = import.meta.env['VITE_STATIC_LOCATION']*/
 export const BASE_URL = import.meta.env['VITE_SERVER_LOCATION'];
 export const CRM_BASE_API = BASE_URL + '/crm-api/';
 export const BASE_API_URL = BASE_URL  + '/client-api/';
+export const CART_HISTORY_URL = BASE_URL + "/cart-history";
 
 export const SEARCH_API_URL = BASE_URL + '/search';
 export const ADMIN_API_URL = BASE_URL + '/admin-api';
