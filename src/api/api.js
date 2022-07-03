@@ -7,7 +7,11 @@ import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
 //import { request_refresh_token } from "./auth";
-
+export async function get_products_info(product_ids) {
+    let url = `${BASE_URL}/get-products-info?product_ids=${product_ids}`;
+    let response = await fetch_wraper(url);
+    return response;
+}
 export async function apiGetAllUsers() {
     return fetch_wraper(GET_ALL_USERS_URL);
 }
