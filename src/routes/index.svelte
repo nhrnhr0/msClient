@@ -90,7 +90,8 @@
     let json = await response;
     if(response.detail == "Invalid token.") {
       userInfoStore.set({
-        is_logged: false
+        is_logged: false,
+        me:{},
       });
 
       if(browser){
