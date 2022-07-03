@@ -119,7 +119,6 @@ import { BASE_URL,CLOUDINARY_URL } from '@src/api/consts';
         let key = {name: e.target.dataset.key,
                     id: e.target.dataset.id,};
 
-        debugger;
         let selectedGropingKeys2 = new Set(selectedGropingKeys);
         selectedGropingKeys2.add(key);
         selectedGropingKeys = [...new Set(selectedGropingKeys2)];
@@ -147,12 +146,10 @@ import { BASE_URL,CLOUDINARY_URL } from '@src/api/consts';
     function replaceData(data){
         let original = data.originalData;
         let newData = data.replaceData;
-        debugger;
         table.updateOrAddData(newData);
     }
     function updateData(data) {
         let newData = data;
-        debugger;
         if(isIterable(newData) == false){
             newData = [newData];
         }

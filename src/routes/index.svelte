@@ -38,6 +38,20 @@
   import {
     activeModalsStore
   } from "$lib/modals/modalManager";
+
+  function get_cookie(name){
+    return document.cookie.split(';').some(c => {
+        return c.trim().startsWith(name + '=');
+    });
+}
+  function delete_cookie( name, path, domain ) {
+  if( get_cookie( name ) ) {
+    document.cookie = name + "=" +
+      ((path) ? ";path="+path:"")+
+      ((domain)?";domain="+domain:"") +
+      ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+  }
+}
   export async function load({
     fetch,
     page
@@ -71,27 +85,38 @@
     //MAIN_PAGE_API
     let response = await fetch_wraper(MAIN_PAGE_API, {
       method: 'GET',
-      redirect: 'follow'
+      //redirect: 'follow'
     }, fetch)
-    let json = await response
-    let logos_json = json.logos
-    let albums_json = json.albums
+    let json = await response;
+    if(response.detail == "Invalid token.") {
+      userInfoStore.set({
+        is_logged: false
+      });
+
+      if(browser){
+        debugger;
+        delete_cookie('sessionid');
+        window.location.reload()
+      }
+    }
+    let logos_json = json.logos;
+    let albums_json = json.albums || [];
     albums_json = albums_json.filter(album => album.is_public)
     let colors_json = json.colors
     let sizes_json = json.sizes
     let sizes_ret = {};
-    for (let i = 0; i < sizes_json.length; i++) {
+    for (let i = 0; i < sizes_json?.length || 0; i++) {
       sizes_ret[sizes_json[i].id] = sizes_json[i];
     }
 
     let colors_ret = {};
-    for (let i = 0; i < colors_json.length; i++) {
+    for (let i = 0; i < colors_json?.length || 0; i++) {
       colors_ret[colors_json[i].id] = colors_json[i];
     }
     let products = {};
     //only on server
     if (!browser) {
-      for (let i = 0; i < albums_json.length; i++) {
+      for (let i = 0; i < albums_json?.length || 0; i++) {
         let productResponse = await get_album_details(albums_json[i].id, fetch)
 
         products[albums_json[i].id] = productResponse;

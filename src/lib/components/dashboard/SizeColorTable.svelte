@@ -26,7 +26,6 @@ import { onMount } from "svelte";
         }
         
 
-        debugger;
         let entry = entries.find(entry => entry.size == size && entry.color == color && entry.verient == verient);
         if (entry) {
             console.log('entry found');

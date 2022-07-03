@@ -70,7 +70,6 @@ import { GET_STOCK_BY_ID_URL } from '@src/api/consts';
             quantity: edit_quantity,
             reson: edit_reson
         };
-        debugger;
         update_stock_entry(stockId, data).then((val)=> {
             if (val['error']) {
                 notifier.danger(val['error']);
@@ -154,13 +153,12 @@ import { GET_STOCK_BY_ID_URL } from '@src/api/consts';
                                     };
                                     move_stock_entry(stockId, data).then((newData)=> {
                                         console.log(newData);
-                                        debugger;
+
                                         if(newData['error']) {
                                             notifier.danger(newData['error']);
                                             alert(newData['error']);
                                         }
                                         else {
-                                            debugger;
                                             let originalData = newData.old;
                                             let replaceData = newData.new;
                                             notifier.success('העדכון בוצע בהצלחה');

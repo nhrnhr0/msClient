@@ -14,7 +14,6 @@ import { onMount } from "svelte";
     });
 
     function refreshTable() {
-        debugger;
         for(let i = 0; i < data.length; i++) {
             if (data[i][col.key]) {
                 console.log('data[i][col.key]:', data[i][col.key]);

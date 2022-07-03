@@ -35,7 +35,6 @@ const { open, close } = getContext('simple-modal');
 
       function form_submit(e) {
         e.preventDefault();
-        debugger;
         let data = {
           invoice_number: inp_invoice_number,
           description: inp_description,

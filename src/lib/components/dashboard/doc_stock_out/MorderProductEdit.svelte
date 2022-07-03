@@ -118,7 +118,6 @@ import fragment from 'svelte-fragment';
         let sizesSet = new Set();
         let colorsSet = new Set();
         let verientsSet = new Set();
-        debugger;
 
         for (let i = 0; i < product.entries.length; i++) {
             let color = product.entries[i].color || 76;
@@ -254,7 +253,6 @@ import fragment from 'svelte-fragment';
      * @param values 
      */
     function findAndReturnValue(data, values, target) {
-        debugger;
         if (values.length == 6) {
             console.log('inventory:');
         }
@@ -399,7 +397,6 @@ import fragment from 'svelte-fragment';
         let val = parseInt(target.value);
         let rowData = JSON.parse(target.dataset.rowData);
         let size_key = target.dataset.rowKey;
-        debugger;
 
         if(idx === -1) {
             let provider = ALL_PROVIDERS.find(p => p.label == rowData.provider__str);
