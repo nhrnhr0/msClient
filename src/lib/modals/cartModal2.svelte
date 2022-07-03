@@ -13,7 +13,7 @@
   import { fly, fade } from "svelte/transition";
   import { cartStore } from "./../../stores/cartStore";
   import {
-BASE_URL,
+    BASE_URL,
     CLOUDINARY_URL,
     STATIC_BASE,
     SUBMIT_CART_URL,
@@ -27,7 +27,7 @@ BASE_URL,
   import { productCartModalStore } from "./../../stores/stores";
   import { flashy_purchase } from "$lib/flashy";
   import { Spinner } from "sveltestrap";
-import { page } from "$app/stores";
+  import { page } from "$app/stores";
 
   export let isModalOpen = false;
   let is_cart_locked = false;
@@ -153,42 +153,41 @@ import { page } from "$app/stores";
     } else {
       alert("נא למלא את כל השדות");
       state = 1;
-}
-	let sidebar_top = 0;
-    export function toggleModal() {
-        isModalOpen = !isModalOpen;
-		let main_wraper_element = document.querySelector('#main_wraper');
-		//let sidebar_cart_element = document.querySelector('#sidebar-cart');
-		let main_navbar_wraper = document.querySelector('#main-navbar-wraper');
-		let is_under_700px = window.matchMedia("(max-width: 700px)").matches;
-		//activeModalsStore.modalToggle('cartModal2', isModalOpen);
-        if(isModalOpen) {
-			
-            modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
-			if (!is_under_700px) {
-				main_wraper_element.style = `width: calc(100vw - 315px - 16px);position: absolute;left: 0px;`
-				main_navbar_wraper.style = `width: calc(100vw - 315px - 16px);left: 0px;`
-				sidebar_top = 0;
-			}else {
-				//debugger;
-				//document.querySelector('#sidebar-cart').style = `top: 62px;`
-				sidebar_top = 62;
-			}
-			//sidebar_cart_element.style = `z-index: ${modal_zIndex*5};`
-
-        }else {
-			state = 0;
-			if(!is_under_700px) {
-				main_wraper_element.style = `width:auto;`;
-				//sidebar_cart_element.style = ``;
-				main_navbar_wraper.style=`width: 100%;`;
-			}
-			activeModalsStore.modalToggle('cartModal2', isModalOpen);
-
-		}
     }
   }
-  
+
+  let sidebar_top = 0;
+
+  export function toggleModal() {
+    isModalOpen = !isModalOpen;
+    let main_wraper_element = document.querySelector("#main_wraper");
+    //let sidebar_cart_element = document.querySelector('#sidebar-cart');
+    let main_navbar_wraper = document.querySelector("#main-navbar-wraper");
+    let is_under_700px = window.matchMedia("(max-width: 700px)").matches;
+    //activeModalsStore.modalToggle('cartModal2', isModalOpen);
+    if (isModalOpen) {
+      modal_zIndex = 1200 + ++$_modal_z_index_incrementor * 15;
+      if (!is_under_700px) {
+        main_wraper_element.style = `width: calc(100vw - 315px - 16px);position: absolute;left: 0px;`;
+        main_navbar_wraper.style = `width: calc(100vw - 315px - 16px);left: 0px;`;
+        sidebar_top = 0;
+      } else {
+        //debugger;
+        //document.querySelector('#sidebar-cart').style = `top: 62px;`
+        sidebar_top = 62;
+      }
+      //sidebar_cart_element.style = `z-index: ${modal_zIndex*5};`
+    } else {
+      state = 0;
+      if (!is_under_700px) {
+        main_wraper_element.style = `width:auto;`;
+        //sidebar_cart_element.style = ``;
+        main_navbar_wraper.style = `width: 100%;`;
+      }
+      activeModalsStore.modalToggle("cartModal2", isModalOpen);
+    }
+  }
+
   export function isOpen() {
     return isModalOpen;
   }
@@ -269,14 +268,21 @@ import { page } from "$app/stores";
   //let checked = true;
 
   function copy_cart_click() {
-    let cart_json =$cartStore; //{"5":{"id":5,"title":"פנדה מונביסו","description":"* החברה האיטלקית חוזרת לישראל עם דגם הדגל\r\n* נעל איכותית מאוד ברמה הגבוהה ביותר\r\n* עמידות בתנאי שטח קשים במיוחד\r\n* עור מלא נגד מים שמן וכימיקלים\r\n* בדים פנימיים אנטיבאקטרילים\r\n* תקן אירופאי וישראלי\r\n* 02/S3\r\n* אפשרות מיגון או ללא מיגון","cimage":"v1635672267/site/products/%D7%A4%D7%A0%D7%93%D7%94_%D7%9E%D7%95%D7%A0%D7%A1%D7%99%D7%91%D7%95_6nOpUNm_qYDCukF_NPmcgGo_WGqneJr_fD2vSpt_3x0EezN_LQgb69Q_2cOLJC7_Gn42nNk.png","colors":[84],"sizes":[112,105,104,103,102,101,100,99,98,97,96,95,94],"varients":[{"id":1,"name":"02"},{"id":3,"name":"S3"}],"can_tag":false,"discount":null,"albums":[5],"amountSinglePack":1,"amountCarton":6,"show_sizes_popup":true,"client_price":320,"out_of_stock":false,"barcode":"8028027316463","has_physical_barcode":false,"price":320,"amount":2,"print":false,"embro":false,"mentries":{"84":{"94":{"1":{},"3":{}},"95":{"1":{},"3":{}},"96":{"1":{},"3":{}},"97":{"1":{},"3":{}},"98":{"1":{},"3":{}},"99":{"1":{},"3":{}},"100":{"1":{},"3":{}},"101":{"1":{"quantity":2},"3":{}},"102":{"1":{},"3":{}},"103":{"1":{},"3":{}},"104":{"1":{},"3":{}},"105":{"1":{},"3":{}},"112":{"1":{},"3":{}}}}},"409":{"id":409,"title":"סנדלי עור איכותיים","description":"* סנדלים איכותיות \r\n* מתאימות למטיילים","cimage":"v1635672478/site/products/photo_2021-10-18_18-06-01-removebg-preview_NzDO1VX.png","colors":[84],"sizes":[96,97,98,99,100,101,102,103,104],"varients":[],"can_tag":false,"discount":null,"albums":[5],"amountSinglePack":1,"amountCarton":0,"show_sizes_popup":true,"client_price":150,"out_of_stock":false,"barcode":null,"has_physical_barcode":false,"price":150,"amount":5,"print":false,"embro":false,"mentries":{"84":{"96":{"quantity":5},"97":{},"98":{},"99":{},"100":{},"101":{},"102":{},"103":{},"104":{"quantity":null}}}}}
+    let cart_json = $cartStore; //{"5":{"id":5,"title":"פנדה מונביסו","description":"* החברה האיטלקית חוזרת לישראל עם דגם הדגל\r\n* נעל איכותית מאוד ברמה הגבוהה ביותר\r\n* עמידות בתנאי שטח קשים במיוחד\r\n* עור מלא נגד מים שמן וכימיקלים\r\n* בדים פנימיים אנטיבאקטרילים\r\n* תקן אירופאי וישראלי\r\n* 02/S3\r\n* אפשרות מיגון או ללא מיגון","cimage":"v1635672267/site/products/%D7%A4%D7%A0%D7%93%D7%94_%D7%9E%D7%95%D7%A0%D7%A1%D7%99%D7%91%D7%95_6nOpUNm_qYDCukF_NPmcgGo_WGqneJr_fD2vSpt_3x0EezN_LQgb69Q_2cOLJC7_Gn42nNk.png","colors":[84],"sizes":[112,105,104,103,102,101,100,99,98,97,96,95,94],"varients":[{"id":1,"name":"02"},{"id":3,"name":"S3"}],"can_tag":false,"discount":null,"albums":[5],"amountSinglePack":1,"amountCarton":6,"show_sizes_popup":true,"client_price":320,"out_of_stock":false,"barcode":"8028027316463","has_physical_barcode":false,"price":320,"amount":2,"print":false,"embro":false,"mentries":{"84":{"94":{"1":{},"3":{}},"95":{"1":{},"3":{}},"96":{"1":{},"3":{}},"97":{"1":{},"3":{}},"98":{"1":{},"3":{}},"99":{"1":{},"3":{}},"100":{"1":{},"3":{}},"101":{"1":{"quantity":2},"3":{}},"102":{"1":{},"3":{}},"103":{"1":{},"3":{}},"104":{"1":{},"3":{}},"105":{"1":{},"3":{}},"112":{"1":{},"3":{}}}}},"409":{"id":409,"title":"סנדלי עור איכותיים","description":"* סנדלים איכותיות \r\n* מתאימות למטיילים","cimage":"v1635672478/site/products/photo_2021-10-18_18-06-01-removebg-preview_NzDO1VX.png","colors":[84],"sizes":[96,97,98,99,100,101,102,103,104],"varients":[],"can_tag":false,"discount":null,"albums":[5],"amountSinglePack":1,"amountCarton":0,"show_sizes_popup":true,"client_price":150,"out_of_stock":false,"barcode":null,"has_physical_barcode":false,"price":150,"amount":5,"print":false,"embro":false,"mentries":{"84":{"96":{"quantity":5},"97":{},"98":{},"99":{},"100":{},"101":{},"102":{},"103":{},"104":{"quantity":null}}}}}
     // copy the dictionary keys with the values (entries) to the clipboard
-    let clipboardResult = {}
+    let clipboardResult = {};
     debugger;
     for (let key in cart_json) {
-      clipboardResult[key] = {mentries: cart_json[key].mentries, amount: cart_json[key].amount}
+      clipboardResult[key] = {
+        mentries: cart_json[key].mentries,
+        amount: cart_json[key].amount,
+      };
     }
-    let url = $page.host + "/" + "?cart_json=" + encodeURI(JSON.stringify(clipboardResult));
+    let url =
+      $page.host +
+      "/" +
+      "?cart_json=" +
+      encodeURI(JSON.stringify(clipboardResult));
     navigator.clipboard.writeText(url);
   }
 </script>
@@ -765,8 +771,17 @@ import { page } from "$app/stores";
               >
                 לקופה
               </button>
-              <button class="copy-button" title="העתק" on:click={copy_cart_click}>
-                <img width="25px" height="25px" src="https://res.cloudinary.com/ms-global/image/upload/v1655639299/msAssets/copy-two-paper-sheets-interface-symbol_wldmek.png" alt="copy" />
+              <button
+                class="copy-button"
+                title="העתק"
+                on:click={copy_cart_click}
+              >
+                <img
+                  width="25px"
+                  height="25px"
+                  src="https://res.cloudinary.com/ms-global/image/upload/v1655639299/msAssets/copy-two-paper-sheets-interface-symbol_wldmek.png"
+                  alt="copy"
+                />
               </button>
             {/if}
           </div>
