@@ -21,6 +21,7 @@
     /*{ labelEn: "agent_id", labelHb: "סוֹכֵן" },
     { labelEn: "doneOrder", labelHb: "הזמנה הושלמה" },*/
     { labelEn: "message", labelHb: "הוֹדָעָה" },
+    {labelEn:"productsCount", labelHb:"כמות מוצרים"},
     { labelEn: "productsRaw", labelHb: "מוצרים" },
   ];
 
@@ -46,7 +47,7 @@
   id="cart-history-modal"
   class={`modal ${$cartHistoryModalStore.showModal ? "active" : ""}`}
 >
-  <div class="overlay">
+  <div class="overlay" on:click="{()=>{cartHistoryModalStore.closeModal();}}">
     <div
       class="modal_content"
       in:fly={{ y: 200, duration: 350 }}
@@ -113,6 +114,10 @@
                       <td>{new Date(cartHistory["created_date"]).toLocaleString("he-il")}</td>
                     {:else if cartHistoryHeading.labelEn === "creator"}
                       <td>{cartHistory['agent__name'] || cartHistory['name'] || cartHistory["agent__client__businessName"] || ''}</td>
+                    {:else if cartHistoryHeading.labelEn === "productsCount"}
+                      <td>
+                          {Object.keys(JSON.parse(cartHistory.productsRaw || '{}')).length}
+                        </td>
                     {:else}
                       <td>{cartHistory[cartHistoryHeading.labelEn]}</td>
                     {/if}

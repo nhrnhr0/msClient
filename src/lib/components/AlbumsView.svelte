@@ -107,6 +107,7 @@ import {
 
 <style lang="scss">
     .albums-view {
+        
         background:transparent;
         z-index: 1890;
         width:100%;
@@ -114,8 +115,11 @@ import {
         //overflow: hidden;
         //border:1px solid red;
         //overflow-y: visible;
+        
         :global(.swiper) {
+            
             margin-top: 0px;
+            max-width: none;
         }
     }
     :global(.category-swiper) {

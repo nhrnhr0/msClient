@@ -1,284 +1,322 @@
 <script>
-  import {
-    all_swipers,
-    cartModalStore,
-    successModalStore,
-    productPhotoModalStore,
-    _modal_z_index_incrementor,
-    productModalStore,
-    userInfoStore,
-    cartHistoryModalStore,
-    sizesJsonStore,
-  } from "./../../stores/stores";
-  import { fly, fade } from "svelte/transition";
-  import { cartStore } from "./../../stores/cartStore";
-  import {
-BASE_URL,
-    CLOUDINARY_URL,
-    STATIC_BASE,
-    SUBMIT_CART_URL,
-  } from "./../../api/consts";
-  import { selectTextOnFocus } from "$lib/ui/inputActions";
-  import { logStore } from "./../../stores/logStore";
-  import { flip } from "svelte/animate";
-  import { get_user_uuid, submit_cart_form } from "./../../api/api";
-  import { activeModalsStore } from "$lib/modals/modalManager";
-  import { scrollFix } from "$lib/ui/scrollFix";
-  import { productCartModalStore } from "./../../stores/stores";
-  import { flashy_purchase } from "$lib/flashy";
-  import { Spinner } from "sveltestrap";
-import { page } from "$app/stores";
+	import {
+		all_swipers,
+		cartModalStore,
+		successModalStore,
+		productPhotoModalStore,
+		_modal_z_index_incrementor,
+		productModalStore,
+		userInfoStore,
+		cartHistoryModalStore,
+		sizesJsonStore,
+	} from "./../../stores/stores";
+	import {
+		fly,
+		fade
+	} from "svelte/transition";
+	import {
+		cartStore
+	} from "./../../stores/cartStore";
+	import {
+		BASE_URL,
+		CLOUDINARY_URL,
+		STATIC_BASE,
+		SUBMIT_CART_URL,
+	} from "./../../api/consts";
+	import {
+		selectTextOnFocus
+	} from "$lib/ui/inputActions";
+	import {
+		logStore
+	} from "./../../stores/logStore";
+	import {
+		flip
+	} from "svelte/animate";
+	import {
+		get_user_uuid,
+		submit_cart_form
+	} from "./../../api/api";
+	import {
+		activeModalsStore
+	} from "$lib/modals/modalManager";
+	import {
+		scrollFix
+	} from "$lib/ui/scrollFix";
+	import {
+		productCartModalStore
+	} from "./../../stores/stores";
+	import {
+		flashy_purchase
+	} from "$lib/flashy";
+	import {
+		Spinner
+	} from "sveltestrap";
+	import {
+		page
+	} from "$app/stores";
 
-  export let isModalOpen = false;
-  let is_cart_locked = false;
-  let modal_zIndex = 0;
-  let state = 0;
-  let form_name,
-    form_email,
-    form_phone,
-    form_message,
-    form_business_name,
-    form_privateCompany;
-  let error_found = false;
-  let error_message = "";
-  let isSending = false;
-  function checkout_back_click() {
-    if (state > 0) {
-      state = 0;
-    }
-  }
-  function checkout_click() {
-    if (state == 0) {
-      error_found = false;
-      for (const [key, value] of Object.entries($cartStore)) {
-        if (
-          value == undefined ||
-          value.amount == undefined ||
-          value.amount <= 0
-        ) {
-          error_found = true;
-          error_message = "שדה כמות חסר או שגוי";
-          break;
-        }
-      }
-      if (error_found == false) {
-        activeModalsStore.modalToggle("cartModal2", isModalOpen);
-        currentStep = 1;
-        state = 1;
-      }
-    }
-    /*else if(state == 1) {
+	export let isModalOpen = false;
+	let is_cart_locked = false;
+	let modal_zIndex = 0;
+	let state = 0;
+	let form_name,
+		form_email,
+		form_phone,
+		form_message,
+		form_business_name,
+		form_privateCompany;
+	let error_found = false;
+	let error_message = "";
+	let isSending = false;
+
+	function checkout_back_click() {
+		if (state > 0) {
+			state = 0;
+		}
+	}
+
+	function checkout_click() {
+		if (state == 0) {
+			error_found = false;
+			for (const [key, value] of Object.entries($cartStore)) {
+				if (
+					value == undefined ||
+					value.amount == undefined ||
+					value.amount <= 0
+				) {
+					error_found = true;
+					error_message = "שדה כמות חסר או שגוי";
+					break;
+				}
+			}
+			if (error_found == false) {
+				activeModalsStore.modalToggle("cartModal2", isModalOpen);
+				currentStep = 1;
+				state = 1;
+			}
+		}
+		/*else if(state == 1) {
 			state = 2;
 			cart_submit();
 		}*/
-  }
-  let currentStep = 1;
-  function stepBtnClick() {
-    if (currentStep == 1) {
-      currentStep = 2;
-    } else if (currentStep == 2) {
-      cart_submit();
-    }
-  }
-  function cart_submit() {
-    if (mform.reportValidity()) {
-      let cart_products = [];
-      for (let key in $cartStore) {
-        let product = $cartStore[key];
-        cart_products.push({
-          id: product.id,
-          amount: product.amount,
-          price: product.price,
-          mentries: product.mentries,
-          print: product.print,
-          embro: product.embro,
-        });
-      }
-      let actAs = $userInfoStore?.actAs;
-      let order_type = document.querySelectorAll('select[name="order_type"]');
-      if (order_type.length == 1) {
-        order_type = order_type[0].value;
-      } else {
-        order_type = "הזמנה";
-      }
-      console.log("order_type: ", order_type);
-      let data = {
-        name: form_name || "",
-        email: form_email || "",
-        phone: form_phone || "",
-        business_name: form_business_name || "",
-        order_type: order_type,
-        uuid: get_user_uuid() || "",
-        message: form_message || "",
-        products: cart_products,
-        asUser: actAs,
+	}
+	let currentStep = 1;
 
-        raw_cart: JSON.stringify($cartStore),
-      };
+	function stepBtnClick() {
+		if (currentStep == 1) {
+			currentStep = 2;
+		} else if (currentStep == 2) {
+			cart_submit();
+		}
+	}
 
-      logStore.addLog({
-        a: "שליחת הזמנה",
-        t: "submit order",
-        f: {
-          type: "cart",
-        },
-        w: {
-          type: "order",
-          data: data,
-        },
-      });
-      isSending = true;
-      let response = submit_cart_form(data);
+	function cart_submit() {
+		if (mform.reportValidity()) {
+			let cart_products = [];
+			for (let key in $cartStore) {
+				let product = $cartStore[key];
+				cart_products.push({
+					id: product.id,
+					amount: product.amount,
+					price: product.price,
+					mentries: product.mentries,
+					print: product.print,
+					embro: product.embro,
+				});
+			}
+			let actAs = $userInfoStore?.actAs;
+			let order_type = document.querySelectorAll('select[name="order_type"]');
+			if (order_type.length == 1) {
+				order_type = order_type[0].value;
+			} else {
+				order_type = "הזמנה";
+			}
+			console.log("order_type: ", order_type);
+			let data = {
+				name: form_name || "",
+				email: form_email || "",
+				phone: form_phone || "",
+				business_name: form_business_name || "",
+				order_type: order_type,
+				uuid: get_user_uuid() || "",
+				message: form_message || "",
+				products: cart_products,
+				asUser: actAs,
 
-      response.then((data_json) => {
-        let cart_id = data_json["cart_id"];
-        let product_ids = data_json["product_ids"];
-        flashy_purchase(cart_id, product_ids);
-        if (data_json["status"] == "success") {
-          $cartModalStore.toggleModal();
-          $successModalStore.toggleModal();
-          //$cartStore = {};
-          cartStore.clearCart();
-        }
-        mform.reset();
-        state = 0;
-      });
-      response.catch(function (error) {
-        alert(error.toString());
-        state = 0;
-      });
-      response.finally(function () {
-        isSending = false;
-      });
-    } else {
-      alert("נא למלא את כל השדות");
-      state = 1;
-}
+				raw_cart: JSON.stringify($cartStore),
+			};
+
+			logStore.addLog({
+				a: "שליחת הזמנה",
+				t: "submit order",
+				f: {
+					type: "cart",
+				},
+				w: {
+					type: "order",
+					data: data,
+				},
+			});
+			isSending = true;
+			let response = submit_cart_form(data);
+
+			response.then((data_json) => {
+				let cart_id = data_json["cart_id"];
+				let product_ids = data_json["product_ids"];
+				flashy_purchase(cart_id, product_ids);
+				if (data_json["status"] == "success") {
+					$cartModalStore.toggleModal();
+					$successModalStore.toggleModal();
+					//$cartStore = {};
+					cartStore.clearCart();
+				}
+				mform.reset();
+				state = 0;
+			});
+			response.catch(function (error) {
+				alert(error.toString());
+				state = 0;
+			});
+			response.finally(function () {
+				isSending = false;
+			});
+		} else {
+			alert("נא למלא את כל השדות");
+			state = 1;
+		}
+	}
 	let sidebar_top = 0;
-    export function toggleModal() {
-        isModalOpen = !isModalOpen;
+	export function toggleModal() {
+		isModalOpen = !isModalOpen;
 		let main_wraper_element = document.querySelector('#main_wraper');
 		//let sidebar_cart_element = document.querySelector('#sidebar-cart');
 		let main_navbar_wraper = document.querySelector('#main-navbar-wraper');
 		let is_under_700px = window.matchMedia("(max-width: 700px)").matches;
 		//activeModalsStore.modalToggle('cartModal2', isModalOpen);
-        if(isModalOpen) {
-			
-            modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
+		if (isModalOpen) {
+
+			modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
 			if (!is_under_700px) {
-				main_wraper_element.style = `width: calc(100vw - 315px - 16px);position: absolute;left: 0px;`
-				main_navbar_wraper.style = `width: calc(100vw - 315px - 16px);left: 0px;`
+				main_wraper_element.style = `width: calc(100vw - 315px - 15px);position: absolute;left: 0px;`
+				main_navbar_wraper.style = `width: calc(100vw - 315px - 15px);left: 0px;`
 				sidebar_top = 0;
-			}else {
+			} else {
 				//debugger;
 				//document.querySelector('#sidebar-cart').style = `top: 62px;`
 				sidebar_top = 62;
 			}
 			//sidebar_cart_element.style = `z-index: ${modal_zIndex*5};`
 
-        }else {
+		} else {
 			state = 0;
-			if(!is_under_700px) {
+			if (!is_under_700px) {
 				main_wraper_element.style = `width:auto;`;
 				//sidebar_cart_element.style = ``;
-				main_navbar_wraper.style=`width: 100%;`;
+				main_navbar_wraper.style = `width: 100%;`;
 			}
 			activeModalsStore.modalToggle('cartModal2', isModalOpen);
 
 		}
-    }
-  }
-  
-  export function isOpen() {
-    return isModalOpen;
-  }
-  function roundHalf(num) {
-    return Math.round(num * 2) / 2;
-  }
-  let mform;
-  function delete_product_from_cart(key) {
-    let element = document
-      .querySelector(`.product[data-product="${key}"]`)
-      .classList.add("deleted");
-    setTimeout(() => {
-      let item = $cartStore[key];
-      let swiper = $all_swipers[item.albums[0]];
-      //delete $cartStore[key];
-      cartStore.removeFromCart(item);
-      //$cartStore =$cartStore;
-      swiper.fixDups();
-      logStore.addLog({
-        a: "הסר מהעגלה",
-        t: "remove from cart",
-        f: {
-          type: "cart",
-        },
-        w: {
-          type: "product",
-          id: item.id,
-          ti: item.title,
-        },
-      });
-    }, 0);
-  }
+	}
 
-  function price_cell_click(e, cart_key) {
-    if (
-      $userInfoStore.isLogin &&
-      $userInfoStore.me &&
-      $userInfoStore.me.is_superuser == true
-    ) {
-      // open popup to edit price
-      let item = $cartStore[cart_key];
-      let prom = prompt("ערוך מחיר", item.price);
-      if (prom) {
-        $cartStore[item.id].price = parseFloat(prom);
-      }
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  }
-  function open_edit_amount_dialog(product_id, product_title) {
-    $productCartModalStore.toggleModal(product_id);
-  }
-  function open_product_modal(key) {
-    let product = $cartStore[key];
-    //product.albums = [15, 85]
-    let min_album = Math.min(...product.albums);
+	export function isOpen() {
+		return isModalOpen;
+	}
 
-    $productModalStore.setProduct(min_album, product.id);
-    $productModalStore.toggleModal();
+	function roundHalf(num) {
+		return Math.round(num * 2) / 2;
+	}
+	let mform;
 
-    logStore.addLog({
-      a: "פתיחת מוצר מעגלת קניות",
-      t: "open product",
-      f: {
-        type: "cart",
-      },
-      w: {
-        type: "product",
-        id: product.id,
-        ti: product.title,
-      },
-    });
-  }
-  let show_prices = false;
-  $: {
-    show_prices = $userInfoStore && $userInfoStore.isLogin;
-  }
-  //let checked = true;
+	function delete_product_from_cart(key) {
+		let element = document
+			.querySelector(`.product[data-product="${key}"]`)
+			.classList.add("deleted");
+		setTimeout(() => {
+			let item = $cartStore[key];
+			let swiper = $all_swipers[item.albums[0]];
+			//delete $cartStore[key];
+			cartStore.removeFromCart(item);
+			//$cartStore =$cartStore;
+			swiper.fixDups();
+			logStore.addLog({
+				a: "הסר מהעגלה",
+				t: "remove from cart",
+				f: {
+					type: "cart",
+				},
+				w: {
+					type: "product",
+					id: item.id,
+					ti: item.title,
+				},
+			});
+		}, 0);
+	}
 
-  function copy_cart_click() {
-    let cart_json =$cartStore; //{"5":{"id":5,"title":"פנדה מונביסו","description":"* החברה האיטלקית חוזרת לישראל עם דגם הדגל\r\n* נעל איכותית מאוד ברמה הגבוהה ביותר\r\n* עמידות בתנאי שטח קשים במיוחד\r\n* עור מלא נגד מים שמן וכימיקלים\r\n* בדים פנימיים אנטיבאקטרילים\r\n* תקן אירופאי וישראלי\r\n* 02/S3\r\n* אפשרות מיגון או ללא מיגון","cimage":"v1635672267/site/products/%D7%A4%D7%A0%D7%93%D7%94_%D7%9E%D7%95%D7%A0%D7%A1%D7%99%D7%91%D7%95_6nOpUNm_qYDCukF_NPmcgGo_WGqneJr_fD2vSpt_3x0EezN_LQgb69Q_2cOLJC7_Gn42nNk.png","colors":[84],"sizes":[112,105,104,103,102,101,100,99,98,97,96,95,94],"varients":[{"id":1,"name":"02"},{"id":3,"name":"S3"}],"can_tag":false,"discount":null,"albums":[5],"amountSinglePack":1,"amountCarton":6,"show_sizes_popup":true,"client_price":320,"out_of_stock":false,"barcode":"8028027316463","has_physical_barcode":false,"price":320,"amount":2,"print":false,"embro":false,"mentries":{"84":{"94":{"1":{},"3":{}},"95":{"1":{},"3":{}},"96":{"1":{},"3":{}},"97":{"1":{},"3":{}},"98":{"1":{},"3":{}},"99":{"1":{},"3":{}},"100":{"1":{},"3":{}},"101":{"1":{"quantity":2},"3":{}},"102":{"1":{},"3":{}},"103":{"1":{},"3":{}},"104":{"1":{},"3":{}},"105":{"1":{},"3":{}},"112":{"1":{},"3":{}}}}},"409":{"id":409,"title":"סנדלי עור איכותיים","description":"* סנדלים איכותיות \r\n* מתאימות למטיילים","cimage":"v1635672478/site/products/photo_2021-10-18_18-06-01-removebg-preview_NzDO1VX.png","colors":[84],"sizes":[96,97,98,99,100,101,102,103,104],"varients":[],"can_tag":false,"discount":null,"albums":[5],"amountSinglePack":1,"amountCarton":0,"show_sizes_popup":true,"client_price":150,"out_of_stock":false,"barcode":null,"has_physical_barcode":false,"price":150,"amount":5,"print":false,"embro":false,"mentries":{"84":{"96":{"quantity":5},"97":{},"98":{},"99":{},"100":{},"101":{},"102":{},"103":{},"104":{"quantity":null}}}}}
-    // copy the dictionary keys with the values (entries) to the clipboard
-    let clipboardResult = {}
-    debugger;
-    for (let key in cart_json) {
-      clipboardResult[key] = {mentries: cart_json[key].mentries, amount: cart_json[key].amount}
-    }
-    let url = $page.host + "/" + "?cart_json=" + encodeURI(JSON.stringify(clipboardResult));
-    navigator.clipboard.writeText(url);
-  }
+	function price_cell_click(e, cart_key) {
+		if (
+			$userInfoStore.isLogin &&
+			$userInfoStore.me &&
+			$userInfoStore.me.is_superuser == true
+		) {
+			// open popup to edit price
+			let item = $cartStore[cart_key];
+			let prom = prompt("ערוך מחיר", item.price);
+			if (prom) {
+				$cartStore[item.id].price = parseFloat(prom);
+			}
+			e.preventDefault();
+			e.stopPropagation();
+		}
+	}
+
+	function open_edit_amount_dialog(product_id, product_title) {
+		$productCartModalStore.toggleModal(product_id);
+	}
+
+	function open_product_modal(key) {
+		let product = $cartStore[key];
+		//product.albums = [15, 85]
+		let min_album = Math.min(...product.albums);
+
+		$productModalStore.setProduct(min_album, product.id);
+		$productModalStore.toggleModal();
+
+		logStore.addLog({
+			a: "פתיחת מוצר מעגלת קניות",
+			t: "open product",
+			f: {
+				type: "cart",
+			},
+			w: {
+				type: "product",
+				id: product.id,
+				ti: product.title,
+			},
+		});
+	}
+	let show_prices = false;
+	$: {
+		show_prices = $userInfoStore && $userInfoStore.isLogin;
+	}
+	//let checked = true;
+
+	function copy_cart_click() {
+		let cart_json =
+		$cartStore; //{"5":{"id":5,"title":"פנדה מונביסו","description":"* החברה האיטלקית חוזרת לישראל עם דגם הדגל\r\n* נעל איכותית מאוד ברמה הגבוהה ביותר\r\n* עמידות בתנאי שטח קשים במיוחד\r\n* עור מלא נגד מים שמן וכימיקלים\r\n* בדים פנימיים אנטיבאקטרילים\r\n* תקן אירופאי וישראלי\r\n* 02/S3\r\n* אפשרות מיגון או ללא מיגון","cimage":"v1635672267/site/products/%D7%A4%D7%A0%D7%93%D7%94_%D7%9E%D7%95%D7%A0%D7%A1%D7%99%D7%91%D7%95_6nOpUNm_qYDCukF_NPmcgGo_WGqneJr_fD2vSpt_3x0EezN_LQgb69Q_2cOLJC7_Gn42nNk.png","colors":[84],"sizes":[112,105,104,103,102,101,100,99,98,97,96,95,94],"varients":[{"id":1,"name":"02"},{"id":3,"name":"S3"}],"can_tag":false,"discount":null,"albums":[5],"amountSinglePack":1,"amountCarton":6,"show_sizes_popup":true,"client_price":320,"out_of_stock":false,"barcode":"8028027316463","has_physical_barcode":false,"price":320,"amount":2,"print":false,"embro":false,"mentries":{"84":{"94":{"1":{},"3":{}},"95":{"1":{},"3":{}},"96":{"1":{},"3":{}},"97":{"1":{},"3":{}},"98":{"1":{},"3":{}},"99":{"1":{},"3":{}},"100":{"1":{},"3":{}},"101":{"1":{"quantity":2},"3":{}},"102":{"1":{},"3":{}},"103":{"1":{},"3":{}},"104":{"1":{},"3":{}},"105":{"1":{},"3":{}},"112":{"1":{},"3":{}}}}},"409":{"id":409,"title":"סנדלי עור איכותיים","description":"* סנדלים איכותיות \r\n* מתאימות למטיילים","cimage":"v1635672478/site/products/photo_2021-10-18_18-06-01-removebg-preview_NzDO1VX.png","colors":[84],"sizes":[96,97,98,99,100,101,102,103,104],"varients":[],"can_tag":false,"discount":null,"albums":[5],"amountSinglePack":1,"amountCarton":0,"show_sizes_popup":true,"client_price":150,"out_of_stock":false,"barcode":null,"has_physical_barcode":false,"price":150,"amount":5,"print":false,"embro":false,"mentries":{"84":{"96":{"quantity":5},"97":{},"98":{},"99":{},"100":{},"101":{},"102":{},"103":{},"104":{"quantity":null}}}}}
+		// copy the dictionary keys with the values (entries) to the clipboard
+		let clipboardResult = {}
+		debugger;
+		for (let key in cart_json) {
+			clipboardResult[key] = {
+				mentries: cart_json[key].mentries,
+				amount: cart_json[key].amount
+			}
+		}
+		let url = $page.host + "/" + "?cart_json=" + encodeURI(JSON.stringify(clipboardResult));
+		navigator.clipboard.writeText(url);
+	}
 </script>
 
 {#if isModalOpen}

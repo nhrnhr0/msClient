@@ -4,27 +4,109 @@
     historyProductsModalStore,
     cartHistoryModalStore,
   } from "../../stores/stores";
+  import {userInfoStore} from './../../stores/stores';
   import { cartStore } from "../../stores/cartStore";
   import { CLOUDINARY_URL } from "../../api/consts";
   import { flip } from "svelte/animate";
   import { scrollFix } from "$lib/ui/scrollFix";
   import { selectTextOnFocus } from "$lib/ui/inputActions";
 
-  const handleAddProductsToCart = () => {
-    let producstArray = Object.keys(
-      $historyProductsModalStore.historyProducts
-    ).map((key) => $historyProductsModalStore.historyProducts[key]);
-    producstArray.forEach((product) => cartStore.addToCart(product));
-    $historyProductsModalStore.historyProducts = {};
-    historyProductsModalStore.closeModal();
-  };
+  function add_all_products() {
+        let i = 0;
+        for(let product_id in $historyProductsModalStore.historyProducts) {
+                add_product_to_cart(product_id);
+            i++;
+        }
+    }
+  function merge_and_sum_mentries(entries1, entries2) {
+        // create a return variable dict
+        // loop through the entries1 keys (entries1_key)
+        // if entties1[entries1_key] have a quantity key:
+        //      if entries2[entries1_key] have a quantity key:
+        //          add the quantity in entties1[entries1_key] and entties2[entries1_key] to the return variable dict
+        //      else:
+        //          add the quantity entties1[entries1_key] to the return variable dict
+        // else:
+        //     loop through enttries1[entries1_key] keys (entries1_key) (recursive)
+        
+        let return_variable = {...entries2};
+        for (let keys1 in entries1) {
+            for(let keys2 in entries1[keys1]) {
+                if(entries1[keys1][keys2].hasOwnProperty('quantity')) {
+                    if(!return_variable.hasOwnProperty(keys1)) {
+                        return_variable[keys1] = {};
+                    }
+                    if(!return_variable[keys1].hasOwnProperty(keys2)) {
+                        return_variable[keys1][keys2] = {'quantity':0};
+                    }
+                    if(entries1[keys1][keys2].hasOwnProperty('quantity')) {
+                        if(return_variable[keys1][keys2].hasOwnProperty('quantity')) {
+                            return_variable[keys1][keys2]['quantity'] += entries1[keys1][keys2]['quantity'];
+                        }else {
+                            return_variable[keys1][keys2]['quantity'] = entries1[keys1][keys2]['quantity'];
+                        }
+                    }
+                    
+                }else {
+                    for(let key3 in entries1[keys1][keys2]) {
+                        if(!return_variable.hasOwnProperty(keys1)) {
+                            return_variable[keys1] = {};
+                        }
+                        if(!return_variable[keys1].hasOwnProperty(keys2)) {
+                            return_variable[keys1][keys2] = {};
+                        }
+                        if(!return_variable[keys1][keys2].hasOwnProperty(key3)) {
+                            return_variable[keys1][keys2][key3] = {'quantity':0};
+                        }
+                        if(entries1[keys1][keys2][key3].hasOwnProperty('quantity')) {
+                            if (return_variable[keys1][keys2][key3].hasOwnProperty('quantity')) {
+                                return_variable[keys1][keys2][key3]['quantity'] += entries1[keys1][keys2][key3]['quantity'];
+                            }else {
+                                return_variable[keys1][keys2][key3]['quantity'] = entries1[keys1][keys2][key3]['quantity'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return return_variable;
+    }
+
+  function add_product_to_cart(product_key) {
+        let product_data = $historyProductsModalStore.historyProducts[product_key];
+        let cart_data = $cartStore[product_key];
+        let old_entries = {}
+        if(cart_data) {
+            old_entries = cart_data.mentries;
+        }
+        debugger;
+        let new_entries = merge_and_sum_mentries(old_entries, product_data.mentries);
+        console.log(new_entries);
+        if($cartStore[product_key]) {
+            $cartStore[product_key].mentries = new_entries;
+        }else {
+            product_data.mentries = new_entries;
+            $cartStore[product_key] = {...product_data};
+        }
+        $cartStore[product_key].amount = $cartStore[product_key].amount + product_data.amount;
+        delete $historyProductsModalStore.historyProducts[product_key];
+        $historyProductsModalStore.historyProducts = {...$historyProductsModalStore.historyProducts};
+        debugger;
+
+        if(Object.keys($historyProductsModalStore.historyProducts).length == 0) {
+          historyProductsModalStore.closeModal();
+        }
+    }
 </script>
 
 <div
   id="history-modal"
   class={`modal ${$historyProductsModalStore.showModal ? "active" : ""}`}
 >
-  <div class="overlay">
+  <div class="overlay" on:click="{()=> {
+    historyProductsModalStore.closeModal();
+    cartHistoryModalStore.openModal();
+  }}">
     <div
       class="modal_content"
       in:fly={{ y: 200, duration: 350 }}
@@ -53,6 +135,61 @@
         >
       </div>
       <div class="modal-body">
+
+
+
+
+
+
+        <button on:click="{add_all_products}"  class="add-all-btn btn btn-primary" >הוסף הכל לסל</button>
+                <div class="products">
+                    {#each Object.keys($historyProductsModalStore.historyProducts) as product_key (product_key)}
+                        <div class="product-wraper" animate:flip={{ duration: 200 }} out:fly={{x:-480, duration:200}}>
+                          <div class="product-inner">
+                            <div class="product-image">
+                                <img width="55px" height="55px" src="{CLOUDINARY_URL}/{$historyProductsModalStore.historyProducts[product_key].cimage}" alt="">
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">
+                                    {$historyProductsModalStore.historyProducts[product_key].title}
+                                </div>
+                                <div class="attributes">
+                                    {#if $userInfoStore.me.show_prices}
+                                    <div class="attribute">
+                                            <div class="product-price">
+                                                {$historyProductsModalStore.historyProducts[product_key].price} ש"ח
+                                            </div>
+                                    </div>
+                                    {/if}
+                                    <div class="attribute">
+                                        <div class="product-quantity">
+                                            {$historyProductsModalStore.historyProducts[product_key].amount} יח
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                          </div>
+                            <button on:click="{add_product_to_cart(product_key)}" class="add-to-cart-btn btn btn-secondary">
+                                הוסף לסל
+                            </button>
+                        </div>
+                    {/each}
+                </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<!--
         <table class="products">
           <tbody>
             {#if Object.keys($historyProductsModalStore.historyProducts).length > 0}
@@ -145,7 +282,7 @@
     </div>
   </div>
 </div>
-
+-->
 <style lang="scss">
   // Mixin to generate hover & active states
   @mixin hover-active() {
@@ -154,13 +291,77 @@
       @content;
     }
   }
-
+  .add-all-btn {
+        
+        width: 100%;
+        margin-bottom: 10px;
+        padding:10px;
+    }
   .modal-body {
     padding-left: 16px;
     padding-right: 16px;
     padding-top: 32px;
     padding-bottom: 102px;
   }
+  .products {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .product-wraper {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border:1px solid #333;
+            .product-inner {
+              display: flex;
+              .product-image {
+                width: 55px;
+                height: 55px;
+                margin-right: 10px;
+            }
+            .product-info {
+                .product-name {
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: #333;
+                }
+                .attributes {
+                    display: flex;
+                    flex-direction: row;
+                    .attribute {
+                        //display: flex;
+                        //flex-direction: row;
+                        //justify-content: space-between;
+                        //align-items: center;
+                        padding: 5px;
+                        margin:5px;
+                        border-radius: 25px;
+                        background-color: #eee;
+
+                        .product-price {
+                            font-size: 14px;
+                            color: #333;
+                        }
+                        .product-quantity {
+                            font-size: 14px;
+                            color: #333;
+                        }
+                    }
+                }
+            }
+            }
+            
+            .add-to-cart-btn {
+                margin-left: 10px;
+                //position: absolute;
+                //left: 20px;
+            }
+            
+        }
+    }
+  /*
   table.products {
     th {
       font-size: 1em;
@@ -233,8 +434,8 @@
         }
       }
     }
-  }
-  div.totals {
+  }*/
+  /*div.totals {
     background-color: $gray-300;
     line-height: 2;
     //display: flex;
@@ -251,13 +452,13 @@
     @media screen and (max-width: 1100px) {
       font-size: 1rem;
     }
-  }
+  }*/
 
-  .float-actions {
+  /*.float-actions {
     position: fixed;
     top: 20px;
-  }
-
+  }*/
+  /*
   .send-wra {
     display: flex;
     flex-direction: row-reverse;
@@ -297,7 +498,8 @@
       }
     }
   }
-
+  */
+  /*
   ul.products {
     margin: 0;
     padding: 0 0 15px 0;
@@ -310,18 +512,6 @@
     @media screen and (max-width: 700px) {
       height: calc(100vh - 193px - 62px);
     }
-
-    /*&:after {
-			background: linear-gradient(180deg, transparent, $primary);
-			height: 30px;
-			width: 300px;
-			z-index: 1;
-			content: "";
-			position: absolute;
-			right: 0;
-			bottom: 0;
-		}*/
-
     li.product {
       margin: 0 0 10px 0;
       padding: 0;
@@ -486,19 +676,6 @@
         svg {
           display: block;
         }
-        /*span.remove-icon {
-					width: 15px;
-					height: 16px;
-					//background: rgba($gray-700, 0.5);
-					text-indent: -9999px;
-					overflow: hidden;
-					font-size: 0;
-                    svg {
-                        display: block;
-                    }
-					//-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 36'%3E%3Cpath fill='currentColor' d='M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z'/%3E%3C/svg%3E");
-					transition: all 0.5s linear;
-				}*/
 
         @include hover-active() {
           cursor: pointer;
@@ -510,18 +687,13 @@
           //background: $red;
         }
       }
-      /*&.deleted {
-                border: 1px solid red !important;
-                opacity: 0!important;
-                transform: translateY(-100px)!important;
-            }*/
     }
     :global(li.product.deleted) {
       transition: all 0.2s linear;
       transform: translatex(340px);
       opacity: 0;
     }
-  }
+  }*/
 
   .empty-cart {
     text-align: center;

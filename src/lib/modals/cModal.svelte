@@ -33,7 +33,6 @@ Button,
   } from 'sveltestrap';
   import { selectTextOnFocus } from '$lib/ui/inputActions';
 
-
   function remove_from_cart(e) {
     const productId = e.currentTarget.dataset.productId;
     const imgData = {
@@ -58,7 +57,7 @@ Button,
   }
   let show_prices;
   $: {
-    show_prices =  ($userInfoStore['me'] && Object.keys($userInfoStore['me']) != 0 && $userInfoStore['me'].show_prices == true)? true : false;
+    show_prices = ($userInfoStore['me'] && Object.keys($userInfoStore['me']) != 0 && $userInfoStore['me'].show_prices == true)? true : false;
   }
   export let isModalOpen = false;
   export function toggleModal(push_url = true) {
@@ -255,7 +254,7 @@ import AlbumsView from '$lib/components/AlbumsView.svelte';
   }
 </script>
 
-
+<svelte:options accessors/>
 <div id="categoryModal" style="z-index: {modal_zIndex};" class="modal" class:active={isModalOpen}>
   <div class="overlay" style="z-index: {modal_zIndex+5};" on:click={toggleModal}></div>
   <div class="modal_content" style="z-index: {modal_zIndex+10};">

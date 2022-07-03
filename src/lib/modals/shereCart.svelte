@@ -137,13 +137,13 @@ import { page } from '$app/stores';
                                     {$shereCartStore.temp_cart[product_key].title}
                                 </div>
                                 <div class="attributes">
+                                    {#if $userInfoStore.me.show_prices}
                                     <div class="attribute">
-                                        {#if $userInfoStore.me.show_prices}
                                             <div class="product-price">
                                                 {$shereCartStore.temp_cart[product_key].price} ש"ח
                                             </div>
-                                        {/if}
                                     </div>
+                                    {/if}
                                     <div class="attribute">
                                         <div class="product-quantity">
                                             {$shereCartStore.temp_cart[product_key].amount} יח
