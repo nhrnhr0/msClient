@@ -153,6 +153,7 @@ import { GET_STOCK_BY_ID_URL } from '@src/api/consts';
                                     };
                                     move_stock_entry(stockId, data).then((newData)=> {
                                         console.log(newData);
+
                                         if(newData['error']) {
                                             notifier.danger(newData['error']);
                                             alert(newData['error']);
