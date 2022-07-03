@@ -53,6 +53,9 @@ userInfoStore
     } else {
       modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
       set_product(product_id_);
+      setTimeout(()=> {
+        document.querySelector('.size-input').focus();
+      }, 0);
     }
   }
   export function isOpen() {
@@ -503,8 +506,8 @@ userInfoStore
 
         <div class="action-buttons">
           <!-- שמור ומחק -->
-          <button class="btn btn-primary" style:visibility={$cartStore[product_id].amount>0?'visible':'hidden'} on:click={toggleModal}>הוסף לסל</button>
           <button class="btn btn-secondary" on:click={clear_all}>נקה</button>
+          <button class="btn btn-primary" style:visibility={$cartStore[product_id].amount>0?'visible':'hidden'} on:click={toggleModal}>הוסף לסל</button>
           <button class="btn btn-danger" on:click={remove_from_cart}>מחק</button>
 
         </div>
@@ -681,6 +684,9 @@ userInfoStore
                     ::-webkit-input-placeholder { text-align:center; }
                     /* mozilla solution */
                     input:-moz-placeholder { text-align:center; }
+                    &:focus {
+                      @include bg-gradient();
+                    }
                     
                     //border: 1px solid rgb(85, 85, 85);
                     min-width: 48px;
@@ -847,7 +853,8 @@ userInfoStore
 
     .action-buttons {
       display: flex;
-      justify-content: space-around;
+      justify-content: center;
+      gap:5px;
       align-items: center;
       padding-top: 25px;
       padding-bottom: 10px;

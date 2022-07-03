@@ -153,39 +153,42 @@ import { page } from "$app/stores";
     } else {
       alert("נא למלא את כל השדות");
       state = 1;
-    }
-  }
-  let sidebar_top = 0;
-  export function toggleModal() {
-    isModalOpen = !isModalOpen;
-    let main_wraper_element = document.querySelector("#main_wraper");
-    //let sidebar_cart_element = document.querySelector('#sidebar-cart');
-    let main_navbar_wraper = document.querySelector("#main-navbar-wraper");
-    let is_under_700px = window.matchMedia("(max-width: 700px)").matches;
-    //activeModalsStore.modalToggle('cartModal2', isModalOpen);
-    if (isModalOpen) {
-      modal_zIndex = 1200 + ++$_modal_z_index_incrementor * 15;
-      if (!is_under_700px) {
-        main_wraper_element.style = `width: calc(100vw - 315px);position: absolute;left: 0px;`;
-        main_navbar_wraper.style = `width: calc(100vw - 315px);left: 0px;`;
-        sidebar_top = 0;
-      } else {
-        //debugger;
-        //document.querySelector('#sidebar-cart').style = `top: 62px;`
-        sidebar_top = 62;
-      }
-      //sidebar_cart_element.style = `z-index: ${modal_zIndex*5};`
-    } else {
-      state = 0;
-      if (!is_under_700px) {
-        main_wraper_element.style = `width:auto;`;
-        //sidebar_cart_element.style = ``;
-        main_navbar_wraper.style = `width: 100%;`;
-      }
-      activeModalsStore.modalToggle("cartModal2", isModalOpen);
-    }
-  }
+}
+	let sidebar_top = 0;
+    export function toggleModal() {
+        isModalOpen = !isModalOpen;
+		let main_wraper_element = document.querySelector('#main_wraper');
+		//let sidebar_cart_element = document.querySelector('#sidebar-cart');
+		let main_navbar_wraper = document.querySelector('#main-navbar-wraper');
+		let is_under_700px = window.matchMedia("(max-width: 700px)").matches;
+		//activeModalsStore.modalToggle('cartModal2', isModalOpen);
+        if(isModalOpen) {
+			
+            modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
+			if (!is_under_700px) {
+				main_wraper_element.style = `width: calc(100vw - 315px - 16px);position: absolute;left: 0px;`
+				main_navbar_wraper.style = `width: calc(100vw - 315px - 16px);left: 0px;`
+				sidebar_top = 0;
+			}else {
+				//debugger;
+				//document.querySelector('#sidebar-cart').style = `top: 62px;`
+				sidebar_top = 62;
+			}
+			//sidebar_cart_element.style = `z-index: ${modal_zIndex*5};`
 
+        }else {
+			state = 0;
+			if(!is_under_700px) {
+				main_wraper_element.style = `width:auto;`;
+				//sidebar_cart_element.style = ``;
+				main_navbar_wraper.style=`width: 100%;`;
+			}
+			activeModalsStore.modalToggle('cartModal2', isModalOpen);
+
+		}
+    }
+  }
+  
   export function isOpen() {
     return isModalOpen;
   }
