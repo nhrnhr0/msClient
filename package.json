@@ -25,6 +25,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@babel/core": "^7.18.6",
     "@fontsource/fira-mono": "^4.5.0",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@lukeed/uuid": "^2.0.0",
