@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { browser } from "$app/env";
+import { browser } from '$app/env';
 
 export let albumsJsonStore = writable([]);
 
@@ -17,6 +17,7 @@ export let _modal_z_index_incrementor = writable(0);
 
 export let sizesJsonStore = writable([]);
 export let colorsJsonStore = writable([]);
+export let warhousesJsonStore = writable([]);
 export let campainsStore = writable([]);
 export let all_swipers = writable([]);
 
