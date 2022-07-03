@@ -90,7 +90,6 @@ import { page } from '$app/stores';
         $cartStore[product_key].amount = $cartStore[product_key].amount + product_data.amount;
         delete $shereCartStore.temp_cart[product_key];
         $shereCartStore.temp_cart = {...$shereCartStore.temp_cart};
-        debugger;
 
         if(Object.keys($shereCartStore.temp_cart).length == 0) {
             closeModal();

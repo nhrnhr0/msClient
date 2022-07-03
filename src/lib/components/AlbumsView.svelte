@@ -73,33 +73,38 @@ import {
                 loop="{false}"
                 resistance="{false}"
                 >
-                {#each Object.entries(groupedAlbums) as album}
-                    <SwiperSlide>
-                        <div class="category-swiper-slide">
-                                <div class="album-title">
-                                    
-                                    {#if album[1]['key'] == 'undefined'}
-                                        <div class="text">
-                                            אחר
-                                        </div>
-                                    {:else}
-                                        
-                                        <div class="text">{album[1]['key']}</div>
-                                    {/if}
-                                </div>
-                                <img alt="" src="{CLOUDINARY_URL}{album[1].value[0].cimage}" width="40px" height="40px"/>
-
-                                <div class="sub-album">
-                                    {#each album[1].value as album}
-                                        <div class="album-item" on:click="{menuItemClicked(album)}">
-                                            <img alt="" src="{CLOUDINARY_URL}{album.cimage}" width="40px" height="40px"/>
-                                            <div class="text">{album.title}</div>
-                                        </div>
-                                    {/each}
-                                </div>
-                        </div>
-                    </SwiperSlide>
-                {/each}
+                {#if groupedAlbums.length > 0}
+                    {#each Object.entries(groupedAlbums) as album}
+                    {#if album[1] && album[1].value && album[1].value.length > 0}
+                        <SwiperSlide>
+                            <div class="category-swiper-slide">
+                                
+                                    <div class="album-title">
+                                        {#if album[1]['key'] == 'undefined'}
+                                            <div class="text">
+                                                אחר
+                                            </div>
+                                        {:else}
+                                            
+                                            <div class="text">{album[1]['key']}</div>
+                                        {/if}
+                                    </div>
+                                        <img alt="" src="{CLOUDINARY_URL}{album[1]?.value[0]?.cimage}" width="40px" height="40px"/>
+                                    <div class="sub-album">
+                                        {#if album[1] && album[1].value && album[1].value.length > 0}
+                                            {#each album[1].value as album}
+                                                <div class="album-item" on:click="{menuItemClicked(album)}">
+                                                    <img alt="" src="{CLOUDINARY_URL}{album.cimage}" width="40px" height="40px"/>
+                                                    <div class="text">{album.title}</div>
+                                                </div>
+                                            {/each}
+                                        {/if}
+                                    </div>
+                            </div>
+                        </SwiperSlide>
+                        {/if}
+                    {/each}
+                {/if}
             </Swiper>
 </div>
 {/if}

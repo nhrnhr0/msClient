@@ -24,10 +24,30 @@ export const GET_CSRF_TOKEN_URL = BASE_URL + "/api/set_csrf_token";
 export const CONTACT_FORM_URL = BASE_URL + "/contact-form";
 export const SUBMIT_CART_URL = BASE_URL + "/cart-form";
 export const CART_HISTORY_URL = BASE_URL + "/cart-history";
+<<<<<<< Updated upstream
 export const TRACK_CART_URL = BASE_URL + "/track-cart";
 export const MAIN_PAGE_API = BASE_URL + "/main_page_api/";
 export const PRODUCT_QUESTION_URL = BASE_URL + "/product-question";
 export const PRODUCT_PHOTO_URL = BASE_URL + "/product-photo";
+=======
+
+export const SEARCH_API_URL = BASE_URL + '/search';
+export const ADMIN_API_URL = BASE_URL + '/admin-api';
+export const ALBUMS_API_URL = BASE_API_URL +  'albums/';
+export const PRODUCTS_API_URL = BASE_API_URL + 'images/';
+export const SIZES_API_URL = BASE_API_URL + 'sizes/';
+export const COLORS_API_URL = BASE_API_URL + 'colors/';
+export const VARIANTS_API_URL = BASE_API_URL + 'get-all-variants/';
+export const WAREHOUSES_API_URL = BASE_URL + '/get-all-warehouses-api/'
+export const LOGOS_API_URL = BASE_API_URL + 'logos/';
+export const GET_CSRF_TOKEN_URL = BASE_URL + '/api/set_csrf_token';
+export const CONTACT_FORM_URL = BASE_URL + '/contact-form';
+export const SUBMIT_CART_URL = BASE_URL + '/cart-form';
+//export const TRACK_CART_URL = BASE_URL + '/track-cart';
+export const MAIN_PAGE_API = BASE_URL + '/main_page_api/';
+export const PRODUCT_QUESTION_URL = BASE_URL + '/product-question';
+export const PRODUCT_PHOTO_URL = BASE_URL + '/product-photo';
+>>>>>>> Stashed changes
 //export const AUTH_TOKEN_URL = BASE_URL + '/api/token/';
 //export const REFRESH_TOKEN_URL = BASE_URL + '/api/token/refresh/';
 export const AUTH_TOKEN_URL = BASE_URL + "/api/get-token/";

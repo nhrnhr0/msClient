@@ -2,7 +2,12 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
+<<<<<<< Updated upstream
 import { BASE_URL,GET_ALL_USERS_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,GET_ALL_BUSINESS_TYPES_GROUPS,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL} from "./consts";
+=======
+
+import { BASE_URL,INVENTORY_MANUAL_UPDATE_ENTRY_URL,INVENTORY_EDIT_ENTRY_URL,GET_ALL_USERS_URL,ENTER_DOC_EDIT_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , MORDER_EDIT_ADD_PROVIDER_ENTRIES,SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL, SEARCH_PPN_API_URL, ENTER_DOC_REMOVE_PRODUCT, ENTER_DOC_INSERT_INVENTORY_URL, SEARCH_PROVIDERS_API_URL, SEARCH_WAREHOUSES_URL, CREATE_ENTER_DOC_URL, MORDER_GET_API, MORDER_EDIT_ADD_PRODUCT_ENTRIES, MORDER_ADD_NEW_PRODUCT,DELETE_PRODUCT_FROM_MORDER_URL, MORDER_LIST_ORDERS_TO_COLLECT, REQUEST_PROVIDER_INFO_URL} from "./consts";
+>>>>>>> Stashed changes
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
@@ -39,7 +44,6 @@ function fetch_wraper_prep(url, requestOptions,headers_json= {}) {
     }
     else {
     }
-    
     if (browser) {
         if (get(userInfoStore).access) {
             headers_json['Authorization'] = "Token " +get(userInfoStore).access;
@@ -231,13 +235,13 @@ export function get_csrf_token() {
     return getCookie('csrftoken');
 }
 export function track_cart_to_server(data) {
-    var requestOptions = {
+    /*var requestOptions = {
         method:"POST",
         body: JSON.stringify(data),
     };
     let response 
     response = fetch_wraper(TRACK_CART_URL, requestOptions);
-    return response;
+    return response;*/
 }
 export function submit_cart_form(data) {
         var requestOptions = {
