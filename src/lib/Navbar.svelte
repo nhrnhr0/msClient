@@ -439,7 +439,7 @@ import AlbumsView from "./components/AlbumsView.svelte";
         }
     }
 }
-
+/*
 :global(.main-category-menu) {
         :global(.dropdown-menu) {
             grid-template-columns: repeat(1, 1fr);
@@ -521,6 +521,7 @@ import AlbumsView from "./components/AlbumsView.svelte";
         }
         }
 
+*/
 /*
 :global(.autocomplete-cls)  {
     

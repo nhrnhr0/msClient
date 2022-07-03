@@ -141,8 +141,8 @@ import { Spinner } from "sveltestrap";
 			
             modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
 			if (!is_under_700px) {
-				main_wraper_element.style = `width: calc(100vw - 315px);position: absolute;left: 0px;`
-				main_navbar_wraper.style = `width: calc(100vw - 315px);left: 0px;`
+				main_wraper_element.style = `width: calc(100vw - 315px - 16px);position: absolute;left: 0px;`
+				main_navbar_wraper.style = `width: calc(100vw - 315px - 16px);left: 0px;`
 				sidebar_top = 0;
 			}else {
 				//debugger;
