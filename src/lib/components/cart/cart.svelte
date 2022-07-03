@@ -23,7 +23,7 @@
     }
 </script>
 
-<div id="cart-btn" class="cart" on:click={open_cart}>
+<div id="cart-btn" class="popup-animation cart" on:click={open_cart}>
     <Fa size="2x" icon={faShoppingCart} />
     {#if Object.keys($cartStore).length > 0}
             <div class="items-counter">
@@ -35,6 +35,11 @@
 
 
 <style lang="scss">
+    .popup-animation {
+        &:hover {
+                animation: pop-animation 0.4s ease-in-out forwards;
+            }
+    }
 
     #cart-btn {
         position: relative;
