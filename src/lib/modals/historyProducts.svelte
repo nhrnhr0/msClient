@@ -79,7 +79,6 @@
         if(cart_data) {
             old_entries = cart_data.mentries;
         }
-        debugger;
         let new_entries = merge_and_sum_mentries(old_entries, product_data.mentries);
         console.log(new_entries);
         if($cartStore[product_key]) {
@@ -91,7 +90,6 @@
         $cartStore[product_key].amount = $cartStore[product_key].amount + product_data.amount;
         delete $historyProductsModalStore.historyProducts[product_key];
         $historyProductsModalStore.historyProducts = {...$historyProductsModalStore.historyProducts};
-        debugger;
 
         if(Object.keys($historyProductsModalStore.historyProducts).length == 0) {
           historyProductsModalStore.closeModal();
