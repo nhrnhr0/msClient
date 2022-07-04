@@ -469,7 +469,8 @@ import AlbumsView from "./components/AlbumsView.svelte";
 
                     }
             :global(.dropdown-header) {
-            :global(.category-menu-2){
+            
+                :global(.category-menu-2){
                 :global(.category-menu-2-menu.show) {
                     display: grid;
                     transform: translate3d(-70%, 32px, 0px)!important;
@@ -518,8 +519,9 @@ import AlbumsView from "./components/AlbumsView.svelte";
                     }
                 }
             }
-        }
-        }
+                }
+            }
+            
 
 */
 /*
