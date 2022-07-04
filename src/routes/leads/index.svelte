@@ -307,7 +307,9 @@ import {fly} from 'svelte/transition'
                 width: 75%;
                 box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
                 transition: all 0.3s ease 0s;
-                
+                @media screen and (max-width: 768px) {
+                    width: 95%;
+                }
                 &:hover,&:focus {
                     box-shadow: 0px 15px 20px black;
                 }
@@ -347,6 +349,10 @@ import {fly} from 'svelte/transition'
                         color: #fff;
                         background-color: #218838;
                         border-color: #1e7e34;
+                    }
+                    @media screen and (max-width: 768px) {
+                        font-size: 1.2rem;
+                        padding: 0.1rem 0.2rem
                     }
                 }
                 .form-group {
