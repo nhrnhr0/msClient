@@ -27,7 +27,7 @@
   } from './../api/consts';
 
   import {
-    api_get_user_campains, fetch_wraper
+    api_get_user_campains, fetch_wraper, get_products_info
   } from './../api/api'
   import {
     browser
@@ -38,6 +38,20 @@
   import {
     activeModalsStore
   } from "$lib/modals/modalManager";
+
+  function get_cookie(name){
+    return document.cookie.split(';').some(c => {
+        return c.trim().startsWith(name + '=');
+    });
+}
+  function delete_cookie( name, path, domain ) {
+  if( get_cookie( name ) ) {
+    document.cookie = name + "=" +
+      ((path) ? ";path="+path:"")+
+      ((domain)?";domain="+domain:"") +
+      ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+  }
+}
   export async function load({
     fetch,
     page
@@ -71,27 +85,38 @@
     //MAIN_PAGE_API
     let response = await fetch_wraper(MAIN_PAGE_API, {
       method: 'GET',
-      redirect: 'follow'
+      //redirect: 'follow'
     }, fetch)
-    let json = await response
-    let logos_json = json.logos
-    let albums_json = json.albums
+    let json = await response;
+    if(response.detail == "Invalid token.") {
+      userInfoStore.set({
+        is_logged: false
+      });
+
+      if(browser){
+        debugger;
+        delete_cookie('sessionid');
+        window.location.reload()
+      }
+    }
+    let logos_json = json.logos;
+    let albums_json = json.albums || [];
     albums_json = albums_json.filter(album => album.is_public)
     let colors_json = json.colors
     let sizes_json = json.sizes
     let sizes_ret = {};
-    for (let i = 0; i < sizes_json.length; i++) {
+    for (let i = 0; i < sizes_json?.length || 0; i++) {
       sizes_ret[sizes_json[i].id] = sizes_json[i];
     }
 
     let colors_ret = {};
-    for (let i = 0; i < colors_json.length; i++) {
+    for (let i = 0; i < colors_json?.length || 0; i++) {
       colors_ret[colors_json[i].id] = colors_json[i];
     }
     let products = {};
     //only on server
     if (!browser) {
-      for (let i = 0; i < albums_json.length; i++) {
+      for (let i = 0; i < albums_json?.length || 0; i++) {
         let productResponse = await get_album_details(albums_json[i].id, fetch)
 
         products[albums_json[i].id] = productResponse;
@@ -207,6 +232,10 @@ import {sl_disable, sl_enable} from "$lib/utils/scroll-lock";
 import CallToActionForm from '$lib/components/CallToActionForm.svelte';
 import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
 import { flashy_page_view } from "$lib/flashy";
+import { page } from "$app/stores";
+import { cartStore } from './../stores/cartStore';
+import { shereCartStore } from "../stores/shereCartStore";
+
 //import FavoritesSidePopup from '$lib/components/FavoritesSidePopup.svelte';
   
   export let colors;
@@ -220,6 +249,27 @@ import { flashy_page_view } from "$lib/flashy";
   
   //export let onLoadCategory;
   //export let onLoadProduct;
+
+  function sum_mentries_qunatity(obj) {
+    let sum = 0
+
+    function traverse(obj) {
+        if(typeof(obj) === 'object') {
+          for(let key in obj) {
+            if(obj.hasOwnProperty('quantity')) {
+              sum += obj['quantity']
+            }
+            else if(obj.hasOwnProperty(key)) {
+              traverse(obj[key])
+            }
+          }
+        }
+      }
+
+    traverse(obj)
+
+    return sum
+  }
   
   onMount(async()=> {
 
@@ -316,7 +366,34 @@ import { flashy_page_view } from "$lib/flashy";
       sessionStorage.removeItem('onLoadTask');
     }
     
+    let pparams = $page;
+    let copy_cart = pparams.query.get('cart_json');
 
+    if(copy_cart) {
+      copy_cart = JSON.parse(copy_cart);
+      let products_ids = Object.keys(copy_cart);
+      console.log('products_ids: ', products_ids);
+      let products_info = await get_products_info(products_ids);
+      console.log('products: ', products_info);
+      let temp_cart = {};
+      for(let i = 0; i < products_info.length; i++) {
+        let product = products_info[i];
+        let product_id = product.id;
+        let product_entries = copy_cart[product_id];
+
+        temp_cart[product_id] = {
+          ...products_info[i],
+          mentries: product_entries.mentries,
+          amount: product_entries.amount
+          //amount: sum_mentries_qunatity(product_entries),
+        };
+      }
+      shereCartStore.setCart(temp_cart);
+      
+    shereCartStore.openModal()
+      //cartStore.set();
+    }
+    /**/
     window.addEventListener('scroll', () => {
       document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
     });
