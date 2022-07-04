@@ -160,7 +160,7 @@
                     {/each}
                     {#each sorted_cols_str as rowKey}
                         
-                            <slot name="val-cell" row_index={rowData[rowKey]} row_data={rowData} row_key={rowKey}>
+                            <slot name="val-cell" original_data={data} row_index={rowData[rowKey]} row_data={rowData} row_key={rowKey}>
                                 <td></td>
                             </slot>
                         

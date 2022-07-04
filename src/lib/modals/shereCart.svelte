@@ -7,6 +7,11 @@ import { userInfoStore } from '../../stores/stores.js';
 import {  cartStore } from '../../stores/cartStore.js';
 import { flip } from "svelte/animate";
 import { page } from '$app/stores';
+import { mentries_to_data_array } from '../utils/utils.js';
+import PivotEditTable from '../components/dashboard/PivotEditTable.svelte';
+import { onMount } from 'svelte';
+import { getLocalStorageStore } from './../../stores/localStorageStore.js';
+import ColorDisplay from '../components/ColorDisplay.svelte';
 
     function merge_and_sum_mentries(entries1, entries2) {
         // create a return variable dict
@@ -108,6 +113,14 @@ import { page } from '$app/stores';
             closeModal();
         }
     }
+    let ALL_SIZES;
+    let ALL_COLORS;
+    let ALL_VARIENTS;
+    onMount(async()=>{
+        ALL_SIZES = await getLocalStorageStore('sizes');
+        ALL_COLORS = await getLocalStorageStore('colors');
+        ALL_VARIENTS = await getLocalStorageStore('variants');
+    })
     
 </script>
 {#if browser}
@@ -137,16 +150,70 @@ import { page } from '$app/stores';
                                 </div>
                                 <div class="attributes">
                                     {#if $userInfoStore.me.show_prices}
-                                    <div class="attribute">
-                                            <div class="product-price">
-                                                {$shereCartStore.temp_cart[product_key].price} ש"ח
-                                            </div>
-                                    </div>
+                                        <div class="attribute">
+                                                <div class="product-price">
+                                                    {$shereCartStore.temp_cart[product_key].price} ש"ח
+                                                </div>
+                                        </div>
                                     {/if}
                                     <div class="attribute">
                                         <div class="product-quantity">
                                             {$shereCartStore.temp_cart[product_key].amount} יח
                                         </div>
+                                    </div>
+                                    <div class="attribute">
+                                        {#if $shereCartStore.temp_cart[product_key].show_sizes_popup}
+                                                <div on:mouseenter="{()=>{$shereCartStore.temp_cart[product_key].show_details=true}}" on:mouseleave="{()=>{$shereCartStore.temp_cart[product_key].show_details=false}}" data-product-key={product_key}>פירוט</div>
+                                                {#if $shereCartStore.temp_cart[product_key].show_details}
+                                                <div class="float-data">
+                                                    
+                                                    <PivotEditTable
+                                                        data={mentries_to_data_array( $shereCartStore.temp_cart[product_key].mentries)}
+                                                        rows={[ 
+                                                        {
+                                                            val:'color_id',
+                                                            hidden: false,
+                                                            label: 'צבע'
+                                                        },
+                                                        {
+                                                            val:'ver_id',
+                                                            hidden: false,
+                                                            label: 'מודל'
+                                                        }
+                                                        ]}
+                                                        colum={'size_id'}
+                                                        val={'quantity'}
+                                                        columSorter={function(arr){
+                                                            console.log(arr);
+                                                            if(arr.length == 0) return arr;
+                                                            return arr.sort(function(a,b){
+                                                                let a_val = ALL_SIZES.find(s=>s.size == a).code
+                                                                let b_val = ALL_SIZES.find(s=>s.size == b).code;
+                                                                return b_val.localeCompare(a_val);
+                                                            });
+                                                        }}
+                                                        >
+
+                                                        <th slot="col-header" let:col_data>
+                                                            {col_data}
+                                                        </th>
+                                                        <th slot="row-header" let:row_data>
+                                                                        {row_data['label']}
+                                                        </th>
+                                                        <td slot="row-cell" let:row_data let:row_key>
+                                                            {#if row_key == 'color_id'}
+                                                                <ColorDisplay color={ALL_COLORS.find(c=>c.id == row_data[row_key])}/>
+                                                            {:else if row_key != 'color_id'}
+                                                                    {row_data[row_key]}
+                                                            {/if}
+                                                        </td>
+                                                        <td slot="val-cell" let:original_data let:row_index let:row_key let:row_data>
+                                                            {original_data[row_index]?.quantity}
+                                                        </td>
+                                                    </PivotEditTable>
+                                                </div>
+                                            {/if}
+                                        {/if}
                                     </div>
                                 </div>
                                 
@@ -166,6 +233,31 @@ import { page } from '$app/stores';
 {/if}
 
 <style lang="scss">
+    .my-tooltip {
+    position: relative;
+    display: inline-block;
+    //border-bottom: 1px dotted black;
+        & .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+
+            /* Position the tooltip */
+            position: absolute;
+            z-index: 1;
+        }
+        &:hover .tooltiptext {
+            visibility: visible;
+        }
+    }
+
+
+
+
     .modal-body {
     }
     .add-all-btn {
@@ -204,7 +296,7 @@ import { page } from '$app/stores';
                 .attributes {
                     display: flex;
                     flex-direction: row;
-                    .attribute {
+                    .attribute, .my-tooltip .attribute {
                         //display: flex;
                         //flex-direction: row;
                         //justify-content: space-between;
@@ -213,6 +305,15 @@ import { page } from '$app/stores';
                         margin:5px;
                         border-radius: 25px;
                         background-color: #eee;
+                        .float-data {
+                            position: absolute;
+                            background-color: #eee;
+                            padding-left:40px;
+                            padding-right: 40px;
+                            padding-top: 10px;
+                            padding-bottom: 10px;
+                            z-index: 1;
+                        }
 
                         .product-price {
                             font-size: 14px;
