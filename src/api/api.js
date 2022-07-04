@@ -2,7 +2,7 @@
 
 let albumsData = {};
 import { getCookie } from "$lib/utils/cookies";
-import { BASE_URL,GET_ALL_USERS_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,GET_ALL_BUSINESS_TYPES_GROUPS,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL} from "./consts";
+import { BASE_URL,GET_ALL_USERS_URL, GET_CSRF_TOKEN_URL,PRODUCT_PHOTO_URL ,GET_ALL_BUSINESS_TYPES,GET_ALL_BUSINESS_TYPES_GROUPS,LEAD_DISTRIBUTION_URL, STATIC_BASE ,CONTACT_FORM_URL,SEARCH_API_URL , SUBMIT_CART_URL, LOGS_URL, ADMIN_GET_ALL_CAMPAINS_URL,USER_GET_CAMPAINS_URL, TRACK_CART_URL,PRODUCT_QUESTION_URL, GET_ALL_INTERESTS_URL, SAVE_LEAD_URL} from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
@@ -283,6 +283,11 @@ export function submit_distribution_lead(data){
     };
     let response;
     response = fetch_wraper(LEAD_DISTRIBUTION_URL, requestOptions);
+    return response;
+}
+
+export async function save_lead_to_server(data) {
+    let response =await fetch_wraper(SAVE_LEAD_URL, {method:"POST", body: JSON.stringify(data)});
     return response;
 }
 

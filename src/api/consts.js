@@ -41,6 +41,7 @@ export const LOGS_URL = BASE_URL + '/api/logs/';
 export const ADMIN_GET_ALL_CAMPAINS_URL = ADMIN_API_URL + '/get-all-campaigns/';
 export const USER_GET_CAMPAINS_URL = BASE_API_URL + 'get-user-campains/';
 export const GET_ALL_USERS_URL = BASE_URL + '/api/get-all-users/';
+export const SAVE_LEAD_URL = BASE_URL + '/api-save-lead/';
 
 // CRM
 export const LEAD_DISTRIBUTION_URL = BASE_API_URL + 'lead-distribution/';
