@@ -35,7 +35,7 @@ import {fly} from 'svelte/transition'
         let ElBussinessPhone = document.querySelector('#bussiness_phone')
         let formDataObj = {
             'bussiness_name': ElBussinessNmae.value,
-            'bussiness_type': ElBussinessType?.value,
+            'bussiness_type': ElBussinessType.value,
             'bussiness_address': ElBussinessAddress.value,
             'bussiness_contact_name': ElBussinessContactMna.value,
             'bussiness_phone': ElBussinessPhone.value,
@@ -45,9 +45,8 @@ import {fly} from 'svelte/transition'
         ElBussinessNmae_error = '';
         ElBussinessContactMna_error = '';
         ElBussinessPhone_error = '';
-        if ((ElBussinessType && ElBussinessType.value === '') || business_type_results.length === 0) {
+        if (ElBussinessType.value === ''){
             ElBussinessType_error = 'שדה זה הוא שדה חובה'
-            
             errorFound = true;
         }
         if (ElBussinessNmae.value === '') {
@@ -72,8 +71,8 @@ import {fly} from 'svelte/transition'
         save_lead_to_server(formDataObj).then(res => {
             show_thank_you_message = true;
             document.querySelector('form').reset();
-            business_type_results = undefined;
-            document.querySelector('.autocomplete-clear-button').click();
+            // business_type_results = undefined;
+            // document.querySelector('.autocomplete-clear-button').click();
         }).catch(err => {
             alert(err);
         })
@@ -86,7 +85,7 @@ import {fly} from 'svelte/transition'
         <div class="thank-you-message" in:fly="{{y:500, duraion:100}}">
             <div class="close-btn" on:click="{()=>{show_thank_you_message= false;}}">X</div>
             <div class="message">
-                <h2>תודה שנרשמתם לחנות שלנו</h2>
+                <h2>תודה שנרשמתם לדיוור שלנו</h2>
                 <p>אנחנו נחזור אליכם בהקדם</p>
             </div>
         </div>
@@ -125,7 +124,8 @@ import {fly} from 'svelte/transition'
                     </span>
                 {/if}
             </label>
-            
+            <input required type="text" class="form-control" id="bussiness_type" placeholder="נגריות/מוסכים/וכ'ו">
+            <!--
             <AutoComplete multiple={true} id="business_type" items={btypes} createText="לא נמצאו תוצאות, בחר ב'אחר'"
                 create=false placeholder="תחום עיסוק" className="autocomplete-cls" delay=200 localFiltering="{false}" labelFieldName="name" valueFieldName="name" bind:value={business_type_results}  >
                 <div class="tag-wraper" slot="tag" let:label="{label}" let:item="{item}" let:unselectItem="{unselectItem}">
@@ -142,10 +142,11 @@ import {fly} from 'svelte/transition'
                     {/if}
                   </div>
             </AutoComplete>
+            -->
         </div>
         
         
-        {#if business_type_results && business_type_results.includes('אחר - פרט למטה')}
+        <!--{#if business_type_results && business_type_results.includes('אחר - פרט למטה')}
             <div class="form-group">
                 <label for="bussiness_type">תחום עיסוק - פרט בבקשה
                     {#if ElBussinessType_error != ''}
@@ -156,7 +157,7 @@ import {fly} from 'svelte/transition'
                 </label>
                 <input type="text" class="form-control" id="bussiness_type" placeholder="תחום עיסוק">
             </div>
-        {/if}
+        {/if}-->
 
         <div class="form-group">
             <label for="bussiness_address">כתובת</label>
@@ -187,7 +188,9 @@ import {fly} from 'svelte/transition'
             <input type="text" required class="form-control" id="bussiness_phone" placeholder="טלפון">
         </div>
 
-        <button class="sub-btn" on:click|preventDefault="{submit_form}" type="submit">רוצה הצעה משתלמת!</button>
+        <button class="sub-btn" on:click|preventDefault="{submit_form}" type="submit">
+            רוצה להצטרף לדיוור בוואצאפ
+        </button>
 
     </form>
 </main>
@@ -329,7 +332,7 @@ import {fly} from 'svelte/transition'
                     display: inline-block;
                     font-weight: 400;
                     text-align: center;
-                    white-space: nowrap;
+                    //white-space: nowrap;
                     vertical-align: middle;
                     -webkit-user-select: none;
                     -moz-user-select: none;
@@ -343,6 +346,7 @@ import {fly} from 'svelte/transition'
                     line-height: 1.5;
                     border-radius: .25rem;
                     margin-bottom: 5px;
+                    font-weight: bold;
                     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 
                     &:hover {
