@@ -42,9 +42,9 @@ const createCartStore = () => {
             if(store[product.id]) {
               exist = true;
             } else {
-              product.amount = 0;
-              product.print = false;
-              product.embro = false;
+              product.amount = product.amount || 0;
+              product.print = product.print || false;
+              product.embro = product.embro || false;
               store[product.id] = product;
               set(store);
             }
