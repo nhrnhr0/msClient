@@ -132,6 +132,15 @@ import {fly} from 'svelte/transition'
                     <span class="tag">{label}</span>
                     <span class="delete-tag" on:click|preventDefault="{unselectItem(item)}">x</span>
                 </div>
+                <div slot="item" let:item let:label>
+                    {#if label == 'אחר - פרט למטה'}
+                        <div class="other-option">
+                            {@html label}
+                        </div>
+                    {:else}
+                        {@html label}
+                    {/if}
+                  </div>
             </AutoComplete>
         </div>
         
@@ -185,6 +194,10 @@ import {fly} from 'svelte/transition'
 </div>
 
 <style lang="scss">
+    .other-option {
+        background: #ccc;
+        padding:5px;
+    }
     .overlay {
         position: fixed;
         top: 0;
