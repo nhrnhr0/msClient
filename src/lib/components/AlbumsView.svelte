@@ -66,22 +66,24 @@ import {
     {#if groupedAlbums && groupedAlbums.length > 0}
     <div class="albums-view-container">
         {#each Object.entries(groupedAlbums) as [index, album]}
-            <div on:click="{()=>{menuItemClicked(album.value[0])}}" title={album.key} class="album-view-top-level">
-                <img alt="" src="{CLOUDINARY_URL}{album.value[0]?.cimage}" width="30px" height="30px"/>
-                <div class="text">
-                    {album.key || 'אחר'}
-                </div>
-                <div class="sub-category">
-                    {#each album.value as sub_album}
-                        <div class="album-item" on:click={(e) => {menuItemClicked(sub_album);e.stopPropagation();}}>
-                            <img alt="" src="{CLOUDINARY_URL}{sub_album.cimage}" width="30px" height="30px"/>
-                            <div class="text">
-                                {sub_album.title}
+            {#if album.value && album.value.length > 0}
+                <div on:click="{()=>{menuItemClicked(album.value[0])}}" title={album.key} class="album-view-top-level">
+                    <img alt="" src="{CLOUDINARY_URL}{album.value[0]?.cimage}" width="30px" height="30px"/>
+                    <div class="text">
+                        {album.key || 'אחר'}
+                    </div>
+                    <div class="sub-category">
+                        {#each album.value || [] as sub_album}
+                            <div class="album-item" on:click={(e) => {menuItemClicked(sub_album);e.stopPropagation();}}>
+                                <img alt="" src="{CLOUDINARY_URL}{sub_album.cimage}" width="30px" height="30px"/>
+                                <div class="text">
+                                    {sub_album.title}
+                                </div>
                             </div>
-                        </div>
-                    {/each}
+                        {/each}
+                    </div>
                 </div>
-            </div>
+            {/if}
         {/each}
     </div>
     {/if}
