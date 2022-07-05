@@ -616,6 +616,7 @@ import AlbumsView from "./components/AlbumsView.svelte";
 
         #search_form {
             flex-basis: 50%;
+            z-index: 99999;
             :global(.autocomplete) {
                 min-width: 83px;
                 width: 100%;

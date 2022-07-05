@@ -116,7 +116,6 @@ import AlbumsView from '$lib/components/AlbumsView.svelte';
             }, {});
             // put undefined topLevelCategory albums at the end
             
-            console.log('groupedAlbums', groupedAlbums);
 
 
             let groupedAlbumsTempArr = [];

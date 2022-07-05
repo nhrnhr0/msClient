@@ -160,7 +160,7 @@
                     {/each}
                     {#each sorted_cols_str as rowKey}
                         
-                            <slot name="val-cell" row_index={rowData[rowKey]} row_data={rowData} row_key={rowKey}>
+                            <slot name="val-cell" original_data={data} row_index={rowData[rowKey]} row_data={rowData} row_key={rowKey}>
                                 <td></td>
                             </slot>
                         
@@ -176,6 +176,34 @@
         border: 1px solid red;
         &.hidden {
             border: 1px solid blue;
+        }
+    }
+
+    table {
+        width: 100%;
+        margin: auto;
+        border: 1px solid black;
+        text-align: center;
+        thead {
+            background-color: #ccc;
+            tr {
+                th {
+                    padding: 10px;
+                    border:1px solid black;
+                }
+            }
+        }
+        tbody {
+            tr {
+                td {
+                    border: 1px solid black;
+                    //padding: 10px;
+                }
+            }
+            // color even rows
+            tr:nth-child(even) {
+                background-color: #f5f5f5;
+            }
         }
     }
 </style>

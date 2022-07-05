@@ -90,7 +90,8 @@
     let json = await response;
     if(response.detail == "Invalid token.") {
       userInfoStore.set({
-        is_logged: false
+        is_logged: false,
+        me:{},
       });
 
       if(browser){
@@ -214,7 +215,9 @@
   <About />
 {/if}
 <ContentForm></ContentForm>
+<!--
 <BusinessOwnerPopup/>
+-->
 <link rel="preload" as="image" href="https://img.icons8.com/external-becris-lineal-becris/48/000000/external-check-mintab-for-ios-becris-lineal-becris-1.png">
 
 <script>
@@ -230,7 +233,7 @@ import { campainsStore } from '../stores/stores';
 
 import {sl_disable, sl_enable} from "$lib/utils/scroll-lock";
 import CallToActionForm from '$lib/components/CallToActionForm.svelte';
-import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
+//import BusinessOwnerPopup from "$lib/components/BusinessOwnerPopup.svelte";
 import { flashy_page_view } from "$lib/flashy";
 import { page } from "$app/stores";
 import { cartStore } from './../stores/cartStore';

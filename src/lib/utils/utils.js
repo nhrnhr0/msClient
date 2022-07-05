@@ -2,6 +2,39 @@
 import * as localizedFormat from "dayjs/plugin/localizedFormat";
 dayjs.extend(localizedFormat);*/
 
+export function mentries_to_data_array(mentries) {
+	let data = [];
+        for(let size_id_idx in Object.entries(mentries)) {
+            let size_id = Object.entries(mentries)[size_id_idx][0];
+            let colors_vals = Object.entries(mentries)[size_id_idx][1];
+            for(let color_id_idx in Object.entries(colors_vals)) {
+                let color_id = Object.entries(colors_vals)[color_id_idx][0];
+                let inner_vals = Object.entries(colors_vals)[color_id_idx][1];
+                if (inner_vals.hasOwnProperty('quantity')) {
+                    data.push({
+                        'size_id':color_id,
+                        'color_id':size_id,
+                        'quantity':inner_vals['quantity']
+                    });
+                }else if(Object.entries(inner_vals).length > 0) {
+                    for(let ver_id_idx in Object.entries(inner_vals)) {
+                        let ver_id = Object.entries(inner_vals)[ver_id_idx][0];
+                        let last_vals = Object.entries(inner_vals)[ver_id_idx][1];
+                            if (last_vals.hasOwnProperty('quantity')) {
+                                data.push({
+                                    'size_id':color_id,
+                                    'color_id':size_id,
+                                    'ver_id': ver_id,
+                                    'quantity':last_vals['quantity']
+                                });
+                            }
+                    }
+                }
+            }
+        }
+		return data;
+	}
+
 export function isNumeric(str) {
     if (typeof str != "string") return false // we only process strings!  
     return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
