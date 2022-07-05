@@ -11,7 +11,7 @@ import {
     export let direction;
     let groupedAlbums; // group groupedAlbums albumsJsonStore by topLevelCategory, if topLevelCategory is not found, create others
         albumsJsonStore.subscribe((albums) => {
-            if (albums.length > 0) {
+            if (albums && albums.length > 0) {
             let groupedAlbumsTemp = albums.reduce((acc, album) => {
                 const topLevelCategory = album.topLevelCategory;
                 if (!acc[topLevelCategory]) {
@@ -63,7 +63,7 @@ import {
 </script>
 {#if groupedAlbums}
 <div class="albums-view" style="direction:{direction}">
-    {#if groupedAlbums.length > 0}
+    {#if groupedAlbums && groupedAlbums.length > 0}
     <div class="albums-view-container">
         {#each Object.entries(groupedAlbums) as [index, album]}
             <div on:click="{()=>{menuItemClicked(album.value[0])}}" title={album.key} class="album-view-top-level">
