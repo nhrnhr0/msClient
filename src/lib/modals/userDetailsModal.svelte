@@ -34,9 +34,11 @@ import { apiGetAllUsers } from './../../api/api';
         if (admin_as_user) {
             $userInfoStore.actAs = all_users.find((user)=> {return user.id == parseInt(admin_as_user)});
         }
+        window.location.reload();
     }
     function remove_admin_as_user() {
         $userInfoStore.actAs = undefined;
+        window.location.reload();
     }
 
     function update_user_detail() {

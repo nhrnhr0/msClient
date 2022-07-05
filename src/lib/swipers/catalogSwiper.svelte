@@ -74,8 +74,6 @@ let mouse_over_left_arrow = false;
                 loaded_data = newData;
                 isLoaded = true;
             });
-            
-            
         }
         }
     }

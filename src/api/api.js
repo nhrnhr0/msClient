@@ -323,7 +323,13 @@ export function get_album_details(albumId, server_fetch=undefined, force_new=fal
         return albumsData[albumId];
     }
     else {
-        let response = fetch_wraper(STATIC_BASE + "/_get_album_images/" + albumId,{method:"GET"}, server_fetch);
+
+        let url_params = ''
+        if(get(userInfoStore).actAs) {
+            url_params += 'actAs=' + encodeURIComponent(JSON.stringify(get(userInfoStore).actAs.id));
+        }
+        let url= STATIC_BASE + "/_get_album_images/" + albumId + (url_params? ("?" + url_params): '');
+        let response = fetch_wraper(url, {method:"GET"}, server_fetch);
         
         albumsData[albumId] = response;
         return albumsData[albumId];
