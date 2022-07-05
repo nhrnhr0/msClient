@@ -119,8 +119,27 @@ import ColorDisplay from '../components/ColorDisplay.svelte';
     onMount(async()=>{
         ALL_SIZES = await getLocalStorageStore('sizes');
         ALL_COLORS = await getLocalStorageStore('colors');
-        ALL_VARIENTS = await getLocalStorageStore('variants');
+        ALL_VARIENTS = await getLocalStorageStore('varients');
     })
+
+    function get_pivot_rows(use_varients) {
+        console.log('use_varients:', use_varients);
+        let rows = [ 
+                        {
+                            val:'color_id',
+                            hidden: false,
+                            label: 'צבע'
+                        },
+                    ]
+        if (use_varients) {
+            rows.push({
+                            val:'ver_id',
+                            hidden: false,
+                            label: 'מודל'
+                        })
+        }
+        return rows;
+    }
     
 </script>
 {#if browser}
@@ -161,41 +180,32 @@ import ColorDisplay from '../components/ColorDisplay.svelte';
                                             {$shereCartStore.temp_cart[product_key].amount} יח
                                         </div>
                                     </div>
+                                    
+                                    {#if $shereCartStore.temp_cart[product_key].show_sizes_popup}
                                     <div class="attribute">
-                                        {#if $shereCartStore.temp_cart[product_key].show_sizes_popup}
                                                 <div on:mouseenter="{()=>{$shereCartStore.temp_cart[product_key].show_details=true}}" on:mouseleave="{()=>{$shereCartStore.temp_cart[product_key].show_details=false}}" data-product-key={product_key}>פירוט</div>
                                                 {#if $shereCartStore.temp_cart[product_key].show_details}
                                                 <div class="float-data">
                                                     
                                                     <PivotEditTable
+                                                        tableClass="mentries-table"
                                                         data={mentries_to_data_array( $shereCartStore.temp_cart[product_key].mentries)}
-                                                        rows={[ 
-                                                        {
-                                                            val:'color_id',
-                                                            hidden: false,
-                                                            label: 'צבע'
-                                                        },
-                                                        {
-                                                            val:'ver_id',
-                                                            hidden: false,
-                                                            label: 'מודל'
-                                                        }
-                                                        ]}
+                                                        rows={get_pivot_rows(!$shereCartStore.temp_cart[product_key].varients.length == 0)}
                                                         colum={'size_id'}
                                                         val={'quantity'}
                                                         columSorter={function(arr){
-                                                            console.log(arr);
+                                                            console.log('columSorter:', arr);
                                                             if(arr.length == 0) return arr;
                                                             return arr.sort(function(a,b){
-                                                                let a_val = ALL_SIZES.find(s=>s.size == a).code
-                                                                let b_val = ALL_SIZES.find(s=>s.size == b).code;
+                                                                let a_val = ALL_SIZES.find(s=>s.id == a)?.code
+                                                                let b_val = ALL_SIZES.find(s=>s.id == b)?.code;
                                                                 return b_val.localeCompare(a_val);
                                                             });
                                                         }}
                                                         >
 
                                                         <th slot="col-header" let:col_data>
-                                                            {col_data}
+                                                            {ALL_SIZES.find(s=>s.id == col_data).size}
                                                         </th>
                                                         <th slot="row-header" let:row_data>
                                                                         {row_data['label']}
@@ -204,17 +214,22 @@ import ColorDisplay from '../components/ColorDisplay.svelte';
                                                             {#if row_key == 'color_id'}
                                                                 <ColorDisplay color={ALL_COLORS.find(c=>c.id == row_data[row_key])}/>
                                                             {:else if row_key != 'color_id'}
+                                                                {#if row_key == 'ver_id'}
+                                                                    {ALL_VARIENTS.find(v=>v.id == row_data[row_key])?.name}
+                                                                {:else}
                                                                     {row_data[row_key]}
+                                                                {/if}
                                                             {/if}
                                                         </td>
                                                         <td slot="val-cell" let:original_data let:row_index let:row_key let:row_data>
-                                                            {original_data[row_index]?.quantity}
+                                                            {original_data[row_index]?.quantity || ''}
                                                         </td>
                                                     </PivotEditTable>
                                                 </div>
                                             {/if}
-                                        {/if}
+                                        
                                     </div>
+                                    {/if}
                                 </div>
                                 
                             </div>
@@ -233,6 +248,44 @@ import ColorDisplay from '../components/ColorDisplay.svelte';
 {/if}
 
 <style lang="scss">
+    #shere_cart_modal {
+        overflow: scroll;
+    }
+    .overlay {
+        width: 100%;
+        height: 100%;
+    }
+
+    :global(.mentries-table) {
+        width: 100%;
+        margin: auto;
+        border: 1px solid black;
+        text-align: center;
+        :global(thead) {
+            background-color: #ccc;
+            :global(tr) {
+                :global(th) {
+                    padding: 10px;
+                    border:1px solid black;
+                }
+            }
+        }
+        :global(tbody) {
+            :global(tr) {
+                :global(td) {
+                    border: 1px solid black;
+                    //padding: 10px;
+                }
+            }
+            // color even rows
+            tr:nth-child(even) {
+                background-color: #f5f5f5;
+            }
+        }
+    }
+
+
+
     .my-tooltip {
     position: relative;
     display: inline-block;
@@ -257,8 +310,12 @@ import ColorDisplay from '../components/ColorDisplay.svelte';
 
 
 
-
+    .modal_content {
+        overflow: auto;
+    }
     .modal-body {
+        overflow: visible;
+        padding-bottom: 350px;
     }
     .add-all-btn {
         
@@ -308,11 +365,15 @@ import ColorDisplay from '../components/ColorDisplay.svelte';
                         .float-data {
                             position: absolute;
                             background-color: #eee;
-                            padding-left:40px;
-                            padding-right: 40px;
-                            padding-top: 10px;
-                            padding-bottom: 10px;
+                            padding-left:20px;
+                            padding-right: 20px;
+                            padding-top: 12px;
+                            padding-bottom: 0px;
                             z-index: 1;
+
+                            max-width: 100%;
+                            overflow: scroll;
+                            right: 0px
                         }
 
                         .product-price {

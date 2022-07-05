@@ -178,4 +178,32 @@
             border: 1px solid blue;
         }
     }
+
+    table {
+        width: 100%;
+        margin: auto;
+        border: 1px solid black;
+        text-align: center;
+        thead {
+            background-color: #ccc;
+            tr {
+                th {
+                    padding: 10px;
+                    border:1px solid black;
+                }
+            }
+        }
+        tbody {
+            tr {
+                td {
+                    border: 1px solid black;
+                    //padding: 10px;
+                }
+            }
+            // color even rows
+            tr:nth-child(even) {
+                background-color: #f5f5f5;
+            }
+        }
+    }
 </style>
