@@ -570,12 +570,17 @@
                   </div>
                   <div class="form-group">
                     <div class="form-control">
-                      {#if $userInfoStore?.me?.is_superuser}
+                      {#if $userInfoStore?.isLogin}
                         <!-- האם הזמנה או הצעת מחיר -->
-                        <select name="order_type">
-                          <option value="הזמנה">הזמנה</option>
-                          <option value="הצעת מחיר">הצעת מחיר</option>
-                        </select>
+                        <div class="form-group">
+                          <div class="form-control">
+                            <label for="order_type">סוג הזמנה</label>
+                            <select name="order_type">
+                              <option value="הזמנה">הזמנה</option>
+                              <option value="הצעת מחיר">הצעת מחיר</option>
+                            </select>
+                          </div>
+                        </div>
                       {/if}
                     </div>
                   </div>

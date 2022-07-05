@@ -504,6 +504,7 @@ on:change={(event) => {
                                 },
                                 'w':{
                                     'id':product.id,
+                                    'title':product.title,
                                 }
                             }
                             );
