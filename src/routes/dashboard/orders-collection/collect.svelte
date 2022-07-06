@@ -1,9 +1,9 @@
 
 
 <script context="module">
-    import { fetch_wraper } from "@src/api/api";
+    import { fetch_wraper } from "src/api/api";
     
-    import { MORDER_GET_ORDER_DETAIL_TO_COLLECT } from "@src/api/consts";
+    import { MORDER_GET_ORDER_DETAIL_TO_COLLECT } from "src/api/consts";
 import { onMount } from "svelte";
     
     
@@ -11,10 +11,10 @@ import { onMount } from "svelte";
 <script>
 import { page } from "$app/stores";
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
-import { CLOUDINARY_URL } from "@src/api/consts";
-import StockEditPopup from "@src/lib/components/dashboard/StockEditPopup.svelte";
+import { CLOUDINARY_URL } from "src/api/consts";
+import StockEditPopup from "src/lib/components/dashboard/StockEditPopup.svelte";
 import { getContext } from 'svelte';
-import { BASE_URL } from "@src/api/consts";
+import { BASE_URL } from "src/api/consts";
 import { notifier } from "@beyonk/svelte-notifications";
 import { Spinner } from "sveltestrap";
 

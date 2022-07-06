@@ -1,11 +1,7 @@
 <script>
     import {
-        colorsJsonStore,
-        sizesJsonStore
-    } from "@src/stores/stores";
-    import {
         getLocalStorageStore
-    } from "@src/stores/localStorageStore";
+    } from "src/stores/localStorageStore";
     import AutoComplete from "simple-svelte-autocomplete";
 
 
@@ -14,16 +10,15 @@
     } from "svelte";
     import {
         cartesian
-    } from "@src/lib/utils/utils";
+    } from "src/lib/utils/utils";
     import {
         Spinner
     } from "sveltestrap";
     import {
         morder_edit_add_product_entries,
         morder_edit_add_provider_entry
-    } from "@src/api/api";
-    import { apiSearchProviders } from "@src/api/api";
-import { fastpivot } from "@src/lib/utils/utils";
+    } from "src/api/api";
+    import { apiSearchProviders } from "src/api/api";
 import PivotEditTable from "../PivotEditTable.svelte";
 import ColorDisplay from "../../ColorDisplay.svelte";
 import fragment from 'svelte-fragment';

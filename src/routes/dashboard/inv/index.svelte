@@ -19,9 +19,9 @@
 
 
 <script>
-import InventoryEditList from "@src/lib/components/dashboard/InventoryEditList.svelte";
-import { GET_ALL_INVENTORY } from "@src/api/consts";
-import { fetch_wraper } from "@src/api/api";
+import InventoryEditList from "src/lib/components/dashboard/InventoryEditList.svelte";
+import { GET_ALL_INVENTORY } from "src/api/consts";
+import { fetch_wraper } from "src/api/api";
 import { onMount } from "svelte";
 import { Spinner } from "sveltestrap";
 export let data;

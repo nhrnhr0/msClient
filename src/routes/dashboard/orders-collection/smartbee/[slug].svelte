@@ -1,5 +1,5 @@
 <script context="module">
-import { api_get_smartbee_doc } from "@src/api/api";
+import { api_get_smartbee_doc } from "src/api/api";
 import { onMount } from "svelte";
 import { page } from "$app/stores";
 </script>

@@ -1,7 +1,7 @@
 
 
 <script>
-import { apiGetInventoryHistory, get_warehouses_api,move_stock_entry,apiSearchWarehouses,update_stock_entry } from '@src/api/api';
+import { apiGetInventoryHistory, get_warehouses_api,move_stock_entry,apiSearchWarehouses,update_stock_entry } from 'src/api/api';
 import AutoComplete from "simple-svelte-autocomplete";
 import { writable } from 'svelte/store';
 import {notifier } from '@beyonk/svelte-notifications'
@@ -15,8 +15,8 @@ const { close } = getContext('simple-modal');
     export let originalData;
     export let replaceData,updateData;
     import { createEventDispatcher } from 'svelte';
-import { fetch_wraper } from '@src/api/api';
-import { GET_STOCK_BY_ID_URL } from '@src/api/consts';
+import { fetch_wraper } from 'src/api/api';
+import { GET_STOCK_BY_ID_URL } from 'src/api/consts';
 
     const dispatch = createEventDispatcher();
 

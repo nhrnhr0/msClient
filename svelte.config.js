@@ -50,12 +50,13 @@ const config = {
       },
       resolve: {
 				alias: {
+          /*
                     // these are the aliases and paths to them
           '@api': path.resolve('./src/api'),
 					'@components': path.resolve('./src/lib/components'),
 					'@lib': path.resolve('./src/lib'),
-					'@utils': path.resolve('./src/lib/utils'),
-          '@src': path.resolve('./src'),
+					'@utils': path.resolve('./src/lib/utils'),*/
+          'src': path.resolve('./src'),
 				}
 			}
 

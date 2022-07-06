@@ -1,6 +1,6 @@
 <script>
-import { CLOUDINARY_URL } from "@src/api/consts";
-import { PROVIDERS_STORE,PROVIDERS_STORE_IDS_AS_KEYS, } from "@src/stores/localStorageStore";
+import { CLOUDINARY_URL } from "src/api/consts";
+import { PROVIDERS_STORE,PROVIDERS_STORE_IDS_AS_KEYS, } from "src/stores/localStorageStore";
 import AutoComplete from "simple-svelte-autocomplete";
 import { onDestroy, onMount } from "svelte";
 import { Spinner } from "sveltestrap";

@@ -3,11 +3,11 @@
 		"baseUrl": ".",
 		"paths": {
 			
-			"@api": ["src/api"],
+			/*"@api": ["src/api"],
 			"@components": ["src/lib/components"],
 			"@lib": ["src/lib"],
 			"@utils": ["src/lib/utils"],
-			"@src": ["src"],
+			"@src": ["src"],*/
 		}
 	},
 	"include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.svelte", "src/stores/queryStore.ts"]

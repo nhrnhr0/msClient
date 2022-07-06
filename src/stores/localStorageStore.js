@@ -1,6 +1,6 @@
 import { browser } from "$app/env";
-import { WAREHOUSES_API_URL,SIZES_API_URL,COLORS_API_URL,VARIANTS_API_URL ,BASE_URL} from "@src/api/consts";
-import { fetch_wraper } from "@src/api/api";
+import { WAREHOUSES_API_URL,SIZES_API_URL,COLORS_API_URL,VARIANTS_API_URL ,BASE_URL} from "src/api/consts";
+import { fetch_wraper } from "src/api/api";
 import { derived, writable } from "svelte/store";
 
 

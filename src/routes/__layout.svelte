@@ -43,9 +43,6 @@
   import SingleAmountModal from '$lib/modals/singleAmountModal.svelte';
 import ProductQuestionModal from "$lib/modals/productQuestionModal.svelte";
 import ProductPhotoModal from "$lib/modals/productPhotoModal.svelte";
-import { fetch_wraper,get_album_details } from "@src/api/api";
-import { MAIN_PAGE_API } from "@src/api/consts";
-import { browser } from "$app/env";
     import CartHistory from "$lib/modals/cartHistory.svelte";
   import HistoryProducts from "$lib/modals/historyProducts.svelte";
   import ShereCart from "$lib/modals/shereCart.svelte";

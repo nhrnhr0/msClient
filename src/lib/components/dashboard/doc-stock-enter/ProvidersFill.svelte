@@ -1,7 +1,5 @@
 <!--
 <script>
-import { request_provider_info } from "@src/api/api";
-import { getLocalStorageStore } from "@src/stores/localStorageStore";
 
 import { onMount } from "svelte";
 import { Spinner } from "sveltestrap";

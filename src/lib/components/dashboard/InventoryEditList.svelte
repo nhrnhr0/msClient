@@ -11,8 +11,8 @@ import StockEditPopup from './StockEditPopup.svelte';
 import {flip} from "svelte/animate";
     import {dndzone} from "svelte-dnd-action";
     import { getContext } from 'svelte';
-    import {dateCellFormatter} from '@src/lib/utils/utils';
-import { BASE_URL,CLOUDINARY_URL } from '@src/api/consts';
+    import {dateCellFormatter} from 'src/lib/utils/utils';
+import { BASE_URL,CLOUDINARY_URL } from 'src/api/consts';
 
     const { open } = getContext('simple-modal');
 

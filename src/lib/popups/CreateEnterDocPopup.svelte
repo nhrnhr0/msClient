@@ -1,9 +1,9 @@
 <script>
       import AutoComplete from "simple-svelte-autocomplete";
-import { apiSearchProviders,apiSearchWarehouses,apiSubmitCreateDocStockEnter } from "@src/api/api";
+import { apiSearchProviders,apiSearchWarehouses,apiSubmitCreateDocStockEnter } from "src/api/api";
 import { Spinner } from "sveltestrap";
 import { getContext, onMount } from 'svelte';
-import { getLocalStorageStore } from "@src/stores/localStorageStore";
+import { getLocalStorageStore } from "src/stores/localStorageStore";
 
 const { open, close } = getContext('simple-modal');
   export let refresh;

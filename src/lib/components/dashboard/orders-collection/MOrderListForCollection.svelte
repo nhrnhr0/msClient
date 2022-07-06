@@ -1,14 +1,14 @@
 
 
 <script>
-import { get_orders_to_collect,fetch_wraper } from "@src/api/api";
+import { get_orders_to_collect,fetch_wraper } from "src/api/api";
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
-import {dateCellFormatter} from '@src/lib/utils/utils';
+import {dateCellFormatter} from 'src/lib/utils/utils';
 import { goto } from '$app/navigation';
 
 import { onMount } from "svelte";
 import { Spinner } from "sveltestrap";
-import { BASE_URL } from "@src/api/consts";
+import { BASE_URL } from "src/api/consts";
     export let data;
     export let selected;
     let loading = false;

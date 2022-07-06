@@ -1,7 +1,7 @@
 
 <script context="module">
-import { LOAD_ALL_PROVIDER_REQUEST_TO_ORDER } from "@src/api/consts";
-import { fetch_wraper, fetch_wraper_without_json } from "@src/api/api";
+import { LOAD_ALL_PROVIDER_REQUEST_TO_ORDER } from "src/api/consts";
+import { fetch_wraper, fetch_wraper_without_json } from "src/api/api";
 import { onMount } from "svelte";
 import fragment from 'svelte-fragment';
 
@@ -44,17 +44,17 @@ import fragment from 'svelte-fragment';
 </script>
 
 <script>
-import PivotEditTable from "@src/lib/components/dashboard/PivotEditTable.svelte";
+import PivotEditTable from "src/lib/components/dashboard/PivotEditTable.svelte";
 import { Spinner } from "sveltestrap";
-import { getLocalStorageStore } from "@src/stores/localStorageStore";
-import ColorDisplay from "@src/lib/components/ColorDisplay.svelte";
-import { CLOUDINARY_URL,UPDATE_PROVIDER_REQUEST_ENTRY } from "@src/api/consts";
+import { getLocalStorageStore } from "src/stores/localStorageStore";
+import ColorDisplay from "src/lib/components/ColorDisplay.svelte";
+import { CLOUDINARY_URL,UPDATE_PROVIDER_REQUEST_ENTRY } from "src/api/consts";
 import { notifier } from "@beyonk/svelte-notifications";
 import { getContext } from 'svelte';
 const { open } = getContext('simple-modal');
 import SplitProviderPopup from './SplitProviderPopup.svelte';
-import { PROVIDERS_STORE, PROVIDERS_STORE_IDS_AS_KEYS } from "@src/stores/localStorageStore";
-import { CREATE_PROVIDER_DOCS } from "@src/api/consts";
+import { PROVIDERS_STORE, PROVIDERS_STORE_IDS_AS_KEYS } from "src/stores/localStorageStore";
+import { CREATE_PROVIDER_DOCS } from "src/api/consts";
     export let data;
     let rows = [
         {
