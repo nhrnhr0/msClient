@@ -2,7 +2,8 @@
 
 import { browser } from "$app/env";
 import Navbar from "src/lib/Navbar.svelte";
-import { session_get_all_colors, session_get_all_sizes, session_get_all_varients, session_get_main_categories } from "src/stores/sessionStorageApi";
+import { session_get_all_colors, session_get_all_sizes, session_get_all_varients, } from "src/stores/sessionStorageApi";
+import { onMount } from "svelte";
 
 // on load:
 // get all sizes, colors, and varients on the server and pass them to the page to be stored in a store.
@@ -22,14 +23,22 @@ import { session_get_all_colors, session_get_all_sizes, session_get_all_varients
         };
     }
 </script>
-<script>
-</script>
 
-
+<svelte:head>
+    <script>
+        function googleTranslateElementInit() {
+            let translate_element = new google.translate.TranslateElement({pageLanguage: 'he'}, 'google_translate_element');
+            console.log('translate_element', translate_element);
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</svelte:head>
 
 <Navbar></Navbar>
 
 <div id="main_wraper" class="bg-wraper">
+    <div id="google_translate_element"></div>
+
 <slot></slot>
 </div>
 

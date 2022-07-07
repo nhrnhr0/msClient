@@ -45,10 +45,10 @@ export async function session_get_all_varients() {
 }
 
 
-export async function session_get_main_categories() {
+/*export async function session_get_main_categories() {
         return await sessionStorageApi('main_categories',async () => {
             let res =  await my_fetch(`${BASE_URL}/get-main-categories/`);
             return res.json();
         }
     );
-}
+}*/

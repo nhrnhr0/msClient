@@ -3,7 +3,7 @@ import { browser } from '$app/env';
 
     import LogoSwiper from 'src/lib/swipers/logoSwiper.svelte';
 import { my_fetch } from 'src/network/my_fetch';
-import { session_get_main_categories } from 'src/stores/sessionStorageApi';
+import { indexdb_get_main_categories } from 'src/stores/dexie/api_wrapers';
     import {CLOUDINARY_URL, LOGOS_API_URL} from './../../api/consts';
     // function load
     // get the logos
@@ -19,7 +19,7 @@ import { session_get_main_categories } from 'src/stores/sessionStorageApi';
             method: 'GET',
         }, fetch);  
         let logos = await response.json();
-        let main_categories = await session_get_main_categories();
+        let main_categories = await indexdb_get_main_categories();
         return {
             props: {
                 logos,
@@ -73,7 +73,7 @@ import { session_get_main_categories } from 'src/stores/sessionStorageApi';
         // justify-content: center;
         // text-align: center;
         // position: relative;
-        flex-basis: calc(25% - 30px); /*  subtract the margin from the width  */
+        //flex-basis: calc(5% - 30px); /*  subtract the margin from the width  */
         background: rgb(43, 43, 43);
         color: white;
         padding: 5px;
@@ -82,7 +82,16 @@ import { session_get_main_categories } from 'src/stores/sessionStorageApi';
         transition: all 0.5s ease-in-out;
         //@include bg-gradient();
         cursor: pointer;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 0;
+        text-align: center;
+        max-width:160px;// calc(100% * (1/4) - 10px - 1px);
+        min-width: 160px;
+        
         a {
+            box-sizing:border-box; /*Don't forget this*/
+
             text-decoration: none;
             color: white;
             display: flex;
@@ -93,6 +102,11 @@ import { session_get_main_categories } from 'src/stores/sessionStorageApi';
                 width: 150px;
                 height: 150px;
                 margin: auto;
+                @media screen and (max-width: 600px) {
+                    width: 100px;
+                    height: 100px;
+                    
+                }
             }
             & span {
                 //position: absolute;
@@ -102,6 +116,10 @@ import { session_get_main_categories } from 'src/stores/sessionStorageApi';
                 background-color: rgba(255, 255, 255, 0);
                 font-weight: bold;
                 font-size: 22px;
+                transition: all 0.5s ease-in-out;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
             }
         }
         &:hover, &:focus {
@@ -118,6 +136,16 @@ import { session_get_main_categories } from 'src/stores/sessionStorageApi';
                     background-color: rgb(255, 255, 255);
                     color: black;
                 }
+            }
+        }
+
+        @media screen and(max-width: 570px) {
+            max-width: 120px;
+            min-width: 120px;
+            padding: 4px;
+            margin:5px;
+            & a span {
+                font-size: 16px;
             }
         }
     }
