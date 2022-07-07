@@ -271,7 +271,6 @@ import AlbumsView from "./components/AlbumsView.svelte";
 </nav>
 
 
-
 <style lang="scss">
     .same-size-icon {
         // 

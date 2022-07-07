@@ -32,7 +32,7 @@
                     "delay": 50,
                     "disableOnInteraction": false
                   }}'
-                  spaceBetween="{30}" 
+                spaceBetween="{30}" 
                 speed= "{2500}"
                 loop= "{true}"
                 allowTouchMove="{true}"

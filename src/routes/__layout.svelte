@@ -137,14 +137,14 @@ import ProductPhotoModal from "$lib/modals/productPhotoModal.svelte";
 <CartModal2 bind:this={$cartModalStore} />
 
 <style lang="scss">
-  .bg-wraper {
+  /*.bg-wraper {
     background: url("https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl");
     background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)),
       url("https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl") !important;
     background-position: center;
     overflow: hidden;
     padding-top: 78px;
-  }
+  }*/
 
   #footer {
     background: #353c41;
