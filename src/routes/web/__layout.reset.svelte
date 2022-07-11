@@ -43,5 +43,7 @@ import { onMount } from "svelte";
 </div>
 
 <style lang="scss">
-    
+    #main_wraper {
+        border: 1px solid red;;
+    }
 </style>

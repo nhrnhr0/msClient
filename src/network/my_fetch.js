@@ -12,11 +12,15 @@ export function my_fetch(url, options) {
         
         let fetch_func = () => {
             console.log(`${browser?'browser':'server'} fetching ======> `, url);
+            if(browser) {
+            }
+            
             fetch(url, options)
                 .then(res => {
                     if (res.ok) {
                         resolve(res);
                     } else {
+                        console.error(`${browser?'browser':'server'} fetching error ======> `, url, res.status, res.statusText);
                         if (retry < MAX_RETRY) {
                             retry++;
                             setTimeout(fetch_func, WAIT_ON_ERROR_MILS);
