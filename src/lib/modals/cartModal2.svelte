@@ -298,7 +298,7 @@
 	}
 	let show_prices = false;
 	$: {
-		show_prices = $userInfoStore && $userInfoStore.isLogin;
+		show_prices = $userInfoStore && $userInfoStore.isLogin && $userInfoStore.me && $userInfoStore.me.show_prices == true;
 	}
 	//let checked = true;
 
@@ -452,14 +452,14 @@
                             <td>
                               <div class="product-price">
                                 {#if item.out_of_stock == false}
-                                  {item.price}₪
+                                  {item.newPrice || item.price}₪
                                 {/if}
                               </div>
                             </td>
                             <td>
                               <div class="product-total-price">
                                 {#if item.out_of_stock == false}
-                                  {roundHalf(item.price * item.amount)}₪
+                                  {roundHalf((item.newPrice || item.price) * item.amount)}₪
                                 {/if}
                               </div>
                             </td>
@@ -481,7 +481,7 @@
 											}*/
                               return (
                                 acc +
-                                val.price *
+                                (val.newPrice || val.price) *
                                   val.amount *
                                   (val.out_of_stock == false ? 1 : 0)
                               );
@@ -499,7 +499,7 @@
 										}*/
                           return (
                             acc +
-                            val.price *
+                            (val.newPrice || val.price) *
                               val.amount *
                               1.17 *
                               (val.out_of_stock == false ? 1 : 0)
@@ -732,7 +732,7 @@
                                 :'מחיר ליח
                               </div>
                               <div class="table-cell">
-                                <span class="">{$cartStore[key].price}₪</span>
+                                <span class="">{$cartStore[key].newPrice || $cartStore[key].price}₪</span>
                               </div>
                             </div>
                           {/if}
@@ -1083,7 +1083,7 @@
     width: 315px;
     height: calc(100vh - calc(100vh - 100%));
     //z-index: 997;
-    z-index: 2;
+    z-index: 10;
     top: 0;
     //right: -340px;
     box-shadow: -10px 0 15px rgba(0, 0, 0, 0.1);
