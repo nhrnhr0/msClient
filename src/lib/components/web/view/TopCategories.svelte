@@ -49,7 +49,7 @@
         >
             {#each categories as category}
                 <SwiperSlide>
-                    <a href="/web/view/{category.id}" class="category" class:active={category.id == $page.params.id}>
+                    <a href="/web/view/{category.id}/albums/all" class="category" class:active={category.id == $page.params.id}>
                         <img src="{CLOUDINARY_URL}{category.get_image}" alt="{category.name}">
                         <div>{category.name}</div>
                     </a>

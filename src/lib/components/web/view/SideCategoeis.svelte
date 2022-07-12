@@ -1,11 +1,24 @@
 <script>
-import { CLOUDINARY_URL } from "src/api/consts";
-import { Spinner } from "sveltestrap";
-import { Swiper, SwiperSlide } from 'swiper/svelte';
-import {page} from '$app/stores';
+    import {
+        CLOUDINARY_URL
+    } from "src/api/consts";
+    import {
+        Spinner
+    } from "sveltestrap";
+    import {
+        Swiper,
+        SwiperSlide
+    } from 'swiper/svelte';
+    import {
+        page
+    } from '$app/stores';
     import 'swiper/css';
-import { browser } from "$app/env";
-import { goto } from "$app/navigation";
+    import {
+        browser
+    } from "$app/env";
+    import {
+        goto
+    } from "$app/navigation";
     export let categories_promise = undefined;
     let categories_promise_innder = undefined;
 
@@ -26,34 +39,38 @@ import { goto } from "$app/navigation";
         // navigate to the new url
         let current_albums_ids = undefined;
         debugger;
-        if($page.params.album_ids) {
+        if ($page.params.album_ids) {
             current_albums_ids = $page.params.album_ids;
             current_albums_ids = current_albums_ids.split('-');
-        }else {
+            delete current_albums_ids[current_albums_ids.indexOf('all')];
+            delete current_albums_ids[current_albums_ids.indexOf('')];
+        } else {
             current_albums_ids = []
         }
-        
-        let new_albums_ids = current_albums_ids.includes(albumId) ? current_albums_ids.filter(id => id != albumId) : [...current_albums_ids, albumId];
+
+        let new_albums_ids = current_albums_ids.includes(albumId) ? current_albums_ids.filter(id => id != albumId) : [
+            ...current_albums_ids, albumId
+        ];
         let current_url = $page.path;
         // replace the /albums/id1-id2-id3/ with /albums/new_albums_ids/ if it exists
         // otherwise add it after /view/id/
-        
-        let new_ids_url = new_albums_ids.length > 1? new_albums_ids.join('-'): (new_albums_ids.length == 0? '' :new_albums_ids[0]);
+
+        let new_ids_url = new_albums_ids.length > 1 ? new_albums_ids.join('-') : (new_albums_ids.length == 0 ? '' :
+            new_albums_ids[0]);
         let new_url = current_url.replace(/\/albums\/[^\/]+\/?/, `/albums/${new_ids_url}/`);
         if (new_url.indexOf('albums') == -1) {
             new_url = `${new_url}/albums/${new_albums_ids.join('-')}/`;
         }
-debugger;
+        debugger;
         // remove the /albums/id1-id1/ part if new_albums_ids is empty
         if (new_albums_ids.length == 0) {
-            new_url = new_url.replace(/\/albums\/[^\/]+\/?/, '');
-            new_url = new_url.replace('albums//', '');
+            new_url = new_url.replace(/\/albums\/[^\/]+\/?/, 'all');
+            new_url = new_url.replace('albums//', 'albums/all/');
         }
         goto(new_url);
     }
 </script>
 <div class="album-swiper-wraper">
-    {JSON.stringify($page.params)}
     {#if categories_promise_innder}
         {#if categories_promise}
             <div class="spinner-wraper">
@@ -114,7 +131,6 @@ debugger;
 <style lang="scss">
     
     :global(.album-swiper-wraper) {
-        border: 1px solid red;
         position: relative;
         .spinner-wraper {
             position: absolute;
@@ -128,23 +144,39 @@ debugger;
             justify-content: center;
             align-items: center;
         }
-        width: fit-content;
+        //width: fit-content;
         height: 100%;
         :global(.swiper.album-swiper) {
-        
-        width: 20rem;
-        //width:35%;
-        height: calc(100% - 60px);
-        background-color: rgba(238, 238, 238, 0.582);
-        padding: 10px;
-        margin: 0 5px auto 0;
-        border-radius: 10px;;   
+            
+            //width: 20rem
+            
+            //width:35%;
+            height: calc(100% - 60px);
+            background-color: rgba(238, 238, 238, 0.582);
+            padding: 10px;
+            margin: 0 5px auto 0;
+            border-radius: 10px;
+            width: 252px;
+            @media screen and (max-width: 768px) {
+                width: 160px;
+                padding:3px;
+                margin: 0;
+                
+                
+            }
             :global(.swiper-wrapper) {
                 :global(.swiper-slide) {
-                    height: 75px;
+                    //height: 75px;
+                    
+                    height: auto;
+                            flex:1;
                     
                         padding-left: 15px;
                         margin: 10px;
+                        @media screen and (max-width: 768px) {
+                            padding-left: 5px;
+                            margin: 3px;
+                        }
                     :global(.category) {
                         background-color: rgba(134, 134, 134, 0.466);
                         width: 100%;

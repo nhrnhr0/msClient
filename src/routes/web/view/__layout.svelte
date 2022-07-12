@@ -54,266 +54,268 @@ import { onMount } from "svelte";
 
 <main>
     <TopCategories categories={main_categories} />
-    <SideCategoeis categories_promise={side_categories} />      
-    <!--
-    <div class="side-categories">
-        
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+    <div class="my-row">
+        <SideCategoeis categories_promise={side_categories} />      
+        <!--
+        <div class="side-categories">
+            
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-            <div class="item">
-                <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
-                <div class="text">
-                    ביגוד וטקסטיל
+                <div class="item">
+                    <div class="icon"><img src="https://res.cloudinary.com/ms-global/image/upload/v1635672418/site/products/%D7%93%D7%91%D7%A7_3_%D7%A9%D7%A0%D7%99%D7%95%D7%AA_12_%D7%99%D7%97%D7%99%D7%93%D7%95%D7%AA_%D7%91%D7%93%D7%A3-removebg-preview_U5SNW32_3UO8HVU.png" alt=""></div>
+                    <div class="text">
+                        ביגוד וטקסטיל
+                    </div>
                 </div>
-            </div>
-    </div>
-    -->
+        </div>
+        -->
 
-    <slot/>
+        <slot/>
+    </div>
 </main>
 <style lang="scss">
     :global(#main_wraper) {
@@ -321,6 +323,9 @@ import { onMount } from "svelte";
         }
     main {
         height: 100%;
+        .my-row {
+            display: flex;
+        }
         /*.side-categories {
             background-color: #ccc;
             max-width: 255px;
