@@ -63,7 +63,8 @@ import SingleAmountModal from './singleAmountModal.svelte';
   let campain_id = undefined;
   let campain_title = undefined;
   let campain;
-  let priceTable = undefined;
+  //let priceTable = undefined;
+  let newPrice = undefined;
   const error_title = 'מוצר זה אינו זמין לתצוגה כרגע';
   export let isModalOpen = false;
   let placeHolderText = 'טוען...';
@@ -300,7 +301,8 @@ import SingleAmountModal from './singleAmountModal.svelte';
         if(info = camp.products.find(val => val.catalogImage.id == data.id)) {
           is_in_campain = true;
           campain = camp;
-          priceTable = info.priceTable;
+          //priceTable = info.priceTable;
+          newPrice = info.newPrice;
           campain_title = camp.album.title;
           campain_id = camp.id;
           break;
@@ -481,6 +483,10 @@ import SingleAmountModal from './singleAmountModal.svelte';
                                     </th>
                                     
                                   </tr>
+                                  <tbody>
+                                    
+                                  </tbody>
+                                  <!--
                                   {#if priceTable.length}
                                     <tr class="headers">
                                     
@@ -502,6 +508,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
                                       </tr>
                                     {/each}
                                   </tbody>
+                                  -->
                                 </table>
 
                               </div>

@@ -1083,7 +1083,7 @@
     width: 315px;
     height: calc(100vh - calc(100vh - 100%));
     //z-index: 997;
-    z-index: 2;
+    z-index: 10;
     top: 0;
     //right: -340px;
     box-shadow: -10px 0 15px rgba(0, 0, 0, 0.1);
