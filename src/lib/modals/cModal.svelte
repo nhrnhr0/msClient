@@ -93,6 +93,7 @@ Button,
 
   import MyCountdown from '$lib/components/MyCountdown.svelte';
 import AlbumsView from '$lib/components/AlbumsView.svelte';
+import PriceTag from '../components/priceTag.svelte';
   let products = [];
   let current_album = new writable({});
   let title = 'loading'
@@ -307,7 +308,15 @@ import AlbumsView from '$lib/components/AlbumsView.svelte';
               {#if img.out_of_stock}
                 <img src="https://res.cloudinary.com/ms-global/image/upload/v1648713887/msAssets/pngfind.com-pubg-player-png-5352359_1_bepovk.png" class="sold-out-icon" alt="מלאי לא זמין"/>
               {/if}
+              <PriceTag
+                                            price={img.price}
+                                            newPrice={img.newPrice}
+                                            ClassName="price-tag"
+                                            show_prices={show_prices && img.out_of_stock == false}
+                                            ></PriceTag>
+              <!--
               <div class="price-tag" class:active={show_prices && img.out_of_stock == false} >{img.price + '₪'}</div>
+              -->
             </div>
             <div class="img-title">{img.title}</div>
           </div>
@@ -796,11 +805,11 @@ import AlbumsView from '$lib/components/AlbumsView.svelte';
       width: 100%;
       .category-item-img-wraper {
         position: relative;
-        .price-tag {
+        :global(.price-tag) {
                     position: absolute;
                     bottom: 5px;
                     left:5px;
-                    padding: 5px;
+                    /*padding: 5px;
                     font-weight: bold;
                     border-radius: 999px;
                     background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
@@ -809,7 +818,7 @@ import AlbumsView from '$lib/components/AlbumsView.svelte';
                     
                     &.active {
                         display: block;
-                    }
+                    }*/
                 }
 
         &:hover {
