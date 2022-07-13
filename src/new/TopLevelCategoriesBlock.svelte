@@ -1,45 +1,20 @@
-<script context="module">
-import { browser } from '$app/env';
 
-    import LogoSwiper from 'src/lib/swipers/logoSwiper.svelte';
-import { my_fetch } from 'src/network/my_fetch';
-import { indexdb_get_main_categories } from 'src/stores/dexie/api_wrapers';
-    import {CLOUDINARY_URL, LOGOS_API_URL} from './../../api/consts';
-    // function load
-    // get the logos
-    export async function load({ fetch, page, session, contex}) {
-        if (browser) {
-            console.log('browser web/index load');
-
-        }else {
-            console.log('server web/index load');
-        }
-
-        let response = await my_fetch(LOGOS_API_URL, {
-            method: 'GET',
-        }, fetch);  
-        let logos = await response.json();
-        let main_categories = await indexdb_get_main_categories();
-        return {
-            props: {
-                logos,
-                main_categories,
-            }
-        };
-        
-    }
-    
-    
-</script>
 <script>
-    export let logos = [];
-    export let main_categories = [];
-</script>
-<LogoSwiper logos={logos} />
+import { CLOUDINARY_URL } from "src/api/consts";
+import { indexdb_get_main_categories } from "src/stores/dexie/api_wrapers";
 
+import { onMount } from "svelte";
+
+
+    let main_categories = [];
+    onMount(async () => {
+        main_categories = await indexdb_get_main_categories();
+    });
+
+</script>
 <div class="categories">
-    {#each main_categories as category}
-        <div class="category">
+    {#each main_categories as category, index}
+        <div class="category" class:small="{index%7>2}" data-idx={index}>
             <a href="web/view/{category.id}/">
                 <img src="{CLOUDINARY_URL}{category.get_image}" alt="{category.name}">
                 <span>{category.name}</span>
@@ -48,28 +23,43 @@ import { indexdb_get_main_categories } from 'src/stores/dexie/api_wrapers';
     {/each}
 </div>
 
+
 <style lang="scss">
     .categories {
         display: flex;
-        flex-wrap: wrap;                  
-        justify-content: center;         
-    }
+        //gap: 5px;
+        flex-wrap: wrap;
+        //padding: 5px;
+        justify-content: center;
+        align-items: center;
+
+        & .category {
+            width: calc(30% - 10px);
+            &.small {
+                width: calc(22% - 5px);
+            }
+        }
+
+}
     .category {
-        
-        background: rgb(43, 43, 43);
+        // light radial-gradient glow
+        color: black;
+        background: rgba(43, 43, 43, 0.30);
+        border-radius: 5px;
+        background-size: 200% 100%;
         color: white;
         padding: 5px;
         margin: 10px;
         box-sizing: border-box;           
-        transition: all 0.5s ease-in-out;
+        transition: all 0.2s ease-in-out;
         //@include bg-gradient();
         cursor: pointer;
-        flex-grow: 1;
-        flex-shrink: 1;
-        flex-basis: 0;
+        // flex-grow: 1;
+        // flex-shrink: 1;
+        // flex-basis: 0;
         text-align: center;
-        max-width:160px;// calc(100% * (1/4) - 10px - 1px);
-        min-width: 160px;
+        /*max-width:160px;// calc(100% * (1/4) - 10px - 1px);
+        min-width: 160px;*/
         
         a {
             box-sizing:border-box; /*Don't forget this*/

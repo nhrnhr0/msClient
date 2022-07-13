@@ -32,26 +32,27 @@
 </div>-->
 <script>
   import CartModal2 from "$lib/modals/cartModal2.svelte";
-  import CategoryModal from "$lib/modals/cModal.svelte";
-  import ProductModal from "$lib/modals/pModal.svelte";
-  import ProductImageModal from "$lib/modals/pImgModal.svelte";
-  import SuccessModal from '$lib/modals/successModal.svelte';
-  import LoginModal from '$lib/modals/loginModal.svelte';
-  import UserDetailsModal from '$lib/modals/userDetailsModal.svelte';
-  import ProductCart from '$lib/modals/productCartModal.svelte';
-  import ProductCartModal from '$lib/modals/productCartModal.svelte';
-  import SingleAmountModal from '$lib/modals/singleAmountModal.svelte';
-import ProductQuestionModal from "$lib/modals/productQuestionModal.svelte";
-import ProductPhotoModal from "$lib/modals/productPhotoModal.svelte";
+//   import CategoryModal from "$lib/modals/cModal.svelte";
+//   import ProductModal from "$lib/modals/pModal.svelte";
+//   import ProductImageModal from "$lib/modals/pImgModal.svelte";
+//   import SuccessModal from '$lib/modals/successModal.svelte';
+//   import LoginModal from '$lib/modals/loginModal.svelte';
+//   import UserDetailsModal from '$lib/modals/userDetailsModal.svelte';
+//   import ProductCart from '$lib/modals/productCartModal.svelte';
+//   import ProductCartModal from '$lib/modals/productCartModal.svelte';
+//   import SingleAmountModal from '$lib/modals/singleAmountModal.svelte';
+// import ProductQuestionModal from "$lib/modals/productQuestionModal.svelte";
+// import ProductPhotoModal from "$lib/modals/productPhotoModal.svelte";
     import CartHistory from "$lib/modals/cartHistory.svelte";
   import HistoryProducts from "$lib/modals/historyProducts.svelte";
-  import ShereCart from "$lib/modals/shereCart.svelte";
+  // import ShereCart from "$lib/modals/shereCart.svelte";
   export const prerender = false;
 </script>
 
 <svelte:head>
   <meta name="theme-color" content="#FFD700" />
 </svelte:head>
+<!--
 <ShereCart />
 <LoginModal bind:this={$loginModalStore} />
 <ProductModal bind:this={$productModalStore} />
@@ -61,11 +62,8 @@ import ProductPhotoModal from "$lib/modals/productPhotoModal.svelte";
 <UserDetailsModal bind:this={$userDetailModalStore} />
 <ProductCartModal bind:this={$productCartModalStore} />
 <ProductPhotoModal bind:this={$productPhotoModalStore} />
-<!--
-<SingleAmountModal bind:this={$singleAmountPopupStore}></SingleAmountModal>
--->
 <ProductQuestionModal bind:this={$productQuestionModalStore} />
-<!-- Show and hide cart history modal based on value in the store -->
+-->
 {#if $cartHistoryModalStore.showModal}
   <CartHistory />
 {/if}
