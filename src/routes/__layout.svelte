@@ -143,7 +143,9 @@
     overflow: hidden;
     padding-top: 78px;
   }*/
-
+  #main_wraper {
+    height: auto;
+  }
   #footer {
     background: #353c41;
     padding: 5px 0;

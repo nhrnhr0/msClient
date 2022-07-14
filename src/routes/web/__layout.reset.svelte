@@ -23,7 +23,7 @@ import { onMount } from "svelte";
         };
     }
 </script>
-
+<!--
 <svelte:head>
     <script>
         function googleTranslateElementInit() {
@@ -32,18 +32,18 @@ import { onMount } from "svelte";
         }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</svelte:head>
+</svelte:head>-->
 
 <Navbar></Navbar>
 
 <div id="main_wraper" class="bg-wraper">
-    <div id="google_translate_element"></div>
+    <!--<div id="google_translate_element"></div>-->
 
 <slot></slot>
 </div>
 
 <style lang="scss">
     #main_wraper {
-        border: 1px solid red;;
+        //border: 1px solid red;;
     }
 </style>
