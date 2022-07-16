@@ -18,6 +18,7 @@ import {
   TRACK_CART_URL,
   PRODUCT_QUESTION_URL,
   GET_ALL_INTERESTS_URL,
+  GET_ALL_USERS_BY_BUSINESS_TYPES,
 } from "./consts";
 import { userInfoStore } from "./../stores/stores";
 import { browser } from "$app/env";
@@ -297,6 +298,14 @@ export async function adming_get_campains() {
 export async function loadBusinessTypes() {
   let response;
   response = await fetch_wraper_async(GET_ALL_BUSINESS_TYPES);
+  return response;
+}
+
+export async function getAllUsersByBusinessTypes(queryParams = {}) {
+  let response;
+  response = await fetch_wraper_async(
+    GET_ALL_USERS_BY_BUSINESS_TYPES + "?" + new URLSearchParams(queryParams)
+  );
   return response;
 }
 

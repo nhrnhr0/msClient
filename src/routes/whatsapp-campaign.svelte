@@ -1,5 +1,4 @@
 <script context="module">
-
 </script>
 
 <script>
@@ -7,10 +6,26 @@
   import { onMount } from "svelte";
   import AutoComplete from "simple-svelte-autocomplete";
   import { Spinner } from "sveltestrap";
-  import { userInfoStore } from "./../stores/stores";
-  import { apiSearchProducts, loadBusinessTypes } from "./../api/api";
+  import {
+    userInfoStore,
+    selectedUsersForWhatsappCampaign,
+  } from "./../stores/stores";
+  import {
+    apiSearchProducts,
+    loadBusinessTypes,
+    getAllUsersByBusinessTypes,
+  } from "./../api/api";
 
-  import { FileUploaderButton, Grid, Row, Column, MultiSelect } from "carbon-components-svelte";
+  import {
+    FileUploaderButton,
+    Grid,
+    Row,
+    Column,
+    MultiSelect,
+    Tag,
+  } from "carbon-components-svelte";
+  import SvelteTable from "svelte-table";
+  import UserCheckboxForTable from "$lib/components/whatsapp-campaign/UserCheckboxForTable.svelte";
 
   const STEP = 3;
   let selectedProducts = [];
@@ -42,10 +57,82 @@
   };
   let businessTypes = [];
   let selectedBusinessTypes = [];
+  let usersByBusinessTypes = [];
+  let usersByBusinessTypesColumns = [
+    {
+      title: "",
+      key: "id",
+      renderComponent: UserCheckboxForTable,
+    },
+    {
+      title: "שֵׁם",
+      key: "name",
+      value: (v) => v.name,
+    },
+    {
+      title: "טלפון",
+      key: "phone",
+      value: (v) => v.phone,
+    },
+    {
+      title: "ההודעה האחרונה שנשלחה + חותמת זמן",
+      key: "lastMessageWithTimestamp",
+      value: (v) => v.lastMessageWithTimestamp,
+    },
+    {
+      title: "סוג העסק נבחר",
+      key: "businessTypeSelect",
+      value: (v) => v.businessTypeSelect,
+    },
+    {
+      title: "מוצרים להווה ולרשימה",
+      key: "productfitAndList",
+      value: (v) => v.productfitAndList,
+      renderValue: (v) => `${v.productfitAndList.percentage} %`,
+    },
+  ];
+  let selectedUsersByBusinessTypesColumns = [
+    {
+      title: "שֵׁם",
+      key: "name",
+      value: (v) => v.name,
+    },
+    {
+      title: "טלפון",
+      key: "phone",
+      value: (v) => v.phone,
+    },
+    {
+      title: "ההודעה האחרונה שנשלחה + חותמת זמן",
+      key: "lastMessageWithTimestamp",
+      value: (v) => v.lastMessageWithTimestamp,
+    },
+    {
+      title: "סוג העסק נבחר",
+      key: "businessTypeSelect",
+      value: (v) => v.businessTypeSelect,
+    },
+    {
+      title: "מוצרים להווה ולרשימה",
+      key: "productfitAndList",
+      value: (v) => v.productfitAndList,
+      renderValue: (v) => `${v.productfitAndList.percentage} %`,
+    },
+  ];
 
   onMount(async () => {
     businessTypes = await loadBusinessTypes();
   });
+
+  $: selectedBusinessTypes, selectedProducts, fetchUsersByBusinessTypes();
+
+  const fetchUsersByBusinessTypes = async () => {
+    if (selectedBusinessTypes.length > 0) {
+      usersByBusinessTypes = await getAllUsersByBusinessTypes({
+        businessTypes: selectedBusinessTypes.join(","),
+      });
+    }
+  };
 
   function autocompleteItemSelected(item) {
     if (item != undefined && selectedProducts.length < 5) {
@@ -99,8 +186,15 @@
   const itemToStringCustom = (item) => {
     return item.name;
   };
-  const filterItemCustom = (item, value) => item.name.toLowerCase().includes(value.trim().toLowerCase())
-  const sortItemCustom = (a, b) => a.name.localeCompare(b.name, 'he', { numeric: true })
+  const filterItemCustom = (item, value) =>
+    item.name.toLowerCase().includes(value.trim().toLowerCase());
+  const sortItemCustom = (a, b) =>
+    a.name.localeCompare(b.name, "he", { numeric: true });
+
+  const getSelectedBusinessTypeNameFromId = (id) => {
+    let businessType = businessTypes.find((b) => b.id === id);
+    return businessType.name;
+  };
 </script>
 
 <svelte:head>
@@ -365,34 +459,57 @@
       </div>
     </div>
     <div id="business-select-parent">
-    <Grid fullWidth noGutterLeft noGutterRight>
+      <Grid fullWidth noGutterLeft noGutterRight>
         <Row>
           <Column>
             <MultiSelect
-            titleText="טיפוס עסקי"
-            label="בחר סוג עסק..."
-            locale='he'
-            items={businessTypes}
-            filterable
-            itemToString={itemToStringCustom}
-            filterItem={filterItemCustom}
-            sortItem={sortItemCustom}
-            direction="top"
-            bind:selectedIds={selectedBusinessTypes}
-          />
-            </Column>
+              titleText="טיפוס עסקי"
+              label="בחר סוג עסק..."
+              locale="he"
+              items={businessTypes}
+              filterable
+              itemToString={itemToStringCustom}
+              filterItem={filterItemCustom}
+              sortItem={sortItemCustom}
+              direction="top"
+              bind:selectedIds={selectedBusinessTypes}
+            />
+          </Column>
         </Row>
         <Row>
-            <Column>
-            </Column>
+          <Column>
+            {#each selectedBusinessTypes as selectedBusinessTypeId}
+              <Tag
+                >{getSelectedBusinessTypeNameFromId(
+                  selectedBusinessTypeId
+                )}</Tag
+              >
+            {/each}
+          </Column>
         </Row>
       </Grid>
-      </div>
+    </div>
+    <div id="users-by-business-types-list">
+      <p>משתמשים עם סוג העסק שנבחר בחרו</p>
+      <SvelteTable
+        columns={usersByBusinessTypesColumns}
+        rows={usersByBusinessTypes}
+        classNameTable="users"
+      />
+    </div>
+    <div id="selected-users-by-business-types-list">
+      <p>משתמשים נבחרים</p>
+      <SvelteTable
+        columns={selectedUsersByBusinessTypesColumns}
+        rows={$selectedUsersForWhatsappCampaign}
+        classNameTable="users"
+      />
+    </div>
     <button id="download-btn" on:click={download}>הורד</button>
   </main>
 {/if}
 
-<style lang="scss">
+<style lang="scss" global>
   .selected-wraper {
     /*display: grid;
         grid-template-columns: repeat(var(--var-num-rows), 1fr);*/
@@ -512,7 +629,43 @@
   #download-btn {
     margin-top: 1rem;
   }
-  #business-select-parent{
+  #business-select-parent {
     max-width: 48rem;
+  }
+  #users-by-business-types-list,
+  #selected-users-by-business-types-list {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+  table.users {
+    th {
+      font-size: 1em;
+      text-align: center;
+      font-weight: bold;
+    }
+    td {
+      font-size: 1.2em;
+      text-align: center;
+      font-weight: bold;
+    }
+    width: 100%;
+    thead {
+      tr {
+        th {
+          padding: 10px;
+          background-color: $gray-800;
+          color: white;
+        }
+      }
+    }
+    tbody {
+      tr {
+        // ligther colors on all odd rows
+        &:nth-child(even) {
+          background-color: $gray-600;
+          // color: white;
+        }
+      }
+    }
   }
 </style>
