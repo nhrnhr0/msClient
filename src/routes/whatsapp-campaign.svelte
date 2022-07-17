@@ -101,7 +101,7 @@
   $: selectedBusinessTypes, selectedProducts, fetchUsersByBusinessTypes();
   $: usersByBusinessTypesWithoutSelectedUsers = usersByBusinessTypes.filter(
     (user) =>
-      !selectedUsersForWhatsappCampaign.some(
+      !$selectedUsersForWhatsappCampaign.some(
         (selectedUser) => selectedUser.id === user.id
       )
   );
