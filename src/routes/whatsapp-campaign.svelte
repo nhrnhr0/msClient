@@ -23,6 +23,7 @@
     Column,
     MultiSelect,
     Tag,
+    TextArea,
   } from "carbon-components-svelte";
   import SvelteTable from "svelte-table";
   import UserCheckboxForTable from "$lib/components/whatsapp-campaign/UserCheckboxForTable.svelte";
@@ -91,40 +92,19 @@
       renderValue: (v) => `${v.productfitAndList.percentage} %`,
     },
   ];
-  let selectedUsersByBusinessTypesColumns = [
-    {
-      title: "שֵׁם",
-      key: "name",
-      value: (v) => v.name,
-    },
-    {
-      title: "טלפון",
-      key: "phone",
-      value: (v) => v.phone,
-    },
-    {
-      title: "ההודעה האחרונה שנשלחה + חותמת זמן",
-      key: "lastMessageWithTimestamp",
-      value: (v) => v.lastMessageWithTimestamp,
-    },
-    {
-      title: "סוג העסק נבחר",
-      key: "businessTypeSelect",
-      value: (v) => v.businessTypeSelect,
-    },
-    {
-      title: "מוצרים להווה ולרשימה",
-      key: "productfitAndList",
-      value: (v) => v.productfitAndList,
-      renderValue: (v) => `${v.productfitAndList.percentage} %`,
-    },
-  ];
+  let message = "";
 
   onMount(async () => {
     businessTypes = await loadBusinessTypes();
   });
 
   $: selectedBusinessTypes, selectedProducts, fetchUsersByBusinessTypes();
+  $: usersByBusinessTypesWithoutSelectedUsers = usersByBusinessTypes.filter(
+    (user) =>
+      !selectedUsersForWhatsappCampaign.some(
+        (selectedUser) => selectedUser.id === user.id
+      )
+  );
 
   const fetchUsersByBusinessTypes = async () => {
     if (selectedBusinessTypes.length > 0) {
@@ -493,16 +473,23 @@
       <p>משתמשים עם סוג העסק שנבחר בחרו</p>
       <SvelteTable
         columns={usersByBusinessTypesColumns}
-        rows={usersByBusinessTypes}
+        rows={usersByBusinessTypesWithoutSelectedUsers}
         classNameTable="users"
       />
     </div>
     <div id="selected-users-by-business-types-list">
       <p>משתמשים נבחרים</p>
       <SvelteTable
-        columns={selectedUsersByBusinessTypesColumns}
+        columns={usersByBusinessTypesColumns}
         rows={$selectedUsersForWhatsappCampaign}
         classNameTable="users"
+      />
+    </div>
+    <div id="message-container">
+      <TextArea
+        bind:value={message}
+        labelText="הוֹדָעָה"
+        placeholder="נא להזין הודעה"
       />
     </div>
     <button id="download-btn" on:click={download}>הורד</button>
@@ -633,7 +620,8 @@
     max-width: 48rem;
   }
   #users-by-business-types-list,
-  #selected-users-by-business-types-list {
+  #selected-users-by-business-types-list,
+  #message-container {
     margin-top: 1rem;
     margin-bottom: 1rem;
   }
