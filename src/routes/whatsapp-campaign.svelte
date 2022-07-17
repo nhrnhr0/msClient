@@ -17,7 +17,7 @@
   } from "./../api/api";
 
   import {
-    FileUploaderButton,
+    FileUploader,
     Grid,
     Row,
     Column,
@@ -93,6 +93,8 @@
     },
   ];
   let message = "";
+  let uploadedMetadataFiles = [];
+  let uploadedMetadata = null;
 
   onMount(async () => {
     businessTypes = await loadBusinessTypes();
@@ -105,6 +107,21 @@
         (selectedUser) => selectedUser.id === user.id
       )
   );
+  $: uploadedMetadata, handleUploadedMetadataChange();
+
+  const handleUploadedMetadataChange = () => {
+    if (uploadedMetadata) {
+      selectedProducts = uploadedMetadata.selectedProducts ?? [];
+      selectedBusinessTypes = uploadedMetadata.selectedBusinessTypes ?? [];
+      $selectedUsersForWhatsappCampaign = uploadedMetadata.selectedUsers ?? [];
+      message = uploadedMetadata.message ?? "";
+    } else {
+      selectedProducts = [];
+      selectedBusinessTypes = [];
+      $selectedUsersForWhatsappCampaign = [];
+      message = "";
+    }
+  };
 
   const fetchUsersByBusinessTypes = async () => {
     if (selectedBusinessTypes.length > 0) {
@@ -112,6 +129,8 @@
         businessTypes: selectedBusinessTypes.join(","),
         catalogImages: selectedProducts.map((p) => p.id).join(","),
       });
+    } else {
+      usersByBusinessTypes = [];
     }
   };
 
@@ -201,6 +220,16 @@
       });
     downloadURI(link, `users-${Date.now()}.xlsx`);
   };
+
+  const handleMetadataUpload = (e) => {
+    let file = e.detail[0];
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      let json = JSON.parse(e.target.result);
+      uploadedMetadata = json;
+    };
+    reader.readAsText(file);
+  };
 </script>
 
 <svelte:head>
@@ -210,7 +239,16 @@
 </svelte:head>
 {#if $userInfoStore.isLogin && $userInfoStore.me.is_superuser}
   <main id="main">
-    <FileUploaderButton labelText="להעלות מטא נתונים" />
+    <FileUploader
+      labelTitle="להעלות מטא נתונים"
+      labelDescription="רק קבצי JSON מתקבלים."
+      accept={[".json"]}
+      buttonLabel="אנא בחר קובץ"
+      bind:files={uploadedMetadataFiles}
+      on:add={handleMetadataUpload}
+      on:remove={() => (uploadedMetadata = null)}
+      status={uploadedMetadata ? "edit" : ""}
+    />
     <div class="page">
       <div class="part part-1">
         <AutoComplete
