@@ -196,7 +196,7 @@
     return businessType.name;
   };
 
-  const handleMetadataDownlaod = () => {
+  const handleMetadataDownload = () => {
     let metadata = {
       selectedProducts: selectedProducts,
       selectedBusinessTypes: selectedBusinessTypes,
@@ -558,7 +558,7 @@
     </div>
     <div id="buttons-container">
       <button id="download-btn" on:click={download}>הורד תמונה</button>
-      <button id="metadata-dwnld" on:click={handleMetadataDownlaod}
+      <button id="metadata-dwnld" on:click={handleMetadataDownload}
         >הורד מטא נתונים</button
       >
       <button id="excel-dwnld" on:click={handleExcelDownload}>הורד אקסל</button>
