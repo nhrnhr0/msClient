@@ -3,8 +3,15 @@
     import 'swiper/css';
     import { CLOUDINARY_URL } from 'src/api/consts';
     import {page} from '$app/stores';
+import { onMount } from 'svelte';
+import { indexdb_get_main_categories } from 'src/stores/dexie/api_wrapers';
 
     export let categories = [];
+    onMount(async () => {
+        if (categories.length === 0) {
+            categories = await indexdb_get_main_categories();
+        }
+    });
 </script>
     <Swiper
         class="categories-swiper"
@@ -49,7 +56,7 @@
         >
             {#each categories as category}
                 <SwiperSlide>
-                    <a href="/web/view/{category.id}/albums/all" class="category" class:active={category.id == $page.params.id}>
+                    <a href="?top={category.id}" class="category" class:active={category.id == $page.query.get('top')}>
                         <img src="{CLOUDINARY_URL}{category.get_image}" alt="{category.name}">
                         <div>{category.name}</div>
                     </a>

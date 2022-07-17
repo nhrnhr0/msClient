@@ -95,7 +95,6 @@
       });
 
       if(browser){
-        debugger;
         delete_cookie('sessionid');
         window.location.reload()
       }
