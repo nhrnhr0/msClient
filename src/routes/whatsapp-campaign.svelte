@@ -2,7 +2,7 @@
 </script>
 
 <script>
-  import { CLOUDINARY_URL } from "./../api/consts";
+  import { CLOUDINARY_URL, GET_USERS_IN_EXCEL } from "./../api/consts";
   import { onMount } from "svelte";
   import AutoComplete from "simple-svelte-autocomplete";
   import { Spinner } from "sveltestrap";
@@ -110,13 +110,13 @@
     if (selectedBusinessTypes.length > 0) {
       usersByBusinessTypes = await getAllUsersByBusinessTypes({
         businessTypes: selectedBusinessTypes.join(","),
+        catalogImages: selectedProducts.map((p) => p.id).join(","),
       });
     }
   };
 
   function autocompleteItemSelected(item) {
     if (item != undefined && selectedProducts.length < 5) {
-      console.log("autocompleteItemSelected: ", item);
       selectedProducts = selectedProducts.filter((p) => p != null);
       selectedProducts.push(item);
 
@@ -144,6 +144,7 @@
 
     link.download = name;
     link.href = uri;
+    link.target = "_blank";
     document.body.appendChild(link);
     link.click();
     //after creating link you should delete dynamic link
@@ -174,6 +175,31 @@
   const getSelectedBusinessTypeNameFromId = (id) => {
     let businessType = businessTypes.find((b) => b.id === id);
     return businessType.name;
+  };
+
+  const handleMetadataDownlaod = () => {
+    let metadata = {
+      selectedProducts: selectedProducts,
+      selectedBusinessTypes: selectedBusinessTypes,
+      selectedUsers: $selectedUsersForWhatsappCampaign,
+      message: message,
+    };
+    let json = JSON.stringify(metadata);
+    let blob = new Blob([json], { type: "application/json" });
+    let url = URL.createObjectURL(blob);
+    downloadURI(url, `metadata-${Date.now()}.json`);
+  };
+
+  const handleExcelDownload = async () => {
+    let link =
+      GET_USERS_IN_EXCEL +
+      "?" +
+      new URLSearchParams({
+        crmUserIds: $selectedUsersForWhatsappCampaign
+          .map((u) => u.id)
+          .join(","),
+      });
+    downloadURI(link, `users-${Date.now()}.xlsx`);
   };
 </script>
 
@@ -492,7 +518,13 @@
         placeholder="נא להזין הודעה"
       />
     </div>
-    <button id="download-btn" on:click={download}>הורד</button>
+    <div id="buttons-container">
+      <button id="download-btn" on:click={download}>הורד תמונה</button>
+      <button id="metadata-dwnld" on:click={handleMetadataDownlaod}
+        >הורד מטא נתונים</button
+      >
+      <button id="excel-dwnld" on:click={handleExcelDownload}>הורד אקסל</button>
+    </div>
   </main>
 {/if}
 
@@ -613,17 +645,24 @@
     margin: auto;
     padding-bottom: 1rem;
   }
-  #download-btn {
-    margin-top: 1rem;
-  }
   #business-select-parent {
     max-width: 48rem;
   }
   #users-by-business-types-list,
   #selected-users-by-business-types-list,
-  #message-container {
+  #message-container,
+  #buttons-container {
     margin-top: 1rem;
     margin-bottom: 1rem;
+  }
+  #buttons-container {
+    display: flex;
+  }
+  #metadata-dwnld {
+    margin-right: 1rem;
+  }
+  #excel-dwnld {
+    margin-right: 1rem;
   }
   table.users {
     th {
