@@ -1,10 +1,12 @@
 <script context="module">
     export function load({ error, status }) {
+        debugger;
       return {
         props: {
           title: `${status}: ${error.message}`,
           status: status,
-          message: error.message
+          message: error.message,
+          error: error,
         }
       };
     }
@@ -14,6 +16,7 @@
     export let title;
     export let status;
     export let message;
+    export let error;
   </script>
   <svelte:head>
     <title>{title}</title>
@@ -27,7 +30,6 @@
             <h3>תודה על שיתוף הפעולה</h3>
             <div class="img-container"><img height="80" alt="m.s. global" src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1637096417/msAssets/logo_ms_outline_1_jpfkhg.png" width="198">
             </div>
-            
         </div>
     </div>
 {:else}
@@ -41,7 +43,10 @@
         </div>
         קוד שגיאה: {status}<br>
         הודעה: {message}
-
+        <hr>
+        <pre style="direction: ltr;">
+            {error.stack}
+        </pre>
     </div>
 </div>
 {/if}

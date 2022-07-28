@@ -1081,14 +1081,7 @@ on:change={(event) => {
             .img-wraper{
                 //min-height: 200px;
                 //min-width: 200px;
-                color: white;
-
-                background: rgb(170, 170, 170);
-                background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-                background: linear-gradient(110deg, rgb(197, 197, 197) 8%, rgb(207, 207, 207) 18%, rgb(197, 197, 197) 33%);
-                border-radius: 5px;
-                background-size: 200% 100%;
-                animation: 1.5s shine linear infinite;
+                background: radial-gradient(circle,white 0%,white 32%,#c7c7c7 84%);
 
                 position: relative;
                 width: 100%;

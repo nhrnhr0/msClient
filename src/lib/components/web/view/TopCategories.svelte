@@ -1,108 +1,118 @@
 <script>
-    import { Swiper, SwiperSlide } from 'swiper/svelte';
-    import 'swiper/css';
+    /*import { Swiper, SwiperSlide } from 'swiper/svelte';
+    import 'swiper/css';*/
     import { CLOUDINARY_URL } from 'src/api/consts';
     import {page} from '$app/stores';
 import { onMount } from 'svelte';
 import { indexdb_get_main_categories } from 'src/stores/dexie/api_wrapers';
-
+/*import {ScrollSnapDraggable} from 'scroll-snap-slider/src/ScrollSnapDraggable.js';
+import { ScrollSnapSlider  } from 'scroll-snap-slider'
+*/
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    let slider;
     export let categories = [];
     onMount(async () => {
         if (categories.length === 0) {
             categories = await indexdb_get_main_categories();
         }
+
+        
     });
+    function slider_mouseup(e) {
+        isDown = false;
+    }
+
+    function slider_mouseleave(e) {
+        isDown = false;
+    }
+
+    function slider_mousedown(e) {
+        isDown = true;
+        //slider.classList.add('active');
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+    }
+
+    function slider_mousemove(e) {
+        if(!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX)// * 3; //scroll-fast
+        slider.scrollLeft = scrollLeft - walk;
+        console.log(walk);
+    }
 </script>
-    <Swiper
-        class="categories-swiper"
-        slidesPerView={'5.7'}
-        spaceBetween={10}
-        loop="{false}"
-        speed= "{150}"
-        allowTouchMove="{true}"
-        preventClicks="{false}"
-        resistanceRatio="{0.45}"
-        navigation="{true}"
-        breakpoints='{{
-            "270": {
-                slidesPerView: "2.2",
-                spaceBetween: 10,
-            },
-            "400": {
-                slidesPerView: "2.7",
-                spaceBetween: 10,
-            },
-            "500": {
-                slidesPerView: "3.2",
-                spaceBetween: 10,
-            },
-            "600": {
-                slidesPerView: "3.7",
-                spaceBetween: 10,
-            },
-            "700": {
-                slidesPerView: "4.2",
-                spaceBetween: 10,
-            },
-            "800": {
-                slidesPerView: "4.7",
-                spaceBetween: 10,
-            },
-            "900": {
-                slidesPerView: "5.2",
-                spaceBetween: 10,
-            },
-        }}'
-        >
+    <div bind:this={slider} on:mousedown="{slider_mousedown}" on:mouseleave="{slider_mouseleave}" on:mouseup="{slider_mouseup}" on:mousemove={slider_mousemove} class="scroll-snap-slider">
             {#each categories as category}
-                <SwiperSlide>
-                    <a href="?top={category.id}" class="category" class:active={category.id == $page.query.get('top')}>
+                <div class="scroll-snap-slide" class:active={category.id == $page.query.get('top')}>
+                    <a href="?top={category.id}" class="category" >
                         <img src="{CLOUDINARY_URL}{category.get_image}" alt="{category.name}">
                         <div>{category.name}</div>
                     </a>
-                </SwiperSlide>
+                </div>
             {/each}
-    </Swiper>
+    </div>
 <style lang="scss">
-    :global(.swiper.categories-swiper) {
-            width: 95%;
-            padding-left: 2px;
-            padding-right: 2px;
-            padding-bottom: 8px;
-            :global(.swiper-button-disabled) {
-                display: none;
-            }
-            :global(.swiper-wrapper) {
-                max-height: 65px;
-                :global(.swiper-slide) {
-                    
-                    :global(.category) {
-                        background-color: #eee;
-                        display: flex;
-                        flex-direction: row;
-                        align-items: center;
-                        border: 1px solid #ccc;
-                        width: 100%;
-                        height: 100%;
-                        transition: all 0.2s ease-in-out;
-                        :global(img) {
-                            justify-self: flex-start;
-                            width: 40px;
-                            height: 40px;
-                        }
-                        :global(div) {
-                            text-align: center;
-                            white-space: nowrap;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                        }
+    .scroll-snap-slider {
+        width: 100%;
+        height: 55px;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        margin-bottom: 10px;
+        //scroll-snap-type: x mandatory;
 
-                        &.active {
-                            background-color: rgb(85, 85, 85);
-                            color:white;
-                        }
-                    }
+
+        //transform: scale(0.98);
+        will-change: transform;
+        user-select: none;
+        cursor: pointer;
+        scroll-behavior: auto;
+        -ms-overflow-style: none; /* IE 10+ */
+        scrollbar-width: none; /* Firefox */
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        .scroll-snap-slide {
+
+            display: flex;
+            flex:1;
+            background: rgba(255, 255, 255, 0.384);
+            border-radius: 5px;
+            margin: 0 5px;
+            justify-content: center;
+            align-items: center;
+            min-width: 250px;
+            height: 100%;
+            align-content: center;
+            overflow: hidden;
+            position: relative;
+            align-self: center;
+            justify-self: center;
+            align-items: center;
+            justify-content: center;
+            a {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                img {
+                    width: 50px;
+                    height: 50px;
+                    object-fit: contain;
                 }
             }
+            
+            &.active {
+                background: rgba(104, 103, 103, 0.548);
+            }
         }
+}
 </style>

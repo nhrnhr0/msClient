@@ -45,7 +45,7 @@ export function my_fetch(url, options, custom_fetch=undefined) {
     );
 }
 
-
+/*
 const LOCAL_STORE_PREFIX = 'products_manager_';
 export class ProductsManager {
     constructor() {
@@ -126,4 +126,4 @@ export class ProductsManager {
     hasNext() {
         return this.nextUrl != null;
     }
-}
+}*/
