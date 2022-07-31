@@ -57,7 +57,7 @@ import ProductsGrid from "src/lib/components/ProductsGrid.svelte";
             if (old_page_params == query) {
                 console.log('new page equal to old page, do nothing');
             }else {
-                let url = BASE_URL + '/my-api/get-album-images?' + query;
+                let url = BASE_URL + '/my-api/get-main-info?' + query;
                 
                 my_fetch(url).then(response => {
                     response.json().then(data => {
@@ -82,8 +82,9 @@ import ProductsGrid from "src/lib/components/ProductsGrid.svelte";
 </script>
     <TopCategories />
     <div class="side-and-grid-wraper">
-        <SideCategoeis albums={page_info?.info?.top_albums} />
-        <ProductsGrid products={page_info?.results}  query={$page.query} />
+        <hr>
+        <SideCategoeis albums={page_info?.top_albums} />
+        <ProductsGrid page_info={page_info} />
     </div>
     <!--{#each (page_info?.results || []) as catalogImage}
         {@const entry = catalogImage.catalogImage}

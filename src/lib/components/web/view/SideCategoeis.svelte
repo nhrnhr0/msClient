@@ -44,9 +44,13 @@
 
     function slider_click(e) {
         console.log('slider_click');
-        
+        debugger;
         let albumId = e.currentTarget.dataset.albumId;
         //$page.query.set('album_id', albumId);
+        if($page.query.get('album_id') == albumId) {
+            console.log('same album, do nothing');
+            return;
+        }
         let new_query = new URLSearchParams($page.query);
         new_query.set('album_id', albumId);
         let new_url = $page.path + '?' + new_query.toString();
@@ -67,7 +71,7 @@
             <div on:click="{slider_click}" class="scroll-snap-slide" class:active={category.id == $page.query.get('album_id')} data-album-id={category.id}>
                 <div class="card">
                     <img width="25px" height="25px" src="{CLOUDINARY_URL}{category.cimage}" alt="{category.title}">
-                    <div>{category.title}{category.id}</div>
+                    <div>{category.title}</div>
                 </div>
             </div>
         {/each}
@@ -79,7 +83,7 @@
         position: relative;
         width: auto;
         height: 100%;
-        border: 1px solid red;
+        
         //height: calc(100vh - 150px);
         &.loading {
             .spinner-wraper {
@@ -102,9 +106,11 @@
 
 
         .scroll-snap-slider {
-            width: 250px;
+            width: 150px;
             height: auto;
             overflow: hidden;
+            margin-left: 10px;
+            margin-right: 10px;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -132,12 +138,17 @@
             background: rgba(255, 255, 255, 0.384);
             border-radius: 5px;
             margin: 5px 0px;
-            min-width: 250px;
+            min-width: 150px;
             height: 100%;
             overflow: hidden;
             position: relative;
             justify-content: space-between;
+            &:hover {
+                background: rgba(114, 114, 114, 0.3);
+            }
             .card {
+                width: 100%;;
+
                 display: flex;
                 flex-direction: row;
                 justify-content: center;

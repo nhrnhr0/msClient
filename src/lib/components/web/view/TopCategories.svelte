@@ -113,6 +113,9 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
             &.active {
                 background: rgba(104, 103, 103, 0.548);
             }
+            &:hover {
+                background: rgba(114, 114, 114, 0.3);
+            }
         }
 }
 </style>
