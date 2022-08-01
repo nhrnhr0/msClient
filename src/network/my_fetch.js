@@ -45,6 +45,17 @@ export function my_fetch(url, options, custom_fetch=undefined) {
     );
 }
 
+export async function fetch_product_info_by_id(id) {
+    let res = await my_fetch(`${BASE_URL}/my-api/get-product-info?pid[]=${id}`);
+    let data = await res.json();
+    return data[0];
+}
+
+export async function fetch_slim_product_by_id(id) {
+    let res = await my_fetch(`${BASE_URL}/my-api/get-product-slim?pid[]=${id}`);
+    let data = await res.json();
+    return data[0];
+}
 /*
 const LOCAL_STORE_PREFIX = 'products_manager_';
 export class ProductsManager {

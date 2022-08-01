@@ -2,6 +2,7 @@ import { browser } from "$app/env";
 import { WAREHOUSES_API_URL,SIZES_API_URL,COLORS_API_URL,VARIANTS_API_URL ,BASE_URL} from "src/api/consts";
 import { fetch_wraper } from "src/api/api";
 import { derived, writable } from "svelte/store";
+import { my_fetch } from "src/network/my_fetch";
 
 
 const keyUrlPairs = {
@@ -37,31 +38,25 @@ const keyToStore = {
     "providers": PROVIDERS_STORE,
 }
 
-export async function getLocalStorageStore(key) {
+export async function getSessionStorageStore(key) {
         if(browser) {
-            // set cache lifetime in seconds
-            var cachelife = 5; 
-            //get cached data from local storage
-            var cacheddata = localStorage.getItem(key); 
+            var cacheddata = sessionStorage.getItem(key); 
             if(cacheddata){
                 cacheddata = JSON.parse(cacheddata);
-                var expired = parseInt(Date.now() / 1000) - cacheddata.cachetime > cachelife;
                 }
             //If cached data available and not expired return them. 
-            if (cacheddata  && !expired){
-                return cacheddata.data;
+            if (cacheddata ){
+                return cacheddata;
             }else{
                 if(keyUrlPairs[key].requesting !== true){
-                    //otherwise fetch data from api then save the data in localstorage 
+                    //otherwise fetch data from api then save the data in sessionStorage 
                     keyUrlPairs[key].requesting = true;
                     let data = undefined;
                     try {
                         console.log('requesting ======> ', keyUrlPairs[key].url);
-                        data = await fetch_wraper(keyUrlPairs[key].url);
-                        //var data = await res.json();
-                        var json = {data: data, cachetime: parseInt(Date.now() / 1000)}
-                        localStorage.setItem(key, JSON.stringify(json));
-                        
+                        data = await my_fetch(keyUrlPairs[key].url);
+                        data = await data.json();
+                        localStorage.setItem(key, JSON.stringify(data));
                     }catch(err){
                         console.log(err);
                     }
@@ -69,18 +64,18 @@ export async function getLocalStorageStore(key) {
                         keyUrlPairs[key].requesting = false;
                         //convert data to dict with id as key
                         let newData = {};
-                        /*data.forEach(item=>{
+                        data.forEach(item=>{
                             newData[item.id] = item;
-                        });*/
-                        keyToStore[key].set(data);
-                        return data;
+                        });
+                        keyToStore[key].set(newData);
+                        return newData;
                     }
                     }else {
                         //if data is being requested then wait for it to be fetched and return it
                         while(keyUrlPairs[key].requesting === true){
                             await new Promise(resolve => setTimeout(resolve, 100));
                         }
-                        return await getLocalStorageStore(key);
+                        return await getSessionStorageStore(key);
                     }
             }
         }else {

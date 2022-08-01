@@ -1,6 +1,6 @@
 <script context="module">
 import { browser } from "$app/env";
-import { page } from "$app/stores";
+
 
 import { BASE_URL, CLOUDINARY_URL } from "src/api/consts";
 import TopCategories from "src/lib/components/web/view/TopCategories.svelte";
@@ -42,6 +42,8 @@ import { onMount } from "svelte";
 import SideCategoeis from "src/lib/components/web/view/SideCategoeis.svelte";
 import { Spinner } from "sveltestrap";
 import ProductsGrid from "src/lib/components/ProductsGrid.svelte";
+import { page } from "$app/stores";
+import ProductShow from "src/lib/components/ProductShow.svelte";
 
     
     //export let products = {};
@@ -84,7 +86,11 @@ import ProductsGrid from "src/lib/components/ProductsGrid.svelte";
     <div class="side-and-grid-wraper">
         <hr>
         <SideCategoeis albums={page_info?.top_albums} />
-        <ProductsGrid page_info={page_info} />
+        {#if $page.query.get('product_id')}
+            <ProductShow product_id={$page.query.get('product_id')} />
+        {:else}
+            <ProductsGrid page_info={page_info} />
+        {/if}
     </div>
     <!--{#each (page_info?.results || []) as catalogImage}
         {@const entry = catalogImage.catalogImage}

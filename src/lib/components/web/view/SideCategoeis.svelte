@@ -47,12 +47,17 @@
         debugger;
         let albumId = e.currentTarget.dataset.albumId;
         //$page.query.set('album_id', albumId);
-        if($page.query.get('album_id') == albumId) {
-            console.log('same album, do nothing');
-            return;
-        }
         let new_query = new URLSearchParams($page.query);
-        new_query.set('album_id', albumId);
+
+        // the side category clicked is already the selected one, so we need to unselect it or if we are on a product page, we need to go back to the side category page (album).
+        if($page.query.get('album_id') == albumId) { 
+            if($page.query.get('product_id') == undefined) {
+                new_query.delete('album_id');
+            }
+        } else {
+            new_query.set('album_id', albumId);
+        }
+        new_query.delete('product_id'); // handle if side category is clicked inside a product page, we go for the side category
         let new_url = $page.path + '?' + new_query.toString();
         goto(new_url);
     }

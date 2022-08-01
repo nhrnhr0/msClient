@@ -12,7 +12,7 @@ import { page } from "$app/stores";
 import { BASE_URL, CLOUDINARY_URL } from "src/api/consts";
 import { my_fetch } from "src/network/my_fetch";
 import { Spinner } from "sveltestrap";
-
+import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
     
     export let page_info;
     let next_page = undefined;
@@ -79,6 +79,9 @@ import { Spinner } from "sveltestrap";
                 return response.json();
             }).then(data => {
                 debugger;
+                if(data.results) {
+                    add_products_slim_to_indexdb(data.results.map(v=>v.catalogImage));
+                }
                 if(reset) {
                     my_products = [...data.results];
                 }else {
@@ -115,33 +118,6 @@ import { Spinner } from "sveltestrap";
 </script>
 <div class="products-wraper" on:scroll="{products_grid_scrolled}">
 
-    {#if $page.query.get('product_id')}
-        {#if selected_product}
-            <div class="product-page">
-                <div class="back-btn">
-                    <button on:click="{()=>{window.history.back()}}">
-                        back
-                    </button>
-                </div>
-                <div class="product-title">
-                    <h3>
-                        {selected_product.catalogImage.title}
-                    </h3>
-                </div>
-                <div class="product-image">
-                    <img src="{CLOUDINARY_URL}{selected_product.catalogImage.cimage}" alt="{selected_product.catalogImage.title}">
-                </div>
-            </div>
-        {:else}
-            <div class="product-page">
-                <div class="product-image">
-                    <div class="spinner">
-                        <Spinner />
-                    </div>
-                </div>
-            </div>
-        {/if}
-    {:else}
             {#if main_loading}
                 <div class="spinner-container">
                     <Spinner></Spinner>
@@ -166,7 +142,6 @@ import { Spinner } from "sveltestrap";
             {#if bottom_loading}
                 <h2 class="loading-title"><Spinner /></h2>
             {/if}
-    {/if}
 </div>
 
 
@@ -221,6 +196,7 @@ import { Spinner } from "sveltestrap";
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    overflow: hidden;
                     img {
                         width: 175px;
                         height: 175px;
@@ -259,7 +235,7 @@ import { Spinner } from "sveltestrap";
                         img {
                             transform: scale(1.1);
                             //z-index: -1;
-                            filter: brightness(0.8);
+                            filter: brightness(1.3);//brightness(0.8);
                         }
                     }
                     & .product-info {
