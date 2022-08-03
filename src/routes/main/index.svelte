@@ -45,7 +45,7 @@ import ProductsGrid from "src/lib/components/ProductsGrid.svelte";
 import { page } from "$app/stores";
 import ProductShow from "src/lib/components/ProductShow.svelte";
 
-    
+
     //export let products = {};
     export let page_info = undefined;
     let old_page_params = '';
@@ -87,7 +87,9 @@ import ProductShow from "src/lib/components/ProductShow.svelte";
         <hr>
         <SideCategoeis albums={page_info?.top_albums} />
         {#if $page.query.get('product_id')}
-            <ProductShow product_id={$page.query.get('product_id')} />
+            {#key $page.query.get('product_id')}
+                <ProductShow product_id={$page.query.get('product_id')} />
+            {/key}
         {:else}
             <ProductsGrid page_info={page_info} />
         {/if}

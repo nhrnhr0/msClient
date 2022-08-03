@@ -13,7 +13,8 @@ import { BASE_URL, CLOUDINARY_URL } from "src/api/consts";
 import { my_fetch } from "src/network/my_fetch";
 import { Spinner } from "sveltestrap";
 import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
-    
+
+
     export let page_info;
     let next_page = undefined;
     let bottom_loading = false;
@@ -117,7 +118,6 @@ import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
     }*/
 </script>
 <div class="products-wraper" on:scroll="{products_grid_scrolled}">
-
             {#if main_loading}
                 <div class="spinner-container">
                     <Spinner></Spinner>

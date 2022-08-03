@@ -14,8 +14,10 @@ export function find_slim_product_by_id(id) {
 }
 
 export async function find_or_get_slim_product_by_id(id) {
-    
-    let ret = await db.slimProducts.get(id);
+    let ret;
+    if (browser) {
+        ret = await db.slimProducts.get(id);
+    } 
     if(!ret) {
         // if the product is not found, get it from the server
         let product = await fetch_slim_product_by_id(id);

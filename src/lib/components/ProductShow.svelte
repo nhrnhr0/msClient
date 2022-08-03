@@ -1,15 +1,23 @@
 <script>
+import { browser } from "$app/env";
+import { page } from "$app/stores";
+
 import { CLOUDINARY_URL } from "src/api/consts";
+import { get_similar_products } from "src/network/get_similar_products";
 
 import { find_or_get_product_info_by_id, find_or_get_slim_product_by_id } from "src/stores/dexie/products";
+import { query } from "src/stores/queryStore";
+import { onMount } from "svelte";
 import SvelteMarkdown from "svelte-markdown";
-
+import { fly } from 'svelte/transition';
 import { Spinner } from "sveltestrap";
 import MentriesProductTable from "./MentriesProductTable.svelte";
 
 
+    import {flip} from 'svelte/animate';
+	
     export let product_id = undefined;
-    let slimData = undefined;
+    export let slimData = undefined;
     let productInfo = undefined;
     let empty_slim = {
         id: undefined,
@@ -20,91 +28,130 @@ import MentriesProductTable from "./MentriesProductTable.svelte";
         new_price: 0,
     }
     let loading = false;
-    $: {
+    const product_regex = /product_id=\d+/gm;
+    let similarProducts = undefined;
+    /*$: {
         product_id,
         loading = product_id == undefined;
-        find_or_get_slim_product_by_id(product_id).then(data => {
-            slimData = data;
-        });
-        find_or_get_product_info_by_id(product_id).then(data => {
-            productInfo = data;
-        });
         
-    }
+        
+    }*/
+    onMount(async ()=> {
+        slimData = await find_or_get_slim_product_by_id(product_id);
+        if(browser) {
+            productInfo = await find_or_get_product_info_by_id(product_id);
+        }
+        if(product_id && browser) {
+            console.log('get similar products');
+            
+            get_similar_products(product_id).then(data => {
+                similarProducts = data;
+                let el = document.querySelector('.similer-products');
+                if (el) {
+                    el.scrollTop = 0;
+                }
+            });
+        }
+    })
     
-    let similarProducts = undefined;
 </script>
 <svelte:head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Flow+Block&display=swap" rel="stylesheet">
 </svelte:head>
-    
-    <div class="product-show-wrapper-grid" class:loading={loading}>
-        <div class="product-image">
-                <img src={CLOUDINARY_URL + (slimData || empty_slim)?.cimage} alt="{(slimData || empty_slim)?.title}" />
-                <div class="product-price">
-                    {(slimData || empty_slim)?.price} ₪
-                </div>
-        </div>
-        <div class="slim-info">
-            <div class="info-wraper">
-                <div class="product-title">
-                    <h2>
-                        {(slimData || empty_slim)?.title}
-                    </h2>
-                </div>
-                <div class="product-description">
-                    <SvelteMarkdown source={productInfo?.description} />
-                </div>
-
-                <div class="product-packing-types">
-                    {#if productInfo && productInfo.amountSinglePack != 0}
-                      <div class="product-single-amount">
-                        כמות במארז: {productInfo.amountSinglePack}
-                      </div>
-                    {/if}
-                    {#if productInfo && productInfo.amountCarton != 0}
-                      <div class="product-carton-amount">
-                        כמות בקרטון: {productInfo.amountCarton}
-                      </div>
-                    {/if}
-                    
-                  </div>
+        <div class="product-show-wrapper-grid" class:loading={loading}>
+            <div class="product-image">
+                {#if slimData}
+                    <img src={CLOUDINARY_URL + (slimData || empty_slim)?.cimage} alt="{(slimData || empty_slim)?.title}" />
+                    <div class="product-price">
+                        {(slimData || empty_slim)?.price} ₪
+                    </div>
+                {:else}
+                    <img src="https://via.placeholder.com/300x300" alt=""/>
+                    <div class="product-price">
+                        <Spinner />
+                    </div>
+                {/if}
             </div>
-        </div>
-        <div class="product-mentries">
-            {#if productInfo}
-                <MentriesProductTable productInfo={productInfo} />
-            {:else}
-                <div class="loading-title">
-                    <Spinner />
-                </div>
-            {/if}
-        </div>
-        <div class="similer-products">
-            <h3>
-                מוצרים דומים
-            </h3>
-            <div class="similer-products-list">hey
-                {#each (similarProducts || []) as product}
-                    <div class="product-item">
-                        <div class="product-image">
-                            <img src={CLOUDINARY_URL + product.cimage} alt="{product.title}" />
-                        </div>
+            <div class="slim-info">
+                <div class="info-wraper">
+                    {#if productInfo}
                         <div class="product-title">
                             <h2>
-                                {product.title}
+                                {(slimData || empty_slim)?.title}
                             </h2>
                         </div>
-                        <div class="product-price">
-                            {product.price} ₪
+                        <div class="product-description">
+                            <SvelteMarkdown source={productInfo?.description} />
                         </div>
+
+                        <div class="product-packing-types">
+                            {#if productInfo && productInfo.amountSinglePack != 0}
+                            <div class="product-single-amount">
+                                כמות במארז: {productInfo.amountSinglePack}
+                            </div>
+                            {/if}
+                            {#if productInfo && productInfo.amountCarton != 0}
+                            <div class="product-carton-amount">
+                                כמות בקרטון: {productInfo.amountCarton}
+                            </div>
+                            {/if}
+                            
+                        </div>
+                    {:else}
+                        <!-- replcea the html content with spiners in the right height as placeholders -->
+                        <div class="product-title">
+                            <h2>
+                                {(slimData || empty_slim)?.title}
+                            </h2>
+                        </div>
+                        <div class="product-description">
+                            <Spinner/>
+                        </div>
+                    {/if}
+                </div>
+            </div>
+            <div class="product-mentries">
+                {#if productInfo}
+                    <MentriesProductTable productInfo={productInfo} />
+                {:else}
+                    <div class="loading-title">
+                        <Spinner />
                     </div>
-                {/each}
+                {/if}
+            </div>
+            <div class="similer-products">
+                <h3>
+                    מוצרים דומים:
+                </h3>
+                <div class="similer-products-list">
+                    {#if similarProducts}
+                        {#each (similarProducts) as product}
+                            <div class="product-item">
+                                <a href={$page.path + '?' + $page.query.toString().replace(product_regex, `product_id=${product.id}`)}>
+                                <div class="product-image">
+                                    <img src={CLOUDINARY_URL + product.cimage} alt="{product.title}" />
+                                </div>
+                                <div class="product-title">
+                                    <h2>
+                                        {product.title}
+                                    </h2>
+                                </div>
+                                <div class="product-price">
+                                    {product.price} ₪
+                                </div>
+                                </a>
+                            </div>
+                        {/each}
+                    {:else}
+                        <div class="loading-title">
+                            <Spinner />
+                        </div>
+                    {/if}
+                </div>
             </div>
         </div>
-    </div>
     
     <style lang="scss">
         .product-show-wrapper-grid {
@@ -194,8 +241,36 @@ import MentriesProductTable from "./MentriesProductTable.svelte";
             .similer-products {
                 grid-area: 1 / 1 / 13 / 5;
                 margin-bottom: 15px;
+                max-height: 100%;;
+                overflow: scroll;
                 .similer-products-list {
-                    background: radial-gradient(circle, rgba(255, 255, 255, 0.199) 0%, rgba(255, 255, 255, 0.199) 100%);
+                    //background: radial-gradient(circle, rgba(255, 255, 255, 0.199) 0%, rgba(255, 255, 255, 0.199) 100%);
+                    //box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    
+                    & .product-item  {
+                        position: relative;
+                        margin-left: 5px;
+                        margin-right: 5px;
+                        .product-image {
+                            img {
+                                width: 100%;
+                            }
+                        }
+                        .product-title {
+                            h2 {
+                                font-size: 16px;
+                            }
+                        }
+
+                        .product-price {
+                            position: absolute;
+                            top: 10%;
+                            right: 75%;
+                            font-size: 16px;
+                        }
+                    }
                 }
             }
 

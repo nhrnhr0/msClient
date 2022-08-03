@@ -9,34 +9,15 @@ const keyUrlPairs = {
     "sizes": {url: SIZES_API_URL},
     "colors": {url: COLORS_API_URL},
     "varients": {url:VARIANTS_API_URL},
-    "warehouses": {url:WAREHOUSES_API_URL},
-    "providers": {url:`${BASE_URL}/svelte/api/providers/`},
 }
-export let PROVIDERS_STORE = new writable()
-export let SIZES_STORE = new writable()
+/*export let SIZES_STORE = new writable()
 export let COLORS_STORE = new writable()
 export let VARIANTS_STORE = new writable()
-export let WAREHOUSES_STORE = new writable()
-
-
-export let PROVIDERS_STORE_IDS_AS_KEYS = derived(PROVIDERS_STORE,$providers=>{
-    let newProviders = {};
-    if($providers == undefined){
-        return newProviders;
-    }
-    $providers.forEach(provider=>{
-        newProviders[provider.id] = provider
-    })
-    return newProviders
-}
-);
 const keyToStore = {
     "sizes": SIZES_STORE,
     "colors": COLORS_STORE,
     "varients": VARIANTS_STORE,
-    "warehouses": WAREHOUSES_STORE,
-    "providers": PROVIDERS_STORE,
-}
+}*/
 
 export async function getSessionStorageStore(key) {
         if(browser) {
@@ -56,7 +37,6 @@ export async function getSessionStorageStore(key) {
                         console.log('requesting ======> ', keyUrlPairs[key].url);
                         data = await my_fetch(keyUrlPairs[key].url);
                         data = await data.json();
-                        localStorage.setItem(key, JSON.stringify(data));
                     }catch(err){
                         console.log(err);
                     }
@@ -67,7 +47,8 @@ export async function getSessionStorageStore(key) {
                         data.forEach(item=>{
                             newData[item.id] = item;
                         });
-                        keyToStore[key].set(newData);
+                        sessionStorage.setItem(key, JSON.stringify(newData));
+                        //keyToStore[key].set(newData);
                         return newData;
                     }
                     }else {
