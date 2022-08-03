@@ -190,9 +190,7 @@ import MentriesProductTable from "./MentriesProductTable.svelte";
                     .product-title {
                         
                     }
-                    .product-price {
-                        
-                    }
+                    
                 }
             }
             .product-image {
@@ -221,12 +219,18 @@ import MentriesProductTable from "./MentriesProductTable.svelte";
                     /*position: absolute;
                     bottom: 5%;
                     right: 90%;*/
+                        display: flex;
+                        justify-content:center;
+                        flex-direction:row;
+                        align-items:center;
                         position: absolute;
                         top: 15px;
                         left: 15px;
-                        font-size: 16px;
+                        font-size: 22px;
                         background-color: rgba(255, 255, 255, 1);
-                        width:35px;
+                        width:auto;
+                        padding-left: 5px;
+                        padding-right: 5px;
                         text-align: center;
                         border-radius: 25px;
                         box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
@@ -243,6 +247,7 @@ import MentriesProductTable from "./MentriesProductTable.svelte";
                 margin-bottom: 15px;
                 max-height: 100%;;
                 overflow: scroll;
+                
                 .similer-products-list {
                     //background: radial-gradient(circle, rgba(255, 255, 255, 0.199) 0%, rgba(255, 255, 255, 0.199) 100%);
                     //box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
@@ -250,25 +255,40 @@ import MentriesProductTable from "./MentriesProductTable.svelte";
                     grid-template-columns: repeat(3, 1fr);
                     
                     & .product-item  {
+                        
                         position: relative;
+                        
                         margin-left: 5px;
                         margin-right: 5px;
-                        .product-image {
-                            img {
-                                width: 100%;
-                            }
+                        &:hover {
+                            font-weight: bold;
                         }
-                        .product-title {
-                            h2 {
-                                font-size: 16px;
+                        a {
+                            color:black;
+                            .product-image {
+                                img {
+                                    width: 100%;
+                                }
                             }
-                        }
+                            .product-title {
+                                h2 {
+                                    font-size: 16px;
+                                    margin-bottom: 0px;
+                                }
+                            }
 
-                        .product-price {
-                            position: absolute;
-                            top: 10%;
-                            right: 75%;
-                            font-size: 16px;
+                            /*.product-price {
+                                position: absolute;
+                                top: 0%;
+                                left: 0%;
+                                font-size: 18px;
+                                display: flex;
+                                justify-content:center;
+                                flex-direction:row;
+                                align-items:center;
+                                
+                                width:auto;
+                            }*/
                         }
                     }
                 }

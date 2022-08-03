@@ -8,6 +8,7 @@ import { BASE_URL,INVENTORY_MANUAL_UPDATE_ENTRY_URL,INVENTORY_EDIT_ENTRY_URL,GET
 import { userInfoStore } from "./../stores/stores";
 import { browser } from '$app/env';
 import { get} from 'svelte/store';
+import { my_fetch } from "src/network/my_fetch";
 
 
 export async function request_provider_info(ppn_id) {
@@ -141,7 +142,7 @@ export async function get_products_info(product_ids) {
     return response;
 }
 export async function apiGetAllUsers() {
-    return fetch_wraper(GET_ALL_USERS_URL);
+    return my_fetch(GET_ALL_USERS_URL).then(response => response.json());
 }
 export function apiSendLogs(logs) {
     let body = {

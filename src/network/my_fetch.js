@@ -1,5 +1,7 @@
 import { browser } from "$app/env";
+import { get } from "lodash";
 import { BASE_URL } from "src/api/consts";
+import { userInfoStore } from "src/stores/stores";
 
 
 
@@ -7,16 +9,19 @@ import { BASE_URL } from "src/api/consts";
 // doing fetch to a url with max retrys, and return a promise, add credentials to the request if needed
 const WAIT_ON_ERROR_MILS = 1000
 const MAX_RETRY = 10;
-export function my_fetch(url, options, custom_fetch=undefined) {
+export function my_fetch(url, options, custom_fetch=undefined, retry_on_failure=true) {
     return new Promise((resolve, reject) => {
         let retry = 0;
-        
+        if(retry_on_failure == false) {
+            retry = MAX_RETRY;
+        }
         let fetch_func = () => {
             console.log(`${browser?'browser':'server'} fetching ======> `, url);
             if(browser) {
             }
             custom_fetch = custom_fetch || fetch;
-            custom_fetch(url, options)
+            let opts = defult_request_options(options)
+            custom_fetch(url,opts)
                 .then(res => {
                     if (res.ok) {
                         resolve(res);
@@ -43,6 +48,35 @@ export function my_fetch(url, options, custom_fetch=undefined) {
         fetch_func();
     }
     );
+}
+
+
+function defult_request_options(requestOptions,headers_json= {}) {
+        //console.log('fetch_wraper: ', url);
+        headers_json= Object.assign({}, {
+            'Content-Type': 'application/json',
+            'Content-Type': 'application/json; charset=UTF-8',
+        },headers_json);
+        
+        /*if(requestOptions && requestOptions.method != "GET") {
+            headers_json['X-CSRFToken']= get_csrf_token();
+        }
+        else {
+        }*/
+        if (browser) {
+            if (get(userInfoStore)?.access) {
+                headers_json['Authorization'] = "Token " +get(userInfoStore).access;
+            }
+        }
+        var myHeaders = new Headers(headers_json);
+        var requestOptions = Object.assign({}, {
+                method: "GET",
+                mode:'cors',
+                credentials: 'include',//'',
+                headers: myHeaders,
+                redirect: 'follow'
+            },requestOptions);
+        return requestOptions;
 }
 
 export async function fetch_product_info_by_id(id) {

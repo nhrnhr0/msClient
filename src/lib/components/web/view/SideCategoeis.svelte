@@ -44,7 +44,6 @@
 
     function slider_click(e) {
         console.log('slider_click');
-        debugger;
         let albumId = e.currentTarget.dataset.albumId;
         //$page.query.set('album_id', albumId);
         let new_query = new URLSearchParams($page.query);

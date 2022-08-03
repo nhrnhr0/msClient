@@ -1,18 +1,37 @@
 <script>
-import Header from "src/lib/header.svelte";
-import LogoSwiper from "src/lib/swipers/logoSwiper.svelte";
-import TopLevelCategoriesBlock from "src/new/TopLevelCategoriesBlock.svelte";
-import {userInfoStore} from "src/stores/stores";
+    import Header from "src/lib/header.svelte";
+    import LogoSwiper from "src/lib/swipers/logoSwiper.svelte";
+    import TopLevelCategoriesBlock from "src/new/TopLevelCategoriesBlock.svelte";
+    import {
+        userInfoStore
+    } from "src/stores/stores";
+    import {
+        sl_disable,
+        sl_enable
+    } from "$lib/utils/scroll-lock";
+    import {
+        activeModalsStore
+    } from "src/lib/modals/modalManager";
+import { browser } from "$app/env";
 
     function open_whatsapp_link() {
         const whatsapp_text = encodeURIComponent('אני מעוניין לראות מחירים באתר')
         var url = `https://api.whatsapp.com/send?phone=972547919908&text=${whatsapp_text}`;
         window.open(url, '_blank');
     }
+    activeModalsStore.subscribe(modals => {
+        if (browser) {
+            if (Object.keys(modals).length == 0) {
+                sl_disable();
+            } else {
+                sl_enable();
+            }
+        }
+    });
 </script>
 <Header></Header>
 <LogoSwiper></LogoSwiper>
-<TopLevelCategoriesBlock/>
+<TopLevelCategoriesBlock />
 
 {#if $userInfoStore.isLogin == false}
     <div class="whatsapp-btn-wraper">

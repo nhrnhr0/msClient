@@ -75,11 +75,9 @@ import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
     function load_more_products(reset=false) {
         console.log(next_page);
 
-        debugger;
         return my_fetch(next_page).then(response => {
                 return response.json();
             }).then(data => {
-                debugger;
                 if(data.results) {
                     add_products_slim_to_indexdb(data.results.map(v=>v.catalogImage));
                 }
@@ -95,11 +93,9 @@ import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
     }
 
     function product_clicked(e) {
-        debugger;
         let el = e.currentTarget;
         let id = el.dataset.productId;
         console.log('product_clicked',id);
-        debugger;
         let new_query = new URLSearchParams($page.query);
         new_query.set('product_id', id);
         let new_url = $page.path + '?' + new_query.toString();
@@ -123,8 +119,8 @@ import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
                     <Spinner></Spinner>
                 </div>
             {/if}
-            {#each my_products as product_data}
-                {@const product=product_data.catalogImage}
+            {#each my_products as product}
+                
                 <div class="product" data-product-id={product.id} on:click="{product_clicked}">
                     <div class="product-image">
                         <img src={CLOUDINARY_URL + product.cimage} alt="{product.title}" />

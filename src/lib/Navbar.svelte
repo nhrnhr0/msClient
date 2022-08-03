@@ -231,9 +231,6 @@ import AlbumsView from "./components/AlbumsView.svelte";
         <Cart bind:this={$cartDomElementStore}></Cart>
 
         <NavLoginManager></NavLoginManager>
-            
-                
-            
             <div>
             <a class="same-size-icon" rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
                 <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
@@ -251,6 +248,7 @@ import AlbumsView from "./components/AlbumsView.svelte";
         
 
     </div>
+    <!--
     <AlbumsView 
         albumSelected={(album)=> {
             logStore.addLog(
@@ -268,6 +266,7 @@ import AlbumsView from "./components/AlbumsView.svelte";
                             }
                             );
         }}/>
+    -->
 </nav>
 
 

@@ -13,3 +13,10 @@ export async function clear_all_db_data() {
   let primises = [db.topLevelCategories.clear(), db.slimProducts.clear(), db.products.clear()];
   return Promise.all(primises);
 }
+
+export async function clear_all_session_data() {
+  const keys = ['sizes','colors','varients',]
+  for(let key of keys) {
+    sessionStorage.removeItem(key);
+  }
+}

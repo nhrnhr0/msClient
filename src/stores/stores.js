@@ -60,25 +60,17 @@ export let cartHistoryModal = writable({
 });
 
 // browser storage - userInfoStore
-let initUserData = { isLogin: undefined };
+let initUserData = { isLogin: false };
 if (browser) {
-  if (typeof Storage !== "undefined") {
-    initUserData = JSON.parse(localStorage.getItem("user"));
-  } else {
-    initUserData = JSON.parse(sessionStorage.getItem("user"));
-  }
+  initUserData = JSON.parse(localStorage.getItem("user"));
   if (!initUserData) {
-    initUserData = { isLogin: undefined };
+    initUserData = { isLogin: false };
   }
 }
 export let userInfoStore = writable(initUserData);
 
 userInfoStore.subscribe((value) => {
   if (browser) {
-    if (typeof Storage !== "undefined") {
-      window.localStorage.setItem("user", JSON.stringify(value));
-    } else {
-      window.sessionStorage.setItem("user", JSON.stringify(value));
-    }
+    window.localStorage.setItem("user", JSON.stringify(value));
   }
 });

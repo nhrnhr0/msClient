@@ -1,19 +1,23 @@
 <script>
-        import {loginModalStore, userDetailModalStore, userInfoStore} from './../../stores/stores';
-import { Spinner } from 'sveltestrap';
+        //import {loginModalStore, userDetailModalStore, userInfoStore} from './../../stores/stores';
+        import { userInfoStore } from './../../stores/stores';
+        import { loginPopupStore } from 'src/stores/popups/loginPopupStore';
+        import { Spinner } from 'sveltestrap';
         function open_login_modal() {
-            $loginModalStore.toggleModal();
+            //$loginModalStore.toggleModal();
         }
         function open_user_detail_modal() {
-            $userDetailModalStore.toggleModal();
+            //$userDetailModalStore.toggleModal();
         }
 
         function login_btn_click() {
-            if($userInfoStore.isLogin){
+            console.log('login_btn_click');
+            loginPopupStore.open();
+            /*if($userInfoStore.isLogin){
                 open_user_detail_modal();
             }else{
                 open_login_modal();
-            }
+            }*/
         }
 </script>
 

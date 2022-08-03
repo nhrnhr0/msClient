@@ -1,5 +1,4 @@
 <script context="module">
-import { browser } from "$app/env";
 
 
 import { BASE_URL, CLOUDINARY_URL } from "src/api/consts";
@@ -44,6 +43,7 @@ import { Spinner } from "sveltestrap";
 import ProductsGrid from "src/lib/components/ProductsGrid.svelte";
 import { page } from "$app/stores";
 import ProductShow from "src/lib/components/ProductShow.svelte";
+import { browser } from "$app/env";
 
 
     //export let products = {};
