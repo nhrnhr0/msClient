@@ -15,6 +15,7 @@ import AutoComplete from "simple-svelte-autocomplete";
     } from 'svelte/transition';
     import {apiGetAllUsers} from 'src/api/api';
 import { Spinner } from 'sveltestrap';
+import { eraseCookie, setCookie } from '../utils/utils';
     let is_requesting =false;
     let error_detail = '';
     function login() {
@@ -112,11 +113,13 @@ import { Spinner } from 'sveltestrap';
             debugger;
         if (admin_as_user) {
             $userInfoStore.actAs = all_users.find((user)=> {return user.id == parseInt(admin_as_user.id)});
+            setCookie('actAs',$userInfoStore.actAs.id);
         }
         window.location.reload();
     }
     function remove_admin_as_user() {
         $userInfoStore.actAs = undefined;
+        eraseCookie('actAs');
         window.location.reload();
     }
 

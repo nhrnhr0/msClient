@@ -79,7 +79,7 @@ import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
                 return response.json();
             }).then(data => {
                 if(data.results) {
-                    add_products_slim_to_indexdb(data.results.map(v=>v.catalogImage));
+                    add_products_slim_to_indexdb(data.results);
                 }
                 if(reset) {
                     my_products = [...data.results];

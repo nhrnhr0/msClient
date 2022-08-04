@@ -1,5 +1,5 @@
 import { browser } from "$app/env";
-import { get } from "lodash";
+import { get} from 'svelte/store';
 import { BASE_URL } from "src/api/consts";
 import { userInfoStore } from "src/stores/stores";
 
@@ -17,8 +17,6 @@ export function my_fetch(url, options, custom_fetch=undefined, retry_on_failure=
         }
         let fetch_func = () => {
             console.log(`${browser?'browser':'server'} fetching ======> `, url);
-            if(browser) {
-            }
             custom_fetch = custom_fetch || fetch;
             let opts = defult_request_options(options)
             custom_fetch(url,opts)

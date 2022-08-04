@@ -219,7 +219,7 @@ import ColorDisplay from "./ColorDisplay.svelte";
                 
                 overflow: scroll;
                 margin: auto;
-                margin-top: 25px;
+                margin-top: 5px;
                 margin-bottom: 25px;
                 thead {
                     tr {
