@@ -24,6 +24,7 @@ import { cartPopupStore } from 'src/stores/popups/cartPopupStore';
     }
 </script>
 
+<div class="cart-btn-wraper">
 <div id="cart-btn" class="popup-animation cart" on:click={open_cart}>
     <Fa size="2x" icon={faShoppingCart} />
     {#if Object.keys($cartStore).length > 0}
@@ -31,6 +32,9 @@ import { cartPopupStore } from 'src/stores/popups/cartPopupStore';
                 <div class="num">{Object.keys($cartStore).length}</div>
             </div>
     {/if}
+    
+</div>
+<div class="text">העגלה שלי</div>
 </div>
 
 
@@ -41,7 +45,20 @@ import { cartPopupStore } from 'src/stores/popups/cartPopupStore';
                 animation: pop-animation 0.4s ease-in-out forwards;
             }
     }
-
+    .cart-btn-wraper {
+        position: relative;
+        .text {
+            font-size: 0.8rem;
+            color: black;
+            text-align: center;
+            position: absolute;
+            top: 100%;
+            width: max-content;
+            left: 0;
+            right: 0;
+            z-index: 1;
+            transform: translate(25%, -25%);
+        }
     #cart-btn {
         position: relative;
         cursor: pointer;
@@ -66,10 +83,11 @@ import { cartPopupStore } from 'src/stores/popups/cartPopupStore';
                 }
             }
         //}
-        :global(svg) {
-            width: 32px;
-            height: 32px;
-        }
+            :global(svg) {
+                width: 32px;
+                height: 32px;
+            }
+        }   
     }
 
 </style>

@@ -232,9 +232,15 @@ import AlbumsView from "./components/AlbumsView.svelte";
 
         <NavLoginManager></NavLoginManager>
             <div>
-            <a class="same-size-icon" rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
-                <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
-            </a>
+                <div class="whatsapp-wraper">
+                    <div class="text">
+                        לוואצאפ
+                    </div>
+                <a class="same-size-icon" rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
+                    <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
+                </a>
+                
+            </div>
         </div>
             
         <div id="navbar_filler" class="none">
@@ -271,13 +277,29 @@ import AlbumsView from "./components/AlbumsView.svelte";
 
 
 <style lang="scss">
-    .same-size-icon {
-        // 
-        img {
-            
-            &:hover {
-                animation: pop-animation 0.4s ease-in-out forwards;
+    .whatsapp-wraper {
+        position: relative;
+        .same-size-icon {
+            // 
+            img {
+                
+                &:hover {
+                    animation: pop-animation 0.4s ease-in-out forwards;
+                }
             }
+        }
+
+        .text {
+            font-size: 0.8rem;
+            color: black;
+            text-align: center;
+            position: absolute;
+            top: 100%;
+            width: max-content;
+            left: 0;
+            right: 0;
+            z-index: 1;
+            transform: translate(0%, -20%);
         }
     }
     /*@keyframes pop-animation {
