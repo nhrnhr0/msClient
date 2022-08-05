@@ -5,6 +5,7 @@
     import { onDestroy } from 'svelte';
     //import CartModal from '$lib/modals/cartModal.svelte';
     import {cartModalStore} from "./../../../stores/stores";
+import { cartPopupStore } from 'src/stores/popups/cartPopupStore';
 	let isBooped = false;
     export function setIsBooped(val) {
 		isBooped = val;
@@ -19,7 +20,7 @@
         //unsub();
     });
     function open_cart() {
-        $cartModalStore.toggleModal();
+        cartPopupStore.toggleSide();
     }
 </script>
 

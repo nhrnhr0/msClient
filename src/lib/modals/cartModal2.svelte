@@ -865,13 +865,7 @@
   $gray-1100: #222224;
   $gray-1200: #131314;
 
-  // Mixin to generate hover & active states
-  @mixin hover-active() {
-    &:active,
-    &:hover {
-      @content;
-    }
-  }
+  
 
   // Replace `$search` with `$replace` in `$string`
   @function str-replace($string, $search, $replace: "") {

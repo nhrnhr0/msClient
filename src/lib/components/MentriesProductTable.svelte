@@ -1,15 +1,161 @@
 <script>
-import { getSessionStorageStore } from "src/stores/sessionStorageStore";
+    import {
+        getSessionStorageStore
+    } from "src/stores/sessionStorageStore";
 
-import { onMount } from "svelte";
-import { Spinner } from "sveltestrap";
-import ColorDisplay from "./ColorDisplay.svelte";
+    import {
+        onMount
+    } from "svelte";
+    import {
+        Spinner
+    } from "sveltestrap";
+    import {
+        cartStore
+    } from "src/stores/cartStore";
+    import ColorDisplay from "./ColorDisplay.svelte";
 
     let ALL_SIZES;
     let ALL_COLORS;
     let ALL_VARIENTS;
     export let productInfo;
-    onMount(async ()=> {
+
+    /*function sizes_colors_input_chenged(e) {
+        let cartItem = $cartStore[productInfo.id];
+        if (!cartItem) {
+            cartItem = {
+                id: productInfo.id,
+                name: productInfo.name,
+                price: productInfo.newPrice || productInfo.price,
+                amount: 0,
+                mentries: {},
+            };
+            $cartStore[productInfo.id] = cartItem;
+        }
+    }*/
+
+    function create_mentries() {
+        if (!$cartStore[productInfo.id]?.mentries) {
+            let tempMentries = {};
+            for (let clrIdx = 0; clrIdx < productInfo.colors.length; clrIdx++) {
+                tempMentries[productInfo.colors[clrIdx]] = {};
+                for (let sizeIdx = 0; sizeIdx < productInfo.sizes.length; sizeIdx++) {
+                    tempMentries[productInfo.colors[clrIdx]][productInfo.sizes[sizeIdx]] = {};
+                    if (productInfo.varients.length != 0) {
+                        for (let varIdx = 0; varIdx < productInfo.varients.length; varIdx++) {
+                            tempMentries[productInfo.colors[clrIdx]][productInfo.sizes[sizeIdx]][productInfo.varients[
+                                varIdx].id] = {
+                                quantity: undefined
+                            };
+                        }
+                    } else {
+                        tempMentries[productInfo.colors[clrIdx]][productInfo.sizes[sizeIdx]] = {
+                            quantity: undefined
+                        };
+                    }
+                }
+            }
+            mentries = tempMentries;
+        } else {
+            mentries = $cartStore[productInfo.id].mentries;
+        }
+    }
+    // on productInfo change we need to update cartItem entries:
+    let mentries = undefined;
+    let amount;
+
+    $: {
+        if (productInfo?.id) {
+            debugger;
+            create_mentries();
+        }
+    }
+
+    
+
+    function input_amount_changed(e)  {
+        calc_amount();
+        if(amount == 0 || amount == undefined) {
+                //delete $cartStore[productInfo.id];
+                cartStore.update(cart => {
+                    delete cart[productInfo.id];
+                    return cart;
+                });
+            }else {
+                if(!$cartStore[productInfo.id]){    
+                    $cartStore[productInfo.id] = {
+                        id: productInfo.id,
+                        title: productInfo.title,
+                        cimage: productInfo.cimage,
+                        price: productInfo.newPrice || productInfo.price,
+                        amount: amount,
+                        mentries: mentries,
+                    };
+                } else {
+                    $cartStore[productInfo.id].amount = amount;
+                    $cartStore[productInfo.id].mentries = mentries;
+                }
+            }
+            console.log('$cartStore', $cartStore);
+    }
+
+    
+    function calc_amount() {
+        let total_amount = 0;
+
+        if (mentries && productInfo.show_sizes_popup) {
+            productInfo.colors.forEach(color => {
+                productInfo.sizes.forEach((size, size_idx) => {
+                    if (productInfo.varients.length == 0) {
+                        total_amount += mentries[color][size].quantity || 0;
+                    } else {
+                        productInfo.varients.forEach((varient, varient_idx) => {
+                            total_amount += mentries[color][size][varient.id].quantity || 0;
+                        });
+                    }
+                });
+            });
+            amount = total_amount;
+        }
+    }
+
+        // if $cartStore[productInfo.id] was deleted: set amount to 0 and mentries to undefined
+        /*$: {
+            if (!$cartStore[productInfo.id]) {
+                amount = 0;
+                mentries = undefined;
+            }
+        }*/
+
+    //     // let data_size = e.target.dataset.size;
+    //     // let data_row_keys = e.target.dataset.rowKeys;
+    //     let data_row_vals = JSON.parse(e.target.dataset.rowVal);
+    //     let val = e.target.value;
+    //     let size_id = e.target.dataset.size;
+    //     let entry = undefined;
+    //     if(!cartItem.mentries[size_id]) {
+    //         cartItem.mentries[size_id] = {};
+    //     }
+    //     let keys = []
+    //     for(let i = 0; i < Object.keys(data_row_vals).length; i++) {
+    //         let key = Object.keys(data_row_vals)[i];
+    //         let val = data_row_vals[key];
+    //         keys.push(val);
+    //     }
+
+    //     // get entry: cartItem.mentries[size_id][keys[0]][keys[1]][keys[...]]
+    //     for(let i = 0; i < keys.length; i++) {
+    //         let key = keys[i];
+    //         if(!cartItem.mentries[size_id][key]) {
+    //             cartItem.mentries[size_id][key] = {};
+    //         }
+    //         if(i == keys.length - 1) {
+    //             entry = cartItem.mentries[size_id][key];
+    //         }
+    //     }
+    //     entry[keys[keys.length - 1]] = {'quantity':val};
+    //     debugger;
+    // }
+    onMount(async () => {
         // get all the sizes, colors, and varients
         let ALL_SIZES_promise = getSessionStorageStore('sizes');
         let ALL_COLORS_promise = getSessionStorageStore('colors');
@@ -27,43 +173,73 @@ import ColorDisplay from "./ColorDisplay.svelte";
     let colum_vals;
     let val_key;
     let val_vals;
-    
-    $: {
-        productInfo;
-        if(productInfo) {
-            let color_ids = productInfo.colors;
-            let varient_ids = productInfo.varients.map(v=>v.id);
-            let size_ids = productInfo.sizes;
-            let colors_and_varients_cartesian_product = [];
-            color_ids.forEach(color_id => {
-                if(varient_ids.length > 0) {
-                    varient_ids.forEach(varient_id => {
-                        colors_and_varients_cartesian_product.push({
-                            color_id,
-                            varient_id
-                        });
-                    });
-                }else {
-                    colors_and_varients_cartesian_product.push({
-                        color_id
-                    });
+
+    /* $: {
+         productInfo;
+         if(productInfo) {
+             debugger;
+             let color_ids = productInfo.colors;
+             let varient_ids = productInfo.varients.map(v=>v.id);
+             let size_ids = productInfo.sizes;
+             let colors_and_varients_cartesian_product = [];
+             color_ids.forEach(color_id => {
+                 if(varient_ids.length > 0) {
+                     varient_ids.forEach(varient_id => {
+                         colors_and_varients_cartesian_product.push({
+                             color_id,
+                             varient_id
+                         });
+                     });
+                 }else {
+                     colors_and_varients_cartesian_product.push({
+                         color_id
+                     });
+                 }
+             });
+             rows_keys = varient_ids.length > 0? [{name:'צבע', key:'color_id'}, {name:'מודל', key:'varient_id'}] : [{name:'צבע', key:'color_id'}];
+             row_vals = colors_and_varients_cartesian_product;
+             colum_key = 'מידה';
+             colum_vals = size_ids;
+             val_key = 'כמות';
+         }
+     }*/
+
+    function clear_sizes_entries(color_key) {
+        //TODO: go over this function
+        let tempMentries = {};
+        if (productInfo?.show_sizes_popup) {
+            if (productInfo.varients.length == 0) {
+                let sizeKeys = Object.keys(mentries[color_key]);
+                for (let size_index = 0; size_index < sizeKeys.length; size_index++) {
+                    mentries[color_key][sizeKeys[size_index]] = {
+                        quantity: undefined
+                    };
                 }
-            });
-            rows_keys = varient_ids.length > 0? [{name:'צבע', key:'color_id'}, {name:'מודל', key:'varient_id'}] : [{name:'צבע', key:'color_id'}];
-            row_vals = colors_and_varients_cartesian_product;
-            colum_key = 'מידה';
-            colum_vals = size_ids;
-            val_key = 'כמות';
+            } else {
+                let sizeKeys = Object.keys(mentries[color_key]);
+                for (let size_index = 0; size_index < sizeKeys.length; size_index++) {
+                    let verientsKeys = Object.keys(mentries[color_key][sizeKeys[size_index]]);
+                    for (let i = 0; i < verientsKeys.length; i++) {
+                        mentries[color_key][sizeKeys[size_index]][verientsKeys[i]] = {
+                            quantity: undefined
+                        };
+                    }
+                    //$cartStore[product_id].mentries[color_key][sizeKeys[size_index]] = {quantity: undefined};
+                }
+            }
+        } else {
+            mentries[color_key] = undefined;
         }
     }
-
 
     function get_size_rep(size_id) {
         return ALL_SIZES[size_id]
     }
+
     function get_color_rep(color_id) {
         return ALL_COLORS[color_id]
     }
+
     function get_varient_rep(varient_id) {
         return ALL_VARIENTS[varient_id]
     }
@@ -74,7 +250,148 @@ import ColorDisplay from "./ColorDisplay.svelte";
             create a table with row_keys as the rows (color, modal / only color)
             and colum_keys as the columns (size)
         -->
-        {#if productInfo.show_sizes_popup}
+        {#if productInfo.show_sizes_popup && mentries}
+
+
+        <table class="product-table">
+            <thead>
+              <tr>
+                <th class="sticky-col const-size-cell">צבע</th>
+                {#if productInfo.varients.length != 0}
+                  <th class="const-size-cell">מודל</th>
+                {/if}
+                {#each productInfo.sizes as size_id}
+                  <th class="size-header">{ALL_SIZES[size_id]?.size}</th>
+                {/each}
+                <th class="delete-cell-style">מחק</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each productInfo.colors as color, color_idx}
+                <!-- color: 84 -->
+                <tr>
+                  <td class="sticky-col">
+                    <div class="color-box" ><div class="inner" style="background-color: {ALL_COLORS[color].color}"></div>{ALL_COLORS[color].name}</div>
+                  </td>
+                  {#if productInfo.varients.length != 0}
+                    <td>
+                      {#each productInfo.varients as varient }
+                      <div class="varient-box cls-cell">
+                        {varient.name}
+                      </div>
+                      {/each}
+                      
+                    </td>
+                  {/if}
+                  {#each productInfo.sizes as size}
+                    <td class="size-cell">
+                      
+                        {#if productInfo.varients.length == 0}
+                          <div class="cell-wraper">
+                            <input on:change="{input_amount_changed}" class="size-input cls-cell" data-color="{color}" data-size="{size}" type="number" placeholder="כמות" bind:value="{mentries[color][size].quantity}" min="0" max="9999" >
+                          </div>
+                        {:else}
+                        
+                          {#each productInfo.varients as {id, name}, idx}
+                          <div class="cell-wraper">
+                            <input on:change="{input_amount_changed}" id="input_entery_{productInfo.id}_{size}_{color}_{id}"class="size-input cls-cell" type="number" placeholder="כמות" bind:value="{mentries[color][size][id].quantity}" min="0" max="9999" >
+                          </div>
+                          {/each}
+                        
+                        {/if}
+                      
+                    </td>
+                    
+                  {/each}
+                  <td class="delete-cell-style">
+                    <button class="remove-button">
+                      <svg xmlns="http://www.w3.org/2000/svg" on:click={clear_sizes_entries(color)}  width="16px" height="16px" viewBox="0 0 32 36"><path fill="currentColor" d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"/></svg>
+                    </button>
+                  </td>
+                </tr>
+                
+              {/each}
+              
+              <!--
+              {#each Object.keys($cartStore[$cartStore[product_id].id].mentries) as color_entry}
+                <tr>
+                  <td class="sticky-col">
+                    <div class="color-box" ><div class="inner" style="background-color: {$colorsJsonStore[color_entry].color}"></div>{$colorsJsonStore[color_entry].name}</div>
+                  </td>
+                  {#each Object.keys($cartStore[product_id].mentries[color_entry]) as size_id}
+                    <td class="size-cell">
+                      <input class="size-input" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color_entry][size_id].quantity}" min="0" max="9999" >
+                    </td>
+                  {/each}
+                  <td class="delete-cell-style">
+                    <button class="remove-button">
+                      <svg xmlns="http://www.w3.org/2000/svg" on:click={clear_sizes_entries(color_entry)}  width="16px" height="16px" viewBox="0 0 32 36"><path fill="currentColor" d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"/></svg>
+                    </button>
+                  </td>
+                </tr>
+              {/each}
+                -->
+
+
+
+
+
+              <tr>
+                <td class="total-cell">
+                  <div>
+                    סך הכל:
+                  </div>
+                </td>
+                {#if productInfo.varients.length != 0}
+                  <td class="total-cell">
+                    <div>-</div>
+                  </td>
+                {/if}
+
+                  <!--
+                    cartStore[$productData.id].mentries[color_id][size_id].quantity
+                  -->
+                  <!-- td with the calculated total quantity of each size in mentries -->
+                  
+                    <!-- {#each  Object.keys($cartStore[product_id].mentries[Object.keys($cartStore[product_id].mentries)[0]]) as size_id} -->
+                    {#each productInfo.sizes as size_id}
+                      <td class="total-cell" data-size-id="{size_id}">
+                        <div>
+                        <!-- calculate the sum of cartStore[$cartStore[product_id].id].mentries[X][size_id].quantity -->
+                        {#if  productInfo.varients.length == 0}
+                          { Object.keys(mentries).reduce((acc, curr) => {
+                            return acc + (mentries[curr][size_id].quantity || 0);
+                          }, 0)}
+                        {:else}
+                        { Object.keys(mentries).reduce((acc, curr) => {
+                          let sum = 0;
+                          for(let i = 0; i < productInfo.varients.length; i++){
+                            sum += (mentries[curr][size_id][productInfo.varients[i].id].quantity || 0);
+                          }
+                          return acc + sum;
+                        }, 0)}
+                        {/if}
+                        </div>
+                      </td>
+                    {/each}
+                    <td class="total-cell">
+                      <div>
+                        {amount || 0}
+                      </div>
+                    </td>
+                  
+                
+                <!--
+                  {#each Object.keys($productData.mentries[color_entry]) as size_id}
+                    
+                      {$productData.mentries[color_entry][size_id].quantity}
+                    </td>
+                  {/each}
+                  -->
+              </tr>
+            </tbody>
+          </table>
+        <!--
             <div class="my-table-responsive">
                 <h4 class="table-title">בבקשה בחר את הצבעים והמידות שברצוך להזמין:</h4>
                 <table class="my-table my-table-striped">
@@ -106,8 +423,8 @@ import ColorDisplay from "./ColorDisplay.svelte";
                                 {/each}
                                 {#each colum_vals as size_id}
                                     <td>
-                                        <input type="number" class="my-form-control" />
-                                    </td>
+                                        <input data-size={size_id} data-row-keys={JSON.stringify(rows_keys)} data-row-val={JSON.stringify(row_val)} data-row-vals={JSON.stringify(row_vals)} type="number" class="my-form-control" on:change="{sizes_colors_input_chenged}" />
+                                    </td>   
                                 {/each}
 
                             </tr>
@@ -115,6 +432,7 @@ import ColorDisplay from "./ColorDisplay.svelte";
                     </tbody>
                 </table>
             </div>
+            -->
         {:else}
             <!-- explain this product come as a package with this sides and color and you not not able select sizes, color, varients -->
             <div class="show_sizes_popup_false">
@@ -161,11 +479,20 @@ import ColorDisplay from "./ColorDisplay.svelte";
 
             <div class="solo-form-input">
                 <label for="amount">כמות</label>
-                <input name="amount" type="number" class="my-form-control my-form-control-single" />
+                <input bind:value="{amount}" on:change="{input_amount_changed}" name="amount" type="number" class="my-form-control my-form-control-single" />
                 <div class="action-buttons">
-                    <button class="amount-btn btn">+6</button>
-                    <button class="amount-btn btn">+12</button>
-                    <button class="amount-btn btn">+24</button>
+                    <button class="amount-btn btn" on:click="{()=> {
+                        amount = amount?amount + 6:6;
+                        input_amount_changed();
+                    }}">+6</button>
+                    <button class="amount-btn btn" on:click="{()=> {
+                        amount = amount?amount + 12:12;
+                        input_amount_changed();
+                    }}">+12</button>
+                    <button class="amount-btn btn" on:click="{()=> {
+                        amount = amount?amount + 24:24;
+                        input_amount_changed();
+                    }}">+24</button>
                 </div>
             </div>
             </div>
@@ -185,14 +512,154 @@ import ColorDisplay from "./ColorDisplay.svelte";
         background: radial-gradient(circle, rgba(255, 255, 255, 0.199) 0%, rgba(255, 255, 255, 0.199) 100%);
         //width:100%;
         height: calc(100% - 30px);
-
+        overflow: scroll;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
         border-radius: 15px;
         margin-top: 10px;
         margin-bottom: 10px;
         margin-left: 15px;
         margin-right: 15px;
-        .my-table-responsive {
+        table.product-table {
+        border: 1px solid #777777;
+          //width: 100%;
+          margin:auto;
+          border-spacing: 0;
+          thead {
+            tr {
+              th {
+                text-align: center;
+                border-bottom: 1px solid rgb(85, 85, 85);
+                border-left: 1px solid rgb(85, 85, 85);
+                max-width: 95px;
+                &:last-child {
+                  border-left: none;
+                }
+
+              }
+              th.size-header {
+                text-align: center;
+                border-bottom: 1px solid rgb(85, 85, 85);
+                border-left: 1px solid rgb(85, 85, 85);
+                
+                
+                &:last-child {
+                  border-left: none;
+                }
+              }
+            }
+          }
+          tbody {
+            tr {
+              
+              td {
+                
+                .varient-box {
+                  font-weight: bold;
+                    width: 100%;
+                    text-align: center;
+                    
+                    
+                    background: none;
+                    padding: 5px;
+                }
+                &.size-cell {
+                  & .cell-wraper {
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    border:1px solid black;
+                    max-width: 95px;
+                  }
+                  input.size-input:first-child {
+                    &:last-child {
+                      border-left: none;
+                    }
+                  }
+                  input.size-input {
+                    &:not(:placeholder-shown) {
+                      //border:1px solid pink;
+                      background: #f5f5f5;
+                      color: black;
+                    }
+
+                    /* webkit solution */
+                    ::-webkit-input-placeholder { text-align:center; }
+                    /* mozilla solution */
+                    input:-moz-placeholder { text-align:center; }
+                    &:focus {
+                      @include bg-gradient();
+                    }
+                    
+                    //border: 1px solid rgb(85, 85, 85);
+                    min-width: 48px;
+                    width: 100%;
+                    //width: max-content;
+                    text-align: center;
+                    //border: 1px solid #777777;
+                    //border:none;
+                    //border-right: 1px solid rgb(85, 85, 85);
+                    //border-left: 1px solid rgb(85, 85, 85);
+                    
+                    
+                    
+                    //border-radius: 5px;
+                    background: none;
+                    padding: 5px;
+                    border:none;
+                    margin: auto;
+                    &.has-focus-error {
+                      &:hover {
+                        background-color: #2b2a2a;
+                      }
+                    }
+                    &:focus {
+                      outline: none;
+                    }
+                    /*&::-webkit-outer-spin-button,
+                    &::-webkit-inner-spin-button {
+                      -webkit-appearance: none;
+                      margin: 0;
+                    }*/
+                  }
+                  
+                }
+                .remove-button {
+                  background: none;
+                  border: none;
+                  padding: 0;
+                  margin: auto;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  cursor: pointer;
+                  svg {
+                    width: 16px;
+                    height: 16px;
+                    fill: #777777;
+                  }
+                  &:hover {
+                    svg {
+                      path {
+                        color: #cc0000;
+                      }
+                    }
+                  }
+                }
+                .color-box {
+                  display: flex;
+                  justify-content: start;
+                  align-items: center;
+                  width: max-content;
+                  .inner {
+                    margin-left: 15px;
+                    width: 25px;
+                    height: 25px;
+                  }
+                }
+              }
+            }
+          }
+        }
+        /*.my-table-responsive {
 
             overflow-x: auto;
             width: 97%;
@@ -263,7 +730,7 @@ import ColorDisplay from "./ColorDisplay.svelte";
                     }
                 }
             }
-        }
+        }*/
         .show_sizes_popup_false {
 
             text-align: center;
@@ -323,5 +790,38 @@ import ColorDisplay from "./ColorDisplay.svelte";
             }
             
         }
-        
+        .const-size-cell {
+      width: 200px;
+    }
+    .sticky-col {
+      position: -webkit-sticky;
+      position: sticky;
+      background-color: rgba(238, 238, 238, 0.651);
+      //min-width: 80px;
+      position: sticky;
+      position: -webkit-sticky;
+      position: sticky;
+      right: 0px;
+      border: 1px solid #777777;
+      border-radius: 5px;
+      padding: 5px;
+    }
+  .total-cell {
+    div {
+      font-weight: bold;
+      background-color: rgba(34, 34, 34, 0.746);
+      //min-width: 80px;
+      color:white;
+      border: 1px solid #777777;
+      border-radius: 5px;
+      padding: 5px;
+      text-align: center;
+    }
+  }
+  .delete-cell-style {
+  
+  background-color: rgba(238, 238, 238, 0.651);
+  border: 1px solid #777777;
+  //min-width: 80px;
+  }
 </style>
