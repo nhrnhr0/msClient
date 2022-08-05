@@ -882,6 +882,12 @@
 
     @return $string;
   }
+  @mixin hover-active() {
+  &:active,
+  &:hover {
+    @content;
+  }
+}
   a {
     text-decoration: none;
     color: $primary;
