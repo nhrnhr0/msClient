@@ -65,7 +65,6 @@
 
     $: {
         if (productInfo?.id) {
-            debugger;
             create_mentries();
         }
     }
@@ -512,13 +511,15 @@
         background: radial-gradient(circle, rgba(255, 255, 255, 0.199) 0%, rgba(255, 255, 255, 0.199) 100%);
         //width:100%;
         height: calc(100% - 30px);
-        overflow: scroll;
+        overflow: auto;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
         border-radius: 15px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        margin-left: 15px;
-        margin-right: 15px;
+        margin:15px;
+        padding:15px;
+        // margin-top: 10px;
+        // margin-bottom: 10px;
+        // margin-left: 15px;
+        // margin-right: 15px;
         table.product-table {
         border: 1px solid #777777;
           //width: 100%;

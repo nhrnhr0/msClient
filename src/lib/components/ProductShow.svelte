@@ -294,6 +294,41 @@ import MentriesProductTable from "./MentriesProductTable.svelte";
                 }
             }
 
+            @media screen and (max-width: 1090px) {
+                overflow-y: scroll;
+                .slim-info {
+                    grid-area: 1 / 7 / 6 / 13; 
+                }
+                .product-image {
+                    grid-area: 1 / 1 / 6 / 7;
+                }
+                .product-mentries {
+                    grid-area: 6 / 1 / 10 / 13; 
+                }
+                .similer-products {
+                    grid-area: 10 / 1 / 13 / 13;
+                    overflow: visible;
+                }
+            }
+
+            @media screen and (max-width: 841px) {
+                display: flex;
+                flex-direction: column;
+                .product-image {
+                    margin:10px;
+                    max-height: 250px;
+                }
+
+                .slim-info {
+                    margin:10px;
+                }
+                .product-mentries {
+                    margin:5px;
+                }
+                .similer-products {
+                }
+            }
+
         }
 
     </style>
