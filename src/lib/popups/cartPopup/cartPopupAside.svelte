@@ -192,6 +192,9 @@ import { CLOUDINARY_URL } from "src/api/consts";
         <div class="action-buttons">
             <button
               class="checkout-button"
+              on:click={() => {
+                cartPopupStore.open();
+              }}
             >
               לקופה
             </button>

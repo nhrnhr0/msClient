@@ -19,7 +19,6 @@ function createCartPopupStore() {
 		//let sidebar_cart_element = document.querySelector('#sidebar-cart');
 		let main_navbar_wraper = document.querySelector('#main-navbar-wraper');
         
-        debugger;
         //let storeData = get(store);
         // if the sidebar is opened
         if(storeData.isSideOpen) {
@@ -47,13 +46,11 @@ function createCartPopupStore() {
                 state.isSideOpen = !state.isSideOpen;
                 return state;
             });
-            debugger;
             let data = get(this);
             handle_docerise_state(data);
         },
         openSide: () => {
             update(state => ({ ...state, isSideOpen: true }));
-            debugger;
             let data = get(this);
             handle_docerise_state(data);
         },
@@ -67,7 +64,6 @@ function createCartPopupStore() {
         },
         closeSide: () => {
             update(state => ({ ...state, isSideOpen: false }));
-            debugger;
             let data = get(this);
             handle_docerise_state(data);
         }

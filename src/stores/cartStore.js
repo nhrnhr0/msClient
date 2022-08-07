@@ -72,7 +72,15 @@ if(browser) {
 //     }
 //   }
 function createCartStore() {
-  return writable(initCart);
+  const { subscribe, set, update } = writable(initCart);
+  return {
+    subscribe,
+    set,
+    update,
+    clearCart: () => {
+      set({});
+    },
+  }
 }
 export const cartStore = createCartStore();//writable(initCart);
 cartStore.subscribe((value) => {

@@ -14,6 +14,7 @@
 import { onMount } from "svelte";
 import LoginPopup from "src/lib/popups/LoginPopup.svelte";
 import CartPopup from "src/lib/popups/cartPopup.svelte";
+import SuccessPopup from "src/lib/popups/successPopup.svelte";
     onMount(async()=>{
       // clear all dbs on startup.
       console.log('+++++++ WARNING: clearing all db data on startup. +++++++ ');
@@ -30,6 +31,7 @@ import CartPopup from "src/lib/popups/cartPopup.svelte";
 
   <LoginPopup />
   <CartPopup />
+  <SuccessPopup  />
   
   <div id="main_wraper" class="bg-wraper">
     <slot />

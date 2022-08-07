@@ -47,6 +47,57 @@
 @import "bootstrap/scss/tooltip";
 @import "bootstrap/scss/helpers";
 
+
+
+
+  // Brand colors
+  //$primary: #354165;
+  $primary: #3b3b3b;
+  //$secondary: #4dc0e3;
+  $secondary: #d4af37;
+  // Standard colors
+  $black: #000;
+  $white: #fff;
+  $red: #cc0000;
+
+  // Shades of gray
+  $gray-100: #f0f0f9;
+  $gray-200: #e1e1e7;
+  $gray-300: #d7d7de;
+  $gray-400: #cdcdd1;
+  $gray-500: #a5a5aa;
+  $gray-600: #98989b;
+  $gray-700: #75757a;
+  $gray-800: #666669;
+  $gray-900: #44444a;
+  $gray-1000: #333336;
+  $gray-1100: #222224;
+  $gray-1200: #131314;
+
+  
+
+  // Replace `$search` with `$replace` in `$string`
+  @function str-replace($string, $search, $replace: "") {
+    $index: str-index($string, $search);
+
+    @if $index {
+      @return str-slice($string, 1, $index - 1) + $replace +
+        str-replace(
+          str-slice($string, $index + str-length($search)),
+          $search,
+          $replace
+        );
+    }
+
+    @return $string;
+  }
+  @mixin hover-active() {
+  &:active,
+  &:hover {
+    @content;
+  }
+}
+
 :root {
   --swiper-theme-color: #d4af37!important;
   --swiper-navigation-size: 80px!important;

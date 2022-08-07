@@ -398,7 +398,7 @@ export function submit_cart_form(data) {
             body: JSON.stringify(data),
         };
         let response 
-        response = fetch_wraper(SUBMIT_CART_URL, requestOptions);
+        response = my_fetch(SUBMIT_CART_URL, requestOptions);
         return response;
 }
 export function submit_contact_form(data) {
