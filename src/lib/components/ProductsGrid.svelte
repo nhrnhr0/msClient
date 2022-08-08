@@ -13,7 +13,7 @@ import { BASE_URL, CLOUDINARY_URL } from "src/api/consts";
 import { my_fetch } from "src/network/my_fetch";
 import { Spinner } from "sveltestrap";
 import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
-
+import { cartStore } from 'src/stores/cartStore';
 
     export let page_info;
     let next_page = undefined;
@@ -123,6 +123,9 @@ import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
                 
                 <div class="product" data-product-id={product.id} on:click="{product_clicked}">
                     <div class="product-image">
+                        {#if $cartStore[product.id]}
+                            <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>
+                        {/if}
                         <img src={CLOUDINARY_URL + product.cimage} alt="{product.title}" />
                     </div>
                     <div class="product-info">
@@ -142,6 +145,17 @@ import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
 
 
     <style lang="scss">
+
+
+
+
+
+
+
+
+
+
+
         .loading-title {
             width:100%;
             text-align: center;

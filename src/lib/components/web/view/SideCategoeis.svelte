@@ -87,7 +87,16 @@
         position: relative;
         width: auto;
         height: 100%;
+        height: calc(100vh - 146px);
         
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        // hide scrollbar
+        &::-webkit-scrollbar {
+            width: 0px;
+            height: 0px;
+        }
         //height: calc(100vh - 150px);
         &.loading {
             .spinner-wraper {
@@ -114,6 +123,7 @@
             height: auto;
             overflow: hidden;
             margin-left: 10px;
+            margin-left: 35px;
             margin-right: 10px;
             position: relative;
             display: flex;

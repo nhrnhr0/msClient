@@ -10,6 +10,7 @@
         Spinner
     } from "sveltestrap";
     import {
+cartDomElementStore,
         cartStore
     } from "src/stores/cartStore";
     import ColorDisplay from "./ColorDisplay.svelte";
@@ -80,6 +81,8 @@
                     return cart;
                 });
             }else {
+              debugger;
+              console.log('input_amount_changed', $cartStore[productInfo.id]);
                 if(!$cartStore[productInfo.id]){    
                     $cartStore[productInfo.id] = {
                         id: productInfo.id,
@@ -89,6 +92,7 @@
                         amount: amount,
                         mentries: mentries,
                     };
+                    requestAnimationFrame(fly_to_cart);
                 } else {
                     $cartStore[productInfo.id].amount = amount;
                     $cartStore[productInfo.id].mentries = mentries;
@@ -116,6 +120,110 @@
             amount = total_amount;
         }
     }
+    
+    function fly_to_cart() {
+      debugger;
+      let img = document.querySelector('.product-image > img');
+        let clone = img.cloneNode(true);
+        
+        clone.style.position = 'absolute';
+        let bodyRect = document.body.getBoundingClientRect();
+        let elemRect = img.getBoundingClientRect();
+        let offsetTop   = elemRect.top - bodyRect.top;
+        let offsetLeft   = elemRect.left - bodyRect.left;
+    
+    
+        clone.style.top = offsetTop + 'px';
+        clone.style.left = offsetLeft + 'px';
+        clone.style.zIndex = '500';
+        clone.style.opacity = '1';
+        let cart = document.querySelector('#cart-btn');
+        document.querySelector('#main_wraper').appendChild(clone);
+        let cartRect = cart.getBoundingClientRect();
+        let cartOffsetTop   = cartRect.top - bodyRect.top;
+        let cartOffsetLeft   = cartRect.left - bodyRect.left;
+        if(offsetLeft < 0){
+            offsetLeft = 0;
+        }
+        
+        clone.animate(
+            [
+                {
+                    'top': offsetTop + 'px',
+                    'left': offsetLeft + 'px',
+                    'width': img.width / 2 + 'px',
+                    'height': img.height / 2 + 'px',
+                    'opacity': '1',
+                    offset: '0',
+                },
+                {
+                    'top': offsetTop + 'px',
+                    'left': offsetLeft + 'px',
+                    'width': '75px',
+                    'height': '75px',
+                    'opacity': '0.5',
+                    offset: '0.3',
+                },
+                {
+                    'top': offsetTop + 'px',
+                    'left': offsetLeft + 'px',
+                    'width': '75px',
+                    'height': '75px',
+                    'opacity': '0.5',
+                    offset: '0.5',
+                },
+                {
+                    'top': cartOffsetTop + 10 + 'px',
+                    'left': cartOffsetLeft + 10 + 'px',
+                    'width': 75 + 'px',
+                    'height': 75 + 'px',
+                    'opacity': '0.5',
+                    offset: '0.9',
+                },
+                {
+                    offset: '1',
+                    'opacity': '0.5',
+                    'top': cartOffsetTop + 10 + 'px',
+                    'left': cartOffsetLeft + 10 + 'px',
+                    'width': 75 + 'px',
+                    'height': 75 + 'px',
+                }
+            ],
+            {
+                duration: 1000,
+                iterations: 1,
+                easing: 'ease-in-out'
+            },
+        ).finished.then(()=> {
+            clone.remove();
+            debugger;
+            // create boop animation
+            cart.animate(
+              [
+                {
+                  'transform': 'scale(1)',
+                  'opacity': '1',
+                  offset: '0',
+                },
+                {
+                  'transform': 'scale(1.3)',
+                  'opacity': '1',
+                  offset: '0.5',
+                },
+                {
+                  'transform': 'scale(1)',
+                  'opacity': '1',
+                  offset: '1',
+                },
+              ],
+              {
+                duration: 300,
+                iterations: 1,
+                easing: 'ease-in-out'
+              },
+        );
+        });
+        }
 
         // if $cartStore[productInfo.id] was deleted: set amount to 0 and mentries to undefined
         /*$: {

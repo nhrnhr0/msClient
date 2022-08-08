@@ -15,6 +15,7 @@ import MentriesProductTable from "./MentriesProductTable.svelte";
 
 
     import {flip} from 'svelte/animate';
+import { cartStore } from "src/stores/cartStore";
 	
     export let product_id = undefined;
     export let slimData = undefined;
@@ -62,7 +63,14 @@ import MentriesProductTable from "./MentriesProductTable.svelte";
 </svelte:head>
         <div class="product-show-wrapper-grid" class:loading={loading}>
             <div class="product-image">
+                
                 {#if slimData}
+                {#if $cartStore[slimData.id]}
+                    <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>
+                {/if}
+                <!--{#if $cartStore[slimData.id]}
+                        <div class="stamp animate"></div>
+                    {/if}-->
                     <img src={CLOUDINARY_URL + (slimData || empty_slim)?.cimage} alt="{(slimData || empty_slim)?.title}" />
                     <div class="product-price">
                         {(slimData || empty_slim)?.price} ₪
@@ -131,6 +139,9 @@ import MentriesProductTable from "./MentriesProductTable.svelte";
                             <div class="product-item">
                                 <a href={$page.path + '?' + $page.query.toString().replace(product_regex, `product_id=${product.id}`)}>
                                 <div class="product-image">
+                                    {#if $cartStore[product.id]}
+                                        <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>
+                                    {/if}
                                     <img src={CLOUDINARY_URL + product.cimage} alt="{product.title}" />
                                 </div>
                                 <div class="product-title">
@@ -154,6 +165,15 @@ import MentriesProductTable from "./MentriesProductTable.svelte";
         </div>
     
     <style lang="scss">
+        .product-item:hover {
+        .product-image {
+                        img {
+                            transform: scale(1.1);
+                            //z-index: -1;
+                            filter: brightness(1.3);//brightness(0.8);
+                        }
+                    }
+                }
         .product-show-wrapper-grid {
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
             border-radius: 10px;

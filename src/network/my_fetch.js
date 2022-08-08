@@ -17,9 +17,9 @@ export function my_fetch(url, options, custom_fetch=undefined, retry_on_failure=
         }
         let fetch_func = () => {
             console.log(`${browser?'browser':'server'} fetching ======> `, url);
-            custom_fetch = custom_fetch || fetch;
+            let inner_custom_fetch = custom_fetch || fetch;
             let opts = defult_request_options(options)
-            custom_fetch(url,opts)
+            inner_custom_fetch(url,opts)
                 .then(res => {
                     if (res.ok) {
                         resolve(res);

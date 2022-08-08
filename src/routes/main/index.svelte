@@ -29,9 +29,13 @@ import { onMount } from "svelte";
                 page_info:page_info,
             }
         };*/
+        let url = BASE_URL + '/my-api/get-main-info?' + page.query.toString();
+        
+        let response = await my_fetch(url,{}, fetch);
+        let data = await response.json()
         return {
             props: {
-                page_info: undefined,
+                page_info: data,
             }
         };
     }
@@ -49,12 +53,10 @@ import { browser } from "$app/env";
     //export let products = {};
     export let page_info = undefined;
     let old_page_params = '';
-    $: {
+    /*$: {
         console.log('newPageUrl', $page.host + $page.path + '?' +  $page.query.toString(),' === old: ', old_page_params);
-        //data=[];
         if(browser) {
             
-            // get all query params from the url.
             let query = $page.query.toString();
             if (old_page_params == query) {
                 console.log('new page equal to old page, do nothing');
@@ -66,22 +68,41 @@ import { browser } from "$app/env";
                         page_info = data;
                     });
                 });
-
-                /*productsManager.setQuery(query);
-                productsManager.loadProducts().then(()=>{
-                    console.log('productsManager.getProducts()', productsManager.getProducts());
-                    data = productsManager.getProducts();
-                });*/
             }
             old_page_params = query;
-            //console.log('query', query);
         }
-    }
+    }*/
     onMount(() => {
         // console.log('onMount', { pageData, data });
         // data = pageData.results;
     });
 </script>
+
+<!-- og data -->
+<svelte:head>
+  <title>{page_info.og_meta?.title || ''}</title>
+  <link rel="icon" href="{page_info.og_meta?.icon || ''}" />
+  <meta name="title" content="{page_info.og_meta?.title || ''}">
+  <meta name="description" content="{page_info.og_meta?.description || ''}">
+  <meta name="keywords" content="{page_info.og_meta?.keywords || ''}" />
+
+
+  <meta property="og:title" content="{page_info.og_meta?.title || ''}" />
+  <meta property="og:description" content={page_info.og_meta?.description || ''} />
+  <meta property="og:image" content={page_info.og_meta?.icon || ''} />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="M.S. Global" />
+  <meta property="og:locale" content="IL" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="{page_info.og_meta?.title || ''}">
+  <meta property="twitter:description" content="{page_info.og_meta?.description || ''}">
+  <meta property="twitter:image" content="{page_info.og_meta.icon || ''}">
+</svelte:head>
+
+
+
     <TopCategories />
     <div class="side-and-grid-wraper">
         <hr>

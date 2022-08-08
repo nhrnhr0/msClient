@@ -15,6 +15,7 @@ import {
 	} from "svelte/animate";
     import {cartStore} from "src/stores/cartStore";
 import { CLOUDINARY_URL } from "src/api/consts";
+import { goto } from "$app/navigation";
 
     let sidebar_top = 62;// !$cartPopupStore.sideFloating? 0:62;
 </script>
@@ -126,7 +127,12 @@ import { CLOUDINARY_URL } from "src/api/consts";
                             </div>
                           </div>
 
-                        <button class="edit-btn">
+                        <button class="edit-btn" 
+                        on:click="{()=> {
+                          // navigate to /main?product_id={key}
+                          goto('/main?product_id=' + key);
+                        }}"
+                        >
                           ערוך
                           <svg
                             enable-background="new 0 0 45 45"
