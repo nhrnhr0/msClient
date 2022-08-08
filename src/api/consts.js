@@ -74,5 +74,5 @@ export const UPDATE_PROVIDER_REQUEST_ENTRY = BASE_URL + '/update-provider-reques
 export const CREATE_PROVIDER_DOCS = BASE_URL + '/create-provider-docs';
 export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
 export const CLOUDINARY_URL =
-  "https://res.cloudinary.com/ms-global/image/upload/";
+  "https://res.cloudinary.com/ms-global/image/upload/e_shadow,x_13,y_13/";
 export const REQUEST_PROVIDER_INFO_URL = BASE_URL + '/request-provider-info';

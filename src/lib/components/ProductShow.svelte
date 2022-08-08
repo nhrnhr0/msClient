@@ -215,6 +215,7 @@ import { cartStore } from "src/stores/cartStore";
             }
             .product-image {
                 background: radial-gradient(circle, white 0%, white 32%, #c7c7c7 84%);
+                background: radial-gradient(circle, #f9f295b5 0%, #f9f295ba 32%, #e0aa3eb8 84%);
                 //grid-area: 1 / 7 / 7 / 13;
                 grid-area: 1 / 5 / 7 / 9;
                 position: relative;
