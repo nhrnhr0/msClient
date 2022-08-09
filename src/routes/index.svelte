@@ -13,12 +13,16 @@
         activeModalsStore
     } from "src/lib/modals/modalManager";
 import { browser } from "$app/env";
+import { onMount } from "svelte";
 
     function open_whatsapp_link() {
         const whatsapp_text = encodeURIComponent('אני מעוניין לראות מחירים באתר')
         var url = `https://api.whatsapp.com/send?phone=972547919908&text=${whatsapp_text}`;
         window.open(url, '_blank');
     }
+    onMount(()=> {
+        document.querySelector('#main_wraper').style.height = 'auto';
+    })
     activeModalsStore.subscribe(modals => {
         if (browser) {
             if (Object.keys(modals).length == 0) {

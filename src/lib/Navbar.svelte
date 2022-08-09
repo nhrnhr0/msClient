@@ -95,8 +95,8 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
             if(item == undefined) {
                 return;
             }
-            let keyword = document.querySelector('input.autocomplete-input').value;
-            
+            let el = document.querySelector('input.autocomplete-input');
+            let keyword = el.value;
             if(item.item_count) {
                 //$categoryModalStore.setAlbum(item);
                 //$categoryModalStore.toggleModal();
