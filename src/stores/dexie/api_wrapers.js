@@ -9,18 +9,15 @@ import { my_fetch } from "src/network/my_fetch";
 fetch top level categories from the server
 
 */
-async function fetch_top_level_categories() {
+async function fetch_categories() {
     let res =  await my_fetch(`${BASE_URL}/get-main-categories/`);
     let data = await res.json(); // data = [{id:1,name:'...'},{id:2,name:'...'}]
     // add timestamp to the data
-    data.map(item => {
-        item.timestamp = Date.now();
-    });
     if (browser) {
-        db.topLevelCategories.clear().then(()=> { db.topLevelCategories.bulkPut(data) })
-        
+        db.topLevelCategories.clear().then(()=> { db.topLevelCategories.bulkPut(data.top_categories) })
+        db.catalogAlbums.clear().then(()=> { db.catalogAlbums.bulkPut(data.albums) })
     }
-    return data;
+    return data.top_categories;
     // store the data in the db
 }
 // indexdb_get_main_categories description:
@@ -36,16 +33,18 @@ export async function indexdb_get_main_categories() {
     if(browser) {
         data = await db.topLevelCategories.toArray();
     }
-    
     if (data.length === 0) {
-        data = await fetch_top_level_categories();
+        data = await fetch_categories().top_categories;
     }
-    else {
-        let now = Date.now();
-        let last_update = data[0]?.timestamp;
-        if (now - last_update > API_EXPIRATION_TIME) {
-            data = await fetch_top_level_categories();
-        }
+    return data;
+}
+export async function indexdb_get_catalog_albums() {
+    let data = [];
+    if(browser) {
+        data = await db.catalogAlbums.toArray();
+    }
+    if (data.length === 0) {
+        data = await fetch_categories().albums;
     }
     return data;
 }

@@ -26,7 +26,7 @@
     // when products changes set the categories_promise_innder to a promise which will be resolved when the categories are loaded.
     
     $: {
-        console.log('$:', albums) ;
+        //console.log('$:', albums) ;
         if (albums == undefined) {
             loading = true;
         }else {

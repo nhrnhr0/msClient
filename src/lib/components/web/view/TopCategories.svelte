@@ -17,8 +17,6 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
         if (categories.length === 0) {
             categories = await indexdb_get_main_categories();
         }
-
-        
     });
     function slider_mouseup(e) {
         isDown = false;

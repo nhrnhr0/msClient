@@ -34,10 +34,10 @@ import { onMount } from "svelte";
             resetSideCategories();
     });*/
         $: {
-            console.log('$:');
-            console.log('last_id', last_id);
-            console.log('$page.params.id', $page.params.id);
-            console.log('side_categories', side_categories);
+            // console.log('$:');
+            // console.log('last_id', last_id);
+            // console.log('$page.params.id', $page.params.id);
+            // console.log('side_categories', side_categories);
             if (last_id != $page.params.id || !side_categories) {
                 resetSideCategories();
                 last_id = $page.params.id;

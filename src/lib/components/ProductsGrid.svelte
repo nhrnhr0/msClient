@@ -201,7 +201,7 @@ import { cartStore } from 'src/stores/cartStore';
                 flex-direction: column;
                 & .product-image {
                     background: radial-gradient(circle,white 0%,white 32%,#c7c7c7 84%);
-                    background: radial-gradient(circle, #f9f295b5 0%, #f9f295ba 32%, #e0aa3eb8 84%);
+                    //background: radial-gradient(circle, #f9f295b5 0%, #f9f295ba 32%, #e0aa3eb8 84%);
                     width: 100%;
                     height: 100%;
                     display: flex;

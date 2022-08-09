@@ -2,8 +2,9 @@
 import Dexie from 'dexie';
 
 export const db = new Dexie('myDatabase');
-db.version(5).stores({
+db.version(6).stores({
   topLevelCategories: 'id, name, image,albums,timestemp',
+  catalogAlbums: 'id, title',
   slimProducts: 'id, title, cimage, price, new_price',
   products: 'id, title, cimage, price, new_price, description',
 });

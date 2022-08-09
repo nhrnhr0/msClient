@@ -26,6 +26,8 @@ import { apiSearchProducts } from "./../api/api";
 import { logStore } from "./../stores/logStore";
 
 import AlbumsView from "./components/AlbumsView.svelte";
+import { goto } from "$app/navigation";
+import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
         
 
         
@@ -36,6 +38,8 @@ import AlbumsView from "./components/AlbumsView.svelte";
             let albums = [];
             let album = undefined;
             // get all the albums from the products and count how much products from each album
+            let all_albums = await indexdb_get_catalog_albums();
+            debugger;
             for(let i = 0; i < data.all.length; i++) {
                 let my_item = data.all[i];
                 album = undefined;
@@ -44,7 +48,9 @@ import AlbumsView from "./components/AlbumsView.svelte";
                         album = my_item.albums[alb_iter];
                         break;
                     }*/
-                    let alb = $albumsJsonStore.find(album => album.id == my_item.albums[item_album_iter]);
+                    
+                    
+                    let alb = all_albums.find(album => album.id == my_item.albums[item_album_iter]);
                     if(alb && alb.is_campain == false && alb.is_public == true) {
                         album = alb;
                         break;
@@ -92,8 +98,8 @@ import AlbumsView from "./components/AlbumsView.svelte";
             let keyword = document.querySelector('input.autocomplete-input').value;
             
             if(item.item_count) {
-                $categoryModalStore.setAlbum(item);
-                $categoryModalStore.toggleModal();
+                //$categoryModalStore.setAlbum(item);
+                //$categoryModalStore.toggleModal();
                 logStore.addLog(
                             {
                                 'a': 'פתיחת קטגוריה מחיפוש',
@@ -109,9 +115,10 @@ import AlbumsView from "./components/AlbumsView.svelte";
                                 }
                             }
                             );
+                            goto('main?album_id=' + item.id);
             }else {
-                $productModalStore.setProduct(item.albumId, item.id);
-                $productModalStore.toggleModal();
+                // $productModalStore.setProduct(item.albumId, item.id);
+                // $productModalStore.toggleModal();
                 logStore.addLog(
                             {
                                 'a': 'פתיחת מוצר מחיפוש',
@@ -127,6 +134,7 @@ import AlbumsView from "./components/AlbumsView.svelte";
                                 }
                             }
                             );
+                            goto('main?product_id=' + item.id);
             }
             
         }
