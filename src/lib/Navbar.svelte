@@ -497,7 +497,8 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
 
                     }
             :global(.dropdown-header) {
-            :global(.category-menu-2){
+            
+                :global(.category-menu-2){
                 :global(.category-menu-2-menu.show) {
                     display: grid;
                     transform: translate3d(-70%, 32px, 0px)!important;
@@ -546,8 +547,9 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
                     }
                 }
             }
-        }
-        }
+                }
+            }
+            
 
 */
 /*
