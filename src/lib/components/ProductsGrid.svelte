@@ -132,9 +132,11 @@ import { cartStore } from 'src/stores/cartStore';
                         <div class="product-title">
                             {product.title}
                         </div>
-                        <div class="product-price">
-                            {product.price} ₪
-                        </div>
+                        {#if product.price != 0}
+                            <div class="product-price">
+                                {product.price} ₪
+                            </div>
+                        {/if}
                     </div>
                 </div>
             {/each}
@@ -233,10 +235,13 @@ import { cartStore } from 'src/stores/cartStore';
                         left: 15px;
                         font-size: 16px;
                         background-color: rgba(255, 255, 255, 1);
-                        width:35px;
+                        width:auto;
                         text-align: center;
                         border-radius: 25px;
                         box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+                        line-height: 2;
+                        padding-left: 3px;
+                        padding-right: 3px;
                         
                     }
                 }

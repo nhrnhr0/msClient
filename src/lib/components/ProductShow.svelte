@@ -72,14 +72,13 @@ import { cartStore } from "src/stores/cartStore";
                         <div class="stamp animate"></div>
                     {/if}-->
                     <img src={CLOUDINARY_URL + (slimData || empty_slim)?.cimage} alt="{(slimData || empty_slim)?.title}" />
-                    <div class="product-price">
-                        {(slimData || empty_slim)?.price} ₪
-                    </div>
+                    {#if slimData.new_price || slimData.price}
+                        <div class="product-price">
+                            {slimData?.new_price || (slimData)?.price} ₪
+                        </div>
+                    {/if}
                 {:else}
                     <img src="https://via.placeholder.com/300x300" alt=""/>
-                    <div class="product-price">
-                        <Spinner />
-                    </div>
                 {/if}
             </div>
             <div class="slim-info">
@@ -257,6 +256,10 @@ import { cartStore } from "src/stores/cartStore";
                         text-align: center;
                         border-radius: 25px;
                         box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+                        
+                        line-height: 2;
+                        padding-left: 3px;
+                        padding-right: 3px;
                 }
             }
 
