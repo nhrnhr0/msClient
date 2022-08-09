@@ -23,11 +23,9 @@ import { send_product_question } from "./../../api/api";
     function question_submit(e) {
         e.preventDefault();
         let form = e.target;
-        debugger;
         form.reportValidity();
         let formData = new FormData(form);
         let data = {};
-        debugger;
         formData.forEach((value, key) => {
             data[key] = value;
         });

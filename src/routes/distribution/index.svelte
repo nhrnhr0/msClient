@@ -388,6 +388,7 @@ import About from "$lib/about.svelte";
         @include bg-gradient();
     }
     .bg-wraper  {
+        /*
     background: url('https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl');
     background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url('https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl')!important;
     background-position: center;
@@ -395,7 +396,7 @@ import About from "$lib/about.svelte";
     width: 100%;
     //height: -webkit-fill-available;
     //height: 100vh;
-    overflow-y: auto;
+    overflow-y: auto;*/
     main {
         display: flex;
         justify-content: center;

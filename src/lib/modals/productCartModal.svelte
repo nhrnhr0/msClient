@@ -24,6 +24,7 @@ userInfoStore
   import {
     CLOUDINARY_URL
   } from './../../api/consts';
+import { Spinner } from "sveltestrap";
   let is_loaded = false;
   let modal_zIndex = 0;
   export let isModalOpen = false;
@@ -53,6 +54,9 @@ userInfoStore
     } else {
       modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
       set_product(product_id_);
+      setTimeout(()=> {
+        document.querySelector('.size-input').focus();
+      }, 0);
     }
   }
   export function isOpen() {
@@ -283,13 +287,21 @@ userInfoStore
 
     <div class="modal-body">
       {#if is_loaded && $cartStore[product_id] != undefined}
-      
+      <div class="action-buttons">
+        <!-- שמור ומחק -->
+        <button class="btn btn-secondary" on:click={clear_all}>נקה</button>
+        <button class="btn btn-primary" style:visibility={$cartStore[product_id].amount>0?'visible':'hidden'} on:click={toggleModal}>הוסף לסל</button>
+        <button class="btn btn-danger" on:click={remove_from_cart}>מחק</button>
+
+      </div>
       <div class="product-grid-wraper">
         {#if $userInfoStore && $userInfoStore.isLogin && $userInfoStore.me && $userInfoStore.me.is_superuser}
         <div on:click={admin_edit_price} class="product-price">
           {$cartStore[product_id]?.price}₪
         </div>
         {/if}
+
+      
         {#if $cartStore[product_id].show_sizes_popup}
           <div class="product-attributes">
             <div class="product-details">
@@ -499,28 +511,13 @@ userInfoStore
           לחץ על התא שאליו תרצה להוסיף כמות
         </div>
 
+        
 
-
-        <div class="action-buttons">
-          <!-- שמור ומחק -->
-          <button class="btn btn-primary" style:visibility={$cartStore[product_id].amount>0?'visible':'hidden'} on:click={toggleModal}>הוסף לסל</button>
-          <button class="btn btn-secondary" on:click={clear_all}>נקה</button>
-          <button class="btn btn-danger" on:click={remove_from_cart}>מחק</button>
-
-        </div>
+        
         {:else}
-          <!-- is that nessesery? -->
-          <div class="product-details">
-            <div class="product-img">
-              <img width="150" height="150" src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[product_id].cimage}" alt="{$cartStore[product_id].title}">
-            </div>
-            <div class="product-title">
-              <h2>{$cartStore[product_id].title}</h2>
-            </div>
-          </div>
+          <Spinner />
         {/if}
     </div>
-
   </div>
   {/if}
 </div>
@@ -537,6 +534,7 @@ userInfoStore
     }
   }
   .product-grid-wraper {
+    
     display: flex;
     align-items: center;
     justify-content: center;
@@ -545,40 +543,52 @@ userInfoStore
 .cls-cell {
   border:1px solid rgb(85, 85, 85);
 }
+.modal_content {
+  overflow: hidden;
+  max-height: 80%;
+  //max-width: min-content;
+}
 .modal-header {
+  overflow: hidden;
   .modal-title {
     font-size: 1.5rem;
   }
 }
   .modal-body {
+    position: relative;
+    overflow-x: scroll;
+    width:100%;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-bottom: 200px;
     .const-size-cell {
       width: 200px;
     }
     .sticky-col {
-  position: -webkit-sticky;
-  position: sticky;
-  background-color: rgba(238, 238, 238, 0.651);
-  //min-width: 80px;
-    position: sticky;
-    position: -webkit-sticky;
-    position: sticky;
-    right: 0px;
-    border: 1px solid #777777;
-    border-radius: 5px;
-    padding: 5px;
-}
-.total-cell {
-  div {
-    font-weight: bold;
-    background-color: rgba(34, 34, 34, 0.746);
-    //min-width: 80px;
-    color:white;
-    border: 1px solid #777777;
-    border-radius: 5px;
-    padding: 5px;
-    text-align: center;
+      position: -webkit-sticky;
+      position: sticky;
+      background-color: rgba(238, 238, 238, 0.651);
+      //min-width: 80px;
+      position: sticky;
+      position: -webkit-sticky;
+      position: sticky;
+      right: 0px;
+      border: 1px solid #777777;
+      border-radius: 5px;
+      padding: 5px;
+    }
+  .total-cell {
+    div {
+      font-weight: bold;
+      background-color: rgba(34, 34, 34, 0.746);
+      //min-width: 80px;
+      color:white;
+      border: 1px solid #777777;
+      border-radius: 5px;
+      padding: 5px;
+      text-align: center;
+    }
   }
-}
   .delete-cell-style {
   
   background-color: rgba(238, 238, 238, 0.651);
@@ -613,7 +623,7 @@ userInfoStore
       
       overflow-x: auto;
       
-      //width: 100%;
+      width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -677,10 +687,19 @@ userInfoStore
                     }
                   }
                   input.size-input {
+                    &:not(:placeholder-shown) {
+                      //border:1px solid pink;
+                      background: #f5f5f5;
+                      color: black;
+                    }
+
                     /* webkit solution */
                     ::-webkit-input-placeholder { text-align:center; }
                     /* mozilla solution */
                     input:-moz-placeholder { text-align:center; }
+                    &:focus {
+                      @include bg-gradient();
+                    }
                     
                     //border: 1px solid rgb(85, 85, 85);
                     min-width: 48px;
@@ -846,11 +865,16 @@ userInfoStore
     }
 
     .action-buttons {
+      position: sticky;
+      top: 100%;
+      transform: translate(0, 320%);
+      width: 100%;
       display: flex;
-      justify-content: space-around;
+      justify-content: center;
+      gap:5px;
       align-items: center;
-      padding-top: 25px;
-      padding-bottom: 10px;
+      //padding-top: 25px;
+      //padding-bottom: 10px;
       button {
         width: 100px;
         height: 40px;

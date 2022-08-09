@@ -1,13 +1,55 @@
+<script context="module">
+    export function load({ error, status }) {
+        debugger;
+      return {
+        props: {
+          title: `${status}: ${error.message}`,
+          status: status,
+          message: error.message,
+          error: error,
+        }
+      };
+    }
+  </script>
+  
+  <script>
+    export let title;
+    export let status;
+    export let message;
+    export let error;
+  </script>
+  <svelte:head>
+    <title>{title}</title>
+  </svelte:head>
+
+  {#if status == 404}
+    <div class="main-content">
+        <div class="inner">
+            <h1>לקוחות יקרים !</h1>
+            <h2>התחדשנו באתר חדש מוזמנים להיכנס לבקר <a href="/">למעבר לאתר</a></h2>
+            <h3>תודה על שיתוף הפעולה</h3>
+            <div class="img-container"><img height="80" alt="m.s. global" src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1637096417/msAssets/logo_ms_outline_1_jpfkhg.png" width="198">
+            </div>
+        </div>
+    </div>
+{:else}
 <div class="main-content">
     <div class="inner">
         <h1>לקוחות יקרים !</h1>
-        <h2>התחדשנו באתר חדש מוזמנים להיכנס לבקר <a href="/">למעבר לאתר</a></h2>
+        <h2>נמצא שגיאה באתר, אם הבעיה חוזרת על עצמה</h2>
+        <h2>בבקשה צור קשר וספר לנו מה קרה</h2>
         <h3>תודה על שיתוף הפעולה</h3>
         <div class="img-container"><img height="80" alt="m.s. global" src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1637096417/msAssets/logo_ms_outline_1_jpfkhg.png" width="198">
         </div>
+        קוד שגיאה: {status}<br>
+        הודעה: {message}
+        <hr>
+        <pre style="direction: ltr;">
+            {error.stack}
+        </pre>
     </div>
 </div>
-
+{/if}
 
 <style lang="scss">
     .main-content {

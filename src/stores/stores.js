@@ -17,23 +17,57 @@ export let _modal_z_index_incrementor = writable(0);
 
 export let sizesJsonStore = writable([]);
 export let colorsJsonStore = writable([]);
+export let warhousesJsonStore = writable([]);
 export let campainsStore = writable([]);
 export let all_swipers = writable([]);
 
 export let successModalStore = writable();
 
 export let selectedUsersForWhatsappCampaign = writable([]);
+ };
+=======
+function createCartHistoryStore() {
+  const { subscribe, update, set } = writable({
+    showModal: false,
+    cartHistory: [],
+  });
+
+  return {
+    subscribe,
+    set,
+    openModal: () => update((state) => ({ ...state, showModal: true })),
+    closeModal: () => update((state) => ({ ...state, showModal: false })),
+  };
+}
+
+export const cartHistoryModalStore = createCartHistoryStore();
+
+function createHistoryProductsStore() {
+  const { subscribe, update, set } = writable({
+    showModal: false,
+    historyProducts: {},
+  });
+
+  return {
+    subscribe,
+    set,
+    openModal: () => update((state) => ({ ...state, showModal: true })),
+    closeModal: () => update((state) => ({ ...state, showModal: false })),
+  };
+}
+
+export const historyProductsModalStore = createHistoryProductsStore();
+
+export let cartHistoryModal = writable({
+  showModal: false,
+});
 
 // browser storage - userInfoStore
-let initUserData = { isLogin: undefined };
+let initUserData = { isLogin: false };
 if (browser) {
-  if (typeof Storage !== "undefined") {
-    initUserData = JSON.parse(localStorage.getItem("user"));
-  } else {
-    initUserData = JSON.parse(sessionStorage.getItem("user"));
-  }
+  initUserData = JSON.parse(localStorage.getItem("user"));
   if (!initUserData) {
-    initUserData = { isLogin: undefined };
+    initUserData = { isLogin: false };
   }
 }
 export let userInfoStore = writable(initUserData);
