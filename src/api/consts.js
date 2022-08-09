@@ -9,16 +9,6 @@ export const COLORS_API_URL = BASE_API_URL + 'colors/';
 
 export const STATIC_BASE = import.meta.env['VITE_STATIC_LOCATION']*/
 
-// CRM
-export const LEAD_DISTRIBUTION_URL = BASE_API_URL + "lead-distribution/";
-export const GET_ALL_INTERESTS_URL = CRM_BASE_API + "get-all-interests/";
-export const GET_ALL_BUSINESS_TYPES = CRM_BASE_API + "get-all-business-types/";
-export const GET_ALL_BUSINESS_TYPES_GROUPS =
-  CRM_BASE_API + "get-all-business-types-groups/";
-export const GET_ALL_USERS_BY_BUSINESS_TYPES =
-  CRM_BASE_API + "get-all-business-users-by-business-types-id";
-export const GET_USERS_IN_EXCEL =
-  CRM_BASE_API + "get_crm_users_numbers_in_excel";
 //http://127.0.0.1:8000/api/token/
 //export const OG_META_ALBUMS_URL = BASE_API_URL + 'og-meta-albums/';
 
@@ -73,6 +63,13 @@ export const GET_ALL_INVENTORY = BASE_URL + '/get-all-inventory-api/';
 export const GET_STOCK_BY_ID_URL = BASE_URL + '/get-stock-by-id-api/';
 export const INVENTORY_EDIT_ENTRY_URL = BASE_URL + '/inventory-edit-entry/';
 export const INVENTORY_MANUAL_UPDATE_ENTRY_URL = BASE_URL + '/inventory-manual-update-entry/';
+
+export const GET_ALL_BUSINESS_TYPES_GROUPS =
+  CRM_BASE_API + "get-all-business-types-groups/";
+export const GET_ALL_USERS_BY_BUSINESS_TYPES =
+  CRM_BASE_API + "get-all-business-users-by-business-types-id";
+export const GET_USERS_IN_EXCEL =
+  CRM_BASE_API + "get_crm_users_numbers_in_excel";
 //http://127.0.0.1:8000/api/token/
 //export const OG_META_ALBUMS_URL = BASE_API_URL + 'og-meta-albums/';
 export const MORDER_GET_API = BASE_URL + '/morders/api-get-order-data2';

@@ -24,8 +24,6 @@ export let all_swipers = writable([]);
 export let successModalStore = writable();
 
 export let selectedUsersForWhatsappCampaign = writable([]);
- };
-=======
 function createCartHistoryStore() {
   const { subscribe, update, set } = writable({
     showModal: false,
