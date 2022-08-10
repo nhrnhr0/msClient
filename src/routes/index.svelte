@@ -1,3 +1,15 @@
+<script context="module">
+    // load function is called when the page is loaded.
+    export async function load({ fetch, page, session, contex }) {
+        let data = await fetch_main_page_albums(fetch);
+        return {
+            props: {
+                main_albums: data,
+            }
+        };
+    }
+</script>
+
 <script>
     import Header from "src/lib/header.svelte";
     import LogoSwiper from "src/lib/swipers/logoSwiper.svelte";
@@ -14,7 +26,12 @@
     } from "src/lib/modals/modalManager";
 import { browser } from "$app/env";
 import { onMount } from "svelte";
-
+import { fetch_main_page_albums } from "src/network/fetch_main_page_albums";
+import MainPageAlbums from "src/new/MainPageAlbums.svelte";
+import CallToActionForm from "src/lib/components/CallToActionForm.svelte";
+import PersonalCampaigns from "src/new/PersonalCampaigns.svelte";
+import About from "src/lib/about.svelte";
+    export let main_albums;
     function open_whatsapp_link() {
         const whatsapp_text = encodeURIComponent('אני מעוניין לראות מחירים באתר')
         var url = `https://api.whatsapp.com/send?phone=972547919908&text=${whatsapp_text}`;
@@ -36,7 +53,6 @@ import { onMount } from "svelte";
 <Header></Header>
 <LogoSwiper></LogoSwiper>
 <TopLevelCategoriesBlock />
-
 {#if $userInfoStore.isLogin == false}
     <div class="whatsapp-btn-wraper">
         <button on:click="{open_whatsapp_link}" class="whatsapp-btn">
@@ -44,8 +60,10 @@ import { onMount } from "svelte";
         </button>
     </div>
 {/if}
-
-
+<MainPageAlbums main_albums={main_albums} />
+<CallToActionForm />
+<PersonalCampaigns />
+<About />
 <style lang="scss">
     .whatsapp-btn-wraper{ 
         display: flex;

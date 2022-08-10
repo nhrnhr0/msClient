@@ -44,17 +44,17 @@
 
     function slider_click(e) {
         console.log('slider_click');
-        let albumId = e.currentTarget.dataset.albumId;
+        let albumSlug = e.currentTarget.dataset.albumSlug;
         //$page.query.set('album_id', albumId);
         let new_query = new URLSearchParams($page.query);
 
         // the side category clicked is already the selected one, so we need to unselect it or if we are on a product page, we need to go back to the side category page (album).
-        if($page.query.get('album_id') == albumId) { 
+        if($page.query.get('album') == albumSlug) { 
             if($page.query.get('product_id') == undefined) {
-                new_query.delete('album_id');
+                new_query.delete('album');
             }
         } else {
-            new_query.set('album_id', albumId);
+            new_query.set('album', albumSlug);
         }
         new_query.delete('product_id'); // handle if side category is clicked inside a product page, we go for the side category
         let new_url = $page.path + '?' + new_query.toString();
@@ -72,7 +72,8 @@
             </div>
         {/if}
         {#each my_albums || [] as category}
-            <div on:click="{slider_click}" class="scroll-snap-slide" class:active={category.id == $page.query.get('album_id')} data-album-id={category.id}>
+        
+            <div on:click="{slider_click}" class="scroll-snap-slide" class:active={category.slug == $page.query.get('album')} data-album-slug={category.slug}>
                 <div class="card">
                     <img width="25px" height="25px" src="{CLOUDINARY_URL}{category.cimage}" alt="{category.title}">
                     <div>{category.title}</div>

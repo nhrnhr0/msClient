@@ -15,7 +15,7 @@ import { onMount } from "svelte";
 <div class="categories">
     {#each main_categories as category, index}
         <div class="category" class:small="{index%7>2}" data-idx={index}>
-            <a href="main/?top={category.id}">
+            <a href="main/?top={category.slug}">
                 <img src="{CLOUDINARY_URL}{category.get_image}" alt="{category.name}">
                 <span>{category.name}</span>
             </a>

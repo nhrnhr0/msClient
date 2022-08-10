@@ -5,6 +5,7 @@
     import {page} from '$app/stores';
 import { onMount } from 'svelte';
 import { indexdb_get_main_categories } from 'src/stores/dexie/api_wrapers';
+import { userInfoStore } from 'src/stores/stores';
 /*import {ScrollSnapDraggable} from 'scroll-snap-slider/src/ScrollSnapDraggable.js';
 import { ScrollSnapSlider  } from 'scroll-snap-slider'
 */
@@ -43,9 +44,17 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
     }
 </script>
     <div bind:this={slider} on:mousedown="{slider_mousedown}" on:mouseleave="{slider_mouseleave}" on:mouseup="{slider_mouseup}" on:mousemove={slider_mousemove} class="scroll-snap-slider">
+            {#if $userInfoStore?.me?.campains?.length > 0} 
+                <div class="scroll-snap-slide" class:active={'campaigns' == $page.query.get('top')}>
+                    <a href="?top=campaigns" class="category" >
+                        <img src="https://res.cloudinary.com/ms-global/image/upload/v1660132407/msAssets/Group_10_copy_10_3_-removebg-preview_1_uq2t66.png" alt="מבצעים">
+                        <div>מבצעים</div>
+                    </a>
+                </div>
+            {/if}
             {#each categories as category}
-                <div class="scroll-snap-slide" class:active={category.id == $page.query.get('top')}>
-                    <a href="?top={category.id}" class="category" >
+                <div class="scroll-snap-slide" class:active={category.slug == $page.query.get('top')}>
+                    <a href="?top={category.slug}" class="category" >
                         <img src="{CLOUDINARY_URL}{category.get_image}" alt="{category.name}">
                         <div>{category.name}</div>
                     </a>

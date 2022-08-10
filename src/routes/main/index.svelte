@@ -102,7 +102,7 @@ import { browser } from "$app/env";
 </svelte:head>
 
 
-
+    
     <TopCategories />
     <div class="side-and-grid-wraper">
         <hr>
