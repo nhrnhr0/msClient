@@ -38,9 +38,7 @@ import { page } from '$app/stores';
   <div id="main_wraper" class="bg-wraper" class:const-page-size={$page.path == '/main'} class:make-small={$cartPopupStore.isSideOpen && !$cartPopupStore.sideFloating}>
     
       <slot />
-      
   </div>
-  
   <style lang="scss">
     #main_wraper {
       height: auto;
@@ -53,5 +51,6 @@ import { page } from '$app/stores';
         left: 0px;
       }
     }
+    
   </style>
   
