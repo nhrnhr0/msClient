@@ -147,21 +147,19 @@ import PriceTag from "src/new/priceTag.svelte";
                     {#each (similarProducts) as product}
                         <div class="product-item">
                             <a href={$page.path + '?' + $page.query.toString().replace(product_regex, `product_id=${product.id}`)}>
-                            <div class="product-image">
-                                {#if $cartStore[product.id]}
-                                    <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>
-                                {/if}
-                                <img src={CLOUDINARY_URL + product.cimage} alt="{product.title}" />
-                                <PriceTag new_price={product.new_price} price={product.price} top={'3px'} left={'3px'} font_size={'0.8em'} />
-                            </div>
-                            <div class="product-title">
-                                <h2>
-                                    {product.title}
-                                </h2>
-                            </div>
-                            <!-- <div class="product-price">
-                                {product.price} ₪
-                            </div> -->
+                                <div class="product-image">
+                                    {#if $cartStore[product.id]}
+                                        <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>
+                                    {/if}
+                                    <img src={CLOUDINARY_URL + product.cimage} alt="{product.title}" />
+                                    <PriceTag new_price={product.new_price} price={product.price} top={'3px'} left={'3px'} font_size={'0.8em'} />
+                                </div>
+                                <div class="product-title">
+                                        {product.title}
+                                </div>
+                                <!-- <div class="product-price">
+                                    {product.price} ₪
+                                </div> -->
                             </a>
                         </div>
                     {/each}
@@ -343,7 +341,7 @@ import PriceTag from "src/new/priceTag.svelte";
                         margin-left: 5px;
                         margin-right: 5px;
                         background: radial-gradient(circle, rgba(255, 255, 255, 0.199) 0%, rgba(255, 255, 255, 0.199) 100%);
-                        transition: all 0.3s ease-in-out;
+                        transition: all 0.1s ease-in-out;
                         &:hover {
                             font-weight: bold;
                             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
@@ -357,11 +355,9 @@ import PriceTag from "src/new/priceTag.svelte";
                                 }
                             }
                             .product-title {
-                                h2 {
                                     font-size: 16px;
                                     margin-bottom: 0px;
                                     text-align: center;
-                                }
                             }
 
                             /*.product-price {
