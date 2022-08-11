@@ -40,7 +40,7 @@
 {#each main_albums as album}
     {@const album_href = `/main?top=${album.top_slug}&album=${album.slug}`}
     <div class="category">
-        <a href="{album_href}" class="category-title">
+        <a href="{album_href}" title="לחץ לצפייה בקטגורית '{album.title}'" class="category-title">
             <img class="category-img" src="{CLOUDINARY_URL}{album.cimage}" alt="{album.title}">
             {album.title}
             <img class="category-img category-img-2" src="{CLOUDINARY_URL}{album.cimage}" alt="{album.title}">
@@ -102,7 +102,7 @@
           pagination="{true}" 
         >
             {#each album.images.results as image}
-                <SwiperSlide data-product-id={image.id} data-href={album_href + '&product_id=' + image.id}>
+                <SwiperSlide data-product-id={image.id} title="לחץ לצפייה במוצר '{image.title}'" data-href={album_href + '&product_id=' + image.id}>
                     <div class="product">
                             <div class="product-image">
                                 <PriceTag price={image.price} new_price={image.new_price} top={'5px'} left={'10px'}/>

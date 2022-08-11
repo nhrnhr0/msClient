@@ -3,9 +3,9 @@
 import { onMount } from "svelte";
 
 
-    onMount(()=> {
+    /*onMount(()=> {
         document.querySelector('#main_wraper').style.height = '100vh';
-    })
+    })*/
 </script>
 <slot/>
 

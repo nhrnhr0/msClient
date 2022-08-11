@@ -62,7 +62,6 @@ import { cartStore } from 'src/stores/cartStore';
         let scrollHeight = el.scrollHeight - height;
         let scrollTop = el.scrollTop;
         percent = Math.floor(scrollTop / scrollHeight * 100);
-        console.log('products_grid_scrolled', percent,bottom_loading);
         if(percent > 85 && !bottom_loading) {
             debugger;
             if(next_page) {

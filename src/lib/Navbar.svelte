@@ -25,7 +25,6 @@ import NavLoginManager from "./components/navLoginManager.svelte";
 import { apiSearchProducts } from "./../api/api";
 import { logStore } from "./../stores/logStore";
 
-import AlbumsView from "./components/AlbumsView.svelte";
 import { goto } from "$app/navigation";
 import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
         

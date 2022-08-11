@@ -11,10 +11,16 @@ let cartPopupInitialState = {
     sideFloating: browser && window.matchMedia("(max-width: 767px)").matches,
 }
 
+// check if we already have data in the session storage
+let cart_popup_from_session = browser? window.sessionStorage.getItem('cart_popup') : null;
+if (cart_popup_from_session) {
+    cartPopupInitialState = JSON.parse(cart_popup_from_session);
+}
 
 function createCartPopupStore() {
     const { subscribe, set, update } = writable(cartPopupInitialState);
     function handle_docerise_state(storeData) {
+        /*
         let main_wraper_element = document.querySelector('#main_wraper');
 		//let sidebar_cart_element = document.querySelector('#sidebar-cart');
 		let main_navbar_wraper = document.querySelector('#main-navbar-wraper');
@@ -27,17 +33,21 @@ function createCartPopupStore() {
                 // get the body's scrollbar width
                 let scrollbarWidth = window.innerWidth - document.body.offsetWidth;
                 console.log(scrollbarWidth);
-                main_wraper_element.style = `width: calc(100vw - 315px - ${scrollbarWidth}px);position: absolute;left: 0px;`
+                main_wraper_element.style.width = `calc(100vw - 315px - ${scrollbarWidth}px)`;
+                main_wraper_element.style.position= 'absolute';
+                main_wraper_element.style.left= '0px';
 				//main_navbar_wraper.style = `width: calc(100vw - 315px - ${scrollbarWidth}px);left: 0px;`
             }
         } else {
             // if the sidebar is closed
             if (!storeData.sideFloating) {
-                main_wraper_element.style = `width:auto;`;
+                main_wraper_element.style.width = `auto`;
+                main_wraper_element.style.position= 'relative';
+                main_wraper_element.style.left= 'none';
                 //sidebar_cart_element.style = ``;
                 //main_navbar_wraper.style = `width: 100%;`;
             }
-        }
+        }*/
     }
     return {
         subscribe,
@@ -71,3 +81,7 @@ function createCartPopupStore() {
 }
 
 export const cartPopupStore = createCartPopupStore();
+
+cartPopupStore.subscribe(value => {
+    browser && window.sessionStorage.setItem('cart_popup', JSON.stringify(value));
+});

@@ -15,6 +15,8 @@ import { onMount } from "svelte";
 import LoginPopup from "src/lib/popups/LoginPopup.svelte";
 import CartPopup from "src/lib/popups/cartPopup.svelte";
 import SuccessPopup from "src/lib/popups/successPopup.svelte";
+import { cartPopupStore } from 'src/stores/popups/cartPopupStore';
+import { page } from '$app/stores';
     onMount(async()=>{
       // clear all dbs on startup.
       console.log('+++++++ WARNING: clearing all db data on startup. +++++++ ');
@@ -33,12 +35,23 @@ import SuccessPopup from "src/lib/popups/successPopup.svelte";
   <CartPopup />
   <SuccessPopup  />
   
-  <div id="main_wraper" class="bg-wraper">
-    <slot />
+  <div id="main_wraper" class="bg-wraper" class:const-page-size={$page.path == '/main'} class:make-small={$cartPopupStore.isSideOpen && !$cartPopupStore.sideFloating}>
+    
+      <slot />
+      
   </div>
   
   <style lang="scss">
-    
-
+    #main_wraper {
+      height: auto;
+      &.const-page-size {
+        height: 100vh;
+      }
+      &.make-small {
+        width: calc(100vw - 315px);
+        position: absolute;
+        left: 0px;
+      }
+    }
   </style>
   

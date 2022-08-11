@@ -61,38 +61,60 @@
         goto(new_url);
     }
 </script>
-<div class="album-swiper-wraper" class:loading={loading}>
-    <div bind:this={slider} class="scroll-snap-slider"> <!-- on:mousedown="{slider_mousedown}" on:mouseleave="{slider_mouseleave}" on:mouseup="{slider_mouseup}" on:mousemove={slider_mousemove}  -->
-        
-        {#if loading}
-            <div class="spinner-wraper">
-                <div class="inner">
-                    <Spinner />
+<div class="background-wraper">
+    <h6>תתי קטגוריות</h6>
+    <div class="album-swiper-wraper" class:loading={loading}>
+        <div bind:this={slider} class="scroll-snap-slider"> <!-- on:mousedown="{slider_mousedown}" on:mouseleave="{slider_mouseleave}" on:mouseup="{slider_mouseup}" on:mousemove={slider_mousemove}  -->
+            
+            {#if loading}
+                <div class="spinner-wraper">
+                    <div class="inner">
+                        <Spinner />
+                    </div>
                 </div>
-            </div>
-        {/if}
-        {#each my_albums || [] as category}
-        
-            <div on:click="{slider_click}" class="scroll-snap-slide" class:active={category.slug == $page.query.get('album')} data-album-slug={category.slug}>
-                <div class="card">
-                    <img width="25px" height="25px" src="{CLOUDINARY_URL}{category.cimage}" alt="{category.title}">
-                    <div>{category.title}</div>
+            {/if}
+            {#each my_albums || [] as category}
+            
+                <div on:click="{slider_click}" class="scroll-snap-slide" class:active={category.slug == $page.query.get('album')} data-album-slug={category.slug}>
+                    <div class="card">
+                        <img width="25px" height="25px" src="{CLOUDINARY_URL}{category.cimage}" alt="{category.title}">
+                        <div>{category.title}</div>
+                    </div>
                 </div>
-            </div>
-        {/each}
+            {/each}
+        </div>
+        
     </div>
-    
 </div>
 <style lang="scss">
+    .background-wraper {
+        
+        background: #d7d7d77a;
+        //padding-bottom: 10px;
+        //padding-top: 20px;
+        height: 100%;
+        box-shadow: 0px 0px 10px 0px #0000005d;
+        border-radius: 15px;
+        //border:1px solid red;
+        margin-left: 10px;
+        margin-right: 10px;
+        h6 {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 3px;
+        }
+    }
     .album-swiper-wraper {
+        
         position: relative;
         width: auto;
         height: 100%;
         height: calc(100vh - 146px);
-        
+        height: calc(100vh - 246px);
         overflow-y: auto;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
+        //border:1px solid blue;
         // hide scrollbar
         &::-webkit-scrollbar {
             width: 0px;
@@ -120,12 +142,11 @@
 
 
         .scroll-snap-slider {
-            width: 150px;
+            width: 225px;
             height: auto;
             overflow: hidden;
-            margin-left: 10px;
-            margin-left: 35px;
-            margin-right: 10px;
+            margin-left: 15px;
+            margin-right: 15px;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -150,11 +171,14 @@
             
             display: flex;
             flex:1;
+            
             background: rgba(255, 255, 255, 0.384);
             border-radius: 5px;
             margin: 5px 0px;
-            min-width: 150px;
+            //min-width: 150px;
+            width:100%;
             height: 100%;
+            
             overflow: hidden;
             position: relative;
             justify-content: space-between;
@@ -166,7 +190,7 @@
 
                 display: flex;
                 flex-direction: row;
-                justify-content: center;
+                justify-content: flex-start;
                 align-items: center;
                 img {
                     width: 50px;

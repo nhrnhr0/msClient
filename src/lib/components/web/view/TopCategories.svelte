@@ -43,28 +43,45 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
         console.log(walk);
     }
 </script>
-    <div bind:this={slider} on:mousedown="{slider_mousedown}" on:mouseleave="{slider_mouseleave}" on:mouseup="{slider_mouseup}" on:mousemove={slider_mousemove} class="scroll-snap-slider">
-            {#if $userInfoStore?.me?.campains?.length > 0} 
-                <div class="scroll-snap-slide" class:active={'campaigns' == $page.query.get('top')}>
-                    <a href="?top=campaigns" class="category" >
-                        <img src="https://res.cloudinary.com/ms-global/image/upload/v1660132407/msAssets/Group_10_copy_10_3_-removebg-preview_1_uq2t66.png" alt="מבצעים">
-                        <div>מבצעים</div>
-                    </a>
-                </div>
-            {/if}
-            {#each categories as category}
-                <div class="scroll-snap-slide" class:active={category.slug == $page.query.get('top')}>
-                    <a href="?top={category.slug}" class="category" >
-                        <img src="{CLOUDINARY_URL}{category.get_image}" alt="{category.name}">
-                        <div>{category.name}</div>
-                    </a>
-                </div>
-            {/each}
+<div class="wraper">
+        <h6>קטגוריות ראשיות</h6>
+        <div bind:this={slider} on:mousedown="{slider_mousedown}" on:mouseleave="{slider_mouseleave}" on:mouseup="{slider_mouseup}" on:mousemove={slider_mousemove} class="scroll-snap-slider">
+                
+                {#if $userInfoStore?.me?.campains?.length > 0} 
+                    <div class="scroll-snap-slide" class:active={'campaigns' == $page.query.get('top')}>
+                        <a href="?top=campaigns" class="category" >
+                            <img src="https://res.cloudinary.com/ms-global/image/upload/v1660132407/msAssets/Group_10_copy_10_3_-removebg-preview_1_uq2t66.png" alt="מבצעים">
+                            <div>מבצעים</div>
+                        </a>
+                    </div>
+                {/if}
+                {#each categories as category}
+                    <div class="scroll-snap-slide" class:active={category.slug == $page.query.get('top')}>
+                        <a href="?top={category.slug}" class="category" >
+                            <img src="{CLOUDINARY_URL}{category.get_image}" alt="{category.name}">
+                            <div>{category.name}</div>
+                        </a>
+                    </div>
+                {/each}
+        </div>
     </div>
 <style lang="scss">
+    .wraper {
+        background: #d7d7d77a;
+        padding-bottom: 10px;
+        padding-top: 20px;
+        width: 98%;
+        margin-right: auto;
+        margin-left: auto;
+        box-shadow: 0px 0px 10px 0px #0000005d;
+        border-radius: 15px;
+        /* padding-left: 20px; */
+        padding-right: 20px;
+        margin-bottom: 10px;
+    }
     .scroll-snap-slider {
-        width: 100%;
-        height: 55px;
+        //width: 100%;
+        //height: 55px;
         overflow: hidden;
         position: relative;
         display: flex;
@@ -74,6 +91,7 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
         overflow-x: scroll;
         overflow-y: hidden;
         margin-bottom: 10px;
+        //border: 1px solid red;
         //scroll-snap-type: x mandatory;
 
 
@@ -84,6 +102,10 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
         scroll-behavior: auto;
         -ms-overflow-style: none; /* IE 10+ */
         scrollbar-width: none; /* Firefox */
+
+        
+
+
         &::-webkit-scrollbar {
             display: none;
         }
