@@ -213,9 +213,6 @@ import { goto } from "$app/navigation";
   </div>
 
   <style lang="scss">
-    aside {
-      border:1px solid red;
-    }
 // Mixin to generate hover & active states
 @mixin hover-active() {
   &:active,

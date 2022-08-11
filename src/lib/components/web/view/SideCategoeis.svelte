@@ -110,7 +110,7 @@
         width: auto;
         height: 100%;
         height: calc(100vh - 146px);
-        height: calc(100vh - 246px);
+        height: calc(100vh - 226px);
         overflow-y: auto;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;

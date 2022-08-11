@@ -92,7 +92,7 @@ cartDomElementStore,
                         amount: amount,
                         mentries: mentries,
                     };
-                    requestAnimationFrame(fly_to_cart);
+                    requestAnimationFrame(fly_to_cart(document.querySelector('.top-info .product-image img')));
                 } else {
                     $cartStore[productInfo.id].amount = amount;
                     $cartStore[productInfo.id].mentries = mentries;
@@ -121,9 +121,15 @@ cartDomElementStore,
         }
     }
     
-    function fly_to_cart() {
+    function fly_to_cart(el=undefined) {
       debugger;
-      let img = document.querySelector('.product-image > img');
+      let img = undefined;
+      if (el) {
+        img = el;
+      }else {
+        img = document.querySelector('.product-image > img');
+      }
+      
         let clone = img.cloneNode(true);
         
         clone.style.position = 'absolute';
@@ -357,6 +363,12 @@ cartDomElementStore,
             create a table with row_keys as the rows (color, modal / only color)
             and colum_keys as the columns (size)
         -->
+        
+        {#if productInfo.show_sizes_popup}
+            <h3>בחר צבעים ומידות</h3>
+        {:else}
+            <h3>בחר כמות</h3>
+        {/if}
         {#if productInfo.show_sizes_popup && mentries}
 
 

@@ -39,22 +39,18 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
             // get all the albums from the products and count how much products from each album
             let all_albums = await indexdb_get_catalog_albums();
             debugger;
+            debugger;
             for(let i = 0; i < data.all.length; i++) {
                 let my_item = data.all[i];
                 album = undefined;
-                for(let item_album_iter = 0; item_album_iter < my_item.albums.length; item_album_iter++) {
-                    /*if(my_item.albums[alb_iter].is_campain == false) {
-                        album = my_item.albums[alb_iter];
-                        break;
-                    }*/
-                    
-                    
+                /*for(let item_album_iter = 0; item_album_iter < my_item.albums.length; item_album_iter++) {
                     let alb = all_albums.find(album => album.id == my_item.albums[item_album_iter]);
                     if(alb && alb.is_campain == false && alb.is_public == true) {
                         album = alb;
                         break;
                     }
-                }
+                }*/
+                album = all_albums.find(album => album.id == my_item.public_album_id);
                 // the product is only visible in campain, so hide from search
                 if(album == undefined) {
                     // remove item i from data.all
@@ -114,7 +110,7 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
                                 }
                             }
                             );
-                            goto('main?album_id=' + item.id);
+                            goto(`main?top=${item.topLevelCategory__slug}&album=${item.slug}`);
             }else {
                 // $productModalStore.setProduct(item.albumId, item.id);
                 // $productModalStore.toggleModal();
@@ -133,7 +129,7 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
                                 }
                             }
                             );
-                            goto('main?product_id=' + item.id);
+                            goto(`main?top=${item.public_album_top_slug}&album=${item.public_album_slug}&product_id=${item.id}`);
             }
             
         }

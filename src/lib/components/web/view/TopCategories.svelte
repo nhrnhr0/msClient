@@ -69,7 +69,7 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
     .wraper {
         background: #d7d7d77a;
         padding-bottom: 10px;
-        padding-top: 20px;
+        //padding-top: 20px;
         width: 98%;
         margin-right: auto;
         margin-left: auto;

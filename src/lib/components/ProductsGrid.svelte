@@ -14,6 +14,7 @@ import { my_fetch } from "src/network/my_fetch";
 import { Spinner } from "sveltestrap";
 import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
 import { cartStore } from 'src/stores/cartStore';
+import PriceTag from "src/new/priceTag.svelte";
 
     export let page_info;
     let next_page = undefined;
@@ -126,16 +127,18 @@ import { cartStore } from 'src/stores/cartStore';
                             <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>
                         {/if}
                         <img src={CLOUDINARY_URL + product.cimage} alt="{product.title}" />
+                        <PriceTag price={product.price} new_price={product.new_price} top={'4px'} left={'4px'} font_size={'0.8em'} />
+
                     </div>
                     <div class="product-info">
                         <div class="product-title">
                             {product.title}
                         </div>
-                        {#if product.price != 0}
+                        <!-- {#if product.price != 0}
                             <div class="product-price">
                                 {product.price} ₪
                             </div>
-                        {/if}
+                        {/if} -->
                     </div>
                 </div>
             {/each}

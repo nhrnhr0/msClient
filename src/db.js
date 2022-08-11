@@ -11,7 +11,7 @@ db.version(6).stores({
 
 
 export async function clear_all_db_data() {
-  let primises = [db.topLevelCategories.clear(), db.slimProducts.clear(), db.products.clear()];
+  let primises = [db.topLevelCategories.clear(), db.slimProducts.clear(), db.products.clear(), db.catalogAlbums.clear()];
   return Promise.all(primises);
 }
 

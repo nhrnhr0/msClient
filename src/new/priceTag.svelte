@@ -3,9 +3,10 @@
     export let new_price;
     export let top='25px';
     export let left='25px';
+    export let font_size = '1.2em';
 </script>
 
-<div class="price-tag" style="top:{top};left:{left}">
+<div class="price-tag" style="top:{top};left:{left};--amount-font-size:{font_size}" >
     {#if new_price}
         <del>
             <span class="amount">
@@ -36,8 +37,12 @@
         background: linear-gradient(110deg,#ececec 8%,#f5f5f5 18%,#ececec 33%);
         font-size: x-large;
         color: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
         .amount {
-            font-size: 1.2em;
+            font-size: var(--amount-font-size);
         }
         del {
             flex: 1;
