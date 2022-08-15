@@ -112,7 +112,9 @@ import { browser } from "$app/env";
                 <ProductShow productInfo={page_info?.productInfo} product_id={$page.query.get('product_id')} />
             {/key}
         {:else}
-            <ProductsGrid page_info={page_info} />
+            {#key $page.query.toString()}
+                <ProductsGrid page_info={page_info} />
+            {/key}
         {/if}
     </div>
     <!--{#each (page_info?.results || []) as catalogImage}

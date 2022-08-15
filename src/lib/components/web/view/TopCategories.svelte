@@ -6,6 +6,8 @@
 import { onMount } from 'svelte';
 import { indexdb_get_main_categories } from 'src/stores/dexie/api_wrapers';
 import { userInfoStore } from 'src/stores/stores';
+import { browser } from '$app/env';
+import { Spinner } from 'sveltestrap';
 /*import {ScrollSnapDraggable} from 'scroll-snap-slider/src/ScrollSnapDraggable.js';
 import { ScrollSnapSlider  } from 'scroll-snap-slider'
 */
@@ -13,6 +15,7 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
     let startX;
     let scrollLeft;
     let slider;
+    let categories_promise = indexdb_get_main_categories();
     // export let categories = [];
     // onMount(async () => {
     //     if (categories.length === 0) {
@@ -24,6 +27,17 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
     //         console.log('categories already loaded', categories);
     //     }
     // });
+    $: {
+        if(browser) {
+            let page_href_top = $page.query.get('top');
+            setTimeout (()=> {
+                let el = document.querySelector(`.scroll-snap-slide[data-top-slug="${page_href_top}"]`);
+                if (el) {
+                    el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
+                }
+            },0)
+        }
+    }
     function slider_mouseup(e) {
         isDown = false;
     }
@@ -60,11 +74,24 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
                         </a>
                     </div>
                 {/if}
-                {#await indexdb_get_main_categories()}
-                    hey
+                <div class="scroll-snap-slide" class:active={'new' == $page.query.get('top')}>
+                    <a href="?top=new" class="category" >
+                        <img src="https://res.cloudinary.com/ms-global/image/upload/v1660122508/msAssets/icons8-new-product-64_gikxga.png" alt="חדשים">
+                        <div>חדשים</div>
+                    </a>
+                </div>
+                {#await categories_promise}
+                    {#each [1,2,3,4,5,6,7,8,8] as i}
+                        <div class="scroll-snap-slide">
+                            <a href="#" class="category" >
+                                <img src="https://res.cloudinary.com/ms-global/image/upload/v1640084351/undefined.png" alt="...">
+                                <div><Spinner/></div>
+                            </a>
+                        </div>
+                    {/each}
                 {:then categories}          
                     {#each categories as category}
-                        <div class="scroll-snap-slide" class:active={category.slug == $page.query.get('top')}>
+                        <div class="scroll-snap-slide" data-top-slug={category.slug} class:active={category.slug == $page.query.get('top')}>
                             <a href="?top={category.slug}" class="category" >
                                 <img src="{CLOUDINARY_URL}{category.get_image}" alt="{category.name}">
                                 <div>{category.name}</div>

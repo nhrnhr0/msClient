@@ -1,6 +1,4 @@
 <script context="module">
-import { browser } from "$app/env";
-import { goto } from "$app/navigation";
 
 
 
@@ -15,7 +13,9 @@ import { Spinner } from "sveltestrap";
 import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
 import { cartStore } from 'src/stores/cartStore';
 import PriceTag from "src/new/priceTag.svelte";
-
+import { onMount } from "svelte";
+import { browser } from "$app/env";
+import { goto } from "$app/navigation";
     export let page_info;
     let next_page = undefined;
     let bottom_loading = false;
@@ -39,23 +39,22 @@ import PriceTag from "src/new/priceTag.svelte";
             main_loading = true;
         }
     }*/
-    $: {
-        // when $page changed: set next_page and call load_products()
-        $page.query.toString();
-        if(browser && window) {
+    onMount(async () => {
             //my_products = [];
-            next_page = BASE_URL + '/my-api/get-album-images' + '?' + $page.query.toString();
-            main_loading = true;
-            let el = document.querySelector('.products-wraper');
-            if (el) {
-                //el.scrollTo({ top: 0, behavior: 'smooth' })
-                el.scrollTop = 0;
+            debugger;
+            if($page.query.toString() != '') {
+                next_page = BASE_URL + '/my-api/get-album-images' + '?' + $page.query.toString();
+                main_loading = true;
+                let el = document.querySelector('.products-wraper');
+                if (el) {
+                    //el.scrollTo({ top: 0, behavior: 'smooth' })
+                    el.scrollTop = 0;
+                }
+                load_more_products(true).then(() => {
+                    main_loading = false;
+                });
             }
-            load_more_products(true).then(() => {
-                main_loading = false;
-            });
-        }
-    }
+        });
     let percent;
     function products_grid_scrolled(e) {
         let el = e.target;
@@ -102,8 +101,7 @@ import PriceTag from "src/new/priceTag.svelte";
         //$page.query('product', id);
         goto(new_url);
     }
-    let selected_product = undefined;
-    let backUrl = undefined;
+    
     /*$: {
         if(products){
             selected_product = products.find(p => p.catalogImage.id == $page.query.get('product_id'));

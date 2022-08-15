@@ -35,6 +35,7 @@ import PersonalCampaigns from "src/new/PersonalCampaigns.svelte";
 import About from "src/lib/about.svelte";
 import ContentForm from "src/lib/contentForm.svelte";
 import { indexdb_get_main_categories } from "src/stores/dexie/api_wrapers";
+import NewProductsSwiper from "src/new/NewProductsSwiper.svelte";
     export let main_albums;
     export let main_categories;
     function open_whatsapp_link() {
@@ -65,6 +66,7 @@ import { indexdb_get_main_categories } from "src/stores/dexie/api_wrapers";
         </button>
     </div>
 {/if}
+<NewProductsSwiper />
 <MainPageAlbums main_albums={main_albums} />
 <CallToActionForm />
 <PersonalCampaigns />

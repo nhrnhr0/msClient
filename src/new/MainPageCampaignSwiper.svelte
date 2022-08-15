@@ -24,7 +24,7 @@ import { inview } from 'svelte-inview';
 
   let isInView;
   const options = {
-    rootMargin: '50px',
+    rootMargin: '500px',
     unobserveOnEnter: true,
   };
   const handleChange = ({ detail }) => {
@@ -55,6 +55,7 @@ SwiperCore.use([EffectCoverflow, Pagination,Navigation]);
     let images = undefined;
     let first_in_view = false;
     function fetch_campain() {
+        debugger;
         let url = BASE_URL + '/my-api/get-album-images?album=' + campain.slug;
                 debugger;
             my_fetch(url).then(response => {
