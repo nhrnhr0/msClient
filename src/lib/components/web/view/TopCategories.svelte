@@ -13,12 +13,17 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
     let startX;
     let scrollLeft;
     let slider;
-    export let categories = [];
-    onMount(async () => {
-        if (categories.length === 0) {
-            categories = await indexdb_get_main_categories();
-        }
-    });
+    // export let categories = [];
+    // onMount(async () => {
+    //     if (categories.length === 0) {
+    //         console.log('load top level categories', categories);
+    //         debugger;
+    //     }
+    //     else {
+    //         debugger;
+    //         console.log('categories already loaded', categories);
+    //     }
+    // });
     function slider_mouseup(e) {
         isDown = false;
     }
@@ -55,14 +60,21 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
                         </a>
                     </div>
                 {/if}
-                {#each categories as category}
-                    <div class="scroll-snap-slide" class:active={category.slug == $page.query.get('top')}>
-                        <a href="?top={category.slug}" class="category" >
-                            <img src="{CLOUDINARY_URL}{category.get_image}" alt="{category.name}">
-                            <div>{category.name}</div>
-                        </a>
-                    </div>
-                {/each}
+                {#await indexdb_get_main_categories()}
+                    hey
+                {:then categories}
+
+                    {JSON.stringify(categories)}
+<!--                     
+                    {#each categories as category}
+                        <div class="scroll-snap-slide" class:active={category.slug == $page.query.get('top')}>
+                            <a href="?top={category.slug}" class="category" >
+                                <img src="{CLOUDINARY_URL}{category.get_image}" alt="{category.name}">
+                                <div>{category.name}</div>
+                            </a>
+                        </div>
+                    {/each} -->
+                {/await}
         </div>
     </div>
 <style lang="scss">

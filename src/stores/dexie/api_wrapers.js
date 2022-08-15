@@ -20,9 +20,8 @@ async function fetch_categories() {
     // store the data in the db
 }
 
-async function fetch_catalog_albums() {
-    debugger;
-    let res = await my_fetch(`${BASE_URL}/get-catalog-albums/`);
+export async function fetch_catalog_albums(id=null) {
+    let res = await my_fetch(`${BASE_URL}/get-catalog-albums/${id?id:''}`);
     let data = await res.json();
     if (browser) {
         db.catalogAlbums.clear().then(()=> { db.catalogAlbums.bulkPut(data) })
@@ -39,6 +38,7 @@ export async function indexdb_get_main_categories() {
     //return fetch_top_level_categories();
     //let data = await db.topLevelCategories.get();//.toArray();
     let data = [];
+    debugger;
     if(browser) {
         data = await db.topLevelCategories.toArray();
     }
