@@ -27,12 +27,16 @@ import { browser } from "$app/env";
 
     $: full_size_page = $page.path == '/main' || $page.path == '/main/';
     $: {
-      if (browser && full_size_page) {
-        document.documentElement.style.height = 'fill-available;-webkit-fill-available;';
-        document.body.style.minHeight = '100vh;fill-available;-webkit-fill-available;';
-      } else {
-        document.documentElement.style.height = 'auto';
-        document.body.style.minHeight = 'auto';
+      if (browser){
+        if (full_size_page) {
+          debugger;
+          document.documentElement.style= 'height:100%;height:fill-available;height:-webkit-fill-available;';
+          document.body.style ='min-height:100vh;min-height:fill-available;min-height:-webkit-fill-available;';
+        } else {
+          debugger;
+          document.documentElement.style = 'height: auto;';
+          document.body.style = 'min-height: auto;';
+        }
       }
     }
   </script>
@@ -41,13 +45,12 @@ import { browser } from "$app/env";
     <meta name="theme-color" content="#FFD700" />
   </svelte:head>
   <Navbar />
-
+  
   <LoginPopup />
   <CartPopup />
   <SuccessPopup  />
   
   <div id="main_wraper" class="bg-wraper" class:const-page-size={$page.path == '/main'} class:make-small={$cartPopupStore.isSideOpen && !$cartPopupStore.sideFloating}>
-    
       <slot />
   </div>
   <style lang="scss">
