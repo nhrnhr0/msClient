@@ -17,13 +17,24 @@ import CartPopup from "src/lib/popups/cartPopup.svelte";
 import SuccessPopup from "src/lib/popups/successPopup.svelte";
 import { cartPopupStore } from 'src/stores/popups/cartPopupStore';
 import { page } from '$app/stores';
+import { browser } from "$app/env";
     onMount(async()=>{
       // clear all dbs on startup.
       console.log('+++++++ WARNING: clearing all db data on startup. +++++++ ');
       await clear_all_db_data();
       await clear_all_session_data();
-
     })
+
+    $: full_size_page = $page.path == '/main' || $page.path == '/main/';
+    $: {
+      if (browser && full_size_page) {
+        document.documentElement.style.height = 'fill-available;-webkit-fill-available;';
+        document.body.style.minHeight = '100vh;fill-available;-webkit-fill-available;';
+      } else {
+        document.documentElement.style.height = 'auto';
+        document.body.style.minHeight = 'auto';
+      }
+    }
   </script>
   
   <svelte:head>
