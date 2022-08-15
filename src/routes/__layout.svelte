@@ -44,6 +44,8 @@ import { page } from '$app/stores';
       height: auto;
       &.const-page-size {
         height: 100vh;
+        max-height: fill-available;
+        max-height: -webkit-fill-available;
       }
       &.make-small {
         width: calc(100vw - 315px);
