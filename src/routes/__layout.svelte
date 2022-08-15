@@ -17,26 +17,40 @@ import CartPopup from "src/lib/popups/cartPopup.svelte";
 import SuccessPopup from "src/lib/popups/successPopup.svelte";
 import { cartPopupStore } from 'src/stores/popups/cartPopupStore';
 import { page } from '$app/stores';
+import { browser } from "$app/env";
     onMount(async()=>{
       // clear all dbs on startup.
       console.log('+++++++ WARNING: clearing all db data on startup. +++++++ ');
       await clear_all_db_data();
       await clear_all_session_data();
-
     })
+
+    $: full_size_page = $page.path == '/main' || $page.path == '/main/';
+    $: {
+      if (browser){
+        if (full_size_page) {
+          debugger;
+          document.documentElement.style= 'height:100%;height:fill-available;height:-webkit-fill-available;';
+          document.body.style ='min-height:100vh;min-height:fill-available;min-height:-webkit-fill-available;';
+        } else {
+          debugger;
+          document.documentElement.style = 'height: auto;';
+          document.body.style = 'min-height: auto;';
+        }
+      }
+    }
   </script>
   
   <svelte:head>
     <meta name="theme-color" content="#FFD700" />
   </svelte:head>
   <Navbar />
-
+  
   <LoginPopup />
   <CartPopup />
   <SuccessPopup  />
   
   <div id="main_wraper" class="bg-wraper" class:const-page-size={$page.path == '/main'} class:make-small={$cartPopupStore.isSideOpen && !$cartPopupStore.sideFloating}>
-    
       <slot />
   </div>
   <style lang="scss">

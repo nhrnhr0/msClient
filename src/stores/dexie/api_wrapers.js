@@ -38,7 +38,6 @@ export async function indexdb_get_main_categories(fetch=undefined) {
     //return fetch_top_level_categories();
     //let data = await db.topLevelCategories.get();//.toArray();
     let data = [];
-    debugger;
     if(browser) {
         data = await db.topLevelCategories.toArray();
     }
