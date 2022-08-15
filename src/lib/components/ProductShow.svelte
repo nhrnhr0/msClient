@@ -21,20 +21,11 @@ import PriceTag from "src/new/priceTag.svelte";
     export let product_id = undefined;
     //export let slimData = undefined;
     export let productInfo = undefined;
-    let empty_slim = {
-        id: undefined,
-        title: '',
-        description: ``,
-        cimage: "",
-        price: 0,
-        new_price: 0,
-    }
     let loading = false;
     const product_regex = /product_id=\d+/gm;
     let similarProducts = undefined;
     let top_info_w;
-    let product_image_clientHeight;
-    let product_image_clientWidth;
+    
     /*$: {
         product_id,
         loading = product_id == undefined;
@@ -206,6 +197,7 @@ import PriceTag from "src/new/priceTag.svelte";
             
             .top-info {
                 display: flex;
+                flex-direction: row-reverse;
                 &.flex-col {
                     flex-direction: column;
                         .product-image {
@@ -232,7 +224,27 @@ import PriceTag from "src/new/priceTag.svelte";
                         .product-title {
                             
                         }
-                        
+                        .product-packing-types {
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: space-around;
+                            margin:1%;
+                            & > div {
+                                flex: 1;
+                                padding: 1%;
+                                margin:1%;
+                                text-align: center;
+                                border: 1px black solid;
+                                font-weight: bold;
+                                font-size: 1.2em;
+
+                                    /*&:hover {
+                                        background-color: #3D3D3D;
+                                        color: white
+                                    }*/
+                            }
+                            
+                        }
                     }
                 }
                 .product-image {

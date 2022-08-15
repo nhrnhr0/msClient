@@ -68,7 +68,7 @@ import {get_catalog_album_by_id} from "src/stores/dexie/catalogAlbums";
         >
         <h2>
           מוצרים שאהבתי<span class="count"
-            >{Object.keys($cartStore).length}</span
+            >{$cartStore.length}</span
           >
         </h2>
 
@@ -101,9 +101,10 @@ import {get_catalog_album_by_id} from "src/stores/dexie/catalogAlbums";
           {/key}
         {/if}
         -->
-        {#if Object.keys($cartStore).length > 0}
+        {#if $cartStore.length > 0}
           <ul class="products" use:scrollFix>
-            {#each Object.keys($cartStore) as key, i (key)}
+            {#each [...$cartStore].reverse() as cartProduct, i (cartProduct.id)}
+              {@const key = cartProduct.id}
               <li
                 class="product"
                 data-product={key}
@@ -116,13 +117,13 @@ import {get_catalog_album_by_id} from "src/stores/dexie/catalogAlbums";
                     class="product-image"
                   >
                     <img
-                      src="{CLOUDINARY_URL}f_auto,w_auto/{$cartStore[key]
+                      src="{CLOUDINARY_URL}f_auto,w_auto/{cartProduct
                         .cimage}"
-                      alt={$cartStore[key].title}
+                      alt={cartProduct.title}
                     />
                   </span>
                   <span class="product-details">
-                    <h3>{$cartStore[key].title}</h3>
+                    <h3>{cartProduct.title}</h3>
                     <hr />
                     <div
                       class="qty-price"
@@ -132,18 +133,9 @@ import {get_catalog_album_by_id} from "src/stores/dexie/catalogAlbums";
                         <div class="table-row">
                           <div class="table-cell table-cell-title">:כמות</div>
                           <div class="table-cell qty">
-                            {#if $cartStore[key].show_sizes_popup}
                               <div class="total-amount">
-                                {$cartStore[key].amount}
+                                {cartProduct.amount}
                               </div>
-                            {:else}
-                              <input
-                                type="text"
-                                class="amount-input"
-                                id="cart_amount_{key}"
-                                bind:value={$cartStore[key].amount}
-                              />
-                            {/if}
                           </div>
                         </div>
                         
@@ -155,7 +147,7 @@ import {get_catalog_album_by_id} from "src/stores/dexie/catalogAlbums";
                               :'מחיר ליח
                             </div>
                             <div class="table-cell">
-                              <span class="">{$cartStore[key].price}₪</span>
+                              <span class="">{cartStore.getProduct(key).price}₪</span>
                             </div>
                           </div>
 
@@ -247,12 +239,13 @@ import {get_catalog_album_by_id} from "src/stores/dexie/catalogAlbums";
                 <div
                   class="remove-button"
                   on:click={() => {
-                    cartStore.update(cart=> {
+                    cartStore.removeFromCartById(key);
+                    /*cartStore.update(cart=> {
                       cart[key].amount = 0;
                       cart[key].mentries = undefined;
                       delete cart[key];
                       return cart;
-                    });
+                    });*/
                   }}
                 >
                   <svg

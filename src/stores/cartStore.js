@@ -1,14 +1,14 @@
 import { browser } from "$app/env";
 import { update_cart_to_server } from "$lib/flashy";
-import { writable, get } from "svelte/store";
+import { writable, get, derived } from "svelte/store";
 import {cartModalStore} from "./../stores/stores";
 
 let initCart = {};
-const LOCAL_STORE_NAME = "cart6";
+const LOCAL_STORE_NAME = "cart8";
 if(browser) {
     initCart=JSON.parse(localStorage.getItem(LOCAL_STORE_NAME));
     if(!initCart) {
-        initCart={}   
+        initCart=[];
     }
 }
 
@@ -75,11 +75,54 @@ function createCartStore() {
   const { subscribe, set, update } = writable(initCart);
   return {
     subscribe,
-    set,
-    update,
+    //set,
+    //update,
     clearCart: () => {
-      set({});
+      set([]);
     },
+    removeFromCart: function(product) {
+      this.removeFromCartById(product.id);
+    },
+    removeFromCartById: function(id) {
+      update((cart) => {
+        return cart.filter((item) => item.id != id);
+      });
+    },
+    productLength: function() {
+      return get(this).length;
+    },
+    getProduct: function(productId) {
+      let cart = get(this);
+      return cart.find((item) => item.id == productId);
+    },
+    updateProduct: function(product) {
+      update((cart) => {
+        let index = cart.findIndex((item) => item.id == product.id);
+        if (index != -1) {
+          cart[index] = product;
+        }
+        return cart;
+      });
+    },
+    setProduct: function(product) {
+      update((cart) => {
+        let exist = false;
+        let newCart = cart.map((item) => {
+          if (item.id == product.id) {
+            exist = true;
+            return product;
+          } else {
+            return item;
+          }
+        });
+        if (!exist) {
+          newCart.push(product);
+        }
+        return newCart;
+      });
+    },
+
+
   }
 }
 export const cartStore = createCartStore();//writable(initCart);
@@ -89,6 +132,13 @@ cartStore.subscribe((value) => {
       }
     }
 );
+export const dictCartStore = derived(cartStore, ($cartStore) => {
+  let ret = {};
+  $cartStore.forEach((item) => {
+    ret[item.id] = item;
+  });
+  return ret;
+});
 
 //let _updated_to_server = false;
 

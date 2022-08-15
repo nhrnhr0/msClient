@@ -11,7 +11,7 @@ import { BASE_URL, CLOUDINARY_URL } from "src/api/consts";
 import { my_fetch } from "src/network/my_fetch";
 import { Spinner } from "sveltestrap";
 import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
-import { cartStore } from 'src/stores/cartStore';
+import { cartStore,dictCartStore } from 'src/stores/cartStore';
 import PriceTag from "src/new/priceTag.svelte";
 import { onMount } from "svelte";
 import { browser } from "$app/env";
@@ -41,7 +41,6 @@ import { goto } from "$app/navigation";
     }*/
     onMount(async () => {
             //my_products = [];
-            debugger;
             if($page.query.toString() != '') {
                 next_page = BASE_URL + '/my-api/get-album-images' + '?' + $page.query.toString();
                 main_loading = true;
@@ -121,7 +120,7 @@ import { goto } from "$app/navigation";
                 
                 <div class="product" data-product-id={product.id} on:click="{product_clicked}">
                     <div class="product-image">
-                        {#if $cartStore[product.id]}
+                        {#if $dictCartStore[product.id]}
                             <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>
                         {/if}
                         <img src={CLOUDINARY_URL + product.cimage} alt="{product.title}" />
