@@ -12,8 +12,5 @@ import HotProductsSwiper from "./HotProductsSwiper.svelte";
 </script>
 {#each campains as campain}
     <MainPageCampaignSwiper campain={campain} />
-{:else}
-    <NewProductsSwiper />
 {/each}
 
-<HotProductsSwiper />

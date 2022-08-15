@@ -6,9 +6,16 @@ import { indexdb_get_main_categories } from "src/stores/dexie/api_wrapers";
 import { onMount } from "svelte";
 
 
-    let main_categories = [];
+    export let main_categories = [];
     onMount(async () => {
-        main_categories = await indexdb_get_main_categories();
+        if (main_categories.length === 0) {
+            console.log('load top level categories', main_categories);
+            main_categories = await indexdb_get_main_categories();
+        }
+        else {
+            console.log('categories already loaded', main_categories);
+        }
+        //main_categories = await indexdb_get_main_categories();
     });
 
 </script>

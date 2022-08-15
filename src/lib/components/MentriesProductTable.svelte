@@ -11,9 +11,11 @@
     } from "sveltestrap";
     import {
 cartDomElementStore,
-        cartStore
+        cartStore,
+        dictCartStore
     } from "src/stores/cartStore";
     import ColorDisplay from "./ColorDisplay.svelte";
+import { browser } from "$app/env";
 
     let ALL_SIZES;
     let ALL_COLORS;
@@ -35,7 +37,8 @@ cartDomElementStore,
     }*/
 
     function create_mentries() {
-        if (!$cartStore[productInfo.id]?.mentries) {
+      debugger;
+        if (!cartStore.getProduct(productInfo.id)?.mentries) {
             let tempMentries = {};
             for (let clrIdx = 0; clrIdx < productInfo.colors.length; clrIdx++) {
                 tempMentries[productInfo.colors[clrIdx]] = {};
@@ -57,7 +60,8 @@ cartDomElementStore,
             }
             mentries = tempMentries;
         } else {
-            mentries = $cartStore[productInfo.id].mentries;
+            mentries = cartStore.getProduct(productInfo.id).mentries;
+            amount = cartStore.getProduct(productInfo.id).amount;
         }
     }
     // on productInfo change we need to update cartItem entries:
@@ -65,10 +69,31 @@ cartDomElementStore,
     let amount;
 
     $: {
-        if (productInfo?.id) {
+        if (browser &&  productInfo?.id) {
             create_mentries();
         }
     }
+
+    function clear_mentries() {
+      if (mentries) {
+        for(let i = 0; i < Object.keys(mentries).length; i++) {
+          let color = Object.keys(mentries)[i];
+          for(let j = 0; j < Object.keys(mentries[color]).length; j++) {
+            let size = Object.keys(mentries[color])[j];
+            if (productInfo.varients.length != 0) {
+              for(let k = 0; k < Object.keys(mentries[color][size]).length; k++) {
+                let varient = Object.keys(mentries[color][size])[k];
+                mentries[color][size][varient].quantity = undefined;
+              }
+            } else {
+              mentries[color][size].quantity = undefined;
+            }
+          }
+        }
+      }
+      amount = undefined;
+    }
+    
 
     
 
@@ -76,14 +101,31 @@ cartDomElementStore,
         calc_amount();
         if(amount == 0 || amount == undefined) {
                 //delete $cartStore[productInfo.id];
-                cartStore.update(cart => {
+                /*cartStore.update(cart => {
                     delete cart[productInfo.id];
                     return cart;
-                });
+                });*/
+                cartStore.removeFromCartById(productInfo.id);
             }else {
               debugger;
               console.log('input_amount_changed', $cartStore[productInfo.id]);
-                if(!$cartStore[productInfo.id]){    
+                if(!$dictCartStore[productInfo.id]) {
+                  cartStore.setProduct({
+                    id: productInfo.id,
+                    title: productInfo.title,
+                    cimage: productInfo.cimage,
+                    price: productInfo.newPrice || productInfo.price,
+                    amount: amount,
+                    mentries: mentries,
+                  });
+                }else {
+                  let prod = cartStore.getProduct(productInfo.id);
+                  prod.amount = amount;
+                  prod.mentries = mentries;
+                  cartStore.updateProduct(prod);
+                }
+                requestAnimationFrame(fly_to_cart(document.querySelector('.top-info .product-image img')));
+                /*if(!$cartStore[productInfo.id]){    
                     $cartStore[productInfo.id] = {
                         id: productInfo.id,
                         title: productInfo.title,
@@ -96,7 +138,7 @@ cartDomElementStore,
                 } else {
                     $cartStore[productInfo.id].amount = amount;
                     $cartStore[productInfo.id].mentries = mentries;
-                }
+                }*/
             }
             console.log('$cartStore', $cartStore);
     }
@@ -343,6 +385,8 @@ cartDomElementStore,
         } else {
             mentries[color_key] = undefined;
         }
+
+        input_amount_changed();
     }
 
     function get_size_rep(size_id) {
@@ -365,9 +409,17 @@ cartDomElementStore,
         -->
         
         {#if productInfo.show_sizes_popup}
-            <h3>בחר צבעים ומידות</h3>
+            <h3>בחר צבעים ומידות
+              {#if $dictCartStore[productInfo.id]}
+                <button class="btn btn-danger btn-sm" on:click={() => {clear_mentries(); cartStore.removeFromCartById(productInfo.id)}}>מחק מהעגלה</button>
+              {/if}
+            </h3>
         {:else}
-            <h3>בחר כמות</h3>
+            <h3>בחר כמות
+              {#if $dictCartStore[productInfo.id]}
+                <button class="btn btn-danger btn-sm" on:click={() => {clear_mentries(); cartStore.removeFromCartById(productInfo.id)}}>מחק מהעגלה</button>
+              {/if}
+            </h3>
         {/if}
         {#if productInfo.show_sizes_popup && mentries}
 
@@ -624,6 +676,11 @@ cartDomElementStore,
 </div>
 
 <style lang="scss">
+  .btn-danger {
+    padding: 0.20rem 0.4rem;
+    margin:auto;
+    border:0px;
+  }
     .my-form-control{
         width: 75px;
     }

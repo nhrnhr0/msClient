@@ -1,6 +1,5 @@
 <script context="module">
     export function load({ error, status }) {
-        debugger;
       return {
         props: {
           title: `${status}: ${error.message}`,

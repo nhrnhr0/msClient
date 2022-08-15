@@ -1,5 +1,6 @@
 <script>
-    
+    import { goto } from "$app/navigation";
+
 import { BASE_URL } from "src/api/consts";
 import { my_fetch } from "src/network/my_fetch";
 import { CLOUDINARY_URL } from "src/api/consts";
@@ -46,6 +47,7 @@ import { inview } from 'svelte-inview';
   }
 
   function initial_fetch() {
+    debugger;
     let url = BASE_URL + '/my-api/get-album-images?top=new';
         my_fetch(url).then(response => {
             response.json().then(data => {
@@ -54,12 +56,22 @@ import { inview } from 'svelte-inview';
         });
   }
 onMount(async ()=> {
-    album_href = `/main?top=campaigns&top=new`;
+    album_href = `/main?top=new`;
 })
+
+function swiper_clicked(e) {
+    console.log("swiper clicked");
+    let el = e.detail[0][1].target.closest('.swiper-slide');
+    debugger;
+    let href = el.dataset.href;
+    if (href){
+        goto(href);
+    }
+}
 </script>
 
 <div class="category" use:inview="{options}" on:change="{handleChange}">
-    <a href="#" class="category-title">
+    <a href="{album_href}" class="category-title">
         <img class="category-img" src="https://res.cloudinary.com/ms-global/image/upload/v1660122508/msAssets/icons8-new-product-64_gikxga.png" alt="מוצרים חדשים">
         מוצרים חדשים
         <img class="category-img category-img-2" src="https://res.cloudinary.com/ms-global/image/upload/v1660122508/msAssets/icons8-new-product-64_gikxga.png" alt="מוצרים חדשים">
@@ -79,6 +91,7 @@ onMount(async ()=> {
             navigation="{true}"
             allowTouchMove="{true}"
             preventClicks="{false}"
+            on:click={swiper_clicked}
             threshold={10}
             coverflowEffect='{{
                 "rotate": -13,

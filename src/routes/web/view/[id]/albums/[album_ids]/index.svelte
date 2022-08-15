@@ -137,7 +137,7 @@ let percent;
         justify-content: center;
         align-items: center;
         background-color: rgba(240, 248, 255, 0.397);
-        border: 1px solid palevioletred;
+        border: 1px solid red;
         border-radius: 10px;
         // shadow
         box-shadow: -5px 30px 10px rgba(0, 0, 0, 0.4);
