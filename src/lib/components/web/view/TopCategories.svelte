@@ -62,10 +62,7 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
                 {/if}
                 {#await indexdb_get_main_categories()}
                     hey
-                {:then categories}
-
-                    {JSON.stringify(categories)}
-<!--                     
+                {:then categories}          
                     {#each categories as category}
                         <div class="scroll-snap-slide" class:active={category.slug == $page.query.get('top')}>
                             <a href="?top={category.slug}" class="category" >
@@ -73,7 +70,7 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
                                 <div>{category.name}</div>
                             </a>
                         </div>
-                    {/each} -->
+                    {/each}
                 {/await}
         </div>
     </div>

@@ -19,8 +19,8 @@ import { cartStore } from "src/stores/cartStore";
 import PriceTag from "src/new/priceTag.svelte";
 	
     export let product_id = undefined;
-    export let slimData = undefined;
-    let productInfo = undefined;
+    //export let slimData = undefined;
+    export let productInfo = undefined;
     let empty_slim = {
         id: undefined,
         title: '',
@@ -42,10 +42,10 @@ import PriceTag from "src/new/priceTag.svelte";
         
     }*/
     onMount(async ()=> {
-        slimData = await find_or_get_slim_product_by_id(product_id);
-        if(browser) {
+        //slimData = await find_or_get_slim_product_by_id(product_id);
+        /*if(browser) {
             productInfo = await find_or_get_product_info_by_id(product_id);
-        }
+        }*/
         if(product_id && browser) {
             console.log('get similar products');
             
@@ -70,15 +70,15 @@ import PriceTag from "src/new/priceTag.svelte";
             <div class="top-info" bind:clientWidth={top_info_w} class:flex-col={top_info_w < 700}>
                 <div class="product-image">
                     <!--class:bigger-height={product_image_clientHeight > product_image_clientWidth} bind:clientHeight="{product_image_clientHeight}" bind:clientWidth="{product_image_clientWidth}"-->
-                    {#if slimData}
-                    {#if $cartStore[slimData.id]}
+                    {#if productInfo}
+                    {#if $cartStore[productInfo.id]}
                         <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>
                     {/if}
                     <!--{#if $cartStore[slimData.id]}
                             <div class="stamp animate"></div>
                         {/if}-->
-                        <img src={CLOUDINARY_URL + (slimData || empty_slim)?.cimage} alt="{(slimData || empty_slim)?.title}" />
-                        <PriceTag price={slimData?.price} new_price={slimData?.new_price} />
+                        <img src={CLOUDINARY_URL + productInfo?.cimage} alt="{productInfo?.title}" />
+                        <PriceTag price={productInfo?.price} new_price={productInfo?.new_price} />
                         <!-- {#if slimData.new_price || slimData.price}
                             <div class="product-price">
                                 {slimData?.new_price || (slimData)?.price} ₪
@@ -93,7 +93,7 @@ import PriceTag from "src/new/priceTag.svelte";
                         {#if productInfo}
                             <div class="product-title">
                                 <h2>
-                                    {(slimData || empty_slim)?.title}
+                                    {productInfo?.title}
                                 </h2>
                             </div>
                             <div class="product-description">
@@ -117,7 +117,7 @@ import PriceTag from "src/new/priceTag.svelte";
                             <!-- replcea the html content with spiners in the right height as placeholders -->
                             <div class="product-title">
                                 <h2>
-                                    {(slimData || empty_slim)?.title}
+                                    {productInfo?.title}
                                 </h2>
                             </div>
                             <div class="product-description">

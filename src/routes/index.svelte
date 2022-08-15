@@ -2,9 +2,11 @@
     // load function is called when the page is loaded.
     export async function load({ fetch, page, session, contex }) {
         let data = await fetch_main_page_albums(fetch);
+        let main_categories = await indexdb_get_main_categories(fetch);
         return {
             props: {
                 main_albums: data,
+                main_categories: main_categories,
             }
         };
     }
@@ -32,7 +34,9 @@ import CallToActionForm from "src/lib/components/CallToActionForm.svelte";
 import PersonalCampaigns from "src/new/PersonalCampaigns.svelte";
 import About from "src/lib/about.svelte";
 import ContentForm from "src/lib/contentForm.svelte";
+import { indexdb_get_main_categories } from "src/stores/dexie/api_wrapers";
     export let main_albums;
+    export let main_categories;
     function open_whatsapp_link() {
         const whatsapp_text = encodeURIComponent('אני מעוניין לראות מחירים באתר')
         var url = `https://api.whatsapp.com/send?phone=972547919908&text=${whatsapp_text}`;
@@ -53,7 +57,7 @@ import ContentForm from "src/lib/contentForm.svelte";
 </script>
 <Header></Header>
 <LogoSwiper></LogoSwiper>
-<TopLevelCategoriesBlock />
+<TopLevelCategoriesBlock main_categories={main_categories} />
 {#if $userInfoStore.isLogin == false}
     <div class="whatsapp-btn-wraper">
         <button on:click="{open_whatsapp_link}" class="whatsapp-btn">

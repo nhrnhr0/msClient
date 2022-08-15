@@ -36,15 +36,20 @@ import {get_catalog_album_by_id} from "src/stores/dexie/catalogAlbums";
     //                     }}" 
     async function calc_product_url(product_id) {
         let product = await find_or_get_slim_product_by_id(product_id);
+        debugger;
+        return `/main?product_id=${product_id}&album=${product.main_public_album__slug}&top=${product.main_public_album_top__slug}`;
+        /*
         let album_id = product.main_public_album;
-        debugger;
-        let album = await get_catalog_album_by_id(album_id);
-        debugger;
-        let slug = album.slug;
-        return `/main?product_id=${product_id}&album=${slug}`;
+        if (album_id) {
+          let album = await get_catalog_album_by_id(album_id);
+          if(album) {
+            let slug = album.slug;
+            return `/main?product_id=${product_id}&album=${slug}`;
+          }
         //goto(`/main?product_id=${product_id}&album=${slug}`);
-
-    }
+        }
+        return `/main?product_id=${product_id}`;**/
+      }
 </script>
 
 <div class="sidebar-cart-wraper">

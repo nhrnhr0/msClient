@@ -9,8 +9,8 @@ import { my_fetch } from "src/network/my_fetch";
 fetch top level categories from the server
 
 */
-async function fetch_categories() {
-    let res =  await my_fetch(`${BASE_URL}/get-main-categories/`);
+async function fetch_categories(fetch=undefined) {
+    let res =  await my_fetch(`${BASE_URL}/get-main-categories/`,{},fetch);
     let data = await res.json(); // data = [{id:1,name:'...'},{id:2,name:'...'}]
     // add timestamp to the data
     if (browser) {
@@ -34,7 +34,7 @@ export async function fetch_catalog_albums(id=null) {
 // if there is data in the indexdb, and the data is expired, fetch it from the server and save it in the indexdb (all the rows)
 // toplevelcategories: id, name, image, albums, timestemp
 const API_EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 1 day
-export async function indexdb_get_main_categories() {
+export async function indexdb_get_main_categories(fetch=undefined) {
     //return fetch_top_level_categories();
     //let data = await db.topLevelCategories.get();//.toArray();
     let data = [];
@@ -43,7 +43,7 @@ export async function indexdb_get_main_categories() {
         data = await db.topLevelCategories.toArray();
     }
     if (data.length === 0) {
-        data = await fetch_categories();
+        data = await fetch_categories(fetch);
     }
     return data;
 }

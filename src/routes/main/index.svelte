@@ -109,7 +109,7 @@ import { browser } from "$app/env";
         <SideCategoeis albums={page_info?.top_albums} />
         {#if $page.query.get('product_id')}
             {#key $page.query.get('product_id')}
-                <ProductShow product_id={$page.query.get('product_id')} />
+                <ProductShow productInfo={page_info?.productInfo} product_id={$page.query.get('product_id')} />
             {/key}
         {:else}
             <ProductsGrid page_info={page_info} />
