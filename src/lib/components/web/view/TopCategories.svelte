@@ -4,10 +4,11 @@
     import { CLOUDINARY_URL } from 'src/api/consts';
     import {page} from '$app/stores';
 import { onMount } from 'svelte';
-import { indexdb_get_main_categories } from 'src/stores/dexie/api_wrapers';
+//import { indexdb_get_main_categories } from 'src/stores/dexie/api_wrapers';
 import { userInfoStore } from 'src/stores/stores';
 import { browser } from '$app/env';
 import { Spinner } from 'sveltestrap';
+import { get_topLevelCategories } from 'src/stores/sessionStorage/topLevelCategories';
 /*import {ScrollSnapDraggable} from 'scroll-snap-slider/src/ScrollSnapDraggable.js';
 import { ScrollSnapSlider  } from 'scroll-snap-slider'
 */
@@ -16,7 +17,7 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
     let scrollLeft;
     let slider;
     let isWalking = false;
-    let categories_promise = indexdb_get_main_categories();
+    let categories_promise = get_topLevelCategories();
     // export let categories = [];
     // onMount(async () => {
     //     if (categories.length === 0) {

@@ -29,11 +29,9 @@ import { browser } from "$app/env";
     $: {
       if (browser){
         if (full_size_page) {
-          debugger;
           document.documentElement.style= 'height:100vh;height:fill-available;height:-webkit-fill-available;';
           document.body.style ='min-height:100vh;min-height:fill-available;min-height:-webkit-fill-available;';
         } else {
-          debugger;
           document.documentElement.style = 'height: auto;';
           document.body.style = 'min-height: auto;';
         }

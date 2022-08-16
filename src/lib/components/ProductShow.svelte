@@ -5,7 +5,6 @@ import { page } from "$app/stores";
 import { CLOUDINARY_URL } from "src/api/consts";
 import { get_similar_products } from "src/network/get_similar_products";
 
-import { find_or_get_product_info_by_id, find_or_get_slim_product_by_id } from "src/stores/dexie/products";
 import { query } from "src/stores/queryStore";
 import { onMount } from "svelte";
 import SvelteMarkdown from "svelte-markdown";
@@ -15,7 +14,7 @@ import MentriesProductTable from "./MentriesProductTable.svelte";
 
 
     import {flip} from 'svelte/animate';
-import { cartStore } from "src/stores/cartStore";
+import { dictCartStore } from "src/stores/cartStore";
 import PriceTag from "src/new/priceTag.svelte";
 	
     export let product_id = undefined;
@@ -33,10 +32,6 @@ import PriceTag from "src/new/priceTag.svelte";
         
     }*/
     onMount(async ()=> {
-        //slimData = await find_or_get_slim_product_by_id(product_id);
-        /*if(browser) {
-            productInfo = await find_or_get_product_info_by_id(product_id);
-        }*/
         if(product_id && browser) {
             console.log('get similar products');
             
@@ -62,7 +57,7 @@ import PriceTag from "src/new/priceTag.svelte";
                 <div class="product-image">
                     <!--class:bigger-height={product_image_clientHeight > product_image_clientWidth} bind:clientHeight="{product_image_clientHeight}" bind:clientWidth="{product_image_clientWidth}"-->
                     {#if productInfo}
-                    {#if $cartStore[productInfo.id]}
+                    {#if $dictCartStore[productInfo.id]}
                         <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>
                     {/if}
                     <!--{#if $cartStore[slimData.id]}
@@ -139,7 +134,7 @@ import PriceTag from "src/new/priceTag.svelte";
                         <div class="product-item">
                             <a href={$page.path + '?' + $page.query.toString().replace(product_regex, `product_id=${product.id}`)}>
                                 <div class="product-image">
-                                    {#if $cartStore[product.id]}
+                                    {#if $dictCartStore[product.id]}
                                         <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>
                                     {/if}
                                     <img src={CLOUDINARY_URL + product.cimage} alt="{product.title}" />
