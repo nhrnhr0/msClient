@@ -24,8 +24,15 @@ import { browser } from "$app/env";
       await clear_all_db_data();
       await clear_all_session_data();
     })
-
-    $: full_size_page = $page.path == '/main' || $page.path == '/main/';
+    
+    $: {
+      if(browser && $page.path == '/main' || $page.path == '/main/') {
+        window.document.documentElement.classList.add('const-size-page');
+      }else if(browser){
+        window.document.documentElement.classList.remove('const-size-page');
+      }
+    }
+    /*
     $: {
       if (browser){
         if (full_size_page) {
@@ -36,7 +43,7 @@ import { browser } from "$app/env";
           document.body.style = 'min-height: auto;';
         }
       }
-    }
+    }*/
   </script>
   
   <svelte:head>
@@ -48,17 +55,29 @@ import { browser } from "$app/env";
   <CartPopup />
   <SuccessPopup  />
   
-  <div id="main_wraper" class="bg-wraper" class:const-page-size={$page.path == '/main'} class:make-small={$cartPopupStore.isSideOpen && !$cartPopupStore.sideFloating}>
+  <div id="main_wraper" class="bg-wraper" class:make-small={$cartPopupStore.isSideOpen && !$cartPopupStore.sideFloating}>
       <slot />
   </div>
   <style lang="scss">
+    :global(html.const-size-page) {
+      // height: 100vh;
+      // height: fill-available;
+      height: -webkit-fill-available;
+
+      :global(body) {
+        height: 100vh;
+        height: -webkit-fill-available;
+        overflow: hidden;
+      }
+    }
     #main_wraper {
-      height: auto;
+      /*height: auto;
       &.const-page-size {
         height: 100vh;
         max-height: fill-available;
         max-height: -webkit-fill-available;
-      }
+      }*/
+      height: 100%;
       &.make-small {
         width: calc(100vw - 315px);
         position: absolute;

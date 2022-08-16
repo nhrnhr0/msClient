@@ -43,9 +43,6 @@ import NewProductsSwiper from "src/new/NewProductsSwiper.svelte";
         var url = `https://api.whatsapp.com/send?phone=972547919908&text=${whatsapp_text}`;
         window.open(url, '_blank');
     }
-    /*onMount(()=> {
-        document.querySelector('#main_wraper').style.height = 'auto';
-    })*/
     activeModalsStore.subscribe(modals => {
         if (browser) {
             if (Object.keys(modals).length == 0) {

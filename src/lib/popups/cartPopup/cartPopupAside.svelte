@@ -25,7 +25,6 @@ import EditAmountBtn from "./editAmountBtn.svelte";
     let sidebar_top = 62;
     async function calc_product_url(product_id) {
         let product = await find_or_get_slim_product_by_id(product_id);
-        debugger;
         return `/main?product_id=${product_id}&album=${product.main_public_album__slug}&top=${product.main_public_album_top__slug}`;
         /*
         let album_id = product.main_public_album;
