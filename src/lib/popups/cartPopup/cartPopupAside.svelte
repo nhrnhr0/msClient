@@ -16,27 +16,15 @@ import {
     import {cartStore} from "src/stores/cartStore";
 import { CLOUDINARY_URL } from "src/api/consts";
 import { goto } from "$app/navigation";
-import { find_or_get_slim_product_by_id } from "src/stores/dexie/products";
+
 import {get_catalog_album_by_id} from "src/stores/dexie/catalogAlbums";
+import { Spinner } from "sveltestrap";
+import { find_or_get_slim_product_by_id, slimProductsStore } from "src/stores/sessionStorage/slimProducts";
+import EditAmountBtn from "./editAmountBtn.svelte";
 
-    let sidebar_top = 62;// !$cartPopupStore.sideFloating? 0:62;
-
-    //  on:click="{()=> {
-    //                         calc_product_url
-    //                       // navigate to /main?product_id={key}
-    //                       find_or_get_slim_product_by_id(key).then(product=> {
-    //                         let album_id = product.main_public_album;
-    //                         // get album slug
-    //                         get_catalog_album_by_id(album_id).then(album=> {
-    //                           let slug = album.slug;
-    //                           goto(`/main?product_id=${key}&album=${slug}`);
-    //                         });
-    //                       })
-    //                       //goto('/main?product_id=' + key);
-    //                     }}" 
+    let sidebar_top = 62;
     async function calc_product_url(product_id) {
         let product = await find_or_get_slim_product_by_id(product_id);
-        debugger;
         return `/main?product_id=${product_id}&album=${product.main_public_album__slug}&top=${product.main_public_album_top__slug}`;
         /*
         let album_id = product.main_public_album;
@@ -153,85 +141,17 @@ import {get_catalog_album_by_id} from "src/stores/dexie/catalogAlbums";
 
 
                           
-
-                          {#await calc_product_url(key)}
-                            
-                          <a class="edit-btn"
-                          target="_blank"
-                          on:click="{(e) => {
-                            e.preventDefault();
-                            calc_product_url(key).then(url=> {
-                              goto(url);
-                            })
-                          }}"
-                          href="#"
-                          >
-                            ערוך
-                            <svg
-                              enable-background="new 0 0 45 45"
-                              height="25px"
-                              id="Layer_1"
-                              version="1.1"
-                              viewBox="0 0 45 45"
-                              width="25px"
-                              xml:space="preserve"
-                              xmlns="http://www.w3.org/2000/svg"
-                              xmlns:xlink="http://www.w3.org/1999/xlink"
-                              ><g
-                                ><rect
-                                  height="23"
-                                  transform="matrix(-0.7071 -0.7072 0.7072 -0.7071 38.2666 48.6029)"
-                                  width="11"
-                                  x="23.7"
-                                  y="4.875"
-                                /><path
-                                  d="M44.087,3.686l-2.494-2.494c-1.377-1.377-3.61-1.377-4.987,0L34.856,2.94l7.778,7.778l1.749-1.749   C45.761,7.593,45.465,5.063,44.087,3.686z"
-                                /><polygon
-                                  points="16,22.229 16,30 23.246,30  "
-                                /><path
-                                  d="M29,40H5V16h12.555l5-5H3.5C1.843,11,0,11.843,0,13.5v28C0,43.156,1.843,45,3.5,45h28   c1.656,0,2.5-1.844,2.5-3.5V23.596l-5,5V40z"
-                                /></g
-                              ></svg
-                            >
-                        </a>
-                          {:then url} 
-                          <a class="edit-btn" 
-                          on:click="{(e) => {
-                            e.preventDefault();
-                            goto(url);
-                          }}"
-                          href={url}
-                          >
-                            ערוך
-                            <svg
-                              enable-background="new 0 0 45 45"
-                              height="25px"
-                              id="Layer_1"
-                              version="1.1"
-                              viewBox="0 0 45 45"
-                              width="25px"
-                              xml:space="preserve"
-                              xmlns="http://www.w3.org/2000/svg"
-                              xmlns:xlink="http://www.w3.org/1999/xlink"
-                              ><g
-                                ><rect
-                                  height="23"
-                                  transform="matrix(-0.7071 -0.7072 0.7072 -0.7071 38.2666 48.6029)"
-                                  width="11"
-                                  x="23.7"
-                                  y="4.875"
-                                /><path
-                                  d="M44.087,3.686l-2.494-2.494c-1.377-1.377-3.61-1.377-4.987,0L34.856,2.94l7.778,7.778l1.749-1.749   C45.761,7.593,45.465,5.063,44.087,3.686z"
-                                /><polygon
-                                  points="16,22.229 16,30 23.246,30  "
-                                /><path
-                                  d="M29,40H5V16h12.555l5-5H3.5C1.843,11,0,11.843,0,13.5v28C0,43.156,1.843,45,3.5,45h28   c1.656,0,2.5-1.844,2.5-3.5V23.596l-5,5V40z"
-                                /></g
-                              ></svg
-                            >
-                        </a>
-                          {/await}
-                        
+                          {#if $slimProductsStore[key]}
+                              <EditAmountBtn url={`/main?product_id=${key}&album=${$slimProductsStore[key].main_public_album__slug}&top=${$slimProductsStore[key].main_public_album_top__slug}`} />
+                          {:else}
+                            {#await calc_product_url(key)}
+                              <Spinner />
+                            {:then url} 
+                              <EditAmountBtn url={url} />
+                            {:catch e}
+                              error {e}
+                            {/await}
+                          {/if}
                       </div>
                     </div></span
                   >

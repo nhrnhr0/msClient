@@ -10,12 +10,12 @@ import { page } from "$app/stores";
 import { BASE_URL, CLOUDINARY_URL } from "src/api/consts";
 import { my_fetch } from "src/network/my_fetch";
 import { Spinner } from "sveltestrap";
-import {add_products_slim_to_indexdb} from 'src/stores/dexie/products';
 import { cartStore,dictCartStore } from 'src/stores/cartStore';
 import PriceTag from "src/new/priceTag.svelte";
 import { onMount } from "svelte";
 import { browser } from "$app/env";
 import { goto } from "$app/navigation";
+import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProducts";
     export let page_info;
     let next_page = undefined;
     let bottom_loading = false;
@@ -77,7 +77,7 @@ import { goto } from "$app/navigation";
                 return response.json();
             }).then(data => {
                 if(data.results) {
-                    add_products_slim_to_indexdb(data.results);
+                    add_products_slim_to_store(data.results);
                 }
                 if(reset) {
                     my_products = [...data.results];

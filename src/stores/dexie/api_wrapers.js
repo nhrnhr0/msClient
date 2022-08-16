@@ -9,7 +9,7 @@ import { my_fetch } from "src/network/my_fetch";
 fetch top level categories from the server
 
 */
-async function fetch_categories(fetch=undefined) {
+export async function fetch_categories(fetch=undefined) {
     let res =  await my_fetch(`${BASE_URL}/get-main-categories/`,{},fetch);
     let data = await res.json(); // data = [{id:1,name:'...'},{id:2,name:'...'}]
     // add timestamp to the data

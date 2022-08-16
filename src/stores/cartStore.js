@@ -3,13 +3,10 @@ import { update_cart_to_server } from "$lib/flashy";
 import { writable, get, derived } from "svelte/store";
 import {cartModalStore} from "./../stores/stores";
 
-let initCart = {};
+let initCart = [];
 const LOCAL_STORE_NAME = "cart8";
 if(browser) {
     initCart=JSON.parse(localStorage.getItem(LOCAL_STORE_NAME));
-    if(!initCart) {
-        initCart=[];
-    }
 }
 
 // const createCartStore = () => {
@@ -132,9 +129,9 @@ cartStore.subscribe((value) => {
       }
     }
 );
-export const dictCartStore = derived(cartStore, ($cartStore) => {
+export const dictCartStore = derived(cartStore, (cartInfo) => {
   let ret = {};
-  $cartStore.forEach((item) => {
+  cartInfo.forEach((item) => {
     ret[item.id] = item;
   });
   return ret;
