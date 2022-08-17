@@ -143,7 +143,7 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
 <nav id="main-navbar-wraper" class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
         <!-- svelte-ignore a11y-invalid-attribute -->
-        <a class="navbar-logo" href="/" aria-label="logo" role="button">
+        <a class="navbar-logo" href="/" aria-label="logo" role="button" tabindex="0">
             <img class="nav-logo" height="32px" width="auto"
                 src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1634457672/msAssets/favicon_rza3n9"
                 alt="">

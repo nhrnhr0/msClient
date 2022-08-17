@@ -246,11 +246,12 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
                 cursor: grabbing;
                 pointer-events: none;
             }
-            a {
+            a.category {
                 display: flex;
                 flex-direction: row;
                 justify-content: center;
                 align-items: center;
+                width:100%;
                 img {
                     width: 50px;
                     height: 50px;

@@ -11,7 +11,7 @@
     
     import "src/app.scss";
     import Navbar from "$lib/Navbar.svelte";
-import { onMount } from "svelte";
+import { onDestroy, onMount } from "svelte";
 import LoginPopup from "src/lib/popups/LoginPopup.svelte";
 import CartPopup from "src/lib/popups/cartPopup.svelte";
 import SuccessPopup from "src/lib/popups/successPopup.svelte";
@@ -24,6 +24,25 @@ import { browser } from "$app/env";
       await clear_all_db_data();
       await clear_all_session_data();
     })
+
+    function calcAppHeight() {
+        if(window) {
+            const doc = document.documentElement;
+            doc.style.setProperty('--vh', (window.innerHeight*.01) + 'px');
+        }
+    }
+
+    onMount(() => {
+        if(browser) {
+            calcAppHeight();
+            window.addEventListener('resize', calcAppHeight);
+        }
+    });
+    onDestroy(() => {
+        if(browser) {
+            window.removeEventListener('resize', calcAppHeight);
+        }
+    });
     
     $: {
       if(browser && $page.path == '/main' || $page.path == '/main/') {

@@ -2,7 +2,7 @@
     // load function is called when the page is loaded.
     export async function load({ fetch, page, session, contex }) {
         let data = await fetch_main_page_albums(fetch);
-        let main_categories = await indexdb_get_main_categories(fetch);
+        let main_categories = await get_topLevelCategories(fetch);
         return {
             props: {
                 main_albums: data,
@@ -36,6 +36,7 @@ import About from "src/lib/about.svelte";
 import ContentForm from "src/lib/contentForm.svelte";
 import { indexdb_get_main_categories } from "src/stores/dexie/api_wrapers";
 import NewProductsSwiper from "src/new/NewProductsSwiper.svelte";
+import { get_topLevelCategories } from "src/stores/sessionStorage/topLevelCategories";
     export let main_albums;
     export let main_categories;
     function open_whatsapp_link() {

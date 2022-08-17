@@ -132,7 +132,7 @@ import PriceTag from "src/new/priceTag.svelte";
                 {#if similarProducts}
                     {#each (similarProducts) as product}
                         <div class="product-item">
-                            <a href={$page.path + '?' + $page.query.toString().replace(product_regex, `product_id=${product.id}`)}>
+                            <a rel="prefetch" href={$page.path + '?' + $page.query.toString().replace(product_regex, `product_id=${product.id}`)}>
                                 <div class="product-image">
                                     {#if $dictCartStore[product.id]}
                                         <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>

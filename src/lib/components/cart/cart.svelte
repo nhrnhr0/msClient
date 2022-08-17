@@ -27,9 +27,9 @@ import { cartPopupStore } from 'src/stores/popups/cartPopupStore';
 <div class="cart-btn-wraper">
 <div id="cart-btn" class="popup-animation cart" on:click={open_cart}>
     <Fa size="2x" icon={faShoppingCart} />
-    {#if Object.keys($cartStore).length > 0}
+    {#if $cartStore.length > 0}
             <div class="items-counter">
-                <div class="num">{Object.keys($cartStore).length}</div>
+                <div class="num">{$cartStore.length}</div>
             </div>
     {/if}
     

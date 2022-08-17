@@ -345,6 +345,7 @@ button.close-button {
       padding: 0 0 15px 0;
       list-style: none;
       height: calc(100vh - 269px);
+      height: calc(calc(var(--vh, 1vh) * 100) - 269px);
       overflow-x: hidden;
       overflow-y: auto;
       display: block;
@@ -659,7 +660,7 @@ button.close-button {
       }
 
       @media screen and (max-width: 700px) {
-        bottom: 62px;
+        //bottom: 62px;
       }
     }
   </style>

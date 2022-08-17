@@ -6,7 +6,10 @@ import {cartModalStore} from "./../stores/stores";
 let initCart = [];
 const LOCAL_STORE_NAME = "cart8";
 if(browser) {
-    initCart=JSON.parse(localStorage.getItem(LOCAL_STORE_NAME));
+    let loadInfo=JSON.parse(localStorage.getItem(LOCAL_STORE_NAME));
+    if(loadInfo) {
+        initCart = loadInfo;
+    }
 }
 
 // const createCartStore = () => {

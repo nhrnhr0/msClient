@@ -37,7 +37,6 @@ import { browser } from "$app/env";
     }*/
 
     function create_mentries() {
-      debugger;
         if (!cartStore.getProduct(productInfo.id)?.mentries) {
             let tempMentries = {};
             for (let clrIdx = 0; clrIdx < productInfo.colors.length; clrIdx++) {

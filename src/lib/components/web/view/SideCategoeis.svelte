@@ -63,7 +63,8 @@
     }
     let is_side_closed = false;
 </script>
-<div class="background-wraper">
+
+<div class="position-wraper">
     <div class="acordion-button" class:close={is_side_closed} on:click="{()=>{is_side_closed=!is_side_closed}}">
         <div class="text">
             {#if is_side_closed}
@@ -78,54 +79,40 @@
             {:else}
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Pro 6.1.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M96 480c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L242.8 256L73.38 86.63c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l192 192c12.5 12.5 12.5 32.75 0 45.25l-192 192C112.4 476.9 104.2 480 96 480z"/></svg>
             {/if}
-        </div>
-    </div>
+        </div></div>
     {#if is_side_closed == false}
-        <h6>תתי קטגוריות</h6>
-        <div class="album-swiper-wraper" class:loading={loading} in:fly="{{x:200, duration:350}}" out:fly="{{x:200, duration:350}}">
-            <div bind:this={slider} class="scroll-snap-slider"> <!-- on:mousedown="{slider_mousedown}" on:mouseleave="{slider_mouseleave}" on:mouseup="{slider_mouseup}" on:mousemove={slider_mousemove}  -->
-                
-                {#if loading}
-                    <div class="spinner-wraper">
-                        <div class="inner">
-                            <Spinner />
+    <div class="background-wraper" in:fly="{{x:200, duration:350}}" out:fly="{{x:200, duration:350}}">
+            <h6>תתי קטגוריות</h6>
+            <div class="album-swiper-wraper" class:loading={loading} >
+                <div bind:this={slider} class="scroll-snap-slider"> <!-- on:mousedown="{slider_mousedown}" on:mouseleave="{slider_mouseleave}" on:mouseup="{slider_mouseup}" on:mousemove={slider_mousemove}  -->
+                    
+                    {#if loading}
+                        <div class="spinner-wraper">
+                            <div class="inner">
+                                <Spinner />
+                            </div>
                         </div>
-                    </div>
-                {/if}
-                {#each my_albums || [] as category}
-                
-                    <div on:click="{slider_click}" class="scroll-snap-slide" class:active={category.slug == $page.query.get('album')} data-album-slug={category.slug}>
-                        <div class="card">
-                            <img width="25px" height="25px" src="{CLOUDINARY_URL}{category.cimage}" alt="{category.title}">
-                            <div>{category.title}</div>
+                    {/if}
+                    {#each my_albums || [] as category}
+                    
+                        <div on:click="{slider_click}" class="scroll-snap-slide" class:active={category.slug == $page.query.get('album')} data-album-slug={category.slug}>
+                            <div class="card">
+                                <img width="25px" height="25px" src="{CLOUDINARY_URL}{category.cimage}" alt="{category.title}">
+                                <div>{category.title}</div>
+                            </div>
                         </div>
-                    </div>
-                {/each}
+                    {/each}
+                </div>
+                
             </div>
-            
         </div>
     {/if}
 </div>
 <style lang="scss">
-    .background-wraper {
-        background: #d7d7d77a;
-        //padding-bottom: 10px;
-        //padding-top: 20px;
-        height: 100%;
-        height: calc(100vh - 200px);
-
-        box-shadow: 0px 0px 10px 0px #0000005d;
-        border-radius: 15px;
-        //border:1px solid red;
-        margin-left: 10px;
-        margin-right: 10px;
-        h6 {
-            text-align: center;
-            margin-top: 10px;
-            margin-bottom: 3px;
-        }
+    .position-wraper {
         position: relative;
-        .acordion-button {
+    }
+    .acordion-button {
             position: absolute;
             left: 0px;
             top: 50%;
@@ -139,15 +126,15 @@
             &.close {
                 left: auto;
                 right: 0px;
-                transform: translate(25%, -50%);
+                transform: translate(15%, -50%);
             }
             .text {
                 color: white;
                 writing-mode: vertical-rl;
             }
             .acordion-button-icon {
-                width: 20px;
-                height: 20px;
+                width: 15px;
+                height: 15px;
                 margin: 0 5px;
                 svg {
                     width: 100%;
@@ -160,6 +147,26 @@
                 background-color: rgba(51, 51, 51, 0.616);
             }
         }
+    .background-wraper {
+        background: #d7d7d77a;
+        //padding-bottom: 10px;
+        //padding-top: 20px;
+        height: 100%;
+        height: calc(100vh - 211px);
+        height: calc(calc(var(--vh, 1vh) * 100) - 211px);
+
+        box-shadow: 0px 0px 10px 0px #0000005d;
+        border-radius: 15px;
+        //border:1px solid red;
+        margin-left: 10px;
+        margin-right: 10px;
+        h6 {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 3px;
+        }
+        position: relative;
+        
     }
     .album-swiper-wraper {
         
@@ -169,8 +176,8 @@
         height: calc(100vh - 146px);*/
         
         max-height: 100%;
-        
-        height: calc(100vh - 230px);
+        height: calc(100vh - 234px);
+        height: calc(calc(var(--vh, 1vh) * 100) - 234px);
         overflow-y: auto;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
