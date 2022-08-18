@@ -76,17 +76,16 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
     function swiper_arrow_clicked(e) {
         let el = e.currentTarget;
         let direction = el.dataset.direction;
-        debugger;
         if(direction == 'left') {
-            slider.scrollBy({left: -200, behavior: 'smooth'});
+            slider.scrollBy({left: -250, behavior: 'smooth'});
             setTimeout(()=> {
-                swiper_left_scroll_tracker -= 200;
+                swiper_left_scroll_tracker -= 250;
             })
         }
         else {
-            slider.scrollBy({left: 200, behavior: 'smooth'});
+            slider.scrollBy({left: 250, behavior: 'smooth'});
             setTimeout(()=> {
-                swiper_left_scroll_tracker += 200;
+                swiper_left_scroll_tracker += 250;
             })
         }
     }

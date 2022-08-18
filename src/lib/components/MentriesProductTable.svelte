@@ -106,7 +106,6 @@ import { browser } from "$app/env";
                 });*/
                 cartStore.removeFromCartById(productInfo.id);
             }else {
-              debugger;
               console.log('input_amount_changed', $cartStore[productInfo.id]);
                 if(!$dictCartStore[productInfo.id]) {
                   cartStore.setProduct({
@@ -696,8 +695,9 @@ import { browser } from "$app/env";
         // margin-bottom: 10px;
         // margin-left: 15px;
         // margin-right: 15px;
+        
         table.product-table {
-        border: 1px solid #777777;
+          border: 1px solid #777777;
           //width: 100%;
           margin:auto;
           border-spacing: 0;
@@ -835,6 +835,32 @@ import { browser } from "$app/env";
               }
             }
           }
+        }
+        @media screen and (max-width: 600px) {
+            margin-top:15px;
+            margin-bottom:5px;
+            margin-left: 0px;
+            margin-right: 0px;
+            padding:5px;
+            h3 {
+              text-align: center;
+            }
+            .show_sizes_popup_false {
+              h4 {
+                text-align: center;
+              }
+              .solo-form-input {
+                input.my-form-control-single {
+                  width:60%;
+                }
+                .action-buttons {
+                  .amount-btn {
+                    margin: 5px;
+                  }
+                }
+              }
+              
+            }
         }
         /*.my-table-responsive {
 

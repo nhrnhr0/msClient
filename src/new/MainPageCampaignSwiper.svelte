@@ -104,10 +104,10 @@ SwiperCore.use([EffectCoverflow, Pagination,Navigation]);
           }}'
           breakpoints='{{
                 "220": {
-                    "slidesPerView": 1.3,
+                    "slidesPerView": 1.7,
                 },
                 "395": {
-                    "slidesPerView": 1.5,
+                    "slidesPerView": 1.7,
                 },
                 "440": {
                     "slidesPerView": 1.7,
@@ -134,7 +134,9 @@ SwiperCore.use([EffectCoverflow, Pagination,Navigation]);
                     "slidesPerView": 5,
                 }
             }}'
-          pagination="{true}" 
+            pagination={{
+                type: "fraction",
+            }}
         >
                 {#each images as image}
                     <SwiperSlide data-product-id={image.id} data-href={album_href + '&product_id=' + image.id}>
@@ -281,6 +283,14 @@ SwiperCore.use([EffectCoverflow, Pagination,Navigation]);
                         
                     }
                 }
+            }
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .category {
+            .category-title {
+                font-size: 1.5em;
             }
         }
     }

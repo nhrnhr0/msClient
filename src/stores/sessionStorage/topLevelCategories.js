@@ -6,7 +6,6 @@ import { fetch_categories } from "../dexie/api_wrapers";
 const TOP_LEVEL_CATEGORIES_KEY = 'topLevelCategories';
 
 export async function get_topLevelCategories(fetch=undefined) {
-    debugger;
     let sessionData = undefined;
     if(browser) {
         sessionData = window.sessionStorage.getItem(TOP_LEVEL_CATEGORIES_KEY);

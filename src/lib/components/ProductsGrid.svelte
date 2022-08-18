@@ -100,7 +100,7 @@ import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProduc
         //$page.query('product', id);
         goto(new_url);
     }
-    
+    let product_wraper_clientWidth;
     /*$: {
         if(products){
             selected_product = products.find(p => p.catalogImage.id == $page.query.get('product_id'));
@@ -110,7 +110,7 @@ import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProduc
         }
     }*/
 </script>
-<div class="products-wraper" on:scroll="{products_grid_scrolled}">
+<div class="products-wraper" on:scroll="{products_grid_scrolled}" class:small-view={product_wraper_clientWidth < 175*2+20} bind:clientWidth="{product_wraper_clientWidth}">
             {#if main_loading}
                 <div class="spinner-container">
                     <Spinner></Spinner>
@@ -198,7 +198,6 @@ import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProduc
                 cursor: pointer;
                 display: flex;
                 flex:1 0 0;
-                
                 flex-direction: column;
                 & .product-image {
                     background: radial-gradient(circle,white 0%,white 32%,#c7c7c7 84%);
@@ -212,7 +211,6 @@ import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProduc
                     img {
                         width: 175px;
                         height: 175px;
-                        
                     }
                 }
                 & .product-info {
@@ -257,6 +255,24 @@ import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProduc
                         background: rgb(117, 116, 116);
                         & .product-title {
                             font-weight: bold;
+                        }
+                    }
+                }
+            }
+            &.small-view {
+                & .product {
+                    & .product-image {
+                        img {
+                            width: 100px;
+                            height: 100px;
+                        }
+                    }
+                    & .product-info {
+                        & .product-title {
+                            font-size: 12px;
+                        }
+                        & .product-price {
+                            font-size: 12px;
                         }
                     }
                 }

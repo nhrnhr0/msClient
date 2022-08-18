@@ -244,7 +244,7 @@ import PriceTag from "src/new/priceTag.svelte";
                 }
                 .product-image {
                     flex:1;
-                    max-height: 33vh;
+                    max-height: 40vh;
                     background: radial-gradient(circle, white 0%, white 32%, #c7c7c7 84%);
                     // background: radial-gradient(circle, #f9f295b5 0%, #f9f295ba 32%, #e0aa3eb8 84%);
                     // // #FCFFE7 #E0D8B0 #DEA057 #CE9461
@@ -294,7 +294,7 @@ import PriceTag from "src/new/priceTag.svelte";
                         flex-shrink: 1;
                         
                         max-height: inherit;
-                        max-width: inherit;
+                        max-width: 100%;
                     }
                     &.bigger-height {
                         
@@ -383,4 +383,30 @@ import PriceTag from "src/new/priceTag.svelte";
                     }
                 }
             }
+
+
+
+    
+    
+    @media screen and (max-width:600px) {
+        .product-show-wrapper-grid .top-info {
+            .product-image {
+                margin-left: 0px;
+                margin-right: 0px;
+            }
+            .slim-info {
+                margin-left: 0px;
+                margin-right: 0px;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                .product-title {
+                    text-align: center;
+                }
+                .product-price {
+                    text-align: center;
+                }
+            }
+        }
+    }
     </style>

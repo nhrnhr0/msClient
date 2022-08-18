@@ -47,7 +47,6 @@ import { inview } from 'svelte-inview';
   }
 
   function initial_fetch() {
-    debugger;
     let url = BASE_URL + '/my-api/get-album-images?top=new';
         my_fetch(url).then(response => {
             response.json().then(data => {
@@ -79,10 +78,9 @@ function swiper_clicked(e) {
     </a>
     {#if images}
         <Swiper
-            
             resizeReInit={true},
             effect="{'coverflow'}"
-            centeredSlides="{false}"
+            centeredSlides="{true}"
             observer="{true}"
             observeParents= "{true}"
             rebuildOnUpdate="{true}"
@@ -102,10 +100,10 @@ function swiper_clicked(e) {
             }}'
             breakpoints='{{
                     "220": {
-                        "slidesPerView": 1.3,
+                        "slidesPerView": 1.7,
                     },
                     "395": {
-                        "slidesPerView": 1.5,
+                        "slidesPerView": 1.7,
                     },
                     "440": {
                         "slidesPerView": 1.7,
@@ -132,7 +130,10 @@ function swiper_clicked(e) {
                         "slidesPerView": 5,
                     }
                 }}'
-            pagination="{true}" 
+            pagination={{
+                type: "fraction",
+            }}
+            modules={[Pagination]}
             >
                     {#each images as image}
                         <SwiperSlide data-product-id={image.id} data-href={album_href + '&product_id=' + image.id}>
@@ -147,6 +148,7 @@ function swiper_clicked(e) {
                         </SwiperSlide>
                     {/each}
         </Swiper>
+        
     {/if}
 </div>
 
@@ -279,6 +281,14 @@ function swiper_clicked(e) {
                         
                     }
                 }
+            }
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .category {
+            .category-title {
+                font-size: 1.5em;
             }
         }
     }

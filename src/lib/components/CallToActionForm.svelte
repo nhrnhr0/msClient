@@ -115,6 +115,10 @@
                     background-color: #218838;
                     border-color: #1e7e34;
                 }
+
+                @media screen and (max-width:450px) {
+                    font-size: 1.3rem;
+                }
             }
 
             .form-fields {

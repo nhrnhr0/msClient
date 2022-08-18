@@ -69,10 +69,10 @@
           }}'
           breakpoints='{{
                 "220": {
-                    "slidesPerView": 1.3,
+                    "slidesPerView": 1.7,
                 },
                 "395": {
-                    "slidesPerView": 1.5,
+                    "slidesPerView": 1.7,
                 },
                 "440": {
                     "slidesPerView": 1.7,
@@ -99,7 +99,9 @@
                     "slidesPerView": 5,
                 }
             }}'
-          pagination="{true}" 
+            pagination={{
+                type: "fraction",
+            }}
         >
             {#each album.images.results as image}
                 <SwiperSlide data-product-id={image.id} title="לחץ לצפייה במוצר '{image.title}'" data-href={album_href + '&product_id=' + image.id}>
@@ -246,6 +248,14 @@
                         
                     }
                 }
+            }
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .category {
+            .category-title {
+                font-size: 1.5em;
             }
         }
     }

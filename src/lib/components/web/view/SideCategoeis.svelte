@@ -162,7 +162,7 @@
         margin-right: 10px;
         h6 {
             text-align: center;
-            margin-top: 10px;
+            //margin-top: 10px;
             margin-bottom: 3px;
         }
         position: relative;
@@ -271,6 +271,21 @@
                 
                 &.active {
                     background: rgba(104, 103, 103, 0.548);
+                }
+            }
+        }
+    }
+    // 675 + 315 = 990
+    @media screen and (max-width:990px) {
+        .background-wraper {
+            margin-left: 1px;
+            margin-right: 1px;
+
+            .album-swiper-wraper {
+                .scroll-snap-slider {
+                    width:min-content;
+                    margin-right: 5px;
+                    margin-left: 5px;
                 }
             }
         }
