@@ -106,7 +106,6 @@ import ProductPhotoPopup from "src/lib/popups/ProductPhotoPopup.svelte";
         max-height: fill-available;
         max-height: -webkit-fill-available;
       }*/
-      height: 100%;
 
       &.make-small {
         width: calc(100vw - 315px);
