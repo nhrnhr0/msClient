@@ -457,13 +457,13 @@ import { browser } from "$app/env";
                       
                         {#if productInfo.varients.length == 0}
                           <div class="cell-wraper">
-                            <input on:change="{input_amount_changed}" class="size-input cls-cell" data-color="{color}" data-size="{size}" type="number" placeholder="כמות" bind:value="{mentries[color][size].quantity}" min="0" max="9999" >
+                            <input on:change="{input_amount_changed}" class="size-input cls-cell" style="border: 2px solid {ALL_COLORS[color].color}" data-color="{color}" data-size="{size}" type="number" placeholder="{ALL_SIZES[size].size}" bind:value="{mentries[color][size].quantity}" min="0" max="9999" >
                           </div>
                         {:else}
                         
                           {#each productInfo.varients as {id, name}, idx}
                           <div class="cell-wraper">
-                            <input on:change="{input_amount_changed}" id="input_entery_{productInfo.id}_{size}_{color}_{id}"class="size-input cls-cell" type="number" placeholder="כמות" bind:value="{mentries[color][size][id].quantity}" min="0" max="9999" >
+                            <input on:change="{input_amount_changed}" style="border: 2px solid {ALL_COLORS[color].color}" id="input_entery_{productInfo.id}_{size}_{color}_{id}"class="size-input cls-cell" type="number" placeholder="{ALL_SIZES[size].size} ({name})" bind:value="{mentries[color][size][id].quantity}" min="0" max="9999" >
                           </div>
                           {/each}
                         
@@ -743,7 +743,7 @@ import { browser } from "$app/env";
                   & .cell-wraper {
                     display: grid;
                     grid-template-columns: 1fr;
-                    border:1px solid black;
+                    //border:1px solid black;
                     max-width: 95px;
                   }
                   input.size-input:first-child {
@@ -752,6 +752,9 @@ import { browser } from "$app/env";
                     }
                   }
                   input.size-input {
+                    font-size: 12px;
+                    
+                    font-weight: 700;
                     &:not(:placeholder-shown) {
                       //border:1px solid pink;
                       background: #f5f5f5;
@@ -997,14 +1000,15 @@ import { browser } from "$app/env";
       width: 200px;
     }
     .sticky-col {
-      position: -webkit-sticky;
+      /*position: -webkit-sticky;
       position: sticky;
-      background-color: rgba(238, 238, 238, 0.651);
+      
       //min-width: 80px;
       position: sticky;
       position: -webkit-sticky;
       position: sticky;
-      right: 0px;
+      right: 0px;*/
+      background-color: rgba(238, 238, 238, 0.651);
       border: 1px solid #777777;
       border-radius: 5px;
       padding: 5px;
