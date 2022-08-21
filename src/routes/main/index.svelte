@@ -4,7 +4,7 @@
 import { BASE_URL, CLOUDINARY_URL } from "src/api/consts";
 import TopCategories from "src/lib/components/web/view/TopCategories.svelte";
 import { my_fetch } from "src/network/my_fetch";
-import { onMount } from "svelte";
+import { onMount,onDestroy } from "svelte";
 
 
 
@@ -47,7 +47,6 @@ import ProductsGrid from "src/lib/components/ProductsGrid.svelte";
 import { page } from "$app/stores";
 import ProductShow from "src/lib/components/ProductShow.svelte";
 import { browser } from "$app/env";
-import { onDestroy } from "svelte/types/runtime/internal/lifecycle";
 
 
     //export let products = {};
@@ -75,7 +74,8 @@ import { onDestroy } from "svelte/types/runtime/internal/lifecycle";
     onMount(() => {
         // console.log('onMount', { pageData, data });
         // data = pageData.results;
-        document.addEventListener('touchmove', handleTouch, false);
+        debugger;
+        window.document.addEventListener('touchmove', handleTouch, false);
     });
     function handleTouch(event) {
         event = event.originalEvent || event;
@@ -86,7 +86,8 @@ import { onDestroy } from "svelte/types/runtime/internal/lifecycle";
     onDestroy(() => {
         // console.log('onDestroy', { pageData, data });
         // data = pageData.results;
-        document.removeEventListener('touchmove', handleTouch, false);
+        debugger;
+        browser && window.document.removeEventListener('touchmove', handleTouch, false);
     });
 </script>
 
