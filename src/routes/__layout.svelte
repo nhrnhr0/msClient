@@ -18,6 +18,7 @@ import SuccessPopup from "src/lib/popups/successPopup.svelte";
 import { cartPopupStore } from 'src/stores/popups/cartPopupStore';
 import { page } from '$app/stores';
 import { browser } from "$app/env";
+import ProductPhotoPopup from "src/lib/popups/ProductPhotoPopup.svelte";
     onMount(async()=>{
       // clear all dbs on startup.
       console.log('+++++++ WARNING: clearing all db data on startup. +++++++ ');
@@ -72,6 +73,7 @@ import { browser } from "$app/env";
   
   <LoginPopup />
   <CartPopup />
+  <ProductPhotoPopup />
   <SuccessPopup  />
   
   <div id="main_wraper" class="bg-wraper" class:make-small={$cartPopupStore.isSideOpen && !$cartPopupStore.sideFloating}>

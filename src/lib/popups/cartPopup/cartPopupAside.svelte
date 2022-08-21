@@ -21,6 +21,7 @@ import {get_catalog_album_by_id} from "src/stores/dexie/catalogAlbums";
 import { Spinner } from "sveltestrap";
 import { find_or_get_slim_product_by_id, slimProductsStore } from "src/stores/sessionStorage/slimProducts";
 import EditAmountBtn from "./editAmountBtn.svelte";
+import { productPhotoPopupStore } from "src/stores/popups/productPhotoPopupStore";
 
     let sidebar_top = 62;
     async function calc_product_url(product_id) {
@@ -62,6 +63,10 @@ import EditAmountBtn from "./editAmountBtn.svelte";
 
         <div
           class="upload-image-wraper"
+          on:click={() => {
+            console.log("upload image");
+            productPhotoPopupStore.open();
+          }}
         >
           <span>שלח מוצר שלא מצאת</span>
           <img

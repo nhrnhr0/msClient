@@ -384,10 +384,30 @@ function set_user_uuid(newUid) {
 export function get_user_uuid() {
   return localStorage.getItem("uuid");
 }
-
 export async function send_product_photo(formData) {
-  return formData_fetch_wraper(PRODUCT_PHOTO_URL, formData);
+  let headers_json = {};
+  if (browser) {
+    if (get(userInfoStore).access) {
+      headers_json["Authorization"] = "Token " + get(userInfoStore).access;
+    }
+    headers_json["X-CSRFToken"] = get_csrf_token();
+  }
+
+  var myHeaders = new Headers(headers_json);
+  var requestOptions = {
+    method: "POST",
+    mode: "cors",
+    credentials: "include", //'',
+    headers: myHeaders,
+    redirect: "follow",
+    body: formData,
+  };
+  return fetch(PRODUCT_PHOTO_URL, requestOptions);
 }
+
+/*export async function send_product_photo(formData) {
+  return formData_fetch_wraper(PRODUCT_PHOTO_URL, formData);
+}*/
 
 export function send_product_question(data) {
   return fetch_wraper(PRODUCT_QUESTION_URL, {

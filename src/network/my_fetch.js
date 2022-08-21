@@ -22,6 +22,7 @@ export function my_fetch(url, options, custom_fetch=undefined, retry_on_failure=
             inner_custom_fetch(url,opts)
                 .then(res => {
                     if (res.ok) {
+                        
                         resolve(res);
                     } else {
                         console.error(`${browser?'browser':'server'} fetching error ======> `, url, res.status, res.statusText);
