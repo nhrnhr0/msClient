@@ -400,9 +400,9 @@ import { browser } from "$app/env";
 <div class="wraper">
     mentries gos here <br>
     productInfo?.id: {productInfo?.id} <br>
-    ALL_VARIENTS?.length: {ALL_VARIENTS?.length} <br>
-    ALL_COLORS?.length: {ALL_COLORS?.length} <br>
-    ALL_SIZES?.length: {ALL_SIZES?.length} <br>
+    Object.keys(ALL_VARIENTS)?.length: {Object.keys(ALL_VARIENTS || {})?.length} <br>
+    Object.keys(ALL_COLORS)?.length: {Object.keys(ALL_COLORS || {})?.length} <br>
+    Object.keys(ALL_SIZES)?.length: {Object.keys(ALL_SIZES || {})?.length} <br>
     {#if ALL_VARIENTS && ALL_COLORS && ALL_SIZES && productInfo}
         <!--
             create a table with row_keys as the rows (color, modal / only color)
