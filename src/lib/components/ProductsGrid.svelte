@@ -189,10 +189,14 @@ import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProduc
             padding: 0;
             margin: 0;
             background-color: rgba(255, 255, 255, 0.199);
+            padding:15px;
+            margin-left:15px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
             gap: 5px;
             transition: all 3s ease-in-out;
-            max-height: 100%;
-            overflow-y: auto;
+            height: calc(100vh - 215px);
+            height: calc(var(--vh, 1vh) * 100 - 215px);
             margin-bottom: 92px;
             & .product {
                 position: relative;
