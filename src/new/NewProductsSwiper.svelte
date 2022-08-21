@@ -174,14 +174,14 @@ function swiper_clicked(e) {
                 border-radius: 25px;
                 color: black;
                 transition: all 0.1s ease-in-out;
-                &::before {
+                /*&::before {
                     content: 'לקטגוריית\00a0 ';
                     display: none;
                 }
                 &::after {
                     content: '\00a0 לחץ כאן';
                     display: none;
-                }
+                }*/
                 &:hover {
                         background-color: #ececec4d;
                         &::after, &::before {

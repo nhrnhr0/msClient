@@ -82,10 +82,12 @@ import { browser } from "$app/env";
       // height: 100vh;
       // height: fill-available;
       height: -webkit-fill-available;
-
+      height: -moz-available;
       :global(body) {
         height: 100vh;
         height: -webkit-fill-available;
+        height: -moz-available;
+        height: fill-available;
         overflow: hidden;
       }
     }
