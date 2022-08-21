@@ -115,7 +115,9 @@ import PriceTag from "src/new/priceTag.svelte";
             </div>
             <div class="product-mentries">
                 {#if productInfo}
-                    <MentriesProductTable productInfo={productInfo} />
+                    {#key productInfo.id}
+                        <MentriesProductTable productInfo={productInfo} />
+                    {/key}
                 {:else}
                     <div class="loading-title">
                         <Spinner />
