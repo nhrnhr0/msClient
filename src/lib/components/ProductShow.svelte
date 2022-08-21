@@ -180,7 +180,13 @@ import PriceTag from "src/new/priceTag.svelte";
             background-color: #f5f5f565;
             
             margin-bottom: 70px;
-            margin-left: 5px;
+            margin-left: 15px;
+            
+            height: calc(100vh - 215px);
+            height: calc(var(--vh, 1vh) * 100 - 215px);
+            @media screen and (max-width: 768px) {
+                margin-left: 5px;
+            }
         }
         .product-item:hover {
         .product-image {
