@@ -9,9 +9,11 @@ import { userInfoStore } from 'src/stores/stores';
 import { browser } from '$app/env';
 import { Spinner } from 'sveltestrap';
 import { get_topLevelCategories } from 'src/stores/sessionStorage/topLevelCategories';
+import MsBreadcrumb from 'src/new/MsBreadcrumb.svelte';
 /*import {ScrollSnapDraggable} from 'scroll-snap-slider/src/ScrollSnapDraggable.js';
 import { ScrollSnapSlider  } from 'scroll-snap-slider'
 */
+    export let page_info;
     let isDown = false;
     let startX;
     let scrollLeft;
@@ -93,7 +95,14 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
 
 </script>
 <div class="wraper">
-        <h6>קטגוריות ראשיות</h6>
+        <h6>
+            <div class="title">
+            קטגוריות ראשיות
+                </div>
+            <div class="bread">
+                <MsBreadcrumb page_info={page_info} />
+            </div>
+        </h6>
         <div bind:this={slider} on:mousedown="{slider_mousedown}" on:mouseleave="{slider_mouseleave}" on:mouseup="{slider_mouseup}" on:mousemove={slider_mousemove} class="scroll-snap-slider">
                 
                 {#if $userInfoStore?.me?.campains?.length > 0} 
@@ -155,6 +164,27 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
         padding-right: 20px;
         margin-bottom: 10px;
         position: relative;
+        h6 {
+            display: flex;
+            .title {
+                white-space: nowrap;
+            }
+            .bread {
+                flex:1;
+                width:100%;
+                text-align: center;
+                margin-right: 50px;
+            }
+            @media screen and (max-width: 768px) {
+                .title {
+                    display: none;
+                }
+                .bread {
+                    margin-right: auto;
+                }
+            }
+                
+        }
     }
     .swiper-arrow  {
         background-color: #f5f5f5f5;

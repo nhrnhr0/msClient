@@ -132,7 +132,9 @@ import PriceTag from "src/new/priceTag.svelte";
                 {#if similarProducts}
                     {#each (similarProducts) as product}
                         <div class="product-item">
-                            <a rel="prefetch" href={$page.path + '?' + $page.query.toString().replace(product_regex, `product_id=${product.id}`)}>
+                            <a rel="prefetch"
+                            href="/main?top={product.main_public_album_top__slug}&album={product.main_public_album__slug}&product_id={product.id}">
+                            <!-- href={$page.path + '?' + $page.query.toString().replace(product_regex, `product_id=${product.id}`)}>-->
                                 <div class="product-image">
                                     {#if $dictCartStore[product.id]}
                                         <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>
@@ -167,6 +169,7 @@ import PriceTag from "src/new/priceTag.svelte";
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
             direction: ltr;
+            max-height: 100%;
             > * {
                 direction: rtl;
             }
@@ -326,7 +329,7 @@ import PriceTag from "src/new/priceTag.svelte";
 
         }
         .similer-products {
-                margin-bottom: 15px;
+                margin-bottom: 150px;
                 height: 100%;
                 //overflow: scroll;
 
@@ -350,7 +353,7 @@ import PriceTag from "src/new/priceTag.svelte";
                         background: radial-gradient(circle, rgba(255, 255, 255, 0.199) 0%, rgba(255, 255, 255, 0.199) 100%);
                         transition: all 0.1s ease-in-out;
                         &:hover {
-                            font-weight: bold;
+                            //font-weight: bold;
                             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
                             background: radial-gradient(circle, rgba(167, 166, 166, 0.199) 0%, rgba(177, 175, 175, 0.199) 100%);
                         }

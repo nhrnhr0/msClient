@@ -191,7 +191,8 @@ import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProduc
             background-color: rgba(255, 255, 255, 0.199);
             gap: 5px;
             transition: all 3s ease-in-out;
-
+            max-height: 100%;
+            overflow-y: auto;
             margin-bottom: 92px;
             & .product {
                 position: relative;

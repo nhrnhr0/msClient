@@ -43,7 +43,6 @@ import { onMount } from "svelte";
 
 <script>
 import SideCategoeis from "src/lib/components/web/view/SideCategoeis.svelte";
-import { Spinner } from "sveltestrap";
 import ProductsGrid from "src/lib/components/ProductsGrid.svelte";
 import { page } from "$app/stores";
 import ProductShow from "src/lib/components/ProductShow.svelte";
@@ -100,10 +99,8 @@ import { browser } from "$app/env";
   <meta property="twitter:description" content="{page_info.og_meta?.description || ''}">
   <meta property="twitter:image" content="{page_info.og_meta.icon || ''}">
 </svelte:head>
-
-
     
-    <TopCategories />
+    <TopCategories page_info={page_info} />
     <div class="side-and-grid-wraper">
         <hr>
         <SideCategoeis albums={page_info?.top_albums} />
