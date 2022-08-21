@@ -98,6 +98,7 @@ import { browser } from "$app/env";
   <meta property="twitter:title" content="{page_info.og_meta?.title || ''}">
   <meta property="twitter:description" content="{page_info.og_meta?.description || ''}">
   <meta property="twitter:image" content="{page_info.og_meta.icon || ''}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 </svelte:head>
     
     <TopCategories page_info={page_info} />
