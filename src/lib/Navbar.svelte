@@ -661,7 +661,7 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
                     @media screen and (max-width: 550px) {
                         min-width: 90vw;
                         top: 100%;
-                        right: -70px;
+                        //right: -70px;
                         position: absolute;
                     }
                     
