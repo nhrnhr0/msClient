@@ -170,6 +170,7 @@ import PriceTag from "src/new/priceTag.svelte";
             border-radius: 10px;
             direction: ltr;
             max-height: 100%;
+            overflow-x:hidden;
             > * {
                 direction: rtl;
             }
