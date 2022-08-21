@@ -195,7 +195,8 @@ import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProduc
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
             gap: 5px;
             transition: all 3s ease-in-out;
-            height: 100%;
+            height: calc(100vh - 215px);
+            height: calc(var(--vh, 1vh) * 100 - 215px);
             margin-bottom: 92px;
             margin-left:15px;
             @media screen and (max-width: 768px) {

@@ -47,6 +47,7 @@ import ProductsGrid from "src/lib/components/ProductsGrid.svelte";
 import { page } from "$app/stores";
 import ProductShow from "src/lib/components/ProductShow.svelte";
 import { browser } from "$app/env";
+import { onDestroy } from "svelte/types/runtime/internal/lifecycle";
 
 
     //export let products = {};
@@ -74,6 +75,18 @@ import { browser } from "$app/env";
     onMount(() => {
         // console.log('onMount', { pageData, data });
         // data = pageData.results;
+        document.addEventListener('touchmove', handleTouch, false);
+    });
+    function handleTouch(event) {
+        event = event.originalEvent || event;
+        if(event.scale > 1) {
+        event.preventDefault();
+        }
+    }
+    onDestroy(() => {
+        // console.log('onDestroy', { pageData, data });
+        // data = pageData.results;
+        document.removeEventListener('touchmove', handleTouch, false);
     });
 </script>
 
@@ -98,7 +111,7 @@ import { browser } from "$app/env";
   <meta property="twitter:title" content="{page_info.og_meta?.title || ''}">
   <meta property="twitter:description" content="{page_info.og_meta?.description || ''}">
   <meta property="twitter:image" content="{page_info.og_meta.icon || ''}">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 </svelte:head>
     
     <TopCategories page_info={page_info} />
