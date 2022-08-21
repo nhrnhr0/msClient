@@ -52,7 +52,6 @@ import { get_topLevelCategories } from 'src/stores/sessionStorage/topLevelCatego
                 
                 page_info.top_albums.forEach(album => {
                     if(album.slug == $page.query.get('album')) {
-                        debugger
                         new_breadcrumb_array.push({
                             title: album.title,
                             url: BASE_MAIN_URL + '?top=' + top_category_slug + '&album=' + album.slug
