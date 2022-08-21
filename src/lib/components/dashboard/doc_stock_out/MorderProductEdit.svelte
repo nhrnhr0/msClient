@@ -284,7 +284,7 @@ import fragment from 'svelte-fragment';
     /*function toOrder_amount_changed(e) {
         let target = e.target;
         let idx = target.dataset.idx;
-        debugger;
+        
         let val = parseInt(target.value);
         if (isNaN(val)) {
             val = 0;
@@ -293,7 +293,7 @@ import fragment from 'svelte-fragment';
             let color = target.dataset.colorId;
             let size = target.dataset.sizeId;
             let varient = target.dataset.varientId;
-            debugger;
+            
             let newEntry = {
                 color:parseInt(color),
                 size: parseInt(size),

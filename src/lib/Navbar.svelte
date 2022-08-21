@@ -38,8 +38,6 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
             let album = undefined;
             // get all the albums from the products and count how much products from each album
             let all_albums = await indexdb_get_catalog_albums();
-            debugger;
-            debugger;
             for(let i = 0; i < data.all.length; i++) {
                 let my_item = data.all[i];
                 album = undefined;

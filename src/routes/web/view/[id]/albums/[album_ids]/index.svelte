@@ -49,7 +49,7 @@ let percent;
         if (el) {
         // on scroll:
             el.addEventListener('scroll', () => {
-                /*debugger;
+                /*
                 currY =  el.scrollTop;
                 postHeight = el.getBoundingClientRect().height;
                 scrollHeight = document.querySelector("body").clientHeight;

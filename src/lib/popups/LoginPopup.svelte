@@ -21,7 +21,7 @@ import { eraseCookie, setCookie } from '../utils/utils';
     function login() {
         is_requesting = true;
         error_detail = '';
-        debugger;
+        
         let username = document.querySelector('#username').value;
         let password = document.querySelector('#password').value;
         let response = request_login(username, password);
@@ -32,7 +32,7 @@ import { eraseCookie, setCookie } from '../utils/utils';
                 error_detail = data['non_field_errors'][0];
             }*/}else {
                 //localStorage.setItem('refresh', data.refresh);
-                debugger;
+                
                 $userInfoStore.access = data.token;
                 let me = data.me;
                 $userInfoStore.me=me;
@@ -110,7 +110,7 @@ import { eraseCookie, setCookie } from '../utils/utils';
 
         let admin_as_user = undefined;
         function update_admin_as_user() {
-            debugger;
+            
         if (admin_as_user) {
             $userInfoStore.actAs = all_users.find((user)=> {return user.id == parseInt(admin_as_user.id)});
             setCookie('actAs',$userInfoStore.actAs.id);
@@ -124,7 +124,7 @@ import { eraseCookie, setCookie } from '../utils/utils';
     }
 
     function getUsers(user,keyword) {
-        debugger;
+        
         keyword = keyword.join(' ').toLowerCase();
         console.log('getUsers', keyword);
         return user.username.toLowerCase().includes(keyword) ||

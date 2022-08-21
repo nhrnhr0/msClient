@@ -30,7 +30,7 @@
         console.log(e);
         let el = e.detail[0][1].target.closest('.swiper-slide');
 
-        debugger;
+        
         let href = el.dataset.href;
         if (href)
             goto(href);

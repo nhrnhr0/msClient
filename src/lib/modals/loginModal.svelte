@@ -21,7 +21,7 @@ import { get_album_details } from './../../api/api';
         
         // iterate $cartStore keys and add price to the object's key
         for(let itemIdx in $cartStore) {
-            debugger;
+            
             let item = $cartStore[itemIdx];
             let price = item.price;
             console.log('product: ', item);

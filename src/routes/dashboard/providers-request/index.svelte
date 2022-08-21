@@ -170,7 +170,7 @@ import { CREATE_PROVIDER_DOCS } from "src/api/consts";
 
     function update_or_create_request_quantity_local(idx, rowData, size_key, val) {
         console.log('update_or_create_request_quantity_local',idx, rowData, size_key, val);
-        debugger;
+        
         if(idx === -1) {
             let size = sizes_dict[size_key];
             let newEntry = {
@@ -200,7 +200,7 @@ import { CREATE_PROVIDER_DOCS } from "src/api/consts";
     }
 
     function is_exist_in_data(newEntry) {
-        debugger;
+        
         let exist = data.findIndex(entry => {
             let found = true;
             for(let i = 0; i< rows.length; i++){
@@ -238,7 +238,7 @@ import { CREATE_PROVIDER_DOCS } from "src/api/consts";
 
 
     function split_provider_btn_click(e) {
-        debugger;
+        
         let target = e.target;
         let td = target.closest('td');
         let idx = parseInt(td.dataset.rowIdx)
@@ -265,7 +265,7 @@ import { CREATE_PROVIDER_DOCS } from "src/api/consts";
             body: JSON.stringify(selectedPivotIndexesArr)
         });
         console.log(response);
-        debugger;
+        
         // get the file from the response
         let file = response.data;
         // open the file in a new window
@@ -282,7 +282,7 @@ import { CREATE_PROVIDER_DOCS } from "src/api/consts";
             }
             chunks.push(value);
         }
-        debugger;
+        
         
         let info = [].concat(chunks);
         console.log('info', info);

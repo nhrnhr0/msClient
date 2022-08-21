@@ -39,7 +39,7 @@
         console.log('slide clicked');
         let albumId = e.target.closest('.category').dataset.albumId;
         $page.query.set('album_id', albumId);
-        debugger;
+        
         goto($page.path + '?' + $page.query.toString());
     }*/
 

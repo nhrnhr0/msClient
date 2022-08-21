@@ -24,10 +24,10 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
     // onMount(async () => {
     //     if (categories.length === 0) {
     //         console.log('load top level categories', categories);
-    //         debugger;
+    //         
     //     }
     //     else {
-    //         debugger;
+    //         
     //         console.log('categories already loaded', categories);
     //     }
     // });

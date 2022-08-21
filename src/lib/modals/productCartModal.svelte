@@ -146,7 +146,7 @@ import { Spinner } from "sveltestrap";
 
       cartStore.addToCart($productData);
     }
-    debugger;
+    
       let prod = cartStore.getProduct($productData.id);
       // prod.entries = marge prod.entries and the new selected color
       if(prod.mentries == undefined) {

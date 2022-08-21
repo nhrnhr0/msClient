@@ -20,7 +20,7 @@ import About from "$lib/about.svelte";
     let business_types_groups;
     onMount(async ()=> {
         loaded = false;
-        debugger;
+        
         intrests = await loadAllIntrests();
         business_types = await loadBusinessTypes();
         business_types_groups = await loadBusinessTypesGroups();
@@ -104,7 +104,7 @@ import About from "$lib/about.svelte";
 
     function add_bulk_intrests(intrestsToAdd, e) {
         e.preventDefault();
-        debugger;
+        
         let newIntrests = [...instrests_results2]
         intrestsToAdd.forEach(intrest => {
             let item = {
@@ -237,7 +237,7 @@ import About from "$lib/about.svelte";
                         </div>
                                 <!-- <button on:click="{(e)=>{
                                     e.preventDefault();
-                                    debugger;
+                                    
                                     let newIntrests = [...instrests_results2]
                                     let intrestsToAdd = business_types_group.intrests;
                                     intrestsToAdd.forEach(intrest => {

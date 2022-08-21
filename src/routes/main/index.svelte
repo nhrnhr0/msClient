@@ -74,20 +74,12 @@ import { browser } from "$app/env";
     onMount(() => {
         // console.log('onMount', { pageData, data });
         // data = pageData.results;
-        debugger;
-        window.document.addEventListener('touchmove', handleTouch, false);
+        
     });
-    function handleTouch(event) {
-        event = event.originalEvent || event;
-        if(event.scale > 1) {
-        event.preventDefault();
-        }
-    }
     onDestroy(() => {
         // console.log('onDestroy', { pageData, data });
         // data = pageData.results;
-        debugger;
-        browser && window.document.removeEventListener('touchmove', handleTouch, false);
+        
     });
 </script>
 

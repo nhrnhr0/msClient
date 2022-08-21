@@ -130,7 +130,7 @@ function save_order_to_server(e) {
         function products_formrubhקונatter(cell, formatterParams, onRendered) {
             let products = cell.getValue();
             let row = cell.getRow()._row.element;
-            debugger;
+            
             let html = '<div>'
             products.forEach(product => {
                 html += `<div>${product.size_name}</div>`;

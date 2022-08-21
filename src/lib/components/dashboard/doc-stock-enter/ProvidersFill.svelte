@@ -79,10 +79,10 @@ import PivotEditTable from "../PivotEditTable.svelte";
             //foundEntry = {...foundEntry};
             item.providerRequests = [...item.providerRequests];
         }else {
-            debugger;
+            
             let providerRequest_id = entry_data?.providerRequest;
             if(providerRequest_id == undefined) {
-                debugger;
+                
                 let row_index = parseInt(e.target.dataset?.rowIdx ?? '-1');
                 if(row_index != -1 && filtered_free_providers[row_index]) {
                     let providerRequest_id = filtered_free_providers[row_index].id;
@@ -95,7 +95,7 @@ import PivotEditTable from "../PivotEditTable.svelte";
                         providerRequest.quantity = parseInt(e.target.value);
                         item.providerRequests = [...item.providerRequests];
                     }else {
-                        debugger;
+                        
                         item.providerRequests.push({
                             id: null,
                             providerRequest: filtered_free_providers[row_index].id,
@@ -136,7 +136,7 @@ import PivotEditTable from "../PivotEditTable.svelte";
                 let b_val = sizes_dict[b].code;
                 return b_val.localeCompare(a_val);
             });
-            debugger;
+            
             return res;
         }}
         >

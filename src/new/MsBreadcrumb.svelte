@@ -49,7 +49,7 @@ import { get_topLevelCategories } from 'src/stores/sessionStorage/topLevelCatego
             }
             let album_slug= undefined;
             if($page.query.get('album')) {
-                debugger;
+                
                 page_info.top_albums.forEach(album => {
                     if(album.slug == $page.query.get('album')) {
                         debugger
@@ -64,7 +64,7 @@ import { get_topLevelCategories } from 'src/stores/sessionStorage/topLevelCatego
             }
 
             
-                debugger;
+                
                 if($page.query.get('product_id')) {
                     //let product = page_info
                     let url = BASE_MAIN_URL + '?top=' + top_category_slug + '&product_id=' + page_info.productInfo.id;

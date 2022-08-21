@@ -11,7 +11,7 @@ import { Spinner } from "sveltestrap";
     onMount(async ()=> {
         console.log("load ====> ", $page.params.slug);
         let response = await api_get_smartbee_doc($page.params.slug);
-        debugger;
+        
         console.log("response ====> ", response);
         data = response;
     })

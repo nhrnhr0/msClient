@@ -8,7 +8,7 @@ import { activeModalsStore } from "./../lib/modals/modalManager";
     modal_zIndex: -1,
     _is_modal_open: false,
     isModalOpen: ()=>{
-        debugger;
+        
         return _is_modal_open},
     closeModal: ()=>{
         _is_modal_open = false;

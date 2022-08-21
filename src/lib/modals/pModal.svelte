@@ -272,9 +272,9 @@ import SingleAmountModal from './singleAmountModal.svelte';
               mode: 'inside',
               
           });
-          debugger;
+          
           document.querySelectorAll('.magnifier-lens').forEach((lens)=> {
-            debugger;
+            
             lens.style.background = '#fff';
           });
           is_magnifier_loaded = true;

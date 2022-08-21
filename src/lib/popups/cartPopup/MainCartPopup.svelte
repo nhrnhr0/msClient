@@ -69,7 +69,7 @@ function cart_submit() {
 			isSending = true;
 			let response = submit_cart_form(data);
             response.then((data)=>{return data.json()}).then((data_json) => {
-                debugger;
+                
 				let cart_id = data_json["cart_id"];
 				let product_ids = data_json["product_ids"];
 				//flashy_purchase(cart_id, product_ids);

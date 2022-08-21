@@ -83,7 +83,7 @@ import ColorDisplay from '../components/ColorDisplay.svelte';
         if(cart_data) {
             old_entries = cart_data.mentries;
         }
-        debugger;
+        
         let new_entries = merge_and_sum_mentries(old_entries, product_data.mentries);
         console.log(new_entries);
         if($cartStore[product_key]) {

@@ -32,7 +32,7 @@ import { Spinner } from "sveltestrap";
         }
         if(new_providers.length > 0) {
             //update_or_create_request_quantity_local(idx, rowData, size_key, val)
-            debugger;
+            
             
             for(let i = 0; i < new_providers.length; i++) {
                 let idx = -1;

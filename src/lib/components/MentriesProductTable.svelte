@@ -162,7 +162,6 @@ import { browser } from "$app/env";
     }
     
     function fly_to_cart(el=undefined) {
-      debugger;
       let img = undefined;
       if (el) {
         img = el;
@@ -242,7 +241,6 @@ import { browser } from "$app/env";
             },
         ).finished.then(()=> {
             clone.remove();
-            debugger;
             // create boop animation
             cart.animate(
               [
@@ -306,7 +304,7 @@ import { browser } from "$app/env";
     //         }
     //     }
     //     entry[keys[keys.length - 1]] = {'quantity':val};
-    //     debugger;
+    //     
     // }
     onMount(async () => {
         // get all the sizes, colors, and varients
@@ -330,7 +328,7 @@ import { browser } from "$app/env";
     /* $: {
          productInfo;
          if(productInfo) {
-             debugger;
+             
              let color_ids = productInfo.colors;
              let varient_ids = productInfo.varients.map(v=>v.id);
              let size_ids = productInfo.sizes;
@@ -422,248 +420,248 @@ import { browser } from "$app/env";
         {#if productInfo.show_sizes_popup && mentries}
 
 
-        <table class="product-table">
-            <thead>
-              <tr>
-                <th class="sticky-col const-size-cell">צבע</th>
-                {#if productInfo.varients.length != 0}
-                  <th class="const-size-cell">מודל</th>
-                {/if}
-                {#each productInfo.sizes as size_id}
-                  <th class="size-header">{ALL_SIZES[size_id]?.size}</th>
-                {/each}
-                <th class="delete-cell-style">מחק</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each productInfo.colors as color, color_idx}
-                <!-- color: 84 -->
+          <table class="product-table">
+              <thead>
                 <tr>
-                  <td class="sticky-col">
-                    <div class="color-box" ><div class="inner" style="background-color: {ALL_COLORS[color].color}"></div>{ALL_COLORS[color].name}</div>
-                  </td>
+                  <th class="sticky-col const-size-cell">צבע</th>
                   {#if productInfo.varients.length != 0}
-                    <td>
-                      {#each productInfo.varients as varient }
-                      <div class="varient-box cls-cell">
-                        {varient.name}
-                      </div>
-                      {/each}
-                      
-                    </td>
+                    <th class="const-size-cell">מודל</th>
                   {/if}
-                  {#each productInfo.sizes as size}
-                    <td class="size-cell">
-                      
-                        {#if productInfo.varients.length == 0}
-                          <div class="cell-wraper">
-                            <input on:change="{input_amount_changed}" class="size-input cls-cell" style="border: 2px solid {ALL_COLORS[color].color}" data-color="{color}" data-size="{size}" type="number" placeholder="{ALL_SIZES[size].size}" bind:value="{mentries[color][size].quantity}" min="0" max="9999" >
-                          </div>
-                        {:else}
-                        
-                          {#each productInfo.varients as {id, name}, idx}
-                          <div class="cell-wraper">
-                            <input on:change="{input_amount_changed}" style="border: 2px solid {ALL_COLORS[color].color}" id="input_entery_{productInfo.id}_{size}_{color}_{id}"class="size-input cls-cell" type="number" placeholder="{ALL_SIZES[size].size} ({name})" bind:value="{mentries[color][size][id].quantity}" min="0" max="9999" >
-                          </div>
-                          {/each}
-                        
-                        {/if}
-                      
-                    </td>
-                    
+                  {#each productInfo.sizes as size_id}
+                    <th class="size-header">{ALL_SIZES[size_id]?.size}</th>
                   {/each}
-                  <td class="delete-cell-style">
-                    <button class="remove-button">
-                      <svg xmlns="http://www.w3.org/2000/svg" on:click={clear_sizes_entries(color)}  width="16px" height="16px" viewBox="0 0 32 36"><path fill="currentColor" d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"/></svg>
-                    </button>
-                  </td>
+                  <th class="delete-cell-style">מחק</th>
                 </tr>
-                
-              {/each}
-              
-              <!--
-              {#each Object.keys($cartStore[$cartStore[product_id].id].mentries) as color_entry}
-                <tr>
-                  <td class="sticky-col">
-                    <div class="color-box" ><div class="inner" style="background-color: {$colorsJsonStore[color_entry].color}"></div>{$colorsJsonStore[color_entry].name}</div>
-                  </td>
-                  {#each Object.keys($cartStore[product_id].mentries[color_entry]) as size_id}
-                    <td class="size-cell">
-                      <input class="size-input" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color_entry][size_id].quantity}" min="0" max="9999" >
+              </thead>
+              <tbody>
+                {#each productInfo.colors as color, color_idx}
+                  <!-- color: 84 -->
+                  <tr>
+                    <td class="sticky-col">
+                      <div class="color-box" ><div class="inner" style="background-color: {ALL_COLORS[color].color}"></div>{ALL_COLORS[color].name}</div>
                     </td>
-                  {/each}
-                  <td class="delete-cell-style">
-                    <button class="remove-button">
-                      <svg xmlns="http://www.w3.org/2000/svg" on:click={clear_sizes_entries(color_entry)}  width="16px" height="16px" viewBox="0 0 32 36"><path fill="currentColor" d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"/></svg>
-                    </button>
-                  </td>
-                </tr>
-              {/each}
-                -->
-
-
-
-
-
-              <tr>
-                <td class="total-cell">
-                  <div>
-                    סך הכל:
-                  </div>
-                </td>
-                {#if productInfo.varients.length != 0}
-                  <td class="total-cell">
-                    <div>-</div>
-                  </td>
-                {/if}
-
-                  <!--
-                    cartStore[$productData.id].mentries[color_id][size_id].quantity
-                  -->
-                  <!-- td with the calculated total quantity of each size in mentries -->
-                  
-                    <!-- {#each  Object.keys($cartStore[product_id].mentries[Object.keys($cartStore[product_id].mentries)[0]]) as size_id} -->
-                    {#each productInfo.sizes as size_id}
-                      <td class="total-cell" data-size-id="{size_id}">
-                        <div>
-                        <!-- calculate the sum of cartStore[$cartStore[product_id].id].mentries[X][size_id].quantity -->
-                        {#if  productInfo.varients.length == 0}
-                          { Object.keys(mentries).reduce((acc, curr) => {
-                            return acc + (mentries[curr][size_id].quantity || 0);
-                          }, 0)}
-                        {:else}
-                        { Object.keys(mentries).reduce((acc, curr) => {
-                          let sum = 0;
-                          for(let i = 0; i < productInfo.varients.length; i++){
-                            sum += (mentries[curr][size_id][productInfo.varients[i].id].quantity || 0);
-                          }
-                          return acc + sum;
-                        }, 0)}
-                        {/if}
+                    {#if productInfo.varients.length != 0}
+                      <td>
+                        {#each productInfo.varients as varient }
+                        <div class="varient-box cls-cell">
+                          {varient.name}
                         </div>
+                        {/each}
+                        
                       </td>
+                    {/if}
+                    {#each productInfo.sizes as size}
+                      <td class="size-cell">
+                        
+                          {#if productInfo.varients.length == 0}
+                            <div class="cell-wraper">
+                              <input on:change="{input_amount_changed}" class="size-input cls-cell" style="border: 2px solid {ALL_COLORS[color].color}" data-color="{color}" data-size="{size}" type="number" placeholder="{ALL_SIZES[size].size}" bind:value="{mentries[color][size].quantity}" min="0" max="9999" >
+                            </div>
+                          {:else}
+                          
+                            {#each productInfo.varients as {id, name}, idx}
+                            <div class="cell-wraper">
+                              <input on:change="{input_amount_changed}" style="border: 2px solid {ALL_COLORS[color].color}" id="input_entery_{productInfo.id}_{size}_{color}_{id}"class="size-input cls-cell" type="number" placeholder="{ALL_SIZES[size].size} ({name})" bind:value="{mentries[color][size][id].quantity}" min="0" max="9999" >
+                            </div>
+                            {/each}
+                          
+                          {/if}
+                        
+                      </td>
+                      
                     {/each}
-                    <td class="total-cell">
-                      <div>
-                        {amount || 0}
-                      </div>
+                    <td class="delete-cell-style">
+                      <button class="remove-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" on:click={clear_sizes_entries(color)}  width="16px" height="16px" viewBox="0 0 32 36"><path fill="currentColor" d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"/></svg>
+                      </button>
                     </td>
+                  </tr>
                   
+                {/each}
                 
                 <!--
-                  {#each Object.keys($productData.mentries[color_entry]) as size_id}
-                    
-                      {$productData.mentries[color_entry][size_id].quantity}
+                {#each Object.keys($cartStore[$cartStore[product_id].id].mentries) as color_entry}
+                  <tr>
+                    <td class="sticky-col">
+                      <div class="color-box" ><div class="inner" style="background-color: {$colorsJsonStore[color_entry].color}"></div>{$colorsJsonStore[color_entry].name}</div>
                     </td>
-                  {/each}
+                    {#each Object.keys($cartStore[product_id].mentries[color_entry]) as size_id}
+                      <td class="size-cell">
+                        <input class="size-input" type="number" placeholder="הזן כמות" bind:value="{$cartStore[product_id].mentries[color_entry][size_id].quantity}" min="0" max="9999" >
+                      </td>
+                    {/each}
+                    <td class="delete-cell-style">
+                      <button class="remove-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" on:click={clear_sizes_entries(color_entry)}  width="16px" height="16px" viewBox="0 0 32 36"><path fill="currentColor" d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"/></svg>
+                      </button>
+                    </td>
+                  </tr>
+                {/each}
                   -->
-              </tr>
-            </tbody>
-          </table>
-        <!--
-            <div class="my-table-responsive">
-                <h4 class="table-title">בבקשה בחר את הצבעים והמידות שברצוך להזמין:</h4>
-                <table class="my-table my-table-striped">
-                    <thead>
-                        <tr>
-                            <th colspan="{rows_keys.length}"></th>
-                            <th colspan="{colum_vals.length}">{colum_key}</th>
-                        </tr>
-                        <tr>
-                            {#each rows_keys as row_key, i}
-                                <th >{row_key.name}</th>
-                            {/each}
-                            {#each colum_vals as size_id}
-                                <th>{get_size_rep(size_id).size}</th>
-                            {/each}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {#each row_vals as row_val}
-                            <tr>
-                                {#each rows_keys as row_key,i}
-                                    <td class="sticky-col"  style="--right-idx: {i}">{
-                                        #if row_key.key === 'color_id'}
-                                            <ColorDisplay color={get_color_rep(row_val[row_key.key])} />
-                                        {:else}
-                                            {get_varient_rep(row_val[row_key.key]).name}
-                                        {/if}
-                                    </td>
-                                {/each}
-                                {#each colum_vals as size_id}
-                                    <td>
-                                        <input data-size={size_id} data-row-keys={JSON.stringify(rows_keys)} data-row-val={JSON.stringify(row_val)} data-row-vals={JSON.stringify(row_vals)} type="number" class="my-form-control" on:change="{sizes_colors_input_chenged}" />
-                                    </td>   
-                                {/each}
 
-                            </tr>
-                        {/each}
-                    </tbody>
-                </table>
-            </div>
-            -->
+
+
+
+
+                <tr>
+                  <td class="total-cell">
+                    <div>
+                      סך הכל:
+                    </div>
+                  </td>
+                  {#if productInfo.varients.length != 0}
+                    <td class="total-cell">
+                      <div>-</div>
+                    </td>
+                  {/if}
+
+                    <!--
+                      cartStore[$productData.id].mentries[color_id][size_id].quantity
+                    -->
+                    <!-- td with the calculated total quantity of each size in mentries -->
+                    
+                      <!-- {#each  Object.keys($cartStore[product_id].mentries[Object.keys($cartStore[product_id].mentries)[0]]) as size_id} -->
+                      {#each productInfo.sizes as size_id}
+                        <td class="total-cell" data-size-id="{size_id}">
+                          <div>
+                          <!-- calculate the sum of cartStore[$cartStore[product_id].id].mentries[X][size_id].quantity -->
+                          {#if  productInfo.varients.length == 0}
+                            { Object.keys(mentries).reduce((acc, curr) => {
+                              return acc + (mentries[curr][size_id].quantity || 0);
+                            }, 0)}
+                          {:else}
+                          { Object.keys(mentries).reduce((acc, curr) => {
+                            let sum = 0;
+                            for(let i = 0; i < productInfo.varients.length; i++){
+                              sum += (mentries[curr][size_id][productInfo.varients[i].id].quantity || 0);
+                            }
+                            return acc + sum;
+                          }, 0)}
+                          {/if}
+                          </div>
+                        </td>
+                      {/each}
+                      <td class="total-cell">
+                        <div>
+                          {amount || 0}
+                        </div>
+                      </td>
+                    
+                  
+                  <!--
+                    {#each Object.keys($productData.mentries[color_entry]) as size_id}
+                      
+                        {$productData.mentries[color_entry][size_id].quantity}
+                      </td>
+                    {/each}
+                    -->
+                </tr>
+              </tbody>
+            </table>
+          <!--
+              <div class="my-table-responsive">
+                  <h4 class="table-title">בבקשה בחר את הצבעים והמידות שברצוך להזמין:</h4>
+                  <table class="my-table my-table-striped">
+                      <thead>
+                          <tr>
+                              <th colspan="{rows_keys.length}"></th>
+                              <th colspan="{colum_vals.length}">{colum_key}</th>
+                          </tr>
+                          <tr>
+                              {#each rows_keys as row_key, i}
+                                  <th >{row_key.name}</th>
+                              {/each}
+                              {#each colum_vals as size_id}
+                                  <th>{get_size_rep(size_id).size}</th>
+                              {/each}
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {#each row_vals as row_val}
+                              <tr>
+                                  {#each rows_keys as row_key,i}
+                                      <td class="sticky-col"  style="--right-idx: {i}">{
+                                          #if row_key.key === 'color_id'}
+                                              <ColorDisplay color={get_color_rep(row_val[row_key.key])} />
+                                          {:else}
+                                              {get_varient_rep(row_val[row_key.key]).name}
+                                          {/if}
+                                      </td>
+                                  {/each}
+                                  {#each colum_vals as size_id}
+                                      <td>
+                                          <input data-size={size_id} data-row-keys={JSON.stringify(rows_keys)} data-row-val={JSON.stringify(row_val)} data-row-vals={JSON.stringify(row_vals)} type="number" class="my-form-control" on:change="{sizes_colors_input_chenged}" />
+                                      </td>   
+                                  {/each}
+
+                              </tr>
+                          {/each}
+                      </tbody>
+                  </table>
+              </div>
+              -->
         {:else}
             <!-- explain this product come as a package with this sides and color and you not not able select sizes, color, varients -->
             <div class="show_sizes_popup_false">
-            <h4>מוצר זה מגיע כחבילה ולא ניתן לפרק צבעים ומידות</h4>
-            {#if productInfo.colors.length > 1}
-                <div class="disclaimer">
-                    <h5>חבילה יכולה להכיל את הצבעים הבאים: 
-                        <div class="flex-list">
-                            {#each productInfo.colors as color_id}
-                                <div class="item">
-                                    <ColorDisplay hideName='{true}' width='{'auto'}' color={get_color_rep(color_id)} />
-                                </div>
-                            {/each}
-                        </div>
-                    </h5>
-                </div>
-            {/if}
-            {#if productInfo.varients.length > 1}
-                <div class="disclaimer">
-                    <h5>חבילה יכולה להכיל את המודלים הבאים:
-                        <div class="flex-list">
-                            {#each productInfo.varients as varient_id}
-                                <div class="item">
-                                    {get_varient_rep(varient_id).name}
-                                </div>
-                            {/each}
-                        </div>
-                    </h5>
-                </div>
-            {/if}
-            {#if productInfo.sizes.length > 1}
-                <div class="disclaimer">
-                        <h5>חבילה יכולה להכיל את המידות הבאות:
-                            <div class="flex-list">
-                                {#each productInfo.sizes as size_id}
-                                    <div class="item">
-                                        {get_size_rep(size_id).size}
-                                    </div>
-                                {/each}
-                            </div>
-                        </h5>
-                </div>
-            {/if}
+              <h4>מוצר זה מגיע כחבילה ולא ניתן לפרק צבעים ומידות</h4>
+              {#if productInfo.colors.length > 1}
+                  <div class="disclaimer">
+                      <h5>חבילה יכולה להכיל את הצבעים הבאים: 
+                          <div class="flex-list">
+                              {#each productInfo.colors as color_id}
+                                  <div class="item">
+                                      <ColorDisplay hideName='{true}' width='{'auto'}' color={get_color_rep(color_id)} />
+                                  </div>
+                              {/each}
+                          </div>
+                      </h5>
+                  </div>
+              {/if}
+              {#if productInfo.varients.length > 1}
+                  <div class="disclaimer">
+                      <h5>חבילה יכולה להכיל את המודלים הבאים:
+                          <div class="flex-list">
+                              {#each productInfo.varients as varient_id}
+                                  <div class="item">
+                                      {get_varient_rep(varient_id).name}
+                                  </div>
+                              {/each}
+                          </div>
+                      </h5>
+                  </div>
+              {/if}
+              {#if productInfo.sizes.length > 1}
+                  <div class="disclaimer">
+                          <h5>חבילה יכולה להכיל את המידות הבאות:
+                              <div class="flex-list">
+                                  {#each productInfo.sizes as size_id}
+                                      <div class="item">
+                                          {get_size_rep(size_id).size}
+                                      </div>
+                                  {/each}
+                              </div>
+                          </h5>
+                  </div>
+              {/if}
 
-            <div class="solo-form-input">
-                <label for="amount">כמות</label>
-                <input bind:value="{amount}" on:change="{input_amount_changed}" name="amount" type="number" class="my-form-control my-form-control-single" />
-                <div class="action-buttons">
-                    <button class="amount-btn btn" on:click="{()=> {
-                        amount = amount?amount + 6:6;
-                        input_amount_changed();
-                    }}">+6</button>
-                    <button class="amount-btn btn" on:click="{()=> {
-                        amount = amount?amount + 12:12;
-                        input_amount_changed();
-                    }}">+12</button>
-                    <button class="amount-btn btn" on:click="{()=> {
-                        amount = amount?amount + 24:24;
-                        input_amount_changed();
-                    }}">+24</button>
-                </div>
-            </div>
+              <div class="solo-form-input">
+                  <label for="amount">כמות</label>
+                  <input bind:value="{amount}" on:change="{input_amount_changed}" name="amount" type="number" class="my-form-control my-form-control-single" />
+                  <div class="action-buttons">
+                      <button class="amount-btn btn" on:click="{()=> {
+                          amount = amount?amount + 6:6;
+                          input_amount_changed();
+                      }}">+6</button>
+                      <button class="amount-btn btn" on:click="{()=> {
+                          amount = amount?amount + 12:12;
+                          input_amount_changed();
+                      }}">+12</button>
+                      <button class="amount-btn btn" on:click="{()=> {
+                          amount = amount?amount + 24:24;
+                          input_amount_changed();
+                      }}">+24</button>
+                  </div>
+              </div>
             </div>
         {/if} <!--{#if productInfo.show_sizes_popup}-->
     {:else} <!--{#if ALL_VARIENTS && ALL_COLORS && ALL_SIZES && productInfo}-->

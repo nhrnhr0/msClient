@@ -201,7 +201,7 @@
 				main_navbar_wraper.style = `width: calc(100vw - 315px - 15px);left: 0px;`
 				sidebar_top = 0;
 			} else {
-				//debugger;
+				//
 				//document.querySelector('#sidebar-cart').style = `top: 62px;`
 				sidebar_top = 62;
 			}

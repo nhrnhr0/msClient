@@ -61,7 +61,7 @@ onMount(async ()=> {
 function swiper_clicked(e) {
     console.log("swiper clicked");
     let el = e.detail[0][1].target.closest('.swiper-slide');
-    debugger;
+    
     let href = el.dataset.href;
     if (href){
         goto(href, { replace: true });

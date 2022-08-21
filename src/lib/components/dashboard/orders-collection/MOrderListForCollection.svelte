@@ -31,7 +31,6 @@ import { BASE_URL } from "src/api/consts";
             let url = BASE_URL + '/dashboard/orders-collection/smartbee/'+selected[0].id;
             let response = await fetch_wraper(url, {"method":"POST"});
             console.log(response)
-            debugger;
             if(response.success == 'success') {
                 goto('/dashboard/orders-collection/smartbee/'+response.data.result);
             }

@@ -66,7 +66,7 @@ import { goto } from "$app/navigation";
         if(e != undefined) {
             
             let barcode = e.barcode || '';
-            debugger;
+            
             inp_selected_ppn = e.id;
             let buy_price = e.buy_price;
             inp_product_form_cost = buy_price;
@@ -97,13 +97,13 @@ import { goto } from "$app/navigation";
         }
         sending_data_to_server = true;
         let result = save_enter_doc_edit_to_server(data);
-        debugger;
+        
         result.then((dat) => {
-            debugger;
+            
             set_load_info(dat);
             sending_data_to_server = false;
         }).catch((e) => {
-            debugger;
+            
             alert(e);
             sending_data_to_server = false;
         });
