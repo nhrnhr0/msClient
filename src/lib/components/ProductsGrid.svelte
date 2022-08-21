@@ -197,8 +197,8 @@ import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProduc
             max-height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
-            // height: calc(100vh - 215px);
-            // height: calc(var(--vh, 1vh) * 100 - 215px);
+            height: calc(100vh - 215px);
+            height: calc(var(--vh, 1vh) * 100 - 215px);
             margin-bottom: 92px;
             margin-left:15px;
             @media screen and (max-width: 768px) {

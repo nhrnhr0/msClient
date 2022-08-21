@@ -185,8 +185,8 @@ import PriceTag from "src/new/priceTag.svelte";
             max-height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
-            // height: calc(100vh - 215px);
-            // height: calc(var(--vh, 1vh) * 100 - 215px);
+            height: calc(100vh - 215px);
+            height: calc(var(--vh, 1vh) * 100 - 215px);
             @media screen and (max-width: 768px) {
                 margin-left: 5px;
             }

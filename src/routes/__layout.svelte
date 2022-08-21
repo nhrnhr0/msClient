@@ -91,12 +91,6 @@ import ProductPhotoPopup from "src/lib/popups/ProductPhotoPopup.svelte";
         height: -moz-available;
         height: fill-available;
         overflow: hidden;
-        #main_wraper {
-          height: 100vh;
-          height: -webkit-fill-available;
-          height: -moz-available;
-          height: fill-available;
-        }
       }
     }
     #main_wraper {
