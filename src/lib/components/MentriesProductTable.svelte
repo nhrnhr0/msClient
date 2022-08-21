@@ -972,6 +972,11 @@ import { browser } from "$app/env";
                         }
                     }
                 }
+                @media screen and (max-width: 768px) {
+                    h5 {
+                        flex-direction: column;
+                    }
+                }
                 
             }
         }
