@@ -64,7 +64,7 @@ function swiper_clicked(e) {
     debugger;
     let href = el.dataset.href;
     if (href){
-        goto(href,
+        goto(href, { replace: true });
     }
 }
 </script>
