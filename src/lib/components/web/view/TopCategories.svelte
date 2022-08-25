@@ -282,6 +282,8 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
                 justify-content: center;
                 align-items: center;
                 width:100%;
+                text-decoration: none;
+                color:black;
                 img {
                     width: 50px;
                     height: 50px;

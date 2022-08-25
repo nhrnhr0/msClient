@@ -139,6 +139,8 @@ import { browser } from "$app/env";
             justify-content:space-between;
 
             max-height:100%;
+            height: calc(100vh - 194px);
+            height: calc(var(--vh, 1vh) * 100 - 194px);
             .album {
                 display:flex;
                 flex-direction:column;

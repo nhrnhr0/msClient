@@ -208,6 +208,7 @@ import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProduc
             height: calc(var(--vh, 1vh) * 100 - 215px);
             margin-bottom: 92px;
             margin-left:15px;
+            
             @media screen and (max-width: 768px) {
                 margin-left:5px;
                 
@@ -218,6 +219,8 @@ import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProduc
                 display: flex;
                 flex:1 0 0;
                 flex-direction: column;
+                text-decoration: none;
+                
                 & .product-image {
                     background: radial-gradient(circle,white 0%,white 32%,#c7c7c7 84%);
                     //background: radial-gradient(circle, #f9f295b5 0%, #f9f295ba 32%, #e0aa3eb8 84%);

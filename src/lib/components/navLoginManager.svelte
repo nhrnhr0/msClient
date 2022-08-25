@@ -27,9 +27,8 @@
     <div class="text">
         {#if !$userInfoStore.isLogin}
             התחבר
-        {/if}
-        {#if $userInfoStore.isLogin}
-            שלום {$userInfoStore.me.businessName}
+        {:else}
+            אני
         {/if}
     </div>
 <button class="btn login-btn" on:click={login_btn_click}>
@@ -85,8 +84,10 @@
             left: 0;
             right: 0;
             z-index: 1;
-            transform: translate(25%, -45%);
-            @media screen and (max-width: 765px) {
+            width:100%;
+            left:50%;
+            transform: translate(0%, -45%);
+            @media screen and (max-width: 824px) {
                 display: none;
             }
         }

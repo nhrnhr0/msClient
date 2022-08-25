@@ -65,10 +65,10 @@ import { get_topLevelCategories } from "src/stores/sessionStorage/topLevelCatego
     </div>
 {/if}
 <NewProductsSwiper />
-<MainPageAlbums main_albums={main_albums} />
 <CallToActionForm />
 <PersonalCampaigns />
 <About />
+<MainPageAlbums main_albums={main_albums} />
 <ContentForm />
 
 <footer id="footer">

@@ -351,13 +351,19 @@ import PriceTag from "src/new/priceTag.svelte";
                     display: flex;
                     flex-wrap: wrap;
                     justify-content: center;
+                    // display: grid;
+                    // // grid-template-columns: repeat(9,auto);
+                    // grid-template-columns: repeat(6, 1fr);
                     padding-bottom: 150px;
-
+                    height: 338px;
+                    overflow: hidden;
                     & .product-item  {
                         margin: 5px;
-                        width: 100%;
+                        //width: 100%;
+                        width: 110px;
+                        //flex-grow: 1;
                         position: relative;
-                        max-width: 150px;
+                        //max-width: 150px;
                         box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.5);
                         margin-left: 5px;
                         margin-right: 5px;

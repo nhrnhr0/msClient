@@ -45,13 +45,13 @@ import ProductPhotoPopup from "src/lib/popups/ProductPhotoPopup.svelte";
         }
     });
     
-    $: {
+    /*$: {
       if(browser && $page.path == '/main' || $page.path == '/main/') {
-        window.document.documentElement.classList.add('const-size-page');
+        //window.document.documentElement.classList.add('const-size-page');
       }else if(browser){
         window.document.documentElement.classList.remove('const-size-page');
       }
-    }
+    }*/
     /*
     $: {
       if (browser){
@@ -80,6 +80,9 @@ import ProductPhotoPopup from "src/lib/popups/ProductPhotoPopup.svelte";
       <slot />
   </div>
   <style lang="scss">
+    /* {
+      outline: 1px solid red;
+    }
     :global(html.const-size-page) {
       // height: 100vh;
       // height: fill-available;
@@ -92,7 +95,7 @@ import ProductPhotoPopup from "src/lib/popups/ProductPhotoPopup.svelte";
         height: fill-available;
         overflow: hidden;
       }
-    }
+    }*/
     #main_wraper {
       /*height: auto;
       &.const-page-size {
