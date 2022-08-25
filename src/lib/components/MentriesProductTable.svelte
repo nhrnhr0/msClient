@@ -998,7 +998,7 @@ import { browser } from "$app/env";
                         transition: ease-in-out .2s;
                     }
 
-                    @media screen and (max-width: 600px) {
+                    @media screen and (max-width: 750px) {
                       .amount-btn {
                         width: 90px;
                         height: 60px;
@@ -1006,7 +1006,7 @@ import { browser } from "$app/env";
                         margin: 5px 10px;
                       }
                     }
-                    @media screen and (max-width:300px) {
+                    @media screen and (max-width:550px) {
                       .amount-btn {
                         width:75px;
                         height: 50px;
