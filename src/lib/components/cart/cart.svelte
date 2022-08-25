@@ -58,6 +58,9 @@ import { cartPopupStore } from 'src/stores/popups/cartPopupStore';
             right: 0;
             z-index: 1;
             transform: translate(25%, -25%);
+            @media screen and (max-width: 765px) {
+                display: none;
+            }
         }
     #cart-btn {
         position: relative;

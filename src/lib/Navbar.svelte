@@ -144,7 +144,12 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
         <a class="navbar-logo" href="/" aria-label="logo" role="button" tabindex="0">
             <img class="nav-logo" height="32px" width="auto"
                 src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1634457672/msAssets/favicon_rza3n9"
-                alt="">
+                title="דף הבית"
+                alt="דף הבית">
+            <img class="nav-logo-sm" height="32px" width="32px"
+                src="https://res.cloudinary.com/ms-global/image/upload/v1661424264/msAssets/icons8-home-50_fnrnhf"
+                title="דף הבית"
+                alt="דף הבית">
         </a>
         <!--
         <Dropdown id="navCategoryList" class="main-category-menu">
@@ -301,6 +306,9 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
             right: 0;
             z-index: 1;
             transform: translate(0%, -20%);
+            @media screen and (max-width: 765px) {
+                display: none;
+            }
         }
     }
     /*@keyframes pop-animation {
@@ -620,6 +628,11 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
         width:100%;
         .container-fluid {
             flex-wrap: nowrap;
+            @media screen and (max-width:350px) {
+                padding-right: 2px;
+                padding-left: 2px;
+                
+            }
         }
         
         @include bg-gradient();
@@ -627,19 +640,26 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
         top: 0;
         z-index: 10;
 
-        .nav-logo {
-            //width: auto;
-            //height: 40px;
-            @media screen and (max-width: 800px) {
-                display: none;
-            }
+        
+        .nav-logo-sm {
+            display: none;
         }
 
+        @media screen and (max-width: 800px) {
+            .nav-logo {
+                display: none;
+            }
+            .nav-logo-sm {
+                display: block;
+            }
+        }
         #search_form {
             flex-basis: 50%;
             z-index: 99999;
             :global(.autocomplete) {
-                min-width: 83px;
+                min-width: 63px;
+                flex-shrink: 1;
+                flex-grow: 0;
                 width: 100%;
                 flex: 1;
                 :global(.autocomplete-list) {

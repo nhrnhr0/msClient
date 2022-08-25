@@ -17,6 +17,9 @@ import {
 import { CLOUDINARY_URL } from "src/api/consts";
 import { goto } from "$app/navigation";
 
+import {
+        dictCartStore
+    } from "src/stores/cartStore";
 import {get_catalog_album_by_id} from "src/stores/dexie/catalogAlbums";
 import { Spinner } from "sveltestrap";
 import { find_or_get_slim_product_by_id, slimProductsStore } from "src/stores/sessionStorage/slimProducts";
@@ -145,18 +148,17 @@ import { productPhotoPopupStore } from "src/stores/popups/productPhotoPopupStore
                           </div>
 
 
-                          
-                          {#if $slimProductsStore[key]}
-                              <EditAmountBtn url={`/main?product_id=${key}&album=${$slimProductsStore[key].main_public_album__slug}&top=${$slimProductsStore[key].main_public_album_top__slug}`} />
+                          {#if $dictCartStore[key].link}
+                            <EditAmountBtn url={$dictCartStore[key].link}/>
                           {:else}
-                            {#await calc_product_url(key)}
-                              <Spinner />
-                            {:then url} 
-                              <EditAmountBtn url={url} />
-                            {:catch e}
-                              error {e}
-                            {/await}
-                          {/if}
+                              {#await calc_product_url(key)}
+                                <Spinner />
+                              {:then url} 
+                                <EditAmountBtn url={url} />
+                              {:catch e}
+                                error {e}
+                              {/await}
+                            {/if}
                       </div>
                     </div></span
                   >
@@ -201,9 +203,9 @@ import { productPhotoPopupStore } from "src/stores/popups/productPhotoPopupStore
             >
               לקופה
             </button>
-            <button class="copy-button" title="העתק">
+            <!--<button class="copy-button" title="העתק">
               <img width="25px" height="25px" src="https://res.cloudinary.com/ms-global/image/upload/v1655639299/msAssets/copy-two-paper-sheets-interface-symbol_wldmek.png" alt="copy" />
-            </button>
+            </button>-->
         </div>
       </main>
     </aside>
@@ -313,7 +315,7 @@ button.close-button {
     height: calc(100vh - calc(100vh - 100%));
     height: calc(100vh - (100vh - 100% + 62px));
     //z-index: 997;
-    z-index: 2;
+    z-index: 20;
     top: 0;
     //right: -340px;
     box-shadow: -10px 0 15px rgba(0, 0, 0, 0.1);

@@ -160,6 +160,12 @@ function onFileSelected(e) {
                             }
 
                         }
+                        .input-file {
+                            max-width: 80%;
+                            @media screen and (max-width: 300px) {
+                                max-width: 60%;
+                            }
+                        }
                     }
                 }
             }

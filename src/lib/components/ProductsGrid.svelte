@@ -92,12 +92,20 @@ import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProduc
     function product_clicked(e) {
         let el = e.currentTarget;
         let id = el.dataset.productId;
+        debugger;
         console.log('product_clicked',id);
         let new_query = new URLSearchParams($page.query);
         new_query.set('product_id', id);
         let new_url = $page.path + '?' + new_query.toString();
         //$page.query('product', id);
         goto(new_url);
+    }
+
+    function get_product_url(p) {
+        let new_query = new URLSearchParams($page.query);
+        new_query.set('product_id', p.id);
+        let new_url = $page.path + '?' + new_query.toString();
+        return new_url;
     }
     let product_wraper_clientWidth;
     /*$: {
@@ -116,27 +124,26 @@ import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProduc
                 </div>
             {/if}
             {#each my_products as product}
-                
-                <div class="product" data-product-id={product.id} on:click="{product_clicked}">
-                    <div class="product-image">
-                        {#if $dictCartStore[product.id]}
-                            <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>
-                        {/if}
-                        <img src={CLOUDINARY_URL + product.cimage} alt="{product.title}" />
-                        <PriceTag price={product.price} new_price={product.new_price} top={'4px'} left={'4px'} font_size={'0.8em'} />
+                <a href="{get_product_url(product)}" class="product" data-product-id={product.id}>
+                        <div class="product-image">
+                            {#if $dictCartStore[product.id]}
+                                <div class="ribbon ribbon-top-right"><span>המוצר בסל</span></div>
+                            {/if}
+                            <img src={CLOUDINARY_URL + product.cimage} alt="{product.title}" />
+                            <PriceTag price={product.price} new_price={product.new_price} top={'4px'} left={'4px'} font_size={'0.8em'} />
 
-                    </div>
-                    <div class="product-info">
-                        <div class="product-title">
-                            {product.title}
                         </div>
-                        <!-- {#if product.price != 0}
-                            <div class="product-price">
-                                {product.price} ₪
+                        <div class="product-info">
+                            <div class="product-title">
+                                {product.title}
                             </div>
-                        {/if} -->
-                    </div>
-                </div>
+                            <!-- {#if product.price != 0}
+                                <div class="product-price">
+                                    {product.price} ₪
+                                </div>
+                            {/if} -->
+                        </div>
+                </a>
             {/each}
             {#if bottom_loading}
                 <h2 class="loading-title"><Spinner /></h2>

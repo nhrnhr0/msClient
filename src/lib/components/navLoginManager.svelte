@@ -80,12 +80,15 @@
             color: black;
             text-align: center;
             position: absolute;
-            bottom: 100%;
+            top: 100%;
             width: max-content;
             left: 0;
             right: 0;
             z-index: 1;
-            transform: translate(25%, 45%);
+            transform: translate(25%, -45%);
+            @media screen and (max-width: 765px) {
+                display: none;
+            }
         }
     }
     

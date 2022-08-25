@@ -173,7 +173,8 @@ import { ScrollSnapSlider  } from 'scroll-snap-slider'
                 flex:1;
                 width:100%;
                 text-align: center;
-                margin-right: 50px;
+                margin-right: auto;
+                overflow: hidden;
             }
             @media screen and (max-width: 768px) {
                 .title {

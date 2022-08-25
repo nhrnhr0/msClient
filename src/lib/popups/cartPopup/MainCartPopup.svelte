@@ -170,10 +170,8 @@ class="modal active"
                             alt={item.title}
                           />
                         </div>
-                        <div class="product-title">
-                          <a
-                            href="#">{item.title}</a
-                          >
+                        <div class="product-title">{item.title}
+                          
                         </div>
                       </div>
                     </td>
@@ -411,6 +409,7 @@ class="modal active"
     }
     .modal-body {
       .cart-form {
+        overflow-x: auto;
         .form-group {
           display: flex;
           flex-direction: row;
