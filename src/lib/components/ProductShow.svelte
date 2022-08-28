@@ -16,7 +16,8 @@ import MentriesProductTable from "./MentriesProductTable.svelte";
     import {flip} from 'svelte/animate';
 import { dictCartStore } from "src/stores/cartStore";
 import PriceTag from "src/new/priceTag.svelte";
-	
+import BigImagePopup from "../popups/bigImagePopup.svelte";
+import {send, receive} from './../popups/bigImagePopup';
     export let product_id = undefined;
     //export let slimData = undefined;
     export let productInfo = undefined;
@@ -24,6 +25,7 @@ import PriceTag from "src/new/priceTag.svelte";
     const product_regex = /product_id=\d+/gm;
     let similarProducts = undefined;
     let top_info_w;
+    let big_image_selected = false;
     
     /*$: {
         product_id,
@@ -51,9 +53,16 @@ import PriceTag from "src/new/priceTag.svelte";
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Flow+Block&display=swap" rel="stylesheet">
 </svelte:head>
+    <BigImagePopup 
+    image_url={CLOUDINARY_URL + productInfo?.cimage}
+    bind:big_image_selected={big_image_selected}
+    key={productInfo?.id}
+    
+    />
     <div class="product-page-wraper">
         <div class="product-show-wrapper-grid" class:loading={loading}>
             <div class="top-info" bind:clientWidth={top_info_w} class:flex-col={top_info_w < 700}>
+                
                 <div class="product-image">
                     <!--class:bigger-height={product_image_clientHeight > product_image_clientWidth} bind:clientHeight="{product_image_clientHeight}" bind:clientWidth="{product_image_clientWidth}"-->
                     {#if productInfo}
@@ -63,7 +72,7 @@ import PriceTag from "src/new/priceTag.svelte";
                     <!--{#if $cartStore[slimData.id]}
                             <div class="stamp animate"></div>
                         {/if}-->
-                        <img src={CLOUDINARY_URL + productInfo?.cimage} alt="{productInfo?.title}" />
+                        <img src={CLOUDINARY_URL + productInfo?.cimage} alt="{productInfo?.title}" on:click="{()=>{big_image_selected = true;}}" />
                         <PriceTag price={productInfo?.price} new_price={productInfo?.new_price} />
                         <!-- {#if slimData.new_price || slimData.price}
                             <div class="product-price">
@@ -73,7 +82,17 @@ import PriceTag from "src/new/priceTag.svelte";
                     {:else}
                         <img src="https://via.placeholder.com/300x300" alt=""/>
                     {/if}
+
+                    {#if big_image_selected == false}
+                    <div class="product-image-2"
+                    
+                    in:receive={{key:productInfo?.id}}
+                    out:send={{key:productInfo?.id}}>
+                        <img src={CLOUDINARY_URL + productInfo?.cimage} alt="{productInfo?.title}" on:click="{()=>{big_image_selected = true;}}" />
+                    </div>
+                {/if}
                 </div>
+                
                 <div class="slim-info">
                     <div class="info-wraper">
                         {#if productInfo}
@@ -258,6 +277,7 @@ import PriceTag from "src/new/priceTag.svelte";
                 }
                 .product-image {
                     flex:1;
+                    cursor: pointer;
                     max-height: 40vh;
                     background: radial-gradient(circle, white 0%, white 32%, #c7c7c7 84%);
                     // background: radial-gradient(circle, #f9f295b5 0%, #f9f295ba 32%, #e0aa3eb8 84%);
@@ -315,6 +335,20 @@ import PriceTag from "src/new/priceTag.svelte";
                         img {
                             object-fit: cover;
                         }
+                    }
+
+                    .product-image-2 {
+                        position: absolute;
+                        top: 0px;
+                        background: radial-gradient(circle, white 0%, white 32%, #c7c7c7 84%);
+                        /* left: 0px; */
+                        /* right: 0px; */
+                        /* bottom: 0px; */
+                        /* margin: 15px; */
+                        /* margin-top: 0px; */
+                        max-height: 40vh;
+                        z-index: -11;
+
                     }
                 }
             }
