@@ -348,25 +348,35 @@ import PriceTag from "src/new/priceTag.svelte";
                 .similer-products-list {
                     background: radial-gradient(circle, rgba(255, 255, 255, 0.199) 0%, rgba(255, 255, 255, 0.199) 100%);
                     //box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: center;
-                    // display: grid;
-                    // // grid-template-columns: repeat(9,auto);
-                    // grid-template-columns: repeat(6, 1fr);
-                    padding-bottom: 150px;
-                    height: 338px;
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(114px, 1fr));
+                    grid-template-rows: auto auto;
+                    grid-auto-rows: 0px;
+                    position: relative;
                     overflow: hidden;
+                    
+                    // grid-template-columns: repeat(6, 1fr);
+                    margin-bottom: 25px;
+                    height: auto;
+                    overflow: hidden;
+                    //justify-items: center;
+                    //align-items: center;
+                    //border:1px solid blue;
+                    @media screen and (max-width:512px) {
+                        grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
+                    }
                     & .product-item  {
+                        
                         margin: 5px;
                         //width: 100%;
-                        width: 110px;
+                        //width: 110px;
+                        width: clamp(64px, 95%, 130px);
                         //flex-grow: 1;
                         position: relative;
                         //max-width: 150px;
                         box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.5);
-                        margin-left: 5px;
-                        margin-right: 5px;
+                        margin-left: 3px;
+                        margin-right: 3px;
                         background: radial-gradient(circle, rgba(255, 255, 255, 0.199) 0%, rgba(255, 255, 255, 0.199) 100%);
                         transition: all 0.1s ease-in-out;
                         &:hover {
@@ -409,7 +419,15 @@ import PriceTag from "src/new/priceTag.svelte";
     
     
     @media screen and (max-width:600px) {
+        .similer-products {
+            .similer-products-list {
+                //grid-template-columns: repeat(auto-fit, minmax(74px, 1fr));
+                & .product-item {
+                }
+            }
+        }
         .product-show-wrapper-grid .top-info {
+
             .product-image {
                 margin-left: 0px;
                 margin-right: 0px;
