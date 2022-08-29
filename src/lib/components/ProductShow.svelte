@@ -18,6 +18,8 @@ import { dictCartStore } from "src/stores/cartStore";
 import PriceTag from "src/new/priceTag.svelte";
 import BigImagePopup from "../popups/bigImagePopup.svelte";
 import {send, receive} from './../popups/bigImagePopup';
+import { userInfoStore } from "src/stores/stores";
+import { edit_cart_price_promp } from "../utils/utils";
     export let product_id = undefined;
     //export let slimData = undefined;
     export let productInfo = undefined;
@@ -117,7 +119,16 @@ import {send, receive} from './../popups/bigImagePopup';
                             <div class="product-title">
                                 <h2>
                                     {productInfo?.title}
+                                    {#if $userInfoStore.isLogin && $userInfoStore.me.is_superuser && $dictCartStore[productInfo.id]}
+                                    <span class="price-edit"
+                                    on:click={edit_cart_price_promp(productInfo.id)}>
+                                        מחיר בסל:
+                                        {$dictCartStore[productInfo.id].price}
+                                        ש"ח
+                                    </span>
+                                {/if}
                                 </h2>
+
                             </div>
                             <div class="product-description">
                                 {#if productInfo?.description}
@@ -282,9 +293,6 @@ import {send, receive} from './../popups/bigImagePopup';
                     .info-wraper {
                         max-height: 100%;
                         overflow-y: auto;
-                        .product-title {
-                            
-                        }
                         .product-packing-types {
                             display: flex;
                             flex-direction: row;
@@ -305,6 +313,17 @@ import {send, receive} from './../popups/bigImagePopup';
                                     }*/
                             }
                             
+                        }
+                    }
+                }
+                .product-title {
+                    h2 {
+                        .price-edit {
+                            cursor: alias;
+                            font-size: 16px;
+                            background-color: #c7c7c7;
+                            padding:7px;
+                            border-radius: 25px;
                         }
                     }
                 }
@@ -513,6 +532,7 @@ import {send, receive} from './../popups/bigImagePopup';
                 justify-content: center;
                 .product-title {
                     text-align: center;
+                    
                 }
                 .product-price {
                     text-align: center;

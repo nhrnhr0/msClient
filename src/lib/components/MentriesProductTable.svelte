@@ -94,9 +94,18 @@ import { browser } from "$app/env";
     }
     
 
-    
+    function input_amount_input(e) {
+      if(e) {
+        let target_input = e.target;
+        let val = target_input.value;
+        if(val <= 0) {
+          target_input.value = undefined;
+        }
+      }
+    }
 
     function input_amount_changed(e)  {
+
         calc_amount();
         if(amount == 0 || amount == undefined) {
                 //delete $cartStore[productInfo.id];
@@ -397,6 +406,19 @@ import { browser } from "$app/env";
     function get_varient_rep(varient_id) {
         return ALL_VARIENTS[varient_id]
     }
+
+    function input_field_focous(e) {
+      let input = e.target;
+      const end = input.value.length;
+      if(end != 0) {
+        console.log(e);
+        console.log(e.target);
+        console.log(e.currentTarget);
+        input.type="text";
+        input.setSelectionRange(end, end);
+        input.type="number";
+      }
+    }
 </script>
 <div class="wraper">
     <!-- mentries gos here <br>
@@ -460,14 +482,17 @@ import { browser } from "$app/env";
                       <td class="size-cell">
                         
                           {#if productInfo.varients.length == 0}
+                          <!--   -->
                             <div class="cell-wraper">
-                              <input on:change="{input_amount_changed}" class="size-input cls-cell" style="border: 2px solid {ALL_COLORS[color].color}" data-color="{color}" data-size="{size}" type="number" placeholder="{ALL_SIZES[size].size}" bind:value="{mentries[color][size].quantity}" min="0" max="9999" >
+                              <input on:input={input_amount_input} on:focus="{input_field_focous}" on:change="{input_amount_changed}" class="size-input cls-cell" style="border: 2px solid {ALL_COLORS[color].color}" data-color="{color}" data-size="{size}" type="number" placeholder="{ALL_SIZES[size].size}" bind:value="{mentries[color][size].quantity}" min="0" max="9999" >
                             </div>
                           {:else}
                           
                             {#each productInfo.varients as {id, name}, idx}
+                            
+                            <!--   -->
                             <div class="cell-wraper">
-                              <input on:change="{input_amount_changed}" style="border: 2px solid {ALL_COLORS[color].color}" id="input_entery_{productInfo.id}_{size}_{color}_{id}"class="size-input cls-cell" type="number" placeholder="{name}" bind:value="{mentries[color][size][id].quantity}" min="0" max="9999" >
+                              <input on:input={input_amount_input} on:focus="{input_field_focous}" on:change="{input_amount_changed}" style="border: 2px solid {ALL_COLORS[color].color}" id="input_entery_{productInfo.id}_{size}_{color}_{id}"class="size-input cls-cell" type="number" placeholder="{name}" bind:value="{mentries[color][size][id].quantity}" min="0" max="9999" >
                             </div>
                             {/each}
                           
@@ -652,7 +677,7 @@ import { browser } from "$app/env";
 
               <div class="solo-form-input">
                   <label for="amount">כמות</label>
-                  <input bind:value="{amount}" on:change="{input_amount_changed}" name="amount" type="number" class="my-form-control my-form-control-single" />
+                  <input on:input={input_amount_input} on:focus="{input_field_focous}" bind:value="{amount}" on:change="{input_amount_changed}" name="amount" type="number" class="my-form-control my-form-control-single" />
                   <div class="action-buttons">
                       <button class="amount-btn btn" on:click="{()=> {
                           amount = amount?amount + 6:6;
@@ -678,6 +703,10 @@ import { browser } from "$app/env";
 </div>
 
 <style lang="scss">
+//   input[type=number]::-webkit-inner-spin-button, 
+// input[type=number]::-webkit-outer-spin-button {
+//   opacity: 1;
+// }
   .btn-danger {
     padding: 0.20rem 0.4rem;
     margin:auto;
@@ -758,6 +787,7 @@ import { browser } from "$app/env";
                   }
                   input.size-input {
                     font-size: 12px;
+                    //direction: ltr;
                     
                     font-weight: 700;
                     &:not(:placeholder-shown) {
@@ -857,11 +887,13 @@ import { browser } from "$app/env";
               h4 {
                 text-align: center;
               }
-              .solo-form-input {
-                input.my-form-control-single {
-                  width:60%;
-                }
-              }
+              // .solo-form-input {
+              //   input.my-form-control-single {
+              //     width:60%;
+              //     text-align: center;
+              //     direction: ltr;
+              //   }
+              // }
               
             }
         }
@@ -980,6 +1012,8 @@ import { browser } from "$app/env";
                 .my-form-control-single {
                     width: 275px;
                     line-height: 2;
+                    text-align: center;
+                  // direction: ltr;
                 }
                 .action-buttons {
                     margin-top: 15px;

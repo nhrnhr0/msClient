@@ -25,6 +25,7 @@ import { Spinner } from "sveltestrap";
 import { find_or_get_slim_product_by_id, slimProductsStore } from "src/stores/sessionStorage/slimProducts";
 import EditAmountBtn from "./editAmountBtn.svelte";
 import { productPhotoPopupStore } from "src/stores/popups/productPhotoPopupStore";
+import { edit_cart_price_promp } from "src/lib/utils/utils";
 
     let sidebar_top = 62;
     async function calc_product_url(product_id) {
@@ -135,9 +136,9 @@ import { productPhotoPopupStore } from "src/stores/popups/productPhotoPopupStore
                           </div>
                         </div>
                         
-                          <div
+                          <div  
                             class="table-row"
-                            on:click={(e) => price_cell_click(e, key)}
+                            on:click="{()=>{edit_cart_price_promp(cartProduct.id)}}"
                           >
                             <div class="table-cell table-cell-title">
                               :'מחיר ליח
@@ -145,7 +146,7 @@ import { productPhotoPopupStore } from "src/stores/popups/productPhotoPopupStore
                             <div class="table-cell">
                               <span class="">{cartStore.getProduct(key).price}₪</span>
                             </div>
-                          </div>
+                          </div  >
 
 
                           {#if $dictCartStore[key].link}
@@ -474,6 +475,7 @@ button.close-button {
                       text-align: center;
                       width: 100%;
                       font-weight: 500;
+                      cursor: pointer;
                     }
                   }
                 }

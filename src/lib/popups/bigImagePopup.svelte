@@ -64,6 +64,9 @@
                     max-height: 95vh;
                     object-fit: contain;
                     background: radial-gradient(circle, white 0%, white 32%, #c7c7c7 84%);
+                    border-radius: 25px;
+                    box-shadow: 0px 0px 10px rgb(0 0 0 / 50%);
+                    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
                 }
                 //width: 80%;
                 
