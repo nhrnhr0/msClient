@@ -6,7 +6,7 @@ import { CLOUDINARY_URL } from "src/api/consts";
 import { get_similar_products } from "src/network/get_similar_products";
 
 import { query } from "src/stores/queryStore";
-import { onMount } from "svelte";
+import { onMount,onDestroy } from "svelte";
 import SvelteMarkdown from "svelte-markdown";
 import { fly } from 'svelte/transition';
 import { Spinner } from "sveltestrap";
@@ -26,6 +26,7 @@ import {send, receive} from './../popups/bigImagePopup';
     let similarProducts = undefined;
     let top_info_w;
     let big_image_selected = false;
+    let done_loading = false;
     
     /*$: {
         product_id,
@@ -33,18 +34,35 @@ import {send, receive} from './../popups/bigImagePopup';
         
         
     }*/
-    onMount(async ()=> {
-        if(product_id && browser) {
+    $: {
+        if(product_id == productInfo?.id && browser) {
             console.log('get similar products');
             
             get_similar_products(product_id).then(data => {
                 similarProducts = data;
-                let el = document.querySelector('.similer-products');
+                /*let el = document.querySelector('.similer-products');
                 if (el) {
                     el.scrollTop = 0;
-                }
+                }*/
+                
             });
+            let el = document.querySelector('.product-page-wraper');
+            if(el) {
+                el.scrollTop = 0;
+            }
+            done_loading = true;
         }
+        else {
+            done_loading = false;
+        }
+        
+    }
+    onMount(async ()=> {
+        
+    })
+
+    onDestroy(()=> {
+        done_loading = false;
     })
     
 </script>
@@ -59,11 +77,10 @@ import {send, receive} from './../popups/bigImagePopup';
     key={productInfo?.id}
     
     />
-    <div class="product-page-wraper">
-        <div class="product-show-wrapper-grid" class:loading={loading}>
+    <div class="product-page-wraper" class:loading={!done_loading}>
+        <div class="product-show-wrapper-grid" >
             <div class="top-info" bind:clientWidth={top_info_w} class:flex-col={top_info_w < 700}>
-                
-                <div class="product-image">
+                <div class="product-image" class:can-make-big={done_loading}>
                     <!--class:bigger-height={product_image_clientHeight > product_image_clientWidth} bind:clientHeight="{product_image_clientHeight}" bind:clientWidth="{product_image_clientWidth}"-->
                     {#if productInfo}
                     {#if $dictCartStore[productInfo.id]}
@@ -82,15 +99,16 @@ import {send, receive} from './../popups/bigImagePopup';
                     {:else}
                         <img src="https://via.placeholder.com/300x300" alt=""/>
                     {/if}
-
-                    {#if big_image_selected == false}
-                    <div class="product-image-2"
-                    
-                    in:receive={{key:productInfo?.id}}
-                    out:send={{key:productInfo?.id}}>
-                        <img src={CLOUDINARY_URL + productInfo?.cimage} alt="{productInfo?.title}" on:click="{()=>{big_image_selected = true;}}" />
-                    </div>
-                {/if}
+                    {#if done_loading}
+                        {#if big_image_selected == false}
+                            <div class="product-image-2"
+                            
+                            in:receive={{key:productInfo?.id}}
+                            out:send={{key:productInfo?.id}}>
+                                <img src={CLOUDINARY_URL + productInfo?.cimage} alt="{productInfo?.title}" on:click="{()=>{big_image_selected = true;}}" />
+                            </div>
+                        {/if}
+                    {/if}
                 </div>
                 
                 <div class="slim-info">
@@ -102,7 +120,9 @@ import {send, receive} from './../popups/bigImagePopup';
                                 </h2>
                             </div>
                             <div class="product-description">
-                                <SvelteMarkdown source={productInfo?.description} />
+                                {#if productInfo?.description}
+                                    <SvelteMarkdown source={productInfo?.description} />
+                                {/if}
                             </div>
 
                             <div class="product-packing-types">
@@ -196,7 +216,20 @@ import {send, receive} from './../popups/bigImagePopup';
                 direction: rtl;
             }
             &.loading {
-                font-family: 'Flow Block', cursive;
+                position: relative;
+                //font-family: 'Flow Block', cursive;
+                &:before {
+                    content:" ";
+                    position:absolute;
+                    top:0px;
+                    left:0px;
+                    bottom: 0px;
+                    right: 0px;
+                    height: 200%;
+                    background-color:rgba(53, 44, 44, 0.719);
+                    transition:width 0.3s ease-out;
+                    z-index: 999;
+                }
             }
             width: 100%;
             background-color: #f5f5f565;
@@ -297,6 +330,9 @@ import {send, receive} from './../popups/bigImagePopup';
                     margin-right: 15px;
                     border-radius: 15px;
                     display: flex;
+                    &.can-make-big {
+                        cursor: pointer;
+                    }
                     .product-price {
                         /*position: absolute;
                         bottom: 5%;

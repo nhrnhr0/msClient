@@ -627,9 +627,9 @@ import { browser } from "$app/env";
                   <div class="disclaimer">
                       <h5>חבילה יכולה להכיל את המודלים הבאים:
                           <div class="flex-list">
-                              {#each productInfo.varients as varient_id}
+                              {#each productInfo.varients as varient}
                                   <div class="item">
-                                      {get_varient_rep(varient_id).name}
+                                      {get_varient_rep(varient.id).name},
                                   </div>
                               {/each}
                           </div>

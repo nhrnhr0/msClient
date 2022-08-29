@@ -306,7 +306,7 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
             right: 0;
             z-index: 1;
             transform: translate(0%, -20%);
-            @media screen and (max-width: 765px) {
+            @media screen and (max-width: 824px) {
                 display: none;
             }
         }
