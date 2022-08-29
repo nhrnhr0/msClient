@@ -235,15 +235,15 @@ import {send, receive} from './../popups/bigImagePopup';
             background-color: #f5f5f565;
             
             margin-bottom: 70px;
-            margin-left: 15px;
             max-height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
             height: calc(100vh - 215px);
             height: calc(var(--vh, 1vh) * 100 - 215px);
-            @media screen and (max-width: 768px) {
-                margin-left: 5px;
-            }
+            direction: rtl;
+            margin-left: 15px;
+            margin-right: 15px;
+            
         }
         .product-item:hover {
         .product-image {
@@ -489,6 +489,10 @@ import {send, receive} from './../popups/bigImagePopup';
     
     
     @media screen and (max-width:600px) {
+        .product-page-wraper {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
         .similer-products {
             .similer-products-list {
                 //grid-template-columns: repeat(auto-fit, minmax(74px, 1fr));
@@ -497,7 +501,6 @@ import {send, receive} from './../popups/bigImagePopup';
             }
         }
         .product-show-wrapper-grid .top-info {
-
             .product-image {
                 margin-left: 0px;
                 margin-right: 0px;

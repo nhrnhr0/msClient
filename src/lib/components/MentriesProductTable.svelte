@@ -467,7 +467,7 @@ import { browser } from "$app/env";
                           
                             {#each productInfo.varients as {id, name}, idx}
                             <div class="cell-wraper">
-                              <input on:change="{input_amount_changed}" style="border: 2px solid {ALL_COLORS[color].color}" id="input_entery_{productInfo.id}_{size}_{color}_{id}"class="size-input cls-cell" type="number" placeholder="{ALL_SIZES[size].size} ({name})" bind:value="{mentries[color][size][id].quantity}" min="0" max="9999" >
+                              <input on:change="{input_amount_changed}" style="border: 2px solid {ALL_COLORS[color].color}" id="input_entery_{productInfo.id}_{size}_{color}_{id}"class="size-input cls-cell" type="number" placeholder="{name}" bind:value="{mentries[color][size][id].quantity}" min="0" max="9999" >
                             </div>
                             {/each}
                           
