@@ -130,6 +130,7 @@ import { browser } from "$app/env";
                     link: productInfo.link,
                     amount: amount,
                     mentries: mentries,
+                    barcode: productInfo.barcode
                   });
                 }else {
                   let prod = cartStore.getProduct(productInfo.id);

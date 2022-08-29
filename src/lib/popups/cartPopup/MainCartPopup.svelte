@@ -2,23 +2,25 @@
 import { CLOUDINARY_URL, SUBMIT_CART_URL } from "src/api/consts";
 
 import {userInfoStore} from "src/stores/stores";
-import {cartStore} from "src/stores/cartStore";
+import {cartStore, dictCartStore} from "src/stores/cartStore";
 import { cartPopupStore } from "src/stores/popups/cartPopupStore";
 import {fly, fade } from 'svelte/transition';
 import { submit_cart_form } from "src/api/api";
 import { logStore } from "src/stores/logStore";
 import { Spinner } from "sveltestrap";
 import { successPopupStore } from "src/stores/popups/successPopupStore";
+import { browser } from "$app/env";
 let currentStep = 1;
 let form_name;
 let form_email;
 let form_phone;
 let form_privateCompany;
 let form_message;
-let show_prices = true;
+let show_prices = $userInfoStore.isLogin && $userInfoStore?.me?.show_prices;
 let isSending = false;
 let mform;
 let state = 0;
+let is_small_screen = browser && window.matchMedia("(max-width: 500px)").matches
 function cart_submit() {
 		if (mform.reportValidity()) {
 			let cart_products = [];
@@ -68,7 +70,8 @@ function cart_submit() {
 			});
 			isSending = true;
 			let response = submit_cart_form(data);
-            response.then((data)=>{return data.json()}).then((data_json) => {
+      console.log(response);
+      response.then((data)=>{return data.json()}).then((data_json) => {
                 
 				let cart_id = data_json["cart_id"];
 				let product_ids = data_json["product_ids"];
@@ -145,8 +148,9 @@ class="modal active"
               <thead>
                 <tr>
                   <th>מוצר</th>
-                  <th class="hide-on-md">ברקוד</th>
-                  <th class="">האם יש ברקוד פיזי</th>
+                  {#if !is_small_screen}
+                    <th class="hide-on-md">ברקוד</th>
+                  {/if}
                   {#if $userInfoStore?.me?.is_superuser}
                     <th class="hide-on-md">הדפסה</th>
                     <th class="hide-on-md">רקמה</th>
@@ -175,21 +179,31 @@ class="modal active"
                         </div>
                       </div>
                     </td>
-                    <td class="hide-on-md">
-                      {item?.barcode || ""}
-                    </td>
-                    <td class="">
-                      {item.has_physical_barcode ? "✅" : "❌"}
-                    </td>
+                    {#if !is_small_screen}
+                      <td class="hide-on-md">
+                        {item?.barcode || ""}
+                      </td>
+                    {/if}
                     {#if $userInfoStore?.me?.is_superuser}
                       <td class="hide-on-md">
                         <div
                           on:click={(e) => {
-                            $cartStore[key].print =
+                            debugger;
+                            let p = $cartStore.find(prod=> prod.id == item.id);
+                            if(p) {
+                              if(p.print == undefined) {
+                                p.print = true;
+                              }else{
+                                p.print = !p.print;
+                              }
+                              cartStore.setProduct(p);
+                            }
+                            /*$cartStore[key].print =
                               !$cartStore[key].print;
-                          }}
+                          }}*/
+                        }}
                         >
-                          {#if $cartStore[key].print}
+                          {#if item?.print}
                             ✅
                           {:else}
                             ❌
@@ -199,11 +213,18 @@ class="modal active"
                       <td class="hide-on-md">
                         <div
                           on:click={(e) => {
-                            $cartStore[key].embro =
-                              !$cartStore[key].embro;
-                          }}
-                        >
-                          {#if $cartStore[key].embro}
+                            debugger;
+                            let p = $cartStore.find(prod=> prod.id == item.id);
+                            if(p) {
+                              if(p.embro == undefined) {
+                                p.embro = true;
+                              }else{
+                                p.embro = !p.embro;
+                              }
+                              cartStore.setProduct(p);
+                            }
+                          }}>
+                          {#if item?.embro}
                             ✅
                           {:else}
                             ❌

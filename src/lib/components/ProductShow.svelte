@@ -73,6 +73,7 @@ import { edit_cart_price_promp } from "../utils/utils";
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Flow+Block&display=swap" rel="stylesheet">
 </svelte:head>
+
     <BigImagePopup 
     image_url={CLOUDINARY_URL + productInfo?.cimage}
     bind:big_image_selected={big_image_selected}
