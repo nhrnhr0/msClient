@@ -1,12 +1,15 @@
 <script context="module">
     // load function is called when the page is loaded.
     export async function load({ fetch, page, session, contex }) {
-        let data = await fetch_main_page_albums(fetch);
-        let main_categories = await get_topLevelCategories(fetch);
+        let data_promise = fetch_main_page_albums(fetch);
+        let main_categories_promise = get_topLevelCategories(fetch);
+        let logos_promise = my_fetch(LOGOS_API_URL,{method: 'GET',}, fetch).then(response => response.json());
+        let [data, main_categories, logos] = await Promise.all([data_promise, main_categories_promise, logos_promise])
         return {
             props: {
                 main_albums: data,
                 main_categories: main_categories,
+                logos: logos,
             }
         };
     }
@@ -37,8 +40,11 @@ import ContentForm from "src/lib/contentForm.svelte";
 import { indexdb_get_main_categories } from "src/stores/dexie/api_wrapers";
 import NewProductsSwiper from "src/new/NewProductsSwiper.svelte";
 import { get_topLevelCategories } from "src/stores/sessionStorage/topLevelCategories";
+import { my_fetch } from "src/network/my_fetch";
+import { LOGOS_API_URL } from "src/api/consts";
     export let main_albums;
     export let main_categories;
+    export let logos;
     function open_whatsapp_link() {
         const whatsapp_text = encodeURIComponent('אני מעוניין לראות מחירים באתר')
         var url = `https://api.whatsapp.com/send?phone=972547919908&text=${whatsapp_text}`;
@@ -55,7 +61,7 @@ import { get_topLevelCategories } from "src/stores/sessionStorage/topLevelCatego
     });
 </script>
 <Header></Header>
-<LogoSwiper></LogoSwiper>
+<LogoSwiper logos={logos}></LogoSwiper>
 <TopLevelCategoriesBlock main_categories={main_categories} />
 {#if $userInfoStore.isLogin == false}
     <div class="whatsapp-btn-wraper">
@@ -100,7 +106,7 @@ import { get_topLevelCategories } from "src/stores/sessionStorage/topLevelCatego
       <div class="contact-item">
         <div class="contact-text">
           <a href="mailto: main@ms-global.co.il">main@ms-global.co.il</a>
-          <div class="text">אימייל ראשי</div>
+          <div class="text">אימייל</div>
         </div>
         <div class="contact-icon">
           <a rel="noopener" target="_blank" href="mailto: main@ms-global.co.il">
@@ -171,9 +177,7 @@ import { get_topLevelCategories } from "src/stores/sessionStorage/topLevelCatego
       display: flex;
       justify-content: space-between;
       width: 100%;
-      @media screen and (max-width: 568px) {
-        flex-direction: column;
-      }
+      
       .contact-item {
         width: 100%;
         display: inline-block;
@@ -222,6 +226,13 @@ import { get_topLevelCategories } from "src/stores/sessionStorage/topLevelCatego
               }
             }
           }
+        }
+      }
+      @media screen and (max-width: 568px) {
+        //flex-direction: column;
+        .contact-item {
+          flex:1;
+          margin-right: 2px;
         }
       }
     }
