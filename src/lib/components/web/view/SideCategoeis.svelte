@@ -122,11 +122,18 @@
             padding-bottom: 5px;
             padding-top: 5px;
             cursor: pointer;
-            transform: translate(0%, -50%);
+            transform: translate(-25%, -50%) scale(1.06);
+            
+            @media (hover:hover) {
+                transform: translate(0%, -50%);
+            }
             &.close {
                 left: auto;
                 right: 0px;
-                transform: translate(15%, -50%);
+                transform: translate(15%, -50%) scale(1.06);
+                @media (hover:hover) {
+                    transform: translate(15%, -50%);
+                }
             }
             .text {
                 color: white;
@@ -146,6 +153,7 @@
             &:hover {
                 background-color: rgba(51, 51, 51, 0.616);
             }
+
         }
     .background-wraper {
         background: #d7d7d77a;

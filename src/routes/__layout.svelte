@@ -24,6 +24,12 @@ import ProductPhotoPopup from "src/lib/popups/ProductPhotoPopup.svelte";
       console.log('+++++++ WARNING: clearing all db data on startup. +++++++ ');
       await clear_all_db_data();
       await clear_all_session_data();
+
+      
+      if(browser) {
+            calcAppHeight();
+            window.addEventListener('resize', calcAppHeight);
+        }
     })
 
     function calcAppHeight() {
@@ -33,12 +39,6 @@ import ProductPhotoPopup from "src/lib/popups/ProductPhotoPopup.svelte";
         }
     }
 
-    onMount(() => {
-        if(browser) {
-            calcAppHeight();
-            window.addEventListener('resize', calcAppHeight);
-        }
-    });
     onDestroy(() => {
         if(browser) {
             window.removeEventListener('resize', calcAppHeight);

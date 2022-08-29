@@ -78,7 +78,6 @@ import { edit_cart_price_promp } from "../utils/utils";
     image_url={CLOUDINARY_URL + productInfo?.cimage}
     bind:big_image_selected={big_image_selected}
     key={productInfo?.id}
-    
     />
     <div class="product-page-wraper" class:loading={!done_loading}>
         <div class="product-show-wrapper-grid" >
