@@ -58,6 +58,7 @@ import { browser } from "$app/env";
                 }
             }
             mentries = tempMentries;
+            amount = undefined;
         } else {
             mentries = cartStore.getProduct(productInfo.id).mentries;
             amount = cartStore.getProduct(productInfo.id).amount;
@@ -72,7 +73,11 @@ import { browser } from "$app/env";
             create_mentries();
         }
     }
-
+    $: {
+      if(browser && $dictCartStore[productInfo?.id] == undefined) {
+        create_mentries();
+      }
+    }
     function clear_mentries() {
       if (mentries) {
         for(let i = 0; i < Object.keys(mentries).length; i++) {
