@@ -3,17 +3,21 @@ import * as localizedFormat from "dayjs/plugin/localizedFormat";
 dayjs.extend(localizedFormat);*/
 
 import { cartStore, dictCartStore } from "src/stores/cartStore";
+import { userInfoStore } from "src/stores/stores";
 import { get } from "svelte/store";
 
 export function edit_cart_price_promp(product_id) {
-    console.log('edit_cart_price_promp', product_id)
-    let product = get(cartStore).find(prod=> prod.id == product_id)
-    if (product) {
-        let old_price = product.price
-        let new_price = prompt('בחר מחיר חדש:' ,old_price);
-        if(new_price){
-            product.price = new_price;
-            cartStore.setProduct(product);
+    let user = get(userInfoStore);
+    if(user.isLogin && user.me.is_superuser) {
+        console.log('edit_cart_price_promp', product_id)
+        let product = get(cartStore).find(prod=> prod.id == product_id)
+        if (product) {
+            let old_price = product.price
+            let new_price = prompt('בחר מחיר חדש:' ,old_price);
+            if(new_price){
+                product.price = new_price;
+                cartStore.setProduct(product);
+            }
         }
     }
 }

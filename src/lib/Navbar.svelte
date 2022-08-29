@@ -626,6 +626,7 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
     .navbar {
         position: fixed;
         width:100%;
+        
         .container-fluid {
             flex-wrap: nowrap;
             @media screen and (max-width:350px) {
@@ -638,8 +639,7 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
         @include bg-gradient();
         //position: sticky;
         top: 0;
-        z-index: 10;
-
+        z-index: 99;
         
         .nav-logo-sm {
             display: none;
