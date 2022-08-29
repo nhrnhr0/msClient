@@ -35,7 +35,7 @@
 <div class="main-content">
     <div class="inner">
         <h1>לקוחות יקרים !</h1>
-        <h2>נמצא שגיאה באתר, אם הבעיה חוזרת על עצמה</h2>
+        <h2>נמצאה שגיאה באתר, אם הבעיה חוזרת על עצמה</h2>
         <h2>בבקשה צור קשר וספר לנו מה קרה</h2>
         <h3>תודה על שיתוף הפעולה</h3>
         <div class="img-container"><img height="80" alt="m.s. global" src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1637096417/msAssets/logo_ms_outline_1_jpfkhg.png" width="198">

@@ -19,6 +19,9 @@ import { cartPopupStore } from 'src/stores/popups/cartPopupStore';
 import { page } from '$app/stores';
 import { browser } from "$app/env";
 import ProductPhotoPopup from "src/lib/popups/ProductPhotoPopup.svelte";
+import { my_fetch } from "src/network/my_fetch";
+import { WHO_AM_I_URL } from "src/api/consts";
+import {userInfoStore} from './../stores/stores';
     onMount(async()=>{
       // clear all dbs on startup.
       console.log('+++++++ WARNING: clearing all db data on startup. +++++++ ');
@@ -29,6 +32,14 @@ import ProductPhotoPopup from "src/lib/popups/ProductPhotoPopup.svelte";
       if(browser) {
             calcAppHeight();
             window.addEventListener('resize', calcAppHeight);
+
+            // call who-am-I
+            my_fetch(WHO_AM_I_URL, {}).then((resp)=> {
+              resp.json().then((userInfo)=> {
+                $userInfoStore.me = userInfo;
+                $userInfoStore = {...$userInfoStore};
+              });
+            })
         }
     })
 
