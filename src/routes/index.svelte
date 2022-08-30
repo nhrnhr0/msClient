@@ -37,7 +37,6 @@ import CallToActionForm from "src/lib/components/CallToActionForm.svelte";
 import PersonalCampaigns from "src/new/PersonalCampaigns.svelte";
 import About from "src/lib/about.svelte";
 import ContentForm from "src/lib/contentForm.svelte";
-import { indexdb_get_main_categories } from "src/stores/dexie/api_wrapers";
 import NewProductsSwiper from "src/new/NewProductsSwiper.svelte";
 import { get_topLevelCategories } from "src/stores/sessionStorage/topLevelCategories";
 import { my_fetch } from "src/network/my_fetch";

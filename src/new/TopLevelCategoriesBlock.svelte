@@ -24,7 +24,7 @@ import { onMount } from "svelte";
         <div class="category" class:small="{index%7>2}" data-idx={index}>
             <a href="main/?top={category.slug}">
                 <img src="{CLOUDINARY_URL}{category.get_image}" alt="{category.name}">
-                <span>{category.name}</span>
+                <div class="title">{category.name}</div>
             </a>
         </div>
     {/each}
@@ -87,7 +87,7 @@ import { onMount } from "svelte";
                     
                 }
             }
-            & span {
+            & .title {
                 //position: absolute;
                 font-size: 20px;
                 text-align: center;
@@ -111,7 +111,7 @@ import { onMount } from "svelte";
                     transform: scale(1.1);
                     filter: brightness(0.8);
                 }
-                & span {
+                & .title {
                     background-color: rgb(255, 255, 255);
                     color: black;
                 }
@@ -123,7 +123,7 @@ import { onMount } from "svelte";
             min-width: 120px;
             padding: 4px;
             margin:5px;
-            & a span {
+            & a .title {
                 font-size: 16px;
             }
         }
