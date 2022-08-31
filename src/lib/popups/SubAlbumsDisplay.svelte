@@ -45,9 +45,17 @@ function closeModal() {
                   closeModal();
                 }}>חזור</button
               >
-              <a href="/main?top={category.slug}" class="album-title-btn">
-                {category.name}
-              </a>
+              <div class="album-title-btn">
+                <a href="/main?top={category.slug}" class="">
+                  <img
+                    src="{CLOUDINARY_URL}{category.get_image}"
+                    width="50px"
+                    height="50px"
+                    alt=""
+                  />
+                  {category.name}
+                </a>
+              </div>
               <div class="albums">
                 <!-- <a href="/main?top={category.slug}" class="album">
                   <img
@@ -87,7 +95,7 @@ function closeModal() {
 
 <style lang="scss">
 .overlay {
-  background: none;
+  background: rgba(0, 0, 0, 0.15);
 }
 .modal_content {
   width: auto;
@@ -95,6 +103,9 @@ function closeModal() {
   .modal-body {
     padding: 25px 50px 50px 50px;
     background: rgba(238, 238, 238, 0.781);
+    @media screen and (max-width: 900px) {
+      padding: 25px 10px 10px 10px;
+    }
   }
 }
 .album-title-btn {
@@ -103,12 +114,41 @@ function closeModal() {
   border-radius: 10px;
   background-color: rgba(214, 214, 214, 0.815);
   font-size: xx-large;
-  margin-bottom: 55px;
+  margin-bottom: 30px;
+  margin-left: 20px;
+  margin-right: 20px;
   //margin-top: 25px;
-  font-weight: 500;
+  font-weight: bold;
+  transition: all 0.3s;
+  width: max-content;
+  padding-left: 5px;
+  padding-right: 5px;
+  a {
+    text-decoration: none;
+    color: black;
+  }
   &:hover {
-    color: white;
-    background-color: rgba(12, 12, 12, 0.815);
+    background-color: rgba(87, 85, 85, 0.815);
+    a {
+      color: white;
+    }
+  }
+  @media screen and (max-width: 950px) {
+    font-size: large;
+    margin: 5px;
+    padding: 5px;
+    margin-left: 100px;
+    img {
+      width: 35px;
+      height: 35px;
+    }
+  }
+  @media screen and (max-width: 500px) {
+    margin-left: 45px;
+    .my-close-btn {
+      left: 0px;
+      top: 0px;
+    }
   }
 }
 .my-card-back-slot {
@@ -158,8 +198,9 @@ function closeModal() {
         // padding-bottom: 5px;
         padding: 5px;
         font-size: large;
-        transition: all 0.2s;
+        transition: all 0.3s;
         background-color: rgba(214, 214, 214, 0.815);
+
         &:hover {
           color: white;
           background-color: rgba(87, 85, 85, 0.815);

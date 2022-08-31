@@ -1,4 +1,6 @@
 <script>
+import { browser } from "$app/env";
+
 import { CLOUDINARY_URL } from "src/api/consts";
 import {
   subAlbumsPopupStore,
@@ -25,13 +27,44 @@ onMount(() => {
 
 let main_categories_2d = [];
 let active_cards_states = {};
+let categories_clientWidth;
+let small_screen_indicator; // = browser && categories_clientWidth > 700 ? 1 : 2;
+let rows_lengths; // = small_screen_indicator == 1 ? [2, 2] : [3, 4];
+const rows_lengths_options = [
+  { width: 450, rows: [2, 2], card_max_width: "325px" },
+  { width: 700, rows: [3, 2], card_max_width: "325px" },
+  { width: 5000, rows: [3, 4], card_max_width: "325px" },
+];
+let selected_rows_option;
+$: {
+  // small_screen_indicator = browser && categories_clientWidth < 700 ? 1 : 2;
+  let idx = 0;
+  while (
+    idx < rows_lengths_options.length &&
+    categories_clientWidth > rows_lengths_options[idx].width
+  ) {
+    idx += 1;
+  }
+  let selected_rows_option_idx =
+    idx == rows_lengths_options.length ? idx - 1 : idx;
+  let selected_rows_option_temp =
+    rows_lengths_options[selected_rows_option_idx]; //small_screen_indicator == 1 ? [3, 2] : [3, 4];
+  selected_rows_option_temp.card_width =
+    (
+      categories_clientWidth /
+        Math.max.apply(null, selected_rows_option_temp.rows) -
+      25
+    ).toString() + "px";
+  selected_rows_option = selected_rows_option_temp;
+  rows_lengths = selected_rows_option.rows;
+}
 $: {
   main_categories_2d = [];
   let current_row = [];
   let rows_counter = 0;
   for (let i = 0; i < main_categories.length; i++) {
     active_cards_states[main_categories[i].id] = false;
-    let max_in_line = rows_counter % 2 ? 3 : 4;
+    let max_in_line = rows_lengths[rows_counter % 2];
     if (current_row.length >= max_in_line) {
       main_categories_2d.push(current_row);
       current_row = [];
@@ -48,7 +81,9 @@ $: {
 }
 </script>
 
-<div class="categories">
+<div class="categories" bind:clientWidth={categories_clientWidth}>
+  categories_clientWidth: {categories_clientWidth} <br />
+  selected_rows_option:{JSON.stringify(selected_rows_option)}
   {#each main_categories_2d as categories_row, index1}
     <div class="categories-row">
       {#each categories_row as category, index2}
@@ -60,7 +95,12 @@ $: {
             subAlbumsPopupStore.open(category);
           }}
         >
-          <div class="card" class:active={active_cards_states[category.id]}>
+          <div
+            class="card"
+            style:width={selected_rows_option.card_width}
+            style:max-width={selected_rows_option.card_max_width}
+            class:active={active_cards_states[category.id]}
+          >
             {#if $subAlbumsPopupStore["category"]?.id != category.id}
               <div
                 class="image-clone"
@@ -106,17 +146,29 @@ $: {
   gap: 30px;
   .categories-row {
     display: flex;
-    gap: 30px;
+    gap: 10px;
     justify-content: space-around;
     align-items: center;
     //margin-top: 20px;
+  }
+
+  @media screen and (max-width: 700px) {
+    .categories-row {
+      gap: 5px;
+      .category {
+        .card {
+          // width: 30vw;
+        }
+      }
+    }
   }
 }
 .category {
   cursor: pointer;
 
   .card {
-    width: 15vw;
+    // width: 15vw;
+    width: 21vw;
     background: rgba(238, 238, 238, 0.781);
     border-radius: 15px;
     position: relative;
@@ -131,6 +183,7 @@ $: {
       }
     }
   }
+
   .my-card-front {
     width: 100%;
     height: 100%;
