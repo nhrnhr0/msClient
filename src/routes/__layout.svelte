@@ -1,69 +1,67 @@
 <script context="module">
-    //import { writable } from "svelte/store";
-  
-    //import { stateQuery} from './../stores/stores'
-    //import { onMount } from "svelte";
-    import { clear_all_db_data, clear_all_session_data } from "src/db.js";
-    
-  </script>
+//import { writable } from "svelte/store";
 
-  <script>
-    
-    import "src/app.scss";
-    import Navbar from "$lib/Navbar.svelte";
+//import { stateQuery} from './../stores/stores'
+//import { onMount } from "svelte";
+import { clear_all_db_data, clear_all_session_data } from "src/db.js";
+</script>
+
+<script>
+import "src/app.scss";
+import Navbar from "$lib/Navbar.svelte";
 import { onDestroy, onMount } from "svelte";
 import LoginPopup from "src/lib/popups/LoginPopup.svelte";
 import CartPopup from "src/lib/popups/cartPopup.svelte";
 import SuccessPopup from "src/lib/popups/successPopup.svelte";
-import { cartPopupStore } from 'src/stores/popups/cartPopupStore';
-import { page } from '$app/stores';
+import { cartPopupStore } from "src/stores/popups/cartPopupStore";
+import { page } from "$app/stores";
 import { browser } from "$app/env";
 import ProductPhotoPopup from "src/lib/popups/ProductPhotoPopup.svelte";
 import { my_fetch } from "src/network/my_fetch";
 import { WHO_AM_I_URL } from "src/api/consts";
-import {userInfoStore} from './../stores/stores';
-    onMount(async()=>{
-      // clear all dbs on startup.
-      console.log('+++++++ WARNING: clearing all db data on startup. +++++++ ');
-      await clear_all_db_data();
-      await clear_all_session_data();
+import { userInfoStore } from "./../stores/stores";
+import SubAlbumsDisplay from "src/lib/popups/SubAlbumsDisplay.svelte";
+onMount(async () => {
+  // clear all dbs on startup.
+  console.log("+++++++ WARNING: clearing all db data on startup. +++++++ ");
+  await clear_all_db_data();
+  await clear_all_session_data();
 
-      
-      if(browser) {
-            calcAppHeight();
-            window.addEventListener('resize', calcAppHeight);
+  if (browser) {
+    calcAppHeight();
+    window.addEventListener("resize", calcAppHeight);
 
-            // call who-am-I
-            my_fetch(WHO_AM_I_URL, {}).then((resp)=> {
-              resp.json().then((userInfo)=> {
-                $userInfoStore.me = userInfo;
-                $userInfoStore = {...$userInfoStore};
-              });
-            })
-        }
-    })
-
-    function calcAppHeight() {
-        if(window) {
-            const doc = document.documentElement;
-            doc.style.setProperty('--vh', (window.innerHeight*.01) + 'px');
-        }
-    }
-
-    onDestroy(() => {
-        if(browser) {
-            window.removeEventListener('resize', calcAppHeight);
-        }
+    // call who-am-I
+    my_fetch(WHO_AM_I_URL, {}).then((resp) => {
+      resp.json().then((userInfo) => {
+        $userInfoStore.me = userInfo;
+        $userInfoStore = { ...$userInfoStore };
+      });
     });
-    
-    /*$: {
+  }
+});
+
+function calcAppHeight() {
+  if (window) {
+    const doc = document.documentElement;
+    doc.style.setProperty("--vh", window.innerHeight * 0.01 + "px");
+  }
+}
+
+onDestroy(() => {
+  if (browser) {
+    window.removeEventListener("resize", calcAppHeight);
+  }
+});
+
+/*$: {
       if(browser && $page.path == '/main' || $page.path == '/main/') {
         //window.document.documentElement.classList.add('const-size-page');
       }else if(browser){
         window.document.documentElement.classList.remove('const-size-page');
       }
     }*/
-    /*
+/*
     $: {
       if (browser){
         if (full_size_page) {
@@ -75,23 +73,28 @@ import {userInfoStore} from './../stores/stores';
         }
       }
     }*/
-  </script>
-  
-  <svelte:head>
-    <meta name="theme-color" content="#FFD700" />
-  </svelte:head>
-  <Navbar />
-  
-  <LoginPopup />
-  <CartPopup />
-  <ProductPhotoPopup />
-  <SuccessPopup  />
-  
-  <div id="main_wraper" class="bg-wraper" class:make-small={$cartPopupStore.isSideOpen && !$cartPopupStore.sideFloating}>
-      <slot />
-  </div>
-  <style lang="scss">
-    /* {
+</script>
+
+<svelte:head>
+  <meta name="theme-color" content="#FFD700" />
+</svelte:head>
+<Navbar />
+
+<LoginPopup />
+<CartPopup />
+<ProductPhotoPopup />
+<SuccessPopup />
+<SubAlbumsDisplay />
+<div
+  id="main_wraper"
+  class="bg-wraper"
+  class:make-small={$cartPopupStore.isSideOpen && !$cartPopupStore.sideFloating}
+>
+  <slot />
+</div>
+
+<style lang="scss">
+/* {
       outline: 1px solid red;
     }
     :global(html.const-size-page) {
@@ -107,20 +110,18 @@ import {userInfoStore} from './../stores/stores';
         overflow: hidden;
       }
     }*/
-    #main_wraper {
-      /*height: auto;
+#main_wraper {
+  /*height: auto;
       &.const-page-size {
         height: 100vh;
         max-height: fill-available;
         max-height: -webkit-fill-available;
       }*/
 
-      &.make-small {
-        width: calc(100vw - 315px);
-        position: absolute;
-        left: 0px;
-      }
-    }
-    
-  </style>
-  
+  &.make-small {
+    width: calc(100vw - 315px);
+    position: absolute;
+    left: 0px;
+  }
+}
+</style>
