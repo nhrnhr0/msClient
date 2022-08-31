@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.0.1",
   "scripts": {
-    "dev": "env-cmd -f .env svelte-kit dev",
+    "dev": "env-cmd -f .env svelte-kit dev --host",
     "build": "env-cmd -f .env svelte-kit build",
     "preview": "env-cmd -f .env svelte-kit preview"
   },
