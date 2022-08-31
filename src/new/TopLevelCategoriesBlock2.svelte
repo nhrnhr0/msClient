@@ -77,13 +77,10 @@ $: {
   if (current_row.length != 0) {
     main_categories_2d.push(current_row);
   }
-  console.log("main_categories_2d", main_categories_2d);
 }
 </script>
 
 <div class="categories" bind:clientWidth={categories_clientWidth}>
-  categories_clientWidth: {categories_clientWidth} <br />
-  selected_rows_option:{JSON.stringify(selected_rows_option)}
   {#each main_categories_2d as categories_row, index1}
     <div class="categories-row">
       {#each categories_row as category, index2}
