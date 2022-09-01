@@ -8,10 +8,11 @@ import { my_fetch } from "src/network/my_fetch";
 import { Spinner } from "sveltestrap";
 import { cartStore, dictCartStore } from "src/stores/cartStore";
 import PriceTag from "src/new/priceTag.svelte";
-import { onMount } from "svelte";
+import { onMount, onDestroy } from "svelte";
 import { browser } from "$app/env";
 import { goto } from "$app/navigation";
 import { add_products_slim_to_store } from "src/stores/sessionStorage/slimProducts";
+
 export let page_info;
 let next_page = undefined;
 let bottom_loading = false;
@@ -37,20 +38,44 @@ let my_products = [];
     }*/
 onMount(async () => {
   //my_products = [];
+  debugger;
   if ($page.query.toString() != "") {
     next_page =
       BASE_URL + "/my-api/get-album-images" + "?" + $page.query.toString();
     main_loading = true;
     let el = document.querySelector(".products-wraper");
-    if (el) {
-      //el.scrollTo({ top: 0, behavior: 'smooth' })
-      el.scrollTop = 0;
-    }
-    load_more_products(true).then(() => {
+
+    let products = window.sessionStorage.getItem(
+      "galery_page_products_" + $page.query.toString()
+    );
+    if (products) {
+      products = JSON.parse(products);
+      my_products = [...products];
       main_loading = false;
-    });
+      if (el) {
+        //el.scrollTo({ top: 0, behavior: 'smooth' })
+        let scroll = window.sessionStorage.getItem(
+          "galery_page_scroll_pos_" + $page.query.toString()
+        );
+        if (scroll) {
+          setTimeout(() => {
+            scroll = parseInt(scroll);
+            el.scrollTop = scroll;
+          });
+        }
+      }
+    } else {
+      load_more_products(true).then(() => {
+        main_loading = false;
+        if (el) {
+          //el.scrollTo({ top: 0, behavior: 'smooth' })
+          el.scrollTop = 0;
+        }
+      });
+    }
   }
 });
+onDestroy(() => {});
 let percent;
 function products_grid_scrolled(e) {
   let el = e.target;
@@ -64,6 +89,10 @@ function products_grid_scrolled(e) {
       load_more_products();
     }
   }
+  window.sessionStorage.setItem(
+    "galery_page_scroll_pos_" + $page.query.toString(),
+    scrollTop
+  );
 }
 
 function load_more_products(reset = false) {
@@ -74,9 +103,9 @@ function load_more_products(reset = false) {
       return response.json();
     })
     .then((data) => {
-      if (data.results) {
-        add_products_slim_to_store(data.results);
-      }
+      // if (data.results) {
+      //   add_products_slim_to_store(data.results);
+      // }
       if (reset) {
         my_products = [...data.results];
       } else {
@@ -85,6 +114,10 @@ function load_more_products(reset = false) {
       page_info = { ...data };
       bottom_loading = false;
       next_page = data.next;
+      window.sessionStorage.setItem(
+        "galery_page_products_" + $page.query.toString(),
+        JSON.stringify(my_products)
+      );
     });
 }
 

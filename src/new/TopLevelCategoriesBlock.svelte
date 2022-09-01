@@ -38,9 +38,10 @@ onMount(async () => {
 
   & .category {
     width: calc(30% - 10px);
-    &.small {
-      width: calc(22% - 5px);
-    }
+    width: calc(22% - 5px);
+    // &.small {
+    //   width: calc(22% - 5px);
+    // }
   }
 }
 .category {

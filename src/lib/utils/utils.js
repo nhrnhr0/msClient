@@ -6,6 +6,15 @@ import { cartStore, dictCartStore } from "src/stores/cartStore";
 import { userInfoStore } from "src/stores/stores";
 import { get } from "svelte/store";
 
+export function clear_user_spesific_session_store_data() {
+    debugger;
+    for (var key in sessionStorage) {
+        if (key.indexOf('galery_page_products_') !== -1 ||
+        key.indexOf('galery_page_scroll_pos_') !== -1)
+            sessionStorage.removeItem(key);
+    }
+}
+
 export function edit_cart_price_promp(product_id) {
     let user = get(userInfoStore);
     if(user.isLogin && user.me.is_superuser) {
