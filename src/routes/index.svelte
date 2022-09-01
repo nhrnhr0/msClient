@@ -40,7 +40,7 @@ import NewProductsSwiper from "src/new/NewProductsSwiper.svelte";
 import { get_topLevelCategories } from "src/stores/sessionStorage/topLevelCategories";
 import { my_fetch } from "src/network/my_fetch";
 import { LOGOS_API_URL } from "src/api/consts";
-import TopLevelCategoriesBlock2 from "src/new/TopLevelCategoriesBlock2.svelte";
+
 export let main_albums;
 export let main_categories;
 export let logos;
@@ -62,7 +62,7 @@ activeModalsStore.subscribe((modals) => {
 
 <Header />
 <LogoSwiper {logos} />
-<TopLevelCategoriesBlock2 {main_categories} />
+<TopLevelCategoriesBlock {main_categories} />
 {#if $userInfoStore.isLogin == false}
   <div class="whatsapp-btn-wraper">
     <button on:click={open_whatsapp_link} class="whatsapp-btn">
