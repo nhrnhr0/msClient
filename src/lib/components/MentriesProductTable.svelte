@@ -473,7 +473,7 @@ function input_field_focous(e) {
       <table class="product-table">
         <thead>
           <tr>
-            <th class="sticky-col const-size-cell">צבע</th>
+            <th class="const-size-cell">צבע</th>
             {#if productInfo.varients.length != 0}
               <th class="const-size-cell">מודל</th>
             {/if}
@@ -497,7 +497,7 @@ function input_field_focous(e) {
                 </div>
               </td>
               {#if productInfo.varients.length != 0}
-                <td>
+                <td class="sticky-col verient-sticky-col-padd">
                   {#each productInfo.varients as varient}
                     <div class="varient-box cls-cell">
                       {varient.name}
@@ -944,6 +944,9 @@ function input_field_focous(e) {
               margin-left: 15px;
               width: 25px;
               height: 25px;
+              @media screen and (max-width: 768px) {
+                margin-left: 2px;
+              }
             }
           }
         }
@@ -1139,10 +1142,20 @@ function input_field_focous(e) {
       position: -webkit-sticky;
       position: sticky;
       right: 0px;*/
-  background-color: rgba(238, 238, 238, 0.651);
+  background-color: rgba(238, 238, 238, 0.76);
   border: 1px solid #777777;
   border-radius: 5px;
   padding: 5px;
+  position: sticky;
+  position: -webkit-sticky;
+  position: sticky;
+  right: 0px;
+  &.verient-sticky-col-padd {
+    right: 86px;
+    @media screen and (max-width: 768px) {
+      right: 74px;
+    }
+  }
 }
 .total-cell {
   div {

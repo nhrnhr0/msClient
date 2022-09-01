@@ -21,6 +21,7 @@ import { my_fetch } from "src/network/my_fetch";
 import { WHO_AM_I_URL } from "src/api/consts";
 import { userInfoStore } from "./../stores/stores";
 import SubAlbumsDisplay from "src/lib/popups/SubAlbumsDisplay.svelte";
+import { update_userInfoStore } from "src/api/auth";
 onMount(async () => {
   // clear all dbs on startup.
   console.log("+++++++ WARNING: clearing all db data on startup. +++++++ ");
@@ -32,12 +33,13 @@ onMount(async () => {
     window.addEventListener("resize", calcAppHeight);
 
     // call who-am-I
-    my_fetch(WHO_AM_I_URL, {}).then((resp) => {
-      resp.json().then((userInfo) => {
-        $userInfoStore.me = userInfo;
-        $userInfoStore = { ...$userInfoStore };
-      });
-    });
+    await update_userInfoStore();
+    // my_fetch(WHO_AM_I_URL, {}).then((resp) => {
+    //   resp.json().then((userInfo) => {
+    //     $userInfoStore.me = userInfo;
+    //     $userInfoStore = { ...$userInfoStore };
+    //   });
+    // });
   }
 });
 

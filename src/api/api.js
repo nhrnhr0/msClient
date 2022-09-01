@@ -212,9 +212,9 @@ export async function fetch_wraper_async(
 
   if (response.status == 401) {
     let userInfo = get(userInfoStore);
-    userInfo.isLogin = false;
-    userInfo.access = null;
-    userInfoStore.set(userInfo);
+    // userInfo.isLogin = false;
+    // userInfo.access = null;
+    // userInfoStore.set(userInfo);
     if (!isRetry) {
       return fetch_wraper_async(url, requestOptions, custom_fetch, true);
     }

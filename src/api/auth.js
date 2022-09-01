@@ -35,6 +35,18 @@ export function request_whoAmI() {
     return response;
 }
 
+export async function update_userInfoStore() {
+    debugger;
+    let resp = await request_whoAmI();
+    let new_store_data = {isLogin: false}
+    if(resp?.status != 'not logged in') {
+        new_store_data = {
+            isLogin:true,
+            me: resp,
+        }
+    }
+    userInfoStore.set(new_store_data);
+}
 
 /*export function request_refresh_token() {
     let data = {
