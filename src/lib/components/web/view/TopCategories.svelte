@@ -77,18 +77,26 @@ function slide_mouse_enter(e) {
       };
     }
 
-    if (cat == hovered_category) {
-      hovered_category = undefined;
-    } else {
-      var x = getOffset(target);
-      cat.left = Math.max(x.left, 0);
-      cat.top = x.top;
-      hovered_category = cat;
-    }
+    // if (cat == hovered_category) {
+    //   hovered_category = undefined;
+    // } else {
+    var x = getOffset(target);
+    cat.left = Math.max(x.left - 14, 0);
+    cat.top = x.top;
+    hovered_category = cat;
+    // }
   }
 }
 function slide_mouse_leave(e) {
   console.log("slide_mouse_leave", e);
+  let relatedTarget = e.relatedTarget;
+  if (
+    e.relatedTarget.parentElement.classList.contains("sub-album") ||
+    e.relatedTarget.classList.contains("sub-album")
+  ) {
+  } else {
+    hovered_category = undefined;
+  }
 }
 $: {
   if (browser) {
@@ -355,10 +363,11 @@ $: swiper_left_scroll_tracker = slider ? slider.scrollLeft : 0;
     position: absolute;
     background-color: #f3ffef;
     //right: 285px;
-    max-width: calc(100vw - 285px);
+    //max-width: calc(100vw - 285px);
+
     z-index: 99;
     // top: 100%;
-    min-width: 250px;
+    //min-width: 250px;
     transform: translate(0%, -30px);
 
     position: absolute;
@@ -368,7 +377,8 @@ $: swiper_left_scroll_tracker = slider ? slider.scrollLeft : 0;
     color: black;
     z-index: 9999999;
     // width: 100%;
-    width: fit-content;
+    width: 250px;
+    //min-width: fit-content;
     max-height: 70vh;
     overflow-y: scroll;
     .album-item {
