@@ -42,47 +42,49 @@ onMount(async () => {
 // });
 
 function slide_mouse_enter(e) {
-  console.log("slide_mouse_enter", e);
-  let target = e.target;
-  let topSlug = target.dataset.topSlug;
+  if (matchMedia("(pointer:fine)").matches) {
+    console.log("slide_mouse_enter", e);
+    let target = e.target;
+    let topSlug = target.dataset.topSlug;
 
-  let cat = _categories.find((c) => c.slug == topSlug);
-  if (cat == null && topSlug == "new") {
-    let all_sub_albums = Array.from(
-      _categories.reduce((acc, curr) => {
-        curr.sub_albums.forEach((element) => {
-          acc.add(element);
-        });
-        return acc;
-      }, new Set())
-    );
-    cat = {
-      slug: "new",
+    let cat = _categories.find((c) => c.slug == topSlug);
+    if (cat == null && topSlug == "new") {
+      let all_sub_albums = Array.from(
+        _categories.reduce((acc, curr) => {
+          curr.sub_albums.forEach((element) => {
+            acc.add(element);
+          });
+          return acc;
+        }, new Set())
+      );
+      cat = {
+        slug: "new",
 
-      sub_albums: all_sub_albums,
-    };
-  } else if (cat == null && topSlug == "campaigns") {
-    let all_sub_albums = $userInfoStore.me.campains.map((campain) => {
-      return {
-        title: campain.name,
-        slug: campain.slug,
-        cimage: campain.get_image,
+        sub_albums: all_sub_albums,
       };
-    });
-    debugger;
-    cat = {
-      slug: "campaigns",
-      sub_albums: all_sub_albums,
-    };
-  }
+    } else if (cat == null && topSlug == "campaigns") {
+      let all_sub_albums = $userInfoStore.me.campains.map((campain) => {
+        return {
+          title: campain.name,
+          slug: campain.slug,
+          cimage: campain.get_image,
+        };
+      });
+      debugger;
+      cat = {
+        slug: "campaigns",
+        sub_albums: all_sub_albums,
+      };
+    }
 
-  if (cat == hovered_category) {
-    hovered_category = undefined;
-  } else {
-    var x = getOffset(target);
-    cat.left = Math.max(x.left, 0);
-    cat.top = x.top;
-    hovered_category = cat;
+    if (cat == hovered_category) {
+      hovered_category = undefined;
+    } else {
+      var x = getOffset(target);
+      cat.left = Math.max(x.left, 0);
+      cat.top = x.top;
+      hovered_category = cat;
+    }
   }
 }
 function slide_mouse_leave(e) {
