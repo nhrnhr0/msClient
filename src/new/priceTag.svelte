@@ -44,7 +44,7 @@ $: {
   top: 5px;
   left: 5px;
   line-height: 1;
-  padding: 5px;
+  padding: 2%;
   font-weight: 700;
   border-radius: 25px;
   background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);

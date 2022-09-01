@@ -137,10 +137,16 @@ function slider_mousedown(e) {
   scrollLeft = slider.scrollLeft;
   console.log("slider_mousedown");
 }
-
+$: {
+  if (isWalking) {
+    hovered_category = undefined;
+  }
+}
 function slider_mousemove(e) {
   console.log("slider_mousemove");
-  if (!isDown) return;
+  if (!isDown) {
+    return;
+  }
   e.preventDefault();
   const x = e.pageX - slider.offsetLeft;
   const walk = x - startX; // * 3; //scroll-fast
@@ -459,7 +465,8 @@ $: swiper_left_scroll_tracker = slider ? slider.scrollLeft : 0;
   .scroll-snap-slide {
     display: flex;
     flex: 1;
-    background: rgba(255, 255, 255, 0.384);
+    // background: rgba(255, 255, 255, 0.384);
+    background: rgba(255, 255, 255, 0.76);
     border-radius: 5px;
     margin: 0 5px;
     justify-content: center;

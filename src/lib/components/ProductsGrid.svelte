@@ -121,6 +121,7 @@ let product_wraper_clientWidth;
   class="products-wraper"
   on:scroll={products_grid_scrolled}
   class:small-view={product_wraper_clientWidth < 650}
+  class:small-view-mobile={product_wraper_clientWidth < 400}
   bind:clientWidth={product_wraper_clientWidth}
 >
   {#if main_loading}
@@ -144,7 +145,7 @@ let product_wraper_clientWidth;
           new_price={product.new_price}
           top={"4px"}
           left={"4px"}
-          font_size={"0.8em"}
+          font_size={"0.6em"}
         />
       </div>
       <div class="product-info">
@@ -294,6 +295,18 @@ let product_wraper_clientWidth;
         }
         & .product-price {
           font-size: 12px;
+        }
+      }
+    }
+
+    &.small-view-mobile {
+      & .product {
+        & .product-image {
+          img {
+            width: 100%;
+            height: 100%;
+            min-width: 65px;
+          }
         }
       }
     }
