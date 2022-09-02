@@ -70,7 +70,6 @@ function slide_mouse_enter(e) {
           cimage: campain.get_image,
         };
       });
-      debugger;
       cat = {
         slug: "campaigns",
         sub_albums: all_sub_albums,

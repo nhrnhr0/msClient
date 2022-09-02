@@ -37,11 +37,17 @@ let my_products = [];
         }
     }*/
 onMount(async () => {
-  //my_products = [];
-  debugger;
   if ($page.query.toString() != "") {
-    next_page =
-      BASE_URL + "/my-api/get-album-images" + "?" + $page.query.toString();
+    let store_next_page = window.sessionStorage.getItem(
+      "galery_page_next_url_" + $page.query.toString()
+    );
+    if (store_next_page == "null") {
+      next_page = null;
+    } else {
+      next_page =
+        store_next_page ||
+        BASE_URL + "/my-api/get-album-images" + "?" + $page.query.toString();
+    }
     main_loading = true;
     let el = document.querySelector(".products-wraper");
 
@@ -54,13 +60,13 @@ onMount(async () => {
       main_loading = false;
       if (el) {
         //el.scrollTo({ top: 0, behavior: 'smooth' })
-        let scroll = window.sessionStorage.getItem(
+        let old_scroll_pos = window.sessionStorage.getItem(
           "galery_page_scroll_pos_" + $page.query.toString()
         );
-        if (scroll) {
+        if (old_scroll_pos) {
           setTimeout(() => {
-            scroll = parseInt(scroll);
-            el.scrollTop = scroll;
+            old_scroll_pos = parseInt(old_scroll_pos);
+            el.scrollTop = old_scroll_pos;
           });
         }
       }
@@ -117,6 +123,10 @@ function load_more_products(reset = false) {
       window.sessionStorage.setItem(
         "galery_page_products_" + $page.query.toString(),
         JSON.stringify(my_products)
+      );
+      window.sessionStorage.setItem(
+        "galery_page_next_url_" + $page.query.toString(),
+        next_page
       );
     });
 }

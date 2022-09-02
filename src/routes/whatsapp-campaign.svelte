@@ -2,234 +2,293 @@
 </script>
 
 <script>
-  import { CLOUDINARY_URL, GET_USERS_IN_EXCEL } from "./../api/consts";
-  import { onMount } from "svelte";
-  import AutoComplete from "simple-svelte-autocomplete";
-  import { Spinner } from "sveltestrap";
-  import {
-    userInfoStore,
-    selectedUsersForWhatsappCampaign,
-  } from "./../stores/stores";
-  import {
-    apiSearchProducts,
-    loadBusinessTypes,
-    getAllUsersByBusinessTypes,
-  } from "./../api/api";
+import { CLOUDINARY_URL, GET_USERS_IN_EXCEL } from "./../api/consts";
+import { onMount } from "svelte";
+import AutoComplete from "simple-svelte-autocomplete";
+import { Spinner } from "sveltestrap";
+import {
+  userInfoStore,
+  selectedUsersForWhatsappCampaign,
+} from "./../stores/stores";
+import {
+  apiSearchProducts,
+  loadBusinessTypes,
+  getAllUsersByBusinessTypes,
+} from "./../api/api";
 
-  import {
-    FileUploader,
-    Grid,
-    Row,
-    Column,
-    MultiSelect,
-    Tag,
-    TextArea,
-  } from "carbon-components-svelte";
-  import SvelteTable from "svelte-table";
-  import UserCheckboxForTable from "$lib/components/whatsapp-campaign/UserCheckboxForTable.svelte";
+import {
+  FileUploader,
+  Grid,
+  Row,
+  Column,
+  MultiSelect,
+  Tag,
+  TextArea,
+} from "carbon-components-svelte";
+import SvelteTable from "svelte-table";
+import UserCheckboxForTable from "$lib/components/whatsapp-campaign/UserCheckboxForTable.svelte";
+import "carbon-components-svelte/css/all.css";
+const STEP = 3;
+let selectedProducts = [];
+let searchValue = "";
+let wanted_prc = 75;
+const IMAGE_LOCATIONS = {
+  0: [{ left: 261, top: 110, max_width: 35 }],
+  1: [
+    { left: 4, top: 5, max_width: 35 },
+    { left: 561, top: 5, max_width: 35 },
+  ],
+  2: [
+    { left: 4, top: 5, max_width: 30 },
+    { left: 600, top: 5, max_width: 30 },
+    { left: 290, top: 140, max_width: 30 },
+  ],
+  3: [
+    { left: 4, top: 0, max_width: 25 },
+    { left: 600, top: 0, max_width: 25 },
+    { left: 150, top: 251, max_width: 20 },
+    { left: 550, top: 251, max_width: 20 },
+  ],
+  4: [
+    { left: 4, top: 0, max_width: 25 },
+    { left: 600, top: 0, max_width: 25 },
+    { left: 150, top: "auto", right: "auto", bottom: 5, max_width: 20 },
+    { left: "auto", top: "auto", right: 150, bottom: 5, max_width: 20 },
+    { left: 330, top: 110, bottom: "auto", right: "auto", max_width: 20 },
+  ],
+};
+let businessTypes = [];
+let selectedBusinessTypes = [];
+let usersByBusinessTypes = [];
+let usersByBusinessTypesLinkPrcGroups = {};
+let usersByBusinessTypesColumns = [
+  {
+    title: "",
+    key: "id",
+    value: (v) => v.id,
+    //renderComponent: UserCheckboxForTable,
+  },
+  {
+    title: "שֵׁם",
+    key: "name",
+    value: (v) => v.name,
+  },
+  {
+    title: "טלפון",
+    key: "phone",
+    value: (v) => v.phone,
+  },
+  {
+    title: "ההודעה האחרונה שנשלחה + חותמת זמן",
+    key: "lastMessageWithTimestamp",
+    value: (v) => v.lastMessageWithTimestamp,
+  },
+  {
+    title: "סוג העסק נבחר",
+    key: "businessTypeSelect",
+    value: (v) => v.businessTypeSelect,
+  },
+  {
+    title: "מוצרים להווה ולרשימה",
+    key: "productfitAndList",
+    value: (v) => v.productfitAndList,
+    renderValue: (v) => `${v.productfitAndList.percentage} %`,
+  },
+];
+let message = "";
+let uploadedMetadataFiles = [];
+let uploadedMetadata = null;
 
-  const STEP = 3;
-  let selectedProducts = [];
-  let searchValue = "";
-  const IMAGE_LOCATIONS = {
-    0: [{ left: 261, top: 110, max_width: 35 }],
-    1: [
-      { left: 4, top: 5, max_width: 35 },
-      { left: 561, top: 5, max_width: 35 },
-    ],
-    2: [
-      { left: 4, top: 5, max_width: 30 },
-      { left: 600, top: 5, max_width: 30 },
-      { left: 290, top: 140, max_width: 30 },
-    ],
-    3: [
-      { left: 4, top: 0, max_width: 25 },
-      { left: 600, top: 0, max_width: 25 },
-      { left: 150, top: 251, max_width: 20 },
-      { left: 550, top: 251, max_width: 20 },
-    ],
-    4: [
-      { left: 4, top: 0, max_width: 25 },
-      { left: 600, top: 0, max_width: 25 },
-      { left: 150, top: "auto", right: "auto", bottom: 5, max_width: 20 },
-      { left: "auto", top: "auto", right: 150, bottom: 5, max_width: 20 },
-      { left: 330, top: 110, bottom: "auto", right: "auto", max_width: 20 },
-    ],
-  };
-  let businessTypes = [];
-  let selectedBusinessTypes = [];
-  let usersByBusinessTypes = [];
-  let usersByBusinessTypesColumns = [
-    {
-      title: "",
-      key: "id",
-      renderComponent: UserCheckboxForTable,
-    },
-    {
-      title: "שֵׁם",
-      key: "name",
-      value: (v) => v.name,
-    },
-    {
-      title: "טלפון",
-      key: "phone",
-      value: (v) => v.phone,
-    },
-    {
-      title: "ההודעה האחרונה שנשלחה + חותמת זמן",
-      key: "lastMessageWithTimestamp",
-      value: (v) => v.lastMessageWithTimestamp,
-    },
-    {
-      title: "סוג העסק נבחר",
-      key: "businessTypeSelect",
-      value: (v) => v.businessTypeSelect,
-    },
-    {
-      title: "מוצרים להווה ולרשימה",
-      key: "productfitAndList",
-      value: (v) => v.productfitAndList,
-      renderValue: (v) => `${v.productfitAndList.percentage} %`,
-    },
-  ];
-  let message = "";
-  let uploadedMetadataFiles = [];
-  let uploadedMetadata = null;
+onMount(async () => {
+  businessTypes = await loadBusinessTypes();
+});
 
-  onMount(async () => {
-    businessTypes = await loadBusinessTypes();
-  });
+$: selectedBusinessTypes, selectedProducts, fetchUsersByBusinessTypes();
+// $: usersByBusinessTypesWithoutSelectedUsers = usersByBusinessTypes.filter(
+//   (user) =>
+//     !$selectedUsersForWhatsappCampaign.some(
+//       (selectedUser) => selectedUser.id === user.id
+//     )
+// );
+$: uploadedMetadata, handleUploadedMetadataChange();
 
-  $: selectedBusinessTypes, selectedProducts, fetchUsersByBusinessTypes();
-  $: usersByBusinessTypesWithoutSelectedUsers = usersByBusinessTypes.filter(
-    (user) =>
-      !$selectedUsersForWhatsappCampaign.some(
-        (selectedUser) => selectedUser.id === user.id
-      )
-  );
-  $: uploadedMetadata, handleUploadedMetadataChange();
+const handleUploadedMetadataChange = () => {
+  if (uploadedMetadata) {
+    selectedProducts = uploadedMetadata.selectedProducts ?? [];
+    selectedBusinessTypes = uploadedMetadata.selectedBusinessTypes ?? [];
+    $selectedUsersForWhatsappCampaign = uploadedMetadata.selectedUsers ?? [];
+    message = uploadedMetadata.message ?? "";
+  } else {
+    selectedProducts = [];
+    selectedBusinessTypes = [];
+    $selectedUsersForWhatsappCampaign = [];
+    message = "";
+  }
+};
+// let count_users_after_prc;
+// $: {
+//   usersByBusinessTypesLinkPrcGroups;
+//   wanted_prc;
 
-  const handleUploadedMetadataChange = () => {
-    if (uploadedMetadata) {
-      selectedProducts = uploadedMetadata.selectedProducts ?? [];
-      selectedBusinessTypes = uploadedMetadata.selectedBusinessTypes ?? [];
-      $selectedUsersForWhatsappCampaign = uploadedMetadata.selectedUsers ?? [];
-      message = uploadedMetadata.message ?? "";
-    } else {
-      selectedProducts = [];
-      selectedBusinessTypes = [];
-      $selectedUsersForWhatsappCampaign = [];
-      message = "";
-    }
-  };
+//   count_users_after_prc = Object.entries(
+//     usersByBusinessTypesLinkPrcGroups
+//   ).reduce((acc, [p, users]) => {
+//     if (p >= wanted_prc) {
+//       return acc + users.length;
+//     }
+//   }, 0);
+// }
+let requesting_from_server = false;
+const fetchUsersByBusinessTypes = async () => {
+  if (selectedBusinessTypes.length > 0) {
+    requesting_from_server = true;
+    usersByBusinessTypes = await getAllUsersByBusinessTypes({
+      businessTypes: selectedBusinessTypes.join(","),
+      catalogImages: selectedProducts.map((p) => p.id).join(","),
+    });
 
-  const fetchUsersByBusinessTypes = async () => {
-    if (selectedBusinessTypes.length > 0) {
-      usersByBusinessTypes = await getAllUsersByBusinessTypes({
-        businessTypes: selectedBusinessTypes.join(","),
-        catalogImages: selectedProducts.map((p) => p.id).join(","),
-      });
-    } else {
-      usersByBusinessTypes = [];
-    }
-  };
-
-  function autocompleteItemSelected(item) {
-    if (item != undefined && selectedProducts.length < 5) {
-      selectedProducts = selectedProducts.filter((p) => p != null);
-      selectedProducts.push(item);
-
-      let locations = IMAGE_LOCATIONS[selectedProducts.length - 1];
-
-      for (let i = 0; i < selectedProducts.length; i++) {
-        let loc = locations[i];
-        selectedProducts[i].location = loc;
+    let usersByBusinessTypesLinkPrcGroupsTemp = {};
+    usersByBusinessTypes.forEach((user) => {
+      if (
+        !usersByBusinessTypesLinkPrcGroupsTemp[
+          user.productfitAndList.percentage
+        ]
+      ) {
+        usersByBusinessTypesLinkPrcGroupsTemp[
+          user.productfitAndList.percentage
+        ] = {
+          users: [],
+          selected: false,
+        };
       }
+      usersByBusinessTypesLinkPrcGroupsTemp[
+        user.productfitAndList.percentage
+      ].users.push(user);
+    });
+    usersByBusinessTypesLinkPrcGroups = {
+      ...usersByBusinessTypesLinkPrcGroupsTemp,
+    };
+    requesting_from_server = false;
+  } else {
+    usersByBusinessTypes = [];
+  }
+};
 
-      searchValue = "";
-      selectedProducts = [...new Set(selectedProducts)];
+function resetSelectedUsersForWhatsappCampaign() {
+  let my_list = [];
+  let entries = Object.entries(usersByBusinessTypesLinkPrcGroups);
+  for (let i = 0; i < entries.length; i++) {
+    let prc = entries[i][0];
+    let userGroup = entries[i][1];
+
+    console.log("prc ", prc, " is ", userGroup?.selected);
+    if (userGroup?.selected == true) {
+      my_list.push(...userGroup.users);
     }
   }
-  async function searchProducts(keyword) {
-    let json = await apiSearchProducts(keyword);
-    let data = json;
-    let albums = [];
-    let album = undefined;
-    let items = data.all;
-    return items;
+  console.log(
+    "usersByBusinessTypesLinkPrcGroups: ",
+    usersByBusinessTypesLinkPrcGroups,
+    "to",
+    my_list
+  );
+  selectedUsersForWhatsappCampaign.set(my_list);
+}
+$: usersByBusinessTypesLinkPrcGroups, resetSelectedUsersForWhatsappCampaign();
+function autocompleteItemSelected(item) {
+  if (item != undefined && selectedProducts.length < 5) {
+    selectedProducts = selectedProducts.filter((p) => p != null);
+    selectedProducts.push(item);
+
+    let locations = IMAGE_LOCATIONS[selectedProducts.length - 1];
+
+    for (let i = 0; i < selectedProducts.length; i++) {
+      let loc = locations[i];
+      selectedProducts[i].location = loc;
+    }
+
+    searchValue = "";
+    selectedProducts = [...new Set(selectedProducts)];
   }
-  function downloadURI(uri, name) {
-    var link = document.createElement("a");
+}
+async function searchProducts(keyword) {
+  let json = await apiSearchProducts(keyword);
+  let data = json;
+  let albums = [];
+  let album = undefined;
+  let items = data.all;
+  return items;
+}
+function downloadURI(uri, name) {
+  var link = document.createElement("a");
 
-    link.download = name;
-    link.href = uri;
-    link.target = "_blank";
-    document.body.appendChild(link);
-    link.click();
-    //after creating link you should delete dynamic link
-    //clearDynamicLink(link);
-  }
-  function download() {
-    window
-      .html2canvas(document.querySelector("#capture"), {
-        allowTaint: false,
-        useCORS: true,
-      })
-      .then((canvas) => {
-        //document.body.appendChild(canvas)
+  link.download = name;
+  link.href = uri;
+  link.target = "_blank";
+  document.body.appendChild(link);
+  link.click();
+  //after creating link you should delete dynamic link
+  //clearDynamicLink(link);
+}
+function download() {
+  window
+    .html2canvas(document.querySelector("#capture"), {
+      allowTaint: false,
+      useCORS: true,
+    })
+    .then((canvas) => {
+      //document.body.appendChild(canvas)
 
-        var myImage = canvas.toDataURL();
-        downloadURI(myImage, "MaSimulation.png");
-      });
-  }
+      var myImage = canvas.toDataURL();
+      downloadURI(myImage, "MaSimulation.png");
+    });
+}
 
-  const itemToStringCustom = (item) => {
-    return item.name;
+const itemToStringCustom = (item) => {
+  return item.name;
+};
+const filterItemCustom = (item, value) =>
+  item.name.toLowerCase().includes(value.trim().toLowerCase());
+const sortItemCustom = (a, b) =>
+  a.name.localeCompare(b.name, "he", { numeric: true });
+
+const getSelectedBusinessTypeNameFromId = (id) => {
+  let businessType = businessTypes.find((b) => b.id === id);
+  return businessType.name;
+};
+
+const handleMetadataDownload = () => {
+  let metadata = {
+    selectedProducts: selectedProducts,
+    selectedBusinessTypes: selectedBusinessTypes,
+    selectedUsers: $selectedUsersForWhatsappCampaign,
+    message: message,
   };
-  const filterItemCustom = (item, value) =>
-    item.name.toLowerCase().includes(value.trim().toLowerCase());
-  const sortItemCustom = (a, b) =>
-    a.name.localeCompare(b.name, "he", { numeric: true });
+  let json = JSON.stringify(metadata);
+  let blob = new Blob([json], { type: "application/json" });
+  let url = URL.createObjectURL(blob);
+  downloadURI(url, `metadata-${Date.now()}.json`);
+};
 
-  const getSelectedBusinessTypeNameFromId = (id) => {
-    let businessType = businessTypes.find((b) => b.id === id);
-    return businessType.name;
-  };
+const handleExcelDownload = async () => {
+  let link =
+    GET_USERS_IN_EXCEL +
+    "?" +
+    new URLSearchParams({
+      crmUserIds: $selectedUsersForWhatsappCampaign.map((u) => u.id).join(","),
+    });
+  downloadURI(link, `users-${Date.now()}.xlsx`);
+};
 
-  const handleMetadataDownload = () => {
-    let metadata = {
-      selectedProducts: selectedProducts,
-      selectedBusinessTypes: selectedBusinessTypes,
-      selectedUsers: $selectedUsersForWhatsappCampaign,
-      message: message,
-    };
-    let json = JSON.stringify(metadata);
-    let blob = new Blob([json], { type: "application/json" });
-    let url = URL.createObjectURL(blob);
-    downloadURI(url, `metadata-${Date.now()}.json`);
+const handleMetadataUpload = (e) => {
+  let file = e.detail[0];
+  let reader = new FileReader();
+  reader.onload = (e) => {
+    let json = JSON.parse(e.target.result);
+    uploadedMetadata = json;
   };
-
-  const handleExcelDownload = async () => {
-    let link =
-      GET_USERS_IN_EXCEL +
-      "?" +
-      new URLSearchParams({
-        crmUserIds: $selectedUsersForWhatsappCampaign
-          .map((u) => u.id)
-          .join(","),
-      });
-    downloadURI(link, `users-${Date.now()}.xlsx`);
-  };
-
-  const handleMetadataUpload = (e) => {
-    let file = e.detail[0];
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      let json = JSON.parse(e.target.result);
-      uploadedMetadata = json;
-    };
-    reader.readAsText(file);
-  };
+  reader.readAsText(file);
+};
 </script>
 
 <svelte:head>
@@ -519,6 +578,11 @@
               bind:selectedIds={selectedBusinessTypes}
             />
           </Column>
+          <button
+            on:click={() => {
+              selectedBusinessTypes = businessTypes.map((v) => v.id);
+            }}>הכל</button
+          >
         </Row>
         <Row>
           <Column>
@@ -533,7 +597,7 @@
         </Row>
       </Grid>
     </div>
-    <div id="users-by-business-types-list">
+    <!-- <div id="users-by-business-types-list">
       <p>משתמשים עם סוג העסק שנבחר בחרו</p>
       <SvelteTable
         columns={usersByBusinessTypesColumns}
@@ -548,6 +612,48 @@
         rows={$selectedUsersForWhatsappCampaign}
         classNameTable="users"
       />
+    </div> -->
+    <div class="selected-business-types-count">
+      <h3>
+        אנשי קשר במקצועות המסומנים:
+        {#if requesting_from_server}
+          <Spinner />
+        {:else}
+          {usersByBusinessTypes.length}
+        {/if}
+        <br />
+        <div class="range">
+          {#each Object.entries(usersByBusinessTypesLinkPrcGroups) as [prc, groupInfo]}
+            <label class="container">
+              <input type="checkbox" bind:checked={groupInfo.selected} />
+              {prc}% התאמת מוצרים - {groupInfo.users.length} לקוחות
+            </label>
+          {/each}
+        </div>
+      </h3>
+      <h3>
+        אחרי סינון לא מעוניינים במוצרים:
+        {Object.values(usersByBusinessTypesLinkPrcGroups).reduce(
+          (acc, curr) => {
+            if (curr.selected) {
+              return acc + curr.users.length;
+            } else {
+              return acc;
+            }
+          },
+          0
+        )}
+      </h3>
+      <h3>
+        <div id="selected-users-by-business-types-list">
+          <p>משתמשים נבחרים</p>
+          <SvelteTable
+            columns={usersByBusinessTypesColumns}
+            rows={$selectedUsersForWhatsappCampaign}
+            classNameTable="users"
+          />
+        </div>
+      </h3>
     </div>
     <div id="message-container">
       <TextArea
@@ -567,170 +673,189 @@
 {/if}
 
 <style lang="scss" global>
-  .selected-wraper {
-    /*display: grid;
+.selected-business-types-count {
+  .range {
+    datalist {
+      // display: block;
+      // justify-content: space-between;
+      color: black;
+      //width: 100%;
+    }
+    input {
+      //width: 100%;
+    }
+  }
+}
+.selected-wraper {
+  /*display: grid;
         grid-template-columns: repeat(var(--var-num-rows), 1fr);*/
+  position: absolute;
+  top: 0px;
+  //height: calc(390px);
+  height: 100%;
+  width: 100%;
+  .item {
     position: absolute;
-    top: 0px;
-    //height: calc(390px);
-    height: 100%;
-    width: 100%;
-    .item {
-      position: absolute;
-      top: calc(var(--item-top) * 1px);
-      left: calc(var(--item-left) * 1px);
-      right: calc(var(--item-right) * 1px);
-      bottom: calc(var(--item-bottom) * 1px);
+    top: calc(var(--item-top) * 1px);
+    left: calc(var(--item-left) * 1px);
+    right: calc(var(--item-right) * 1px);
+    bottom: calc(var(--item-bottom) * 1px);
 
-      img {
-        //width: 100%;
-        /*max-width: 100%;
+    img {
+      //width: 100%;
+      /*max-width: 100%;
                 max-height: 100%;*/
+    }
+    .selected-product-title-on-image {
+      text-align: center;
+      font-size: larger;
+      font-weight: bold;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+    }
+  }
+}
+.selected-product-on-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  border-radius: 5px;
+  margin: 5px;
+  position: relative;
+  z-index: 1;
+  position: absolute;
+
+  .selected-product-image-on-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
+    }
+  }
+}
+.selected-products {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-top: 10px;
+  .selected-product {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    .selected-product-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+    .selected-product-image {
+      margin-right: 10px;
+      img {
+        height: 25px;
       }
-      .selected-product-title-on-image {
-        text-align: center;
-        font-size: larger;
-        font-weight: bold;
-        background: rgba(0, 0, 0, 0.5);
+    }
+    .selected-product-remove {
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+  }
+}
+.page {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-top: 1rem;
+  .part {
+    margin-bottom: 10px;
+  }
+
+  .part-1 {
+    flex: 1;
+  }
+  .part-2 {
+    position: relative;
+    width: 870px;
+    height: 505px;
+    //margin-left: 10px;
+    img {
+      width: 100%;
+      //height: 100%;
+    }
+  }
+}
+#main {
+  max-width: 64rem;
+  margin: auto;
+  padding-bottom: 1rem;
+}
+#business-select-parent {
+  max-width: 48rem;
+}
+#users-by-business-types-list,
+#selected-users-by-business-types-list,
+#message-container,
+#buttons-container {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+#buttons-container {
+  display: flex;
+}
+#metadata-dwnld {
+  margin-right: 1rem;
+}
+#excel-dwnld {
+  margin-right: 1rem;
+}
+#selected-users-by-business-types-list {
+  max-height: 550px;
+  overflow: scroll;
+}
+
+table.users {
+  font-size: small;
+  th {
+    font-size: 1em;
+    text-align: center;
+    font-weight: bold;
+  }
+  td {
+    font-size: 1.2em;
+    text-align: center;
+    font-weight: bold;
+  }
+  width: 100%;
+  thead {
+    tr {
+      th {
+        padding: 10px;
+        background-color: $gray-800;
         color: white;
       }
     }
   }
-  .selected-product-on-image {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 150px;
-    height: 150px;
-    border-radius: 5px;
-    margin: 5px;
-    position: relative;
-    z-index: 1;
-    position: absolute;
-
-    .selected-product-image-on-image {
-      width: 100%;
-      height: 100%;
-      border-radius: 5px;
-      img {
-        width: 100%;
-        height: 100%;
-        border-radius: 5px;
+  tbody {
+    tr {
+      // ligther colors on all odd rows
+      &:nth-child(even) {
+        background-color: $gray-600;
+        // color: white;
       }
     }
   }
-  .selected-products {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin-top: 10px;
-    .selected-product {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      align-items: flex-start;
-      margin-bottom: 10px;
-      .selected-product-title {
-        font-size: 14px;
-        font-weight: bold;
-        margin-right: 10px;
-      }
-      .selected-product-image {
-        margin-right: 10px;
-        img {
-          height: 25px;
-        }
-      }
-      .selected-product-remove {
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: bold;
-        margin-right: 10px;
-      }
-    }
-  }
-  .page {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin-top: 1rem;
-    .part {
-      margin-bottom: 10px;
-    }
-
-    .part-1 {
-      flex: 1;
-    }
-    .part-2 {
-      position: relative;
-      width: 870px;
-      height: 505px;
-      //margin-left: 10px;
-      img {
-        width: 100%;
-        //height: 100%;
-      }
-    }
-  }
-  #main {
-    max-width: 64rem;
-    margin: auto;
-    padding-bottom: 1rem;
-  }
-  #business-select-parent {
-    max-width: 48rem;
-  }
-  #users-by-business-types-list,
-  #selected-users-by-business-types-list,
-  #message-container,
-  #buttons-container {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-  }
-  #buttons-container {
-    display: flex;
-  }
-  #metadata-dwnld {
-    margin-right: 1rem;
-  }
-  #excel-dwnld {
-    margin-right: 1rem;
-  }
-  table.users {
-    th {
-      font-size: 1em;
-      text-align: center;
-      font-weight: bold;
-    }
-    td {
-      font-size: 1.2em;
-      text-align: center;
-      font-weight: bold;
-    }
-    width: 100%;
-    thead {
-      tr {
-        th {
-          padding: 10px;
-          background-color: $gray-800;
-          color: white;
-        }
-      }
-    }
-    tbody {
-      tr {
-        // ligther colors on all odd rows
-        &:nth-child(even) {
-          background-color: $gray-600;
-          // color: white;
-        }
-      }
-    }
-  }
+}
 </style>
