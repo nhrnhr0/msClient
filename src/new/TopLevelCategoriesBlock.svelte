@@ -46,11 +46,10 @@ onMount(async () => {
 }
 .category {
   // light radial-gradient glow
-  color: black;
-  background: rgba(43, 43, 43, 0.3);
+  background: rgba(255, 255, 255, 0.76);
   border-radius: 5px;
   background-size: 200% 100%;
-  color: white;
+  // color: white;
   padding: 5px;
   margin: 10px;
   box-sizing: border-box;
@@ -68,7 +67,7 @@ onMount(async () => {
     box-sizing: border-box; /*Don't forget this*/
 
     text-decoration: none;
-    color: white;
+    color: black;
     display: flex;
     flex-direction: column;
     & img {
@@ -84,8 +83,8 @@ onMount(async () => {
     }
     & .title {
       text-align: center;
-      color: white;
-      background-color: rgba(255, 255, 255, 0);
+      color: black;
+      background-color: rgba(190, 190, 190, 0.5);
       font-weight: bold;
       font-size: 22px;
       transition: all 0.5s ease-in-out;
@@ -97,6 +96,7 @@ onMount(async () => {
   &:hover,
   &:focus {
     background: rgb(43, 43, 43);
+
     color: white;
     a {
       color: white;
