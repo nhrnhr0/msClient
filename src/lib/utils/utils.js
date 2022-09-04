@@ -7,7 +7,6 @@ import { userInfoStore } from "src/stores/stores";
 import { get } from "svelte/store";
 
 export function clear_user_spesific_session_store_data() {
-    debugger;
     for (var key in sessionStorage) {
         if (key.indexOf('galery_page_products_') !== -1 ||
         key.indexOf('galery_page_scroll_pos_') !== -1 ||

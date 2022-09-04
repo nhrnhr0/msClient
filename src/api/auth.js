@@ -39,7 +39,6 @@ export async function request_whoAmI() {
 }
 
 export async function update_userInfoStore() {
-    debugger;
     let resp = await request_whoAmI();
     let new_store_data = get(userInfoStore);
     if(resp?.status != 'not logged in') {

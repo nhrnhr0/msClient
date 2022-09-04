@@ -67,6 +67,7 @@ function defult_request_options(requestOptions,headers_json= {}) {
         //         headers_json['Authorization'] = "Token " +get(userInfoStore).access;
         //     }
         // }
+        headers_json['Authorization'] = undefined;
         var myHeaders = new Headers(headers_json);
         var requestOptions = Object.assign({}, {
                 method: "GET",
