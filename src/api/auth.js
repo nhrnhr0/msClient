@@ -37,12 +37,12 @@ export function request_whoAmI() {
 
 export async function update_userInfoStore() {
     let resp = await request_whoAmI();
-    let new_store_data = {isLogin: false}
+    let new_store_data = get(userInfoStore);
     if(resp?.status != 'not logged in') {
-        new_store_data = {
-            isLogin:true,
-            me: resp,
-        }
+        new_store_data.me = resp;
+        new_store_data.isLogin=true;
+    }else {
+        new_store_data = {isLogin:false}
     }
     userInfoStore.set(new_store_data);
 }

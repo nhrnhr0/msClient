@@ -62,11 +62,11 @@ function defult_request_options(requestOptions,headers_json= {}) {
         }
         else {
         }*/
-        if (browser) {
-            if (get(userInfoStore)?.access) {
-                headers_json['Authorization'] = "Token " +get(userInfoStore).access;
-            }
-        }
+        // if (browser) {
+        //     if (get(userInfoStore)?.access) {
+        //         headers_json['Authorization'] = "Token " +get(userInfoStore).access;
+        //     }
+        // }
         var myHeaders = new Headers(headers_json);
         var requestOptions = Object.assign({}, {
                 method: "GET",
