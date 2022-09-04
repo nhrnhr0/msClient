@@ -66,18 +66,15 @@ function login() {
       is_requesting = false;
     });
 }
-function logout() {
-  request_logout().then((response) => {
-    if (response.status === "success") {
-    } else if (response.status === "warning") {
-      alert(response.detail);
-    }
-    $userInfoStore = { isLogin: false };
-    clear_user_spesific_session_store_data();
-    window.location.reload();
-
-    //window.location.href=window.location.href;
-  });
+async function logout() {
+  let response = await request_logout();
+  if (response.status === "success") {
+  } else if (response.status === "warning") {
+    alert(response.detail);
+  }
+  $userInfoStore = { isLogin: false };
+  clear_user_spesific_session_store_data();
+  window.location.reload();
 }
 let show_password = false;
 $: password_type = show_password ? "text" : "password";
@@ -239,8 +236,8 @@ function getUsers(user, keyword) {
               <div class="action-buttons">
                 <button
                   class="btn btn-danger"
-                  on:click={() => {
-                    logout();
+                  on:click={async () => {
+                    await logout();
                   }}>התנתק</button
                 >
                 {#if $userInfoStore.me.is_superuser}
