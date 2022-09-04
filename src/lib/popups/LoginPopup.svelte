@@ -72,12 +72,11 @@ async function logout() {
   } else if (response.status === "warning") {
     alert(response.detail);
   }
-  alert(JSON.stringify(response));
   $userInfoStore = { isLogin: false };
   clear_user_spesific_session_store_data();
   setTimeout(() => {
     window.location.reload();
-  }, 2000);
+  }, 1);
 }
 let show_password = false;
 $: password_type = show_password ? "text" : "password";
