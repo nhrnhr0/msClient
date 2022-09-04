@@ -15,20 +15,22 @@ export function request_update_user_detail(username, old_password, new_password)
         })
     });
 }
-export function request_login(username, password) {
+export async function request_login(username, password) {
     let data = {
         'username':username,
         'password':password
     }
 
-    let response = my_fetch(AUTH_TOKEN_URL, {method:"POST", body: JSON.stringify(data)}, null, false)
-    return response;
+    let response = await my_fetch(AUTH_TOKEN_URL, {method:"POST", body: JSON.stringify(data)}, null, false);
+    let json = await response.json();
+    return json;
 
 }
 
-export function request_logout() {
-    let response = my_fetch(AUTH_LOGOUT_URL, {method:"GET"})
-    return response;
+export async function request_logout() {
+    let response = await my_fetch(AUTH_LOGOUT_URL, {method:"GET"});
+    let json = await response.json();
+    return json;
 }
 export function request_whoAmI() {
     let response = fetch_wraper(WHO_AM_I_URL, {method:"GET"});

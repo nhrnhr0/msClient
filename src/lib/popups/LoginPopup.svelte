@@ -24,7 +24,6 @@ function login() {
   let password = document.querySelector("#password").value;
   let response = request_login(username, password);
   response
-    .then((json) => json.json())
     .then(async (data) => {
       if (data["error"]) {
         error_detail = "\n" + JSON.stringify(data["error"], null, 4);
@@ -67,16 +66,18 @@ function login() {
     });
 }
 async function logout() {
+  debugger;
   let response = await request_logout();
   if (response.status === "success") {
   } else if (response.status === "warning") {
     alert(response.detail);
   }
+  alert(JSON.stringify(response));
   $userInfoStore = { isLogin: false };
   clear_user_spesific_session_store_data();
   setTimeout(() => {
     window.location.reload();
-  }, 1);
+  }, 2000);
 }
 let show_password = false;
 $: password_type = show_password ? "text" : "password";
