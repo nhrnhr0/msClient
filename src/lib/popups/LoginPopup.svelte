@@ -74,7 +74,9 @@ async function logout() {
   }
   $userInfoStore = { isLogin: false };
   clear_user_spesific_session_store_data();
-  window.location.reload();
+  setTimeout(() => {
+    window.location.reload();
+  }, 1);
 }
 let show_password = false;
 $: password_type = show_password ? "text" : "password";
