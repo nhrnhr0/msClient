@@ -10,7 +10,8 @@ export function clear_user_spesific_session_store_data() {
     debugger;
     for (var key in sessionStorage) {
         if (key.indexOf('galery_page_products_') !== -1 ||
-        key.indexOf('galery_page_scroll_pos_') !== -1)
+        key.indexOf('galery_page_scroll_pos_') !== -1 ||
+        key.indexOf('galery_page_next_url_') !== -1)
             sessionStorage.removeItem(key);
     }
 }

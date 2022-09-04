@@ -341,6 +341,7 @@ let colum_key;
 let colum_vals;
 let val_key;
 let val_vals;
+let color_th_width;
 
 /* $: {
          productInfo;
@@ -473,7 +474,9 @@ function input_field_focous(e) {
       <table class="product-table">
         <thead>
           <tr>
-            <th class="const-size-cell">צבע</th>
+            <th class="const-size-cell" bind:clientWidth={color_th_width}
+              >צבע</th
+            >
             {#if productInfo.varients.length != 0}
               <th class="const-size-cell">מודל</th>
             {/if}
@@ -497,7 +500,10 @@ function input_field_focous(e) {
                 </div>
               </td>
               {#if productInfo.varients.length != 0}
-                <td class="sticky-col verient-sticky-col-padd">
+                <td
+                  class="sticky-col verient-sticky-col-padd"
+                  style:right={color_th_width + 0.5 + "px"}
+                >
                   {#each productInfo.varients as varient}
                     <div class="varient-box cls-cell">
                       {varient.name}
@@ -1150,12 +1156,12 @@ function input_field_focous(e) {
   position: -webkit-sticky;
   position: sticky;
   right: 0px;
-  &.verient-sticky-col-padd {
+  /*&.verient-sticky-col-padd {
     right: 86px;
     @media screen and (max-width: 768px) {
       right: 74px;
     }
-  }
+  }*/
 }
 .total-cell {
   div {
