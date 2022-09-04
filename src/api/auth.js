@@ -32,12 +32,14 @@ export async function request_logout() {
     let json = await response.json();
     return json;
 }
-export function request_whoAmI() {
-    let response = fetch_wraper(WHO_AM_I_URL, {method:"GET"});
-    return response;
+export async function request_whoAmI() {
+    let response = await my_fetch(WHO_AM_I_URL, {method:"GET"});
+    let json = response.json();
+    return json;
 }
 
 export async function update_userInfoStore() {
+    debugger;
     let resp = await request_whoAmI();
     let new_store_data = get(userInfoStore);
     if(resp?.status != 'not logged in') {
