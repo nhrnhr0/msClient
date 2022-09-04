@@ -177,6 +177,7 @@ let product_wraper_clientWidth;
       href={get_product_url(product)}
       class="product"
       data-product-id={product.id}
+      title={product.title}
     >
       <div class="product-image">
         {#if $dictCartStore[product.id]}
@@ -193,7 +194,9 @@ let product_wraper_clientWidth;
       </div>
       <div class="product-info">
         <div class="product-title">
-          {product.title}
+          {product.title.length > 25
+            ? product.title.substring(0, 25) + "..."
+            : product.title}
         </div>
         <!-- {#if product.price != 0}
                                 <div class="product-price">
