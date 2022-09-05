@@ -50,6 +50,7 @@ import { logStore } from './../../stores/logStore';
 import MyCountdown from '$lib/components/MyCountdown.svelte';
 import QuestionLabel from '$lib/components/questionLabel.svelte';
 import SingleAmountModal from './singleAmountModal.svelte';
+import PriceTag from '../components/priceTag.svelte';
 
   let productData = writable();
   let current_album = writable();
@@ -63,7 +64,8 @@ import SingleAmountModal from './singleAmountModal.svelte';
   let campain_id = undefined;
   let campain_title = undefined;
   let campain;
-  let priceTable = undefined;
+  //let priceTable = undefined;
+  let newPrice = undefined;
   const error_title = 'מוצר זה אינו זמין לתצוגה כרגע';
   export let isModalOpen = false;
   let placeHolderText = 'טוען...';
@@ -185,10 +187,10 @@ import SingleAmountModal from './singleAmountModal.svelte';
     
   }
 
-  let show_prices;
+  /*let show_prices;
   $: {
     show_prices =  ($userInfoStore['me'] && Object.keys($userInfoStore['me']) != 0 && $userInfoStore['me'].show_prices == true)? true : false;
-  }
+  }*/
 
   function open_category() {
     $categoryModalStore.setAlbum($current_album);
@@ -300,7 +302,8 @@ import SingleAmountModal from './singleAmountModal.svelte';
         if(info = camp.products.find(val => val.catalogImage.id == data.id)) {
           is_in_campain = true;
           campain = camp;
-          priceTable = info.priceTable;
+          //priceTable = info.priceTable;
+          newPrice = info.newPrice;
           campain_title = camp.album.title;
           campain_id = camp.id;
           break;
@@ -481,6 +484,10 @@ import SingleAmountModal from './singleAmountModal.svelte';
                                     </th>
                                     
                                   </tr>
+                                  <tbody>
+                                    
+                                  </tbody>
+                                  <!--
                                   {#if priceTable.length}
                                     <tr class="headers">
                                     
@@ -502,6 +509,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
                                       </tr>
                                     {/each}
                                   </tbody>
+                                  -->
                                 </table>
 
                               </div>
@@ -539,8 +547,15 @@ import SingleAmountModal from './singleAmountModal.svelte';
                           <button class="question-button btn btn-primary" on:click={()=> {$productQuestionModalStore.openModal($productData.id,$productData.title);}} >
                             יש לך שאלה?
                           </button>
-                        
+                        <!--
                           <div class="price-tag" class:active={show_prices && $productData.out_of_stock == false} >{$productData.price + '₪'}</div>
+                          -->
+                          <PriceTag
+                            ClassName="price-tag"
+                            price={$productData.price}
+                            newPrice={$productData.newPrice}
+                            out_of_stock={$productData.out_of_stock}
+                            />
                         {/if}
                       </div>
                       
@@ -1328,11 +1343,11 @@ import SingleAmountModal from './singleAmountModal.svelte';
                 margin-top: 25px;
                 width: auto;
               }
-              .price-tag {
+              :global(.price-tag) {
                     position: absolute;
                     top:5px;
                     left:5px;
-                    padding: 5px;
+                    /*padding: 5px;
                     font-weight: bold;
                     border-radius: 999px;
                     background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
@@ -1340,7 +1355,7 @@ import SingleAmountModal from './singleAmountModal.svelte';
                     font-size: x-large;
                     &.active {
                         display: block;
-                    }
+                    }*/
                 }
             }
             img.product-modal-img {

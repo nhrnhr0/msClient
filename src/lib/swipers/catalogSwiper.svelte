@@ -44,6 +44,7 @@ import { logStore } from './../../stores/logStore';
 import { selectTextOnFocus } from '$lib/ui/inputActions';
 import SvelteTooltip from 'svelte-tooltip';
 import QuestionLabel from '$lib/components/questionLabel.svelte';
+import PriceTag from '../components/priceTag.svelte';
 let mouse_over_right_arrow = false;
 let mouse_over_left_arrow = false;
 
@@ -547,7 +548,12 @@ on:change={(event) => {
                                             </SvelteTooltip>
                                         </div>
                                         <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{image.cimage}" alt="{image.title}">
-                                        <div class="price-tag" class:active={show_prices && image.out_of_stock == false} >{image.price + '₪'}</div>
+                                        <PriceTag
+                                            price={image.price}
+                                            newPrice={image.newPrice}
+                                            ClassName="price-tag"
+                                            ></PriceTag>
+                                        <!--<div class="price-tag" class:active={show_prices && image.out_of_stock == false} >{image.price + '₪'}</div>-->
                                         <!--     <FaveBtn product_id={image.id}/>-->
                                     </div> 
                                 </div>
@@ -1106,20 +1112,10 @@ on:change={(event) => {
                     
                 }
                 
-                .price-tag {
+                :global(.price-tag) {
                     position: absolute;
                     bottom: 5px;
                     left:5px;
-                    padding: 5px;
-                    font-weight: bold;
-                    border-radius: 25px;
-                    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-                    display: none;
-                    font-size: x-large;
-                    color: black;
-                    &.active {
-                        display: block;
-                    }
                 }
                 .product-image {
                     cursor: pointer;

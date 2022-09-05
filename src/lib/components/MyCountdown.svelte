@@ -90,6 +90,7 @@
 {/if}
 <style lang="scss">
     .timer-container {
+        direction: rtl;
         .timer {
 
             display: flex;

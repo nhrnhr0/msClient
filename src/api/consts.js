@@ -46,6 +46,7 @@ export const LOGS_URL = BASE_URL + '/api/logs/';
 export const ADMIN_GET_ALL_CAMPAINS_URL = ADMIN_API_URL + '/get-all-campaigns/';
 export const USER_GET_CAMPAINS_URL = BASE_API_URL + 'get-user-campains/';
 export const GET_ALL_USERS_URL = BASE_URL + '/api/get-all-users/';
+export const SAVE_LEAD_URL = BASE_URL + '/api-save-lead/';
 export const SEARCH_PROVIDERS_API_URL = BASE_URL + '/search-providers';
 export const SEARCH_WAREHOUSES_URL = BASE_URL + '/search-warehouses';
 export const CREATE_ENTER_DOC_URL = BASE_URL + '/inv/create-enter-doc/';
