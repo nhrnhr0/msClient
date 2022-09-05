@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { browser } from '$app/env';
+import { browser } from "$app/env";
 
 export let albumsJsonStore = writable([]);
 
@@ -23,6 +23,7 @@ export let all_swipers = writable([]);
 
 export let successModalStore = writable();
 
+export let selectedUsersForWhatsappCampaign = writable([]);
 function createCartHistoryStore() {
   const { subscribe, update, set } = writable({
     showModal: false,
@@ -60,15 +61,11 @@ export let cartHistoryModal = writable({
 });
 
 // browser storage - userInfoStore
-let initUserData = { isLogin: undefined };
+let initUserData = { isLogin: false };
 if (browser) {
-  if (typeof Storage !== "undefined") {
-    initUserData = JSON.parse(localStorage.getItem("user"));
-  } else {
-    initUserData = JSON.parse(sessionStorage.getItem("user"));
-  }
+  initUserData = JSON.parse(localStorage.getItem("user"));
   if (!initUserData) {
-    initUserData = { isLogin: undefined };
+    initUserData = { isLogin: false };
   }
 }
 export let userInfoStore = writable(initUserData);

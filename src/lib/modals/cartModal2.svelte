@@ -197,11 +197,11 @@
 
 			modal_zIndex = 1200 + (++$_modal_z_index_incrementor * 15);
 			if (!is_under_700px) {
-				main_wraper_element.style = `width: calc(100vw - 315px - 15px);position: absolute;left: 0px;`
+				main_wraper_element.style = `width: calc(100vw - 315px - 15px);position: absolute;left: 0px;max-height: 100vh;`
 				main_navbar_wraper.style = `width: calc(100vw - 315px - 15px);left: 0px;`
 				sidebar_top = 0;
 			} else {
-				//debugger;
+				//
 				//document.querySelector('#sidebar-cart').style = `top: 62px;`
 				sidebar_top = 62;
 			}
@@ -570,12 +570,17 @@
                   </div>
                   <div class="form-group">
                     <div class="form-control">
-                      {#if $userInfoStore?.me?.is_superuser}
+                      {#if $userInfoStore?.isLogin}
                         <!-- האם הזמנה או הצעת מחיר -->
-                        <select name="order_type">
-                          <option value="הזמנה">הזמנה</option>
-                          <option value="הצעת מחיר">הצעת מחיר</option>
-                        </select>
+                        <div class="form-group">
+                          <div class="form-control">
+                            <label for="order_type">סוג הזמנה</label>
+                            <select name="order_type">
+                              <option value="הזמנה">הזמנה</option>
+                              <option value="הצעת מחיר">הצעת מחיר</option>
+                            </select>
+                          </div>
+                        </div>
                       {/if}
                     </div>
                   </div>
@@ -860,13 +865,7 @@
   $gray-1100: #222224;
   $gray-1200: #131314;
 
-  // Mixin to generate hover & active states
-  @mixin hover-active() {
-    &:active,
-    &:hover {
-      @content;
-    }
-  }
+  
 
   // Replace `$search` with `$replace` in `$string`
   @function str-replace($string, $search, $replace: "") {
@@ -883,6 +882,12 @@
 
     @return $string;
   }
+  @mixin hover-active() {
+  &:active,
+  &:hover {
+    @content;
+  }
+}
   a {
     text-decoration: none;
     color: $primary;

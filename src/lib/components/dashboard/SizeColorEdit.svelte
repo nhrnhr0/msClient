@@ -2,8 +2,8 @@
 <script>
 import { browser } from "$app/env";
 
-import { CLOUDINARY_URL } from "@src/api/consts";
-import { colorsJsonStore, sizesJsonStore } from "@src/stores/stores";
+import { CLOUDINARY_URL } from "src/api/consts";
+import { colorsJsonStore, sizesJsonStore } from "src/stores/stores";
 import { onDestroy, onMount } from "svelte";
 
 

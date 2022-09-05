@@ -20,7 +20,7 @@ import About from "$lib/about.svelte";
     let business_types_groups;
     onMount(async ()=> {
         loaded = false;
-        debugger;
+        
         intrests = await loadAllIntrests();
         business_types = await loadBusinessTypes();
         business_types_groups = await loadBusinessTypesGroups();
@@ -104,7 +104,7 @@ import About from "$lib/about.svelte";
 
     function add_bulk_intrests(intrestsToAdd, e) {
         e.preventDefault();
-        debugger;
+        
         let newIntrests = [...instrests_results2]
         intrestsToAdd.forEach(intrest => {
             let item = {
@@ -237,7 +237,7 @@ import About from "$lib/about.svelte";
                         </div>
                                 <!-- <button on:click="{(e)=>{
                                     e.preventDefault();
-                                    debugger;
+                                    
                                     let newIntrests = [...instrests_results2]
                                     let intrestsToAdd = business_types_group.intrests;
                                     intrestsToAdd.forEach(intrest => {
@@ -388,6 +388,7 @@ import About from "$lib/about.svelte";
         @include bg-gradient();
     }
     .bg-wraper  {
+        /*
     background: url('https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl');
     background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url('https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl')!important;
     background-position: center;
@@ -395,7 +396,7 @@ import About from "$lib/about.svelte";
     width: 100%;
     //height: -webkit-fill-available;
     //height: 100vh;
-    overflow-y: auto;
+    overflow-y: auto;*/
     main {
         display: flex;
         justify-content: center;

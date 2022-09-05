@@ -117,7 +117,6 @@ import PriceTag from '../components/priceTag.svelte';
             }, {});
             // put undefined topLevelCategory albums at the end
             
-            console.log('groupedAlbums', groupedAlbums);
 
 
             let groupedAlbumsTempArr = [];

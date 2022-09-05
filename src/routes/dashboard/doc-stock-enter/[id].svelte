@@ -16,18 +16,17 @@
     }
 </script>
 <script>
-import { get_doc_stock_enter, } from "@api/api";
-import { CLOUDINARY_URL } from "@src/api/consts";
+import { get_doc_stock_enter, } from "src/api/api";
+import { CLOUDINARY_URL } from "src/api/consts";
 import AutoComplete from "simple-svelte-autocomplete";
-import { apiSearchPPN,addPPNToEnterDoc } from "@src/api/api";
+import { apiSearchPPN,addPPNToEnterDoc } from "src/api/api";
 import { onMount } from "svelte";
-import { BASE_URL } from "@src/api/consts";
-import SizeColorTable from "@src/lib/components/dashboard/SizeColorTable.svelte";
+import { BASE_URL } from "src/api/consts";
+import SizeColorTable from "src/lib/components/dashboard/SizeColorTable.svelte";
 import { writable } from "svelte/store";
-import { save_enter_doc_edit_to_server, remove_product_from_enter_doc_api } from "@src/api/api";
+import { save_enter_doc_edit_to_server, remove_product_from_enter_doc_api } from "src/api/api";
 import { Spinner } from "sveltestrap";
-import { insert_doc_to_inventory_api,get_warehouses_api } from "@src/api/api";
-//import ProvidersFill from "@src/lib/components/dashboard/doc-stock-enter/ProvidersFill.svelte";
+import { insert_doc_to_inventory_api,get_warehouses_api } from "src/api/api";
 import { goto } from "$app/navigation";
     let doc_promise;
     let doc_data = writable(undefined);
@@ -67,7 +66,7 @@ import { goto } from "$app/navigation";
         if(e != undefined) {
             
             let barcode = e.barcode || '';
-            debugger;
+            
             inp_selected_ppn = e.id;
             let buy_price = e.buy_price;
             inp_product_form_cost = buy_price;
@@ -98,13 +97,13 @@ import { goto } from "$app/navigation";
         }
         sending_data_to_server = true;
         let result = save_enter_doc_edit_to_server(data);
-        debugger;
+        
         result.then((dat) => {
-            debugger;
+            
             set_load_info(dat);
             sending_data_to_server = false;
         }).catch((e) => {
-            debugger;
+            
             alert(e);
             sending_data_to_server = false;
         });

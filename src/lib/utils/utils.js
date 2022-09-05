@@ -2,6 +2,68 @@
 import * as localizedFormat from "dayjs/plugin/localizedFormat";
 dayjs.extend(localizedFormat);*/
 
+import { cartStore, dictCartStore } from "src/stores/cartStore";
+import { userInfoStore } from "src/stores/stores";
+import { get } from "svelte/store";
+
+export function clear_user_spesific_session_store_data() {
+    for (var key in sessionStorage) {
+        if (key.indexOf('galery_page_products_') !== -1 ||
+        key.indexOf('galery_page_scroll_pos_') !== -1 ||
+        key.indexOf('galery_page_next_url_') !== -1)
+            sessionStorage.removeItem(key);
+    }
+}
+
+export function edit_cart_price_promp(product_id) {
+    let user = get(userInfoStore);
+    if(user.isLogin && user.me.is_superuser) {
+        console.log('edit_cart_price_promp', product_id)
+        let product = get(cartStore).find(prod=> prod.id == product_id)
+        if (product) {
+            let old_price = product.price
+            let new_price = prompt('בחר מחיר חדש:' ,old_price);
+            if(new_price){
+                product.price = new_price;
+                cartStore.setProduct(product);
+            }
+        }
+    }
+}
+
+export function mentries_to_data_array(mentries) {
+	let data = [];
+        for(let size_id_idx in Object.entries(mentries)) {
+            let size_id = Object.entries(mentries)[size_id_idx][0];
+            let colors_vals = Object.entries(mentries)[size_id_idx][1];
+            for(let color_id_idx in Object.entries(colors_vals)) {
+                let color_id = Object.entries(colors_vals)[color_id_idx][0];
+                let inner_vals = Object.entries(colors_vals)[color_id_idx][1];
+                if (inner_vals.hasOwnProperty('quantity')) {
+                    data.push({
+                        'size_id':color_id,
+                        'color_id':size_id,
+                        'quantity':inner_vals['quantity']
+                    });
+                }else if(Object.entries(inner_vals).length > 0) {
+                    for(let ver_id_idx in Object.entries(inner_vals)) {
+                        let ver_id = Object.entries(inner_vals)[ver_id_idx][0];
+                        let last_vals = Object.entries(inner_vals)[ver_id_idx][1];
+                            if (last_vals.hasOwnProperty('quantity')) {
+                                data.push({
+                                    'size_id':color_id,
+                                    'color_id':size_id,
+                                    'ver_id': ver_id,
+                                    'quantity':last_vals['quantity']
+                                });
+                            }
+                    }
+                }
+            }
+        }
+		return data;
+	}
+
 export function isNumeric(str) {
     if (typeof str != "string") return false // we only process strings!  
     return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
@@ -59,4 +121,28 @@ export function fastpivot(arr){
 		obj=temp;
 	}
 	return obj;
+}
+
+
+export function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+export function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+export function eraseCookie(name) {   
+    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }

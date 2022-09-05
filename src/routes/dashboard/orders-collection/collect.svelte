@@ -1,9 +1,9 @@
 
 
 <script context="module">
-    import { fetch_wraper } from "@src/api/api";
+    import { fetch_wraper } from "src/api/api";
     
-    import { MORDER_GET_ORDER_DETAIL_TO_COLLECT } from "@src/api/consts";
+    import { MORDER_GET_ORDER_DETAIL_TO_COLLECT } from "src/api/consts";
 import { onMount } from "svelte";
     
     
@@ -11,10 +11,10 @@ import { onMount } from "svelte";
 <script>
 import { page } from "$app/stores";
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
-import { CLOUDINARY_URL } from "@src/api/consts";
-import StockEditPopup from "@src/lib/components/dashboard/StockEditPopup.svelte";
+import { CLOUDINARY_URL } from "src/api/consts";
+import StockEditPopup from "src/lib/components/dashboard/StockEditPopup.svelte";
 import { getContext } from 'svelte';
-import { BASE_URL } from "@src/api/consts";
+import { BASE_URL } from "src/api/consts";
 import { notifier } from "@beyonk/svelte-notifications";
 import { Spinner } from "sveltestrap";
 
@@ -92,7 +92,7 @@ const { open } = getContext('simple-modal');
                 {title: 'נשאר לאסוף', field: 'quantity', formatter:function(cell, formatterParams) {
                     let collected = cell.getData().collected;
                     if (collected && collected.length > 0) {
-                        debugger;
+                        
                         collected = collected.map(x => x.quantity).reduce((a, b) => a + b, 0);
                     }else {
                         collected = 0;
@@ -179,7 +179,7 @@ const { open } = getContext('simple-modal');
                     color_button.name='color_button';
                     color_button.addEventListener('click', function(e){
                         console.log('color_button: ', color_button.checked);
-                        debugger;
+                        
                         if(color_button.checked) {
                             filters.color = true;
                         } else {
@@ -256,7 +256,7 @@ const { open } = getContext('simple-modal');
                     let table = document.createElement('div');
                     htmlTable += `<tbody>`;
                     /*onRendered(function() {
-                        debugger;
+                        
                         
                     })*/
                     
@@ -284,7 +284,7 @@ const { open } = getContext('simple-modal');
                     row.getElement().appendChild(holderEl);
 
                     let domTable = document.querySelector(`#taken_inventory_${rowData.id}`)
-                    debugger;
+                    
                     let entryStocks = data['stocks'].filter(x=>(
                                 (x.ppn__product__id == rowData.orderItem__product__id && 
                                 (x.ppn__has_phisical_barcode == rowData.has_physical_barcode || !filters.has_physical_barcode) &&
@@ -347,7 +347,7 @@ const { open } = getContext('simple-modal');
                             // show stock with ability to edit
                             // create button
                             let button = document.createElement('button');
-                            debugger;
+                            
                             button.innerText = 'ערוך';
                             let stock_id = cell.getData().id;
                             button.addEventListener('click', ()=> {
@@ -394,7 +394,7 @@ const { open } = getContext('simple-modal');
                 }
             }).then(data => {
                 console.log(data);
-                debugger;
+                
                 if (data.success == 'success') {
                     notifier.success('הפרטים נשמרו בהצלחה');
                 }
@@ -409,7 +409,7 @@ const { open } = getContext('simple-modal');
 
     function update_collected_quantity(id, value,takenInventory_id,stock_entry_id) {
         let row = data['stocks'].find(x=>x.id == id);
-        debugger;
+        
         //et rowData = row.getData();
         if(row.collected == undefined) {
             row.collected = {};
@@ -446,7 +446,7 @@ const { open } = getContext('simple-modal');
                 input.type = 'number';
                 //input.value = stock.collected;
                 input.min = 0;
-                debugger;
+                
                 let takenInventoryItem = data['taken'].find(e=>e.id==takenInventory_id)
                 if(takenInventoryItem.collected && takenInventoryItem.collected.length > 0) {
                     let collected = takenInventoryItem.collected.find(e=>e.warehouseStock__id == stock.id);

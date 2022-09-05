@@ -26,7 +26,7 @@
             font-size: 2rem;
 
             margin: 10px auto;
-            width: 100%;
+            width: 90%;
             text-align: center;
 
             -webkit-box-shadow: 0px 19px 28px 10px rgba(0, 0, 0, 0.89);

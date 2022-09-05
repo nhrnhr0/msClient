@@ -3,10 +3,10 @@
 import { admin_get_enter_docs } from './../../../api/api'
 
 import { onMount } from "svelte";
-import { BASE_URL } from '@api/consts';
+import { BASE_URL } from 'src/api/consts';
   import { getContext } from 'svelte';
   const { open } = getContext('simple-modal');
-  import CreateEnterDocPopup from '@lib/popups/CreateEnterDocPopup.svelte';
+  import CreateEnterDocPopup from 'src/lib/popups/CreateEnterDocPopup.svelte';
 import { Spinner } from 'sveltestrap';
   const showSurprise = () => open(Popup, { message: "It's a modal!" });
 

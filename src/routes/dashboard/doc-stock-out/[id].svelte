@@ -1,7 +1,7 @@
 
 
 <script context="module">
-import { apiGetMOrder } from "@src/api/api";
+import { apiGetMOrder } from "src/api/api";
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import AutoComplete from "simple-svelte-autocomplete";
 
@@ -19,12 +19,12 @@ import { onMount } from "svelte";
 </script>
 <script>
     
-import { CLOUDINARY_URL } from "@api/consts";
+import { CLOUDINARY_URL } from "src/api/consts";
 import { page } from "$app/stores";
 import { Label, Spinner } from "sveltestrap";
 import MorderProductEdit from "$lib/components/dashboard/doc_stock_out/MorderProductEdit.svelte";
-import { BASE_URL } from "@api/consts";
-import { apiAddNewProductToMorder, apiSearchProducts,apiDeleteProductFromMorder } from "@api/api";
+import { BASE_URL } from "src/api/consts";
+import { apiAddNewProductToMorder, apiSearchProducts,apiDeleteProductFromMorder } from "src/api/api";
 import { notifier } from "@beyonk/svelte-notifications";
 let loading = false;
 function setNewData(data) {
@@ -130,7 +130,7 @@ function save_order_to_server(e) {
         function products_formrubhקונatter(cell, formatterParams, onRendered) {
             let products = cell.getValue();
             let row = cell.getRow()._row.element;
-            debugger;
+            
             let html = '<div>'
             products.forEach(product => {
                 html += `<div>${product.size_name}</div>`;

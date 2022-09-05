@@ -1,6 +1,6 @@
 import { browser } from "$app/env";
-import { WAREHOUSES_API_URL,SIZES_API_URL,COLORS_API_URL,VARIANTS_API_URL ,BASE_URL} from "@src/api/consts";
-import { fetch_wraper } from "@src/api/api";
+import { WAREHOUSES_API_URL,SIZES_API_URL,COLORS_API_URL,VARIANTS_API_URL ,BASE_URL} from "src/api/consts";
+import { fetch_wraper } from "src/api/api";
 import { derived, writable } from "svelte/store";
 
 
@@ -67,6 +67,11 @@ export async function getLocalStorageStore(key) {
                     }
                     finally{
                         keyUrlPairs[key].requesting = false;
+                        //convert data to dict with id as key
+                        let newData = {};
+                        /*data.forEach(item=>{
+                            newData[item.id] = item;
+                        });*/
                         keyToStore[key].set(data);
                         return data;
                     }

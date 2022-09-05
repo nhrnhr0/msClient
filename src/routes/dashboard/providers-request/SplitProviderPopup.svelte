@@ -1,6 +1,6 @@
 <script>
-import { CLOUDINARY_URL } from "@src/api/consts";
-import { PROVIDERS_STORE,PROVIDERS_STORE_IDS_AS_KEYS, } from "@src/stores/localStorageStore";
+import { CLOUDINARY_URL } from "src/api/consts";
+import { PROVIDERS_STORE,PROVIDERS_STORE_IDS_AS_KEYS, } from "src/stores/localStorageStore";
 import AutoComplete from "simple-svelte-autocomplete";
 import { onDestroy, onMount } from "svelte";
 import { Spinner } from "sveltestrap";
@@ -32,7 +32,7 @@ import { Spinner } from "sveltestrap";
         }
         if(new_providers.length > 0) {
             //update_or_create_request_quantity_local(idx, rowData, size_key, val)
-            debugger;
+            
             
             for(let i = 0; i < new_providers.length; i++) {
                 let idx = -1;

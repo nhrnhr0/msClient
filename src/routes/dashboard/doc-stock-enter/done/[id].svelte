@@ -1,9 +1,9 @@
 
 <script export="module">
 import { page } from "$app/stores";
-import { get_doc_stock_enter,get_doc_stock_enter_provider_requests } from "@src/api/api";
-import PivotEditTable from "@src/lib/components/dashboard/PivotEditTable.svelte";
-import ColorDisplay from "@src/lib/components/ColorDisplay.svelte";
+import { get_doc_stock_enter,get_doc_stock_enter_provider_requests } from "src/api/api";
+import PivotEditTable from "src/lib/components/dashboard/PivotEditTable.svelte";
+import ColorDisplay from "src/lib/components/ColorDisplay.svelte";
 
 
     async function get_doc_info_from_server(doc_id) {
@@ -21,9 +21,9 @@ import ColorDisplay from "@src/lib/components/ColorDisplay.svelte";
     let ALL_VARIENTS;
     let sizes_dict = {};
     import { onMount } from "svelte";
-import { getLocalStorageStore } from "@src/stores/localStorageStore";
+import { getLocalStorageStore } from "src/stores/localStorageStore";
 import { Spinner } from "sveltestrap";
-import { save_doc_stock_enter_provider_requests } from "@src/api/api";
+import { save_doc_stock_enter_provider_requests } from "src/api/api";
 import { goto } from "$app/navigation";
 import { notifier } from "@beyonk/svelte-notifications";
     let doc_id = undefined;

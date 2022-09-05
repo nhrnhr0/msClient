@@ -10,10 +10,6 @@ import { NotificationDisplay } from '@beyonk/svelte-notifications'
 
 </script>
 <script>
-    //import { colorsJsonStore, sizesJsonStore } from "@src/stores/stores";
-//import { fetch_wraper,get_album_details } from "@src/api/api";
-//import { MAIN_PAGE_API } from "@src/api/consts";
-//import { browser } from "$app/env";
 import { page } from "$app/stores";
 import { onMount } from "svelte";
     /*onMount(async()=> {

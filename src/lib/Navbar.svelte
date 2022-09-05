@@ -25,7 +25,8 @@ import NavLoginManager from "./components/navLoginManager.svelte";
 import { apiSearchProducts } from "./../api/api";
 import { logStore } from "./../stores/logStore";
 
-import AlbumsView from "./components/AlbumsView.svelte";
+import { goto } from "$app/navigation";
+import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
         
 
         
@@ -36,20 +37,18 @@ import AlbumsView from "./components/AlbumsView.svelte";
             let albums = [];
             let album = undefined;
             // get all the albums from the products and count how much products from each album
+            let all_albums = await indexdb_get_catalog_albums();
             for(let i = 0; i < data.all.length; i++) {
                 let my_item = data.all[i];
                 album = undefined;
-                for(let item_album_iter = 0; item_album_iter < my_item.albums.length; item_album_iter++) {
-                    /*if(my_item.albums[alb_iter].is_campain == false) {
-                        album = my_item.albums[alb_iter];
-                        break;
-                    }*/
-                    let alb = $albumsJsonStore.find(album => album.id == my_item.albums[item_album_iter]);
+                /*for(let item_album_iter = 0; item_album_iter < my_item.albums.length; item_album_iter++) {
+                    let alb = all_albums.find(album => album.id == my_item.albums[item_album_iter]);
                     if(alb && alb.is_campain == false && alb.is_public == true) {
                         album = alb;
                         break;
                     }
-                }
+                }*/
+                album = all_albums.find(album => album.id == my_item.public_album_id);
                 // the product is only visible in campain, so hide from search
                 if(album == undefined) {
                     // remove item i from data.all
@@ -89,11 +88,11 @@ import AlbumsView from "./components/AlbumsView.svelte";
             if(item == undefined) {
                 return;
             }
-            let keyword = document.querySelector('input.autocomplete-input').value;
-            
+            let el = document.querySelector('input.autocomplete-input');
+            let keyword = el.value;
             if(item.item_count) {
-                $categoryModalStore.setAlbum(item);
-                $categoryModalStore.toggleModal();
+                //$categoryModalStore.setAlbum(item);
+                //$categoryModalStore.toggleModal();
                 logStore.addLog(
                             {
                                 'a': 'פתיחת קטגוריה מחיפוש',
@@ -109,9 +108,10 @@ import AlbumsView from "./components/AlbumsView.svelte";
                                 }
                             }
                             );
+                            goto(`main?top=${item.topLevelCategory__slug}&album=${item.slug}`);
             }else {
-                $productModalStore.setProduct(item.albumId, item.id);
-                $productModalStore.toggleModal();
+                // $productModalStore.setProduct(item.albumId, item.id);
+                // $productModalStore.toggleModal();
                 logStore.addLog(
                             {
                                 'a': 'פתיחת מוצר מחיפוש',
@@ -127,6 +127,7 @@ import AlbumsView from "./components/AlbumsView.svelte";
                                 }
                             }
                             );
+                            goto(`main?top=${item.public_album_top_slug}&album=${item.public_album_slug}&product_id=${item.id}`);
             }
             
         }
@@ -140,10 +141,15 @@ import AlbumsView from "./components/AlbumsView.svelte";
 <nav id="main-navbar-wraper" class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
         <!-- svelte-ignore a11y-invalid-attribute -->
-        <a class="navbar-logo" href="javascript:window.location.href=window.location.href" aria-label="logo" role="button">
+        <a class="navbar-logo" href="/" aria-label="logo" role="button" tabindex="0">
             <img class="nav-logo" height="32px" width="auto"
                 src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1634457672/msAssets/favicon_rza3n9"
-                alt="">
+                title="דף הבית"
+                alt="דף הבית">
+            <img class="nav-logo-sm" height="32px" width="32px"
+                src="https://res.cloudinary.com/ms-global/image/upload/v1661424264/msAssets/icons8-home-50_fnrnhf"
+                title="דף הבית"
+                alt="דף הבית">
         </a>
         <!--
         <Dropdown id="navCategoryList" class="main-category-menu">
@@ -231,13 +237,16 @@ import AlbumsView from "./components/AlbumsView.svelte";
         <Cart bind:this={$cartDomElementStore}></Cart>
 
         <NavLoginManager></NavLoginManager>
-            
-                
-            
             <div>
-            <a class="same-size-icon" rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
-                <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
-            </a>
+                <div class="whatsapp-wraper">
+                    <div class="text">
+                        לוואצאפ
+                    </div>
+                <a class="same-size-icon" rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
+                    <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
+                </a>
+                
+            </div>
         </div>
             
         <div id="navbar_filler" class="none">
@@ -251,6 +260,7 @@ import AlbumsView from "./components/AlbumsView.svelte";
         
 
     </div>
+    <!--
     <AlbumsView 
         albumSelected={(album)=> {
             logStore.addLog(
@@ -268,17 +278,36 @@ import AlbumsView from "./components/AlbumsView.svelte";
                             }
                             );
         }}/>
+    -->
 </nav>
 
 
-
 <style lang="scss">
-    .same-size-icon {
-        // 
-        img {
-            
-            &:hover {
-                animation: pop-animation 0.4s ease-in-out forwards;
+    .whatsapp-wraper {
+        position: relative;
+        .same-size-icon {
+            // 
+            img {
+                
+                &:hover {
+                    animation: pop-animation 0.4s ease-in-out forwards;
+                }
+            }
+        }
+
+        .text {
+            font-size: 0.8rem;
+            color: black;
+            text-align: center;
+            position: absolute;
+            top: 100%;
+            width: max-content;
+            left: 0;
+            right: 0;
+            z-index: 1;
+            transform: translate(0%, -20%);
+            @media screen and (max-width: 824px) {
+                display: none;
             }
         }
     }
@@ -597,28 +626,40 @@ import AlbumsView from "./components/AlbumsView.svelte";
     .navbar {
         position: fixed;
         width:100%;
+        
         .container-fluid {
             flex-wrap: nowrap;
+            @media screen and (max-width:350px) {
+                padding-right: 2px;
+                padding-left: 2px;
+                
+            }
         }
         
         @include bg-gradient();
         //position: sticky;
         top: 0;
-        z-index: 10;
-
-        .nav-logo {
-            //width: auto;
-            //height: 40px;
-            @media screen and (max-width: 800px) {
-                display: none;
-            }
+        z-index: 99;
+        
+        .nav-logo-sm {
+            display: none;
         }
 
+        @media screen and (max-width: 800px) {
+            .nav-logo {
+                display: none;
+            }
+            .nav-logo-sm {
+                display: block;
+            }
+        }
         #search_form {
             flex-basis: 50%;
             z-index: 99999;
             :global(.autocomplete) {
-                min-width: 83px;
+                min-width: 63px;
+                flex-shrink: 1;
+                flex-grow: 0;
                 width: 100%;
                 flex: 1;
                 :global(.autocomplete-list) {
@@ -638,7 +679,7 @@ import AlbumsView from "./components/AlbumsView.svelte";
                     @media screen and (max-width: 550px) {
                         min-width: 90vw;
                         top: 100%;
-                        right: -70px;
+                        //right: -70px;
                         position: absolute;
                     }
                     

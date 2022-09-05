@@ -1,14 +1,14 @@
 
 
 <script>
-import { get_orders_to_collect,fetch_wraper } from "@src/api/api";
+import { get_orders_to_collect,fetch_wraper } from "src/api/api";
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
-import {dateCellFormatter} from '@src/lib/utils/utils';
+import {dateCellFormatter} from 'src/lib/utils/utils';
 import { goto } from '$app/navigation';
 
 import { onMount } from "svelte";
 import { Spinner } from "sveltestrap";
-import { BASE_URL } from "@src/api/consts";
+import { BASE_URL } from "src/api/consts";
     export let data;
     export let selected;
     let loading = false;
@@ -31,7 +31,6 @@ import { BASE_URL } from "@src/api/consts";
             let url = BASE_URL + '/dashboard/orders-collection/smartbee/'+selected[0].id;
             let response = await fetch_wraper(url, {"method":"POST"});
             console.log(response)
-            debugger;
             if(response.success == 'success') {
                 goto('/dashboard/orders-collection/smartbee/'+response.data.result);
             }

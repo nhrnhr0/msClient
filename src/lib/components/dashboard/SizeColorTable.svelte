@@ -1,6 +1,5 @@
 <script>
-//import { colorsJsonStore,sizesJsonStore } from "@src/stores/stores";
-import { getLocalStorageStore } from "@src/stores/localStorageStore";
+import { getLocalStorageStore } from "src/stores/localStorageStore";
 import { onMount } from "svelte";
 
     export let product;

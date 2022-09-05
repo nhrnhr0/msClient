@@ -2,9 +2,9 @@
 
 
 <script>
-import { fetch_wraper } from "@src/api/api";
-import { GET_ALL_ORDERS } from "@src/api/consts";
-import OrdersList from "@src/lib/components/dashboard/doc_stock_out/OrdersList.svelte";
+import { fetch_wraper } from "src/api/api";
+import { GET_ALL_ORDERS } from "src/api/consts";
+import OrdersList from "src/lib/components/dashboard/doc_stock_out/OrdersList.svelte";
 
 import { onMount } from "svelte";
 import { Spinner } from "sveltestrap";
