@@ -264,7 +264,8 @@ let product_wraper_clientWidth;
     position: relative;
     cursor: pointer;
     display: flex;
-    flex: 1 0 0;
+    //flex: 1 0 0;
+    flex: 1 1 10%;
     flex-direction: column;
     text-decoration: none;
 

@@ -593,7 +593,7 @@ function input_field_focous(e) {
 
           <tr>
             <td class="total-cell">
-              <div>סך הכל:</div>
+              <div>סה"כ:</div>
             </td>
             {#if productInfo.varients.length != 0}
               <td class="total-cell">

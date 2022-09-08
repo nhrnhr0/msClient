@@ -79,6 +79,21 @@ onDestroy(() => {
 
 <svelte:head>
   <meta name="theme-color" content="#FFD700" />
+  {#if $page.host == "ms-global.co.il"}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-172462100-2"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "UA-172462100-2");
+    </script>
+  {/if}
 </svelte:head>
 <Navbar />
 
