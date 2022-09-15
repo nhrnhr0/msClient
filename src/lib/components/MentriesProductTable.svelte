@@ -527,6 +527,9 @@ function input_field_focous(e) {
                         type="number"
                         placeholder={ALL_SIZES[size].size}
                         bind:value={mentries[color][size].quantity}
+                        title={ALL_SIZES[size].size +
+                          " " +
+                          ALL_COLORS[color].name}
                         min="0"
                         max="9999"
                       />
@@ -547,6 +550,12 @@ function input_field_focous(e) {
                           bind:value={mentries[color][size][id].quantity}
                           min="0"
                           max="9999"
+                          title={ALL_SIZES[size].size +
+                            " " +
+                            ALL_COLORS[color].name +
+                            " (" +
+                            name +
+                            ")"}
                         />
                       </div>
                     {/each}
@@ -850,9 +859,12 @@ function input_field_focous(e) {
             font-weight: bold;
             width: 100%;
             text-align: center;
-
+            border-top: 1px solid rgb(85, 85, 85);
             background: none;
-            padding: 5px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            font-size: small;
+            white-space: nowrap;
           }
           &.size-cell {
             & .cell-wraper {

@@ -165,7 +165,7 @@ let product_wraper_clientWidth;
   on:scroll={products_grid_scrolled}
   class:small-view={product_wraper_clientWidth < 650}
   class:small-view-mobile={product_wraper_clientWidth < 400}
-  bind:clientWidth={product_wraper_clientWidth}
+  bind:offsetWidth={product_wraper_clientWidth}
 >
   {#if main_loading}
     <div class="spinner-container">
