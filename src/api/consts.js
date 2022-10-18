@@ -87,3 +87,5 @@ export const STATIC_BASE = import.meta.env['VITE_SERVER_LOCATION'];
 export const CLOUDINARY_URL =
   "https://res.cloudinary.com/ms-global/image/upload/e_shadow,x_13,y_13/";
 export const REQUEST_PROVIDER_INFO_URL = BASE_URL + '/request-provider-info';
+export const GET_SIGNATURE_URL = BASE_URL + '/api-signature/';
+export const SIGN_ON_DOC_URL = BASE_URL + '/sign-on-doc/';
