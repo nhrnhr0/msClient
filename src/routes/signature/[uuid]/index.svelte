@@ -3,6 +3,7 @@ import { fetch_wraper } from "src/api/api";
 import { GET_SIGNATURE_URL, SIGN_ON_DOC_URL } from "src/api/consts";
 const TAX = 1.17;
 import SignaturePad from "signature_pad";
+
 export async function load({ fetch, page, session, contex }) {
   // do a request to GET_SIGNATURE_URL (from consts) with the uuid from the page.params and return the response
   // if the response is not 200, return { status: 404 }
@@ -48,12 +49,68 @@ onMount(() => {
   }
 });
 
+function validate_user_input() {
+  let name = document.getElementById("full_name_input").value;
+  let phone = document.getElementById("phone_input").value;
+  let id = document.getElementById("id_input").value;
+  if (!name) {
+    alert("מלא שדה שם");
+    return undefined;
+  }
+  if (!phone) {
+    alert("מלא שדה טלפון");
+    return undefined;
+  }
+  if (!id) {
+    alert("מלא שדה תעודת זהות");
+    return undefined;
+  }
+  return { name: name, phone: phone, id: id };
+
+  // if (!user_data.id) {
+  //   is_valid = false;
+  //   let el = document.getElementById("id_input");
+  //   el.classList.remove("valid");
+  //   el.focus();
+  // } else {
+  //   let el = document.getElementById("id_input");
+  //   el.classList.add("valid");
+  // }
+
+  // if (!user_data.phone) {
+  //   is_valid = false;
+  //   let el = document.getElementById("phone_input");
+  //   el.classList.remove("valid");
+  //   el.focus();
+  // } else {
+  //   let el = document.getElementById("phone_input");
+  //   el.classList.add("valid");
+  // }
+
+  // if (!user_data.name) {
+  //   is_valid = false;
+  //   let el = document.getElementById("full_name_input");
+  //   el.classList.remove("valid");
+  //   el.focus();
+  // } else {
+  //   let el = document.getElementById("full_name_input");
+  //   el.classList.add("valid");
+  // }
+
+  return is_valid;
+}
+
 function submit_btn_clicked(e) {
   e.preventDefault();
   if (signaturePad.isEmpty()) {
     alert("נא לחתום על המסמך");
     return;
   }
+  let user_data = validate_user_input();
+  if (user_data == undefined) {
+    return;
+  }
+
   submiting = true;
   let signature = signaturePad.toDataURL("image/png");
   // post data to SIGN_ON_DOC_URL with the file
@@ -62,6 +119,7 @@ function submit_btn_clicked(e) {
     body: JSON.stringify({
       uuid: uuid,
       signature: signature,
+      user_data: user_data,
     }),
   });
   response.then((res) => {
@@ -247,6 +305,96 @@ function copy_link() {
       {/each}
     </tbody>
     <tfoot>
+      {#if data.simulations && data.simulations.length > 0}
+        <tr>
+          <td colspan="7">
+            <h3 class="simulations-title">הדמיות</h3>
+          </td>
+        </tr>
+      {/if}
+      {#each data.simulations as sim (sim.id)}
+        <tr>
+          <!-- "id": 4,
+"description": "",
+"cimage": "http://res.cloudinary.com/ms-global/image/upload/v1666775758/simulations/m5zwvaubymqorandccqu.png"
+ -->
+          <td colspan="3">
+            <div class="image">
+              <img
+                src={sim.cimage}
+                alt={sim.description}
+                class="img-fluid"
+                width="350px"
+              />
+            </div>
+          </td>
+          <td colspan="3"> {sim.description}</td>
+        </tr>
+      {/each}
+      <tr>
+        <!-- full name, phone and id as required field -->
+        <td colspan="7">
+          <h3>פרטי הלקוח</h3>
+        </td>
+      </tr>
+      <tr class="flex-center-tr">
+        <td />
+        <td colspan="5">
+          <div class="wraper">
+            <div class="item">
+              <b>*שם מלא:</b>
+
+              <input
+                disabled={data.status == "Signed"}
+                type="text"
+                name="full_name"
+                value={data.user_info_fullname || ""}
+                required
+                id="full_name_input"
+                class="form-control"
+              />
+            </div>
+            <div class="item">
+              <b>*טלפון:</b>
+              <input
+                disabled={data.status == "Signed"}
+                type="text"
+                name="phone"
+                value={data.user_info_phone || ""}
+                required
+                id="phone_input"
+              />
+            </div>
+            <div class="item">
+              <b>*מספר זהות:</b>
+              <input
+                disabled={data.status == "Signed"}
+                type="text"
+                name="id"
+                value={data.user_info_id || ""}
+                required
+                id="id_input"
+              />
+            </div>
+          </div>
+        </td>
+        <td />
+      </tr>
+
+      <!-- <p>
+            <b>שם מלא:</b>
+            
+          </p>
+          <p>
+            <b>טלפון:</b>
+            <input type="text" name="phone" bind:value={user_data.phone} />
+          </p>
+          <p>
+            <b>תעודת זהות:</b>
+            <input type="text" name="id" bind:value={user_data.id} />
+          </p>
+        </td></tr
+      > -->
       <tr>
         <td colspan="7" class="ftoot-cell">
           <div class="canvas-wraper">
@@ -898,6 +1046,30 @@ function copy_link() {
                                                         },........
  -->
 <style lang="scss">
+.flex-center-tr {
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  // width: 100%;
+  // flex-grow: 1;
+  // flex-shrink: 0;
+  // margin: auto;
+  td {
+    .wraper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+
+      // width: 100%;
+      // text-align: center;
+
+      // #full_name_input.is-invalid {
+      //   border: 1px solid #dc3545 !important;
+      // }
+    }
+  }
+}
 main {
   // a4
   background-color: #fff;
@@ -928,7 +1100,7 @@ main {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
-    border: 1px solid red;
+    // border: 1px solid red;
     margin: 1rem 0;
     thead {
       background: #eee;
@@ -966,6 +1138,13 @@ main {
       }
     }
     tfoot {
+      .simulations-title {
+        text-align: center;
+        font-size: 1.2rem;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        // border: 1px solid red;
+      }
       tr {
         td.ftoot-cell {
           .canvas-wraper {
