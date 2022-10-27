@@ -1073,10 +1073,13 @@ function copy_link() {
 main {
   // a4
   background-color: #fff;
+  padding-right: 1rem;
+  max-width: 100vw;
+  overflow: scroll;
   width: min-content;
 
   margin: auto;
-  padding: 1rem;
+  // padding: 1rem;
   h5 {
     font-size: 1.5rem;
     text-align: center;
