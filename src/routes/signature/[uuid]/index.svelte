@@ -1100,7 +1100,7 @@ main {
 
   table.products {
     background-color: #d8d5d5;
-    box-shadow: 0 0 5px #000;
+    // box-shadow: 0 0 5px #000;
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
@@ -1191,7 +1191,7 @@ main {
                   transition: all 0.3s ease-in-out;
                   &:hover {
                     background-color: #3e8e41;
-                    box-shadow: 0 0 5px #000;
+                    // box-shadow: 0 0 5px #000;
                   }
                 }
               }
