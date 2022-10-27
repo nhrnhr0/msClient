@@ -1077,6 +1077,7 @@ main {
   max-width: 100vw;
   overflow: scroll;
   width: min-content;
+  margin-bottom: 150px;
 
   margin: auto;
   // padding: 1rem;
