@@ -34,6 +34,8 @@ import { FormGroup, Input, Spinner } from "sveltestrap";
 import SvelteMarkdown from "svelte-markdown";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+import { scale } from "svelte/transition";
+import { browser } from "$app/env";
 
 export let uuid;
 export let data;
@@ -41,6 +43,12 @@ let submiting = false;
 let canvas;
 let signaturePad;
 let is_signing = false;
+const DESCRIPTION_SIZE_WIDTH =
+  browser && window && window.innerWidth > 900 ? 217 : 100;
+const DESCRIPTION_SIZE_HEIGHT =
+  browser && window && window.innerWidth > 900 ? 50 : 50;
+
+const is_small_screen = browser && window && window.innerWidth < 900;
 onMount(() => {
   if (canvas) {
     signaturePad = new SignaturePad(canvas, {
@@ -182,10 +190,70 @@ function copy_link() {
     copy_link_button_text = "העתק קישור";
   }, 2000);
 }
+
+const price_format = (num, decimals) =>
+  num.toLocaleString("he-IL", {
+    //  minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+let show_image_popup = false;
+let show_image_popup_url = "";
+
+function open_popup_image(url) {
+  show_image_popup = true;
+  show_image_popup_url = url;
+}
 </script>
 
+<div
+  class="show_image_popup_backdrop"
+  on:click={() => {
+    show_image_popup = false;
+  }}
+  class:active={show_image_popup}
+>
+  {#if show_image_popup}
+    <div
+      id="show_image_popup"
+      class:active={show_image_popup}
+      on:click={(e) => {
+        e.stopPropagation();
+      }}
+      in:scale={{ x: 0, y: 0 }}
+    >
+      <div
+        class="close-btn-area"
+        on:click={() => {
+          show_image_popup = false;
+        }}
+      >
+        <button id="close-btn">X</button>
+        <!--     close btn -->
+      </div>
+
+      <div id="image-show-area">
+        <img id="large-image" src={show_image_popup_url} alt="" />
+        <!--     popup imge -->
+        <h4
+          class="new-windows-link"
+          on:click={() => {
+            window.open(show_image_popup_url, "_blank");
+          }}
+        >
+          פתח את התמונה בחלון חדש
+          <img
+            src="https://res.cloudinary.com/ms-global/image/upload/v1667127471/msAssets/resize_p95nlc.png"
+            alt=""
+            width="32px"
+            height="32px"
+          />
+        </h4>
+      </div>
+    </div>
+  {/if}
+</div>
 <main id="main">
-  <h5><b>לחתימת </b>{data.client_name}</h5>
+  <h5><b>הזמנת עבודה לחתימת </b><u>{data.client_name}</u></h5>
   <h4><span>{uuid}</span></h4>
   <table class="table products">
     <thead>
@@ -195,9 +263,21 @@ function copy_link() {
         <th> שם </th>
         <th> תיאור </th>
         <th> פירוט </th>
-        <th> מחיר ליח</th>
-        <th> כמות </th>
-        <th> סה"כ </th>
+        <th>
+          ₪ ליח'
+          <br />
+          לפי מע"מ
+        </th>
+        <th>
+          כמות
+          <br />
+          כוללת
+        </th>
+        <th>
+          סה"כ לפני
+          <br />
+          מע"מ
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -208,7 +288,7 @@ function copy_link() {
         )}
         <tr>
           <td>
-            <div class="image">
+            <div class="image" on:click={open_popup_image(product.cimage)}>
               <img
                 src={product.cimage}
                 alt={product.name}
@@ -217,92 +297,139 @@ function copy_link() {
               />
             </div>
           </td>
-          <td>{product.name}</td>
-          <td class="big-td"><SvelteMarkdown source={product.description} /></td
-          >
+          <td class="product-name-td">{product.name}</td>
+          <td class="big-td description-td">
+            <div
+              class="description-wraper"
+              class:active={product?.show_full_description}
+            >
+              {#if product.clientWidth_description_width >= DESCRIPTION_SIZE_WIDTH || product.clientHeight_description_height >= DESCRIPTION_SIZE_HEIGHT}
+                <button
+                  class="load-more-btn"
+                  class:active={product.show_full_description}
+                  on:click={() => {
+                    product.show_full_description =
+                      !product.show_full_description;
+                  }}
+                >
+                  <img
+                    src="https://res.cloudinary.com/ms-global/image/upload/v1667124674/msAssets/icons8-down-16_iugalf.png"
+                    alt="more"
+                  />
+                </button>
+              {/if}
 
-          <td>
-            {#if product.show_details}
-              <!-- @const size_codes_dict = {size_code1: size_name1,} -->
-              {@const size_codes_dict = product.details.reduce(
-                (acc, detail) => {
-                  acc[detail.size_code] = detail.size_name;
+              <div
+                class="markdown-wraper"
+                bind:clientHeight={product.clientHeight_description_height}
+                bind:clientWidth={product.clientWidth_description_width}
+              >
+                <SvelteMarkdown source={product.description} />
+              </div>
+            </div>
+          </td>
+
+          <td class="items-td">
+            <div class="wraper">
+              {#if product.show_details}
+                <!-- @const size_codes_dict = {size_code1: size_name1,} -->
+                {@const size_codes_dict = product.details.reduce(
+                  (acc, detail) => {
+                    acc[detail.size_code] = detail.size_name;
+                    return acc;
+                  },
+                  {}
+                )}
+                {@const orderd_codes = Object.keys(size_codes_dict)
+                  .sort()
+                  .reverse()}
+                {@const colors_set = Array.from(
+                  new Set(product.details.map((detail) => detail.color_name))
+                )}
+                {@const varient_set = Array.from(
+                  new Set(product.details.map((detail) => detail.varient_name))
+                )}
+                <!-- clr_ver_crtz = [{clr1, ver1}, {clr1, ver2}] -->
+                {@const clr_ver_crtz = colors_set.reduce((acc, color) => {
+                  varient_set.forEach((varient) => {
+                    acc.push({ color, varient });
+                  });
                   return acc;
-                },
-                {}
-              )}
-              {@const orderd_codes = Object.keys(size_codes_dict)
-                .sort()
-                .reverse()}
-              {@const colors_set = Array.from(
-                new Set(product.details.map((detail) => detail.color_name))
-              )}
-              {@const varient_set = Array.from(
-                new Set(product.details.map((detail) => detail.varient_name))
-              )}
-              <!-- clr_ver_crtz = [{clr1, ver1}, {clr1, ver2}] -->
-              {@const clr_ver_crtz = colors_set.reduce((acc, color) => {
-                varient_set.forEach((varient) => {
-                  acc.push({ color, varient });
-                });
-                return acc;
-              }, [])}
-              {@const use_varient =
-                varient_set.length > 1 && varient_set[0] !== ""}
-              <table class="table items">
-                <thead>
-                  <tr>
-                    <th> צבע </th>
-                    {#if use_varient}
-                      <th> מודל </th>
-                    {/if}
-
-                    {#each orderd_codes as code}
-                      <th>
-                        {size_codes_dict[code]}
-                      </th>
-                    {/each}
-                  </tr>
-                </thead>
-                <tbody>
-                  {#each clr_ver_crtz as row}
+                }, [])}
+                {@const use_varient =
+                  varient_set.length > 1 && varient_set[0] !== ""}
+                <table class="table items">
+                  <thead>
                     <tr>
-                      <td>{row.color}</td>
+                      <th> צבע </th>
                       {#if use_varient}
-                        <td>{row.varient}</td>
+                        <th> מודל </th>
                       {/if}
+
                       {#each orderd_codes as code}
-                        <td>
-                          {#each product.details as detail}
-                            {#if detail.size_code == code && detail.color_name == row.color && detail.varient_name == row.varient}
-                              {detail.quantity}
-                            {/if}
-                          {/each}
-                        </td>
+                        <th>
+                          {size_codes_dict[code]}
+                        </th>
                       {/each}
                     </tr>
-                  {/each}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {#each clr_ver_crtz as row}
+                      <tr>
+                        <td>{row.color}</td>
+                        {#if use_varient}
+                          <td>{row.varient}</td>
+                        {/if}
+                        {#each orderd_codes as code}
+                          <td>
+                            {#each product.details as detail}
+                              {#if detail.size_code == code && detail.color_name == row.color && detail.varient_name == row.varient}
+                                {detail.quantity}
+                              {/if}
+                            {/each}
+                          </td>
+                        {/each}
+                      </tr>
+                    {/each}
+                  </tbody>
+                </table>
 
-              <!-- pivot table of  
+                <!-- pivot table of  
                 cols: size_name (order by size_code)
                 rows: color_name, varient_name
                 cells: quantity
              -->
-            {/if}
+              {/if}
+            </div>
           </td>
           <td>
-            {product.price}₪
+            {price_format(product.price)}₪
           </td>
           <td>
             {total_amount}
           </td>
           <td>
-            {product.price * total_amount}₪
+            {price_format(product.price * total_amount)}₪
           </td>
         </tr>
       {/each}
+      {#if data && data.items.length > 0}
+        {@const total_price_before_tax = data.items.reduce(
+          (acc, product) =>
+            acc +
+            product.details.reduce((acc, detail) => acc + detail.quantity, 0) *
+              product.price,
+          0
+        )}
+        <tr class="total-tr">
+          <td colspan="6">סה"כ לפני מע"מ</td>
+          <td>{price_format(total_price_before_tax)}₪</td>
+        </tr>
+        <tr class="total-tr">
+          <td colspan="6">סה"כ לאחר מע"מ</td>
+          <td>{price_format(total_price_before_tax * 1.17)}₪</td>
+        </tr>
+      {/if}
     </tbody>
     <tfoot>
       {#if data.simulations && data.simulations.length > 0}
@@ -321,6 +448,7 @@ function copy_link() {
           <td colspan="3">
             <div class="image">
               <img
+                on:click={open_popup_image(sim.cimage)}
                 src={sim.cimage}
                 alt={sim.description}
                 class="img-fluid"
@@ -477,575 +605,75 @@ function copy_link() {
   </table>
 </main>
 
-<!-- 
-                                                        example data:
-                                                        {
-                                                    "uuid": "af3e45b6-c5e5-4f09-890f-c8faa1509954",
-                                                    "client_name": "באן תאי מ.נ. מרקט בע\"מ321",
-                                                    "status": "Published",
-                                                    "items": [
-                                                        {
-                                                        "id": 66,
-                                                        "name": "תיק צד עור לגבר2",
-                                                        "description": "",
-                                                        "cimage": "http://res.cloudinary.com/ms-global/image/upload/v1665515881/site/signiture-pics/%D7%AA%D7%99%D7%A7_%D7%A6%D7%93_%D7%A2%D7%95%D7%A8_%D7%9C%D7%92%D7%91%D7%A866.png",
-                                                        "price": "1444.00",
-                                                        "show_details": false,
-                                                        "details": [
-                                                            {
-                                                            "id": 95,
-                                                            "quantity": 33,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 67,
-                                                        "name": "תיק צד צבאי הסוואה לחגורה2",
-                                                        "description": "",
-                                                        "cimage": "http://res.cloudinary.com/ms-global/image/upload/v1665964710/site/signiture-pics/%D7%AA%D7%99%D7%A7_%D7%A6%D7%93_%D7%A6%D7%91%D7%90%D7%99_%D7%94%D7%A1%D7%95%D7%95%D7%90%D7%94_%D7%9C%D7%97%D7%92%D7%95%D7%A8%D7%9467.png",
-                                                        "price": "323.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 96,
-                                                            "quantity": 36,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 65,
-                                                        "name": "תיק צד דמוי עור31",
-                                                        "description": "* תיק צד אלגנטי בעל רצועה לתליה\r\n* עמיד לאורך זמן",
-                                                        "cimage": "http://res.cloudinary.com/ms-global/image/upload/v1665515746/site/signiture-pics/%D7%AA%D7%99%D7%A7_%D7%A6%D7%93_%D7%93%D7%9E%D7%95%D7%99_%D7%A2%D7%95%D7%A865.png",
-                                                        "price": "21.00",
-                                                        "show_details": false,
-                                                        "details": [
-                                                            {
-                                                            "id": 94,
-                                                            "quantity": 17,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 47,
-                                                        "name": "גרבי קרסול",
-                                                        "description": "* גרביים גובה קרסול",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672481/site/products/%D7%92%D7%A8%D7%91_%D7%A7%D7%A8%D7%A1%D7%95%D7%9C-removebg-preview_KcsWP1B_P5WbcGt_Ltmu5kq.png",
-                                                        "price": "3.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 62,
-                                                            "quantity": 24,
-                                                            "color_id": 77,
-                                                            "color_name": "שחור",
-                                                            "size_id": 118,
-                                                            "size_code": "0",
-                                                            "size_name": "43-47",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 43,
-                                                        "name": "ארנק עור חלק לגבר",
-                                                        "description": "* ארנקים גבר עור עם קופסה הרבה דוגמאות",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672427/site/products/%D7%90%D7%A8%D7%A0%D7%A7%D7%99%D7%9D_%D7%92%D7%91%D7%A8_%D7%A2%D7%95%D7%A8_%D7%9C%D7%95%D7%A0%D7%93%D7%95%D7%9F_%D7%A2%D7%9D_%D7%A7%D7%95%D7%A4%D7%A1%D7%94_%D7%94%D7%A8%D7%91%D7%94_%D7%93%D7%95%D7%92%D7%9E%D7%90%D7%95%D7%AA-removebg-preview_1hA7AuZ_yJJfjLt.png",
-                                                        "price": "21.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 58,
-                                                            "quantity": 10,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 42,
-                                                        "name": "ארנק דמוי עור",
-                                                        "description": "* ארנק דמוי עור במגוון דוגמאות",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1646125929/site/products/11264001744905122557152SW13890148971394542393140855596414878677161488950102-removebg-preview",
-                                                        "price": "14.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 57,
-                                                            "quantity": 10,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 45,
-                                                        "name": "גליל דבק שקוף 150 מ'",
-                                                        "description": "* גליל דבק שקוף 150 מ'",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672422/site/products/%D7%93%D7%91%D7%A7_%D7%A2%D7%91%D7%95%D7%93%D7%94_%D7%9E%D7%9C%D7%97%D7%9E%D7%94_150_%D7%9E%D7%98%D7%A8-removebg-preview_kWQpl64_zmaWaaI.png",
-                                                        "price": "9.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 60,
-                                                            "quantity": 124,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 46,
-                                                        "name": "גרבי ספורט312",
-                                                        "description": "* גרבי כותנה גבוהות\r\n* עבות ואיכותיות",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672331/site/products/%D7%92%D7%A8%D7%91%D7%99_%D7%A1%D7%A4%D7%95%D7%A8%D7%98_uBLcEGO_F2qhVi2_bSu2lWG_YL4VqpL_bwqc2vL_o2BI4nt.png",
-                                                        "price": "3.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 61,
-                                                            "quantity": 25,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 44,
-                                                        "name": "ארנק צד בד לחגורה",
-                                                        "description": "* ארנק צד לחגורה לגבר לפלאפון מגוון דוגמאות רחב",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672433/site/products/%D7%90%D7%A8%D7%A0%D7%A7_%D7%A6%D7%93_%D7%9C%D7%97%D7%92%D7%95%D7%A8%D7%94_%D7%9C%D7%A4%D7%9C%D7%90%D7%A4%D7%95%D7%9F_%D7%9B%D7%9C_%D7%94%D7%92%D7%93%D7%9C%D7%99%D7%9D-removebg-preview_7f09WYr_nUsewgf.png",
-                                                        "price": "11.00",
-                                                        "show_details": false,
-                                                        "details": [
-                                                            {
-                                                            "id": 59,
-                                                            "quantity": 12,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 41,
-                                                        "name": "אוזניית בלוטוס ש22לט קפי2222צית - RETRACTABLE",
-                                                        "description": "* עד 7 שעות שיחה והאזנה למוסיקה, 4.1 BLUETOOTH.\r\n*  חיבור 2 מכשירי טלפון בו זמנית, מפחית את רמת הקרינה.\r\n* עד 10 מטרים טווח פעולה.\r\n* עד 270 שעות זמן המתנה.\r\n* בערכה: כבל טעינה Micro USB, למכשירי אפל – חווי טעינה על צג הסמארטפון, קליפס לתלייה על דש החולצה.",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672398/site/products/%D7%90%D7%95%D7%96%D7%A0%D7%99%D7%AA_%D7%A9%D7%9C%D7%98_%D7%A7%D7%A4%D7%99%D7%A6%D7%99%D7%AA_-_RETRACTABLE-removebg-preview_Gu4wwDw_Irp1D1a_By59SKw.png",
-                                                        "price": "60.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 56,
-                                                            "quantity": 31,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 48,
-                                                        "name": "חולצת דרייפיט שרוול ארוך",
-                                                        "description": "* 100% פוליאסטר\r\n* מנדפת זיעה\r\n* מתאימה לאנשי שטח שנמצאים הרבה שעות בשמש\r\n* מגוון צבעים\r\n* אפשרות לרקמה או הדפסה",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672283/site/products/%D7%93%D7%A8%D7%99%D7%99%D7%A4%D7%98_%D7%90%D7%A8%D7%95%D7%9A_T3m7U0G_UuHvFWr.png",
-                                                        "price": "19.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 63,
-                                                            "quantity": 10,
-                                                            "color_id": 80,
-                                                            "color_name": "כחול כהה",
-                                                            "size_id": 87,
-                                                            "size_code": "bb",
-                                                            "size_name": "S",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            },
-                                                            {
-                                                            "id": 64,
-                                                            "quantity": 10,
-                                                            "color_id": 80,
-                                                            "color_name": "כחול כהה",
-                                                            "size_id": 88,
-                                                            "size_code": "bc",
-                                                            "size_name": "M",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            },
-                                                            {
-                                                            "id": 65,
-                                                            "quantity": 10,
-                                                            "color_id": 80,
-                                                            "color_name": "כחול כהה",
-                                                            "size_id": 89,
-                                                            "size_code": "bd",
-                                                            "size_name": "L",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 49,
-                                                        "name": "חולצת דרייפיט שרוול קצר",
-                                                        "description": "* 100% פוליאסטר\r\n* מנדפת זיעה\r\n* מתאימה לעובדי שטח\r\n* מגוון רחב של צבעים\r\n* אפשרות לרקמה או הדפסה",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672282/site/products/%D7%93%D7%A8%D7%99%D7%99%D7%A4%D7%98_%D7%A7%D7%A6%D7%A8_ZlLUyjq_f2dRfRl_4xE9yEo_XHoSumJ.png",
-                                                        "price": "12.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 67,
-                                                            "quantity": 10,
-                                                            "color_id": 97,
-                                                            "color_name": "מעורבב כהה",
-                                                            "size_id": 89,
-                                                            "size_code": "bd",
-                                                            "size_name": "L",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            },
-                                                            {
-                                                            "id": 66,
-                                                            "quantity": 10,
-                                                            "color_id": 97,
-                                                            "color_name": "מעורבב כהה",
-                                                            "size_id": 88,
-                                                            "size_code": "bc",
-                                                            "size_name": "M",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 50,
-                                                        "name": "חולצת טריקו 160 גרם שרוול קצר",
-                                                        "description": "* חולצת טריקו איכותית\r\n* 100% כותנה\r\n* 160 גרם\r\n* מגוון רחב של צבעים\r\n* אופציה לכיס\r\n* אפשרות לרקמה או הדפסה",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672333/site/products/%D7%98%D7%A8%D7%99%D7%A7%D7%95_%D7%A9_m8O8yFW_3hEXpcc_5RjP1BK_CmqCLCa.png",
-                                                        "price": "13.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 68,
-                                                            "quantity": 10,
-                                                            "color_id": 97,
-                                                            "color_name": "מעורבב כהה",
-                                                            "size_id": 88,
-                                                            "size_code": "bc",
-                                                            "size_name": "M",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            },
-                                                            {
-                                                            "id": 69,
-                                                            "quantity": 10,
-                                                            "color_id": 97,
-                                                            "color_name": "מעורבב כהה",
-                                                            "size_id": 89,
-                                                            "size_code": "bd",
-                                                            "size_name": "L",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 51,
-                                                        "name": "חולצת טריקו שרוול ארוך",
-                                                        "description": "* 100% כותנה\r\n* 180 גרם\r\n* חולצה איכותית ונוחה\r\n* מגוון צבעים רחב\r\n* אפשרות לרקמה או הדפסה",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672281/site/products/%D7%98%D7%A8%D7%99%D7%A7%D7%95_%D7%90%D7%A8%D7%95%D7%9A_A2tvQPQ_z8mPhV8_CZVpzlB_Q5xfWtH_KlOJTBw_8X4FojN_fN2SwCu_wIdCPue.png",
-                                                        "price": "19.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 70,
-                                                            "quantity": 15,
-                                                            "color_id": 77,
-                                                            "color_name": "שחור",
-                                                            "size_id": 87,
-                                                            "size_code": "bb",
-                                                            "size_name": "S",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            },
-                                                            {
-                                                            "id": 71,
-                                                            "quantity": 15,
-                                                            "color_id": 77,
-                                                            "color_name": "שחור",
-                                                            "size_id": 88,
-                                                            "size_code": "bc",
-                                                            "size_name": "M",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            },
-                                                            {
-                                                            "id": 72,
-                                                            "quantity": 10,
-                                                            "color_id": 77,
-                                                            "color_name": "שחור",
-                                                            "size_id": 89,
-                                                            "size_code": "bd",
-                                                            "size_name": "L",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 52,
-                                                        "name": "טייגר בלאם",
-                                                        "description": "* משחת טייגר בלאם להקלת כאבי שרירים",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672483/site/products/%D7%98%D7%99%D7%99%D7%92%D7%A8_%D7%91%D7%90%D7%9C%D7%9D-removebg-preview_7gbMRy7.png",
-                                                        "price": "8.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 73,
-                                                            "quantity": 12,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 53,
-                                                        "name": "כובע סהרה",
-                                                        "description": "* כובע איכותי ונוח\r\n* מגן על כל חלקי הפנים, העורף, והצוואר\r\n* פתחי אוויר בצידי הראש\r\n* שרוך להקטנה והגדלה\r\n* מתאים במיוחד לעובדים הנמצאים הרבה שעות בשמש\r\n* אפשרות להדפסה או רקמה",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1650884006/site/products/כובע_סהרה-removebg-preview",
-                                                        "price": "19.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 74,
-                                                            "quantity": 12,
-                                                            "color_id": 80,
-                                                            "color_name": "כחול כהה",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 54,
-                                                        "name": "כובע קש נשים",
-                                                        "description": "* כובע קש נשים",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672488/site/products/%D7%9B%D7%95%D7%91%D7%A2_%D7%A7%D7%A9_%D7%A0%D7%A9%D7%99%D7%9D_%D7%A7%D7%A8%D7%90%D7%95%D7%A1-removebg-preview_YVhz68J.png",
-                                                        "price": "11.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 75,
-                                                            "quantity": 12,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": 6,
-                                                            "varient_name": "רחב שוליים"
-                                                            },
-                                                            {
-                                                            "id": 76,
-                                                            "quantity": 12,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": 7,
-                                                            "varient_name": "צר שוליים"
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 62,
-                                                        "name": "סט 3 קופסאות קליפר",
-                                                        "description": "* סט 3 קופסאות איכסון באריזה אחת! \r\n* 2 ליטר \r\n* 1.10 ליטר \r\n* 550 מל",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1654525146/site/products/photo_2022-06-06_17-18-04-removebg-preview",
-                                                        "price": "19.00",
-                                                        "show_details": false,
-                                                        "details": [
-                                                            {
-                                                            "id": 91,
-                                                            "quantity": 24,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 59,
-                                                        "name": "מספריים לילדים",
-                                                        "description": "* מספרי ציפורניים איכותיים לילד",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1650382873/site/products/WhatsApp-Image-2018-05-14-at-13",
-                                                        "price": "4.00",
-                                                        "show_details": false,
-                                                        "details": [
-                                                            {
-                                                            "id": 88,
-                                                            "quantity": 20,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 57,
-                                                        "name": "מכונת תספורת מקצועית מפוארת",
-                                                        "description": "* מכונת תספורת מקצועית",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1657009227/site/products/WhatsApp_Image_2022-06-15_at_09",
-                                                        "price": "65.00",
-                                                        "show_details": false,
-                                                        "details": [
-                                                            {
-                                                            "id": 86,
-                                                            "quantity": 4,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 60,
-                                                        "name": "משאבת רגל לניפוח כדורים ואופניים",
-                                                        "description": "* משאבת רגל לניפוח כדורים ואופניים",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1650884450/site/products/משאבת_רגל_לניפוח_כדורים_ואופניים-removebg-preview",
-                                                        "price": "18.00",
-                                                        "show_details": false,
-                                                        "details": [
-                                                            {
-                                                            "id": 89,
-                                                            "quantity": 2,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 63,
-                                                        "name": "סט 4 קופסאות אכסון",
-                                                        "description": "* סט 4 קופסאות אכסון ארוז קומפקטי ונוח לשימוש",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672610/site/products/%D7%A1%D7%98-4-%D7%A7%D7%95%D7%A4%D7%A1%D7%90%D7%95%D7%AA-%D7%9E%D7%9C%D7%91%D7%9F-%D7%A8%D7%95%D7%99-600x600-removebg-preview_ja4YYFS_MUnpSKJ.png",
-                                                        "price": "12.00",
-                                                        "show_details": false,
-                                                        "details": [
-                                                            {
-                                                            "id": 92,
-                                                            "quantity": 35,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },
-                                                        {
-                                                        "id": 61,
-                                                        "name": "משקפי שמש",
-                                                        "description": "* מגוון ענק של משקפי שמש\r\n* עשרות דגמים וסוגים\r\n* 12 יח' במארז",
-                                                        "cimage": "https://res.cloudinary.com/ms-global/image/upload/v1635672362/site/products/%D7%9E%D7%A9%D7%A7%D7%A4%D7%99_%D7%A9%D7%9E%D7%A9_%D7%9E%D7%91%D7%97%D7%A8_%D7%A2%D7%A0%D7%A7-removebg-preview_iUsCIRu_DRGaNg9.png",
-                                                        "price": "10.00",
-                                                        "show_details": true,
-                                                        "details": [
-                                                            {
-                                                            "id": 90,
-                                                            "quantity": 60,
-                                                            "color_id": 76,
-                                                            "color_name": "no color",
-                                                            "size_id": 86,
-                                                            "size_code": "cc",
-                                                            "size_name": "one size",
-                                                            "varient_id": "",
-                                                            "varient_name": ""
-                                                            }
-                                                        ]
-                                                        },........
- -->
 <style lang="scss">
+.show_image_popup_backdrop {
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  position: fixed;
+  top: 0;
+  background: rgb(158, 157, 157, 0.534);
+  z-index: 1001; /*  adobe all elements   */
+  &.active {
+    display: block;
+  }
+  #show_image_popup {
+    position: absolute; /*  so that not take place   */
+    top: 50%;
+    left: 50%;
+    z-index: 1000; /*  adobe all elements   */
+    transform: translate(-50%, -50%); /*  make center   */
+
+    display: none; /*  to hide first time   */
+    &.active {
+      display: block;
+    }
+    .close-btn-area {
+      #close-btn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 1000;
+        background-color: #fff;
+        border: 1px solid #000;
+        height: 35px;
+        width: 35px;
+        border-radius: 9999px;
+        cursor: pointer;
+        &:hover {
+          background-color: #000;
+          color: #fff;
+          font-size: 20px;
+        }
+      }
+    }
+    #image-show-area {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, white 0%, white 32%, #c7c7c7 84%);
+      position: relative;
+
+      #large-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .new-windows-link {
+        text-align: center;
+        background: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 5px #000;
+        cursor: pointer;
+      }
+    }
+  }
+}
+// #show_image_popup img {
+//   max-width: 90%;
+//   height: auto;
+// }
 .flex-center-tr {
   // display: flex;
   // justify-content: center;
@@ -1076,7 +704,15 @@ main {
   padding-right: 1rem;
   max-width: 100vw;
   overflow: scroll;
-  width: min-content;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  //max: a4
+  max-width: 21cm;
+  border: 1px solid red;
+
   margin-bottom: 150px;
 
   margin: auto;
@@ -1102,6 +738,8 @@ main {
     background-color: #d8d5d5;
     // box-shadow: 0 0 5px #000;
     width: 100%;
+    // overflow: hidden;
+    // border: 5px solid blue;
     border-collapse: collapse;
     border-spacing: 0;
     // border: 1px solid red;
@@ -1110,23 +748,89 @@ main {
       background: #eee;
       tr {
         th {
-          padding: 0.5rem;
+          // padding: 0.5rem;
           border: 1px solid #ddd;
+          text-align: center;
+          white-space: nowrap;
         }
       }
     }
     tbody {
       tr {
         td {
-          padding: 0.5rem;
+          // padding: 0.5rem;
           border: 1px solid #ddd;
           border-bottom: 1px solid black;
-          .inline-block {
-            min-width: max-content;
-            white-space: nowrap;
-          }
-          &.big-td {
-            min-width: 250px;
+          // .inline-block {
+          //   min-width: max-content;
+          //   white-space: nowrap;
+          // }
+          // &.big-td {
+          //   min-width: 250px;
+          // }
+          &.description-td {
+            // min-width: 250px;
+            max-width: 217px;
+            position: relative;
+            .description-wraper {
+              overflow-x: hidden;
+              position: relative;
+              max-height: 95px;
+              height: 100%;
+              white-space: nowrap;
+              overflow-y: hidden;
+              margin: auto;
+              padding: 0px;
+              padding-bottom: 25px;
+              transition: all 0.15s ease-in-out;
+              :global(ul) {
+                // margin-block-start: 0.2em;
+                // margin-block-end: 0.2em;
+                margin-inline-start: 0px;
+                margin-inline-end: 0px;
+                padding-inline-start: 20px;
+              }
+              :global(li) {
+              }
+              @media screen and (max-width: 768px) {
+                max-width: 150px;
+              }
+              &.active {
+                max-height: 750px;
+                max-width: none;
+                position: absolute;
+                top: 0px;
+                height: auto;
+                z-index: 1000;
+                background: #fff;
+                padding: 10px;
+                margin-bottom: 50px;
+                .markdown-wraper {
+                  max-height: 750px;
+                }
+              }
+              .markdown-wraper {
+                // max-height: 95px;
+                width: fit-content;
+                height: 100%;
+              }
+              .load-more-btn {
+                position: absolute;
+
+                bottom: 0px;
+                left: 0;
+                width: 100%;
+
+                background: rgb(189, 187, 187);
+                z-index: 1;
+                border: none;
+                &.active {
+                  img {
+                    transform: rotate(180deg);
+                  }
+                }
+              }
+            }
           }
           .image {
             background: radial-gradient(
@@ -1137,6 +841,32 @@ main {
             );
             width: 85px;
             padding: 0.3rem;
+          }
+
+          &.items-td {
+            width: fit-content;
+            padding: 0px;
+            margin: 0px;
+            .wraper {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              margin: auto;
+              width: min-content;
+            }
+            // display: flex;
+            // justify-content: center;
+            // align-items: center;
+          }
+        }
+
+        &.total-tr {
+          td {
+            background: rgb(116, 115, 115);
+            padding: 0.5rem;
+            border: 1px solid #eee;
+            color: #fff;
+            font-weight: bold;
           }
         }
       }
@@ -1202,12 +932,62 @@ main {
     }
   }
 }
-table.items {
+table.table.items {
+  thead {
+    tr {
+      td {
+        border: 1px solid red;
+        padding: 0.5em;
+      }
+    }
+  }
   tbody {
     tr {
       td {
         border-bottom: 1px solid #ddd !important;
+        padding: 0.5em;
         // padding: 0px !important;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 900px) {
+  main {
+    max-width: 100vw;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    .products {
+      width: 100%;
+      overflow-x: scroll;
+      thead {
+        tr {
+          th {
+            word-break: break-all;
+            font-size: smaller;
+          }
+        }
+      }
+      tbody {
+        tr {
+          td {
+            white-space: normal;
+            font-size: smaller;
+            &.product-name-td {
+              // max-width: 75px;
+              // max-width: min-content;
+              // white-space: normal;
+              max-width: 75px;
+              height: 75px;
+              // border: 1px solid red;
+            }
+
+            &.description-td {
+              font-size: x-small;
+            }
+          }
+        }
       }
     }
   }
