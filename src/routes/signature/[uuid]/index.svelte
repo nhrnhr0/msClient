@@ -36,6 +36,7 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { scale } from "svelte/transition";
 import { browser } from "$app/env";
+import ProductEntriesTable from "src/lib/signature/ProductEntriesTable.svelte";
 
 export let uuid;
 export let data;
@@ -331,75 +332,7 @@ function open_popup_image(url) {
 
           <td class="items-td">
             <div class="wraper">
-              {#if product.show_details}
-                <!-- @const size_codes_dict = {size_code1: size_name1,} -->
-                {@const size_codes_dict = product.details.reduce(
-                  (acc, detail) => {
-                    acc[detail.size_code] = detail.size_name;
-                    return acc;
-                  },
-                  {}
-                )}
-                {@const orderd_codes = Object.keys(size_codes_dict)
-                  .sort()
-                  .reverse()}
-                {@const colors_set = Array.from(
-                  new Set(product.details.map((detail) => detail.color_name))
-                )}
-                {@const varient_set = Array.from(
-                  new Set(product.details.map((detail) => detail.varient_name))
-                )}
-                <!-- clr_ver_crtz = [{clr1, ver1}, {clr1, ver2}] -->
-                {@const clr_ver_crtz = colors_set.reduce((acc, color) => {
-                  varient_set.forEach((varient) => {
-                    acc.push({ color, varient });
-                  });
-                  return acc;
-                }, [])}
-                {@const use_varient =
-                  varient_set.length > 1 && varient_set[0] !== ""}
-                <table class="table items">
-                  <thead>
-                    <tr>
-                      <th> צבע </th>
-                      {#if use_varient}
-                        <th> מודל </th>
-                      {/if}
-
-                      {#each orderd_codes as code}
-                        <th>
-                          {size_codes_dict[code]}
-                        </th>
-                      {/each}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {#each clr_ver_crtz as row}
-                      <tr>
-                        <td>{row.color}</td>
-                        {#if use_varient}
-                          <td>{row.varient}</td>
-                        {/if}
-                        {#each orderd_codes as code}
-                          <td>
-                            {#each product.details as detail}
-                              {#if detail.size_code == code && detail.color_name == row.color && detail.varient_name == row.varient}
-                                {detail.quantity}
-                              {/if}
-                            {/each}
-                          </td>
-                        {/each}
-                      </tr>
-                    {/each}
-                  </tbody>
-                </table>
-
-                <!-- pivot table of  
-                cols: size_name (order by size_code)
-                rows: color_name, varient_name
-                cells: quantity
-             -->
-              {/if}
+              <ProductEntriesTable {product} {total_amount} />
             </div>
           </td>
           <td>
@@ -413,6 +346,8 @@ function open_popup_image(url) {
           </td>
         </tr>
       {/each}
+    </tbody>
+    <tfoot>
       {#if data && data.items.length > 0}
         {@const total_price_before_tax = data.items.reduce(
           (acc, product) =>
@@ -430,8 +365,6 @@ function open_popup_image(url) {
           <td>{price_format(total_price_before_tax * 1.17)}₪</td>
         </tr>
       {/if}
-    </tbody>
-    <tfoot>
       {#if data.simulations && data.simulations.length > 0}
         <tr>
           <td colspan="7">
@@ -792,9 +725,9 @@ main {
               }
               :global(li) {
               }
-              @media screen and (max-width: 768px) {
-                max-width: 150px;
-              }
+              // @media screen and (max-width: 768px) {
+              //   max-width: 150px;
+              // }
               &.active {
                 max-height: 750px;
                 max-width: none;
@@ -802,7 +735,8 @@ main {
                 top: 0px;
                 height: auto;
                 z-index: 1000;
-                background: #fff;
+                background: rgb(216, 213, 213);
+
                 padding: 10px;
                 margin-bottom: 50px;
                 .markdown-wraper {
@@ -821,9 +755,20 @@ main {
                 left: 0;
                 width: 100%;
 
-                background: rgb(189, 187, 187);
+                background: linear-gradient(
+                  0deg,
+                  rgba(100, 100, 100, 0.603) 0%,
+                  #ccc 100%
+                );
                 z-index: 1;
                 border: none;
+                &:hover {
+                  background: linear-gradient(
+                    0deg,
+                    rgba(100, 100, 100, 0.2) 0%,
+                    rgba(204, 204, 204, 0.692) 100%
+                  );
+                }
                 &.active {
                   img {
                     transform: rotate(180deg);
@@ -932,62 +877,134 @@ main {
     }
   }
 }
-table.table.items {
-  thead {
-    tr {
-      td {
-        border: 1px solid red;
-        padding: 0.5em;
-      }
-    }
-  }
-  tbody {
-    tr {
-      td {
-        border-bottom: 1px solid #ddd !important;
-        padding: 0.5em;
-        // padding: 0px !important;
-      }
-    }
-  }
-}
 
 @media screen and (max-width: 900px) {
+  * {
+    // outline: 1px solid red;
+  }
   main {
-    max-width: 100vw;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    .products {
-      width: 100%;
-      overflow-x: scroll;
-      thead {
-        tr {
-          th {
-            word-break: break-all;
-            font-size: smaller;
-          }
-        }
+    table.products {
+      & thead {
+        display: none;
       }
+      & td {
+        display: flex;
+        // border: none;
+      }
+
+      & td::before {
+        content: attr(label);
+        font-weight: bold;
+        width: 120px;
+        min-width: 120px;
+      }
+
       tbody {
+        & td:nth-of-type(1):before,
+        & td:nth-of-type(2):before,
+        & td:nth-of-type(3):before,
+        & td:nth-of-type(4):before {
+          display: none;
+        }
+        & td:nth-of-type(1):before {
+          content: "תמונה";
+        }
+        & td:nth-of-type(2):before {
+          content: "שם";
+        }
+        & td:nth-of-type(3):before {
+          content: "תיאור";
+        }
+        & td:nth-of-type(4):before {
+          content: "פירוט";
+        }
+        & td:nth-of-type(5):before {
+          font-weight: normal;
+          margin-left: 25px;
+          content: "מחיר ליח' לפי מע\"מ: ";
+        }
+        & td:nth-of-type(6):before {
+          font-weight: normal;
+          margin-left: 25px;
+          content: "כמות כוללת: ";
+        }
+        & td:nth-of-type(7):before {
+          font-weight: normal;
+          margin-left: 25px;
+          content: 'סה"כ ללא מע"מ: ';
+        }
+
+        & td:nth-of-type(5),
+        & td:nth-of-type(6),
+        & td:nth-of-type(7) {
+          border-top: 1px solid rgb(146, 146, 146);
+          text-align: center;
+          font-weight: bold;
+          // border: 1px solid red;
+        }
         tr {
+          background: #f5f5f5;
+          display: inline-block;
+          margin: 0 0 2rem 0;
+          width: 100%;
           td {
             white-space: normal;
             font-size: smaller;
+            border: none;
+            // &.product-name-td {
+            //   // max-width: 75px;
+            //   // max-width: min-content;
+            //   // white-space: normal;
+            //   max-width: 75px;
+            //   height: 75px;
+            //   // border: 1px solid red;
+            // }
             &.product-name-td {
-              // max-width: 75px;
-              // max-width: min-content;
-              // white-space: normal;
-              max-width: 75px;
-              height: 75px;
-              // border: 1px solid red;
+              font-weight: bold;
+              font-size: large;
             }
-
             &.description-td {
-              font-size: x-small;
+              // font-size: x-small;
+              display: flex;
+              max-width: 100%;
+
+              .description-wraper {
+                flex: 1;
+                flex-grow: 1;
+                max-width: 100%;
+                padding-bottom: 0px;
+                // max-width: 100%;
+                // overflow-x: auto;
+                width: 100%;
+                // width: fit-content;
+                max-height: none;
+                overflow-x: scroll;
+                // height: 100%;
+                .load-more-btn {
+                  display: none;
+                }
+                .markdown-wraper {
+                  width: 100%;
+                  // max-height: 75px;
+                  max-height: 100%;
+                  min-width: none;
+                  overflow-x: scroll;
+                  overflow-y: hidden;
+                  word-break: break-word;
+                  white-space: break-spaces;
+                  margin-bottom: 0px;
+                }
+
+                &.active {
+                  background: #f5f5f5;
+                }
+              }
             }
           }
         }
+      }
+      tfoot {
+        display: none;
       }
     }
   }
