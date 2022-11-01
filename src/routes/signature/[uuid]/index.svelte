@@ -40,6 +40,7 @@ import ProductEntriesTable from "src/lib/signature/ProductEntriesTable.svelte";
 
 export let uuid;
 export let data;
+let canvas_width = 500;
 let submiting = false;
 let canvas;
 let signaturePad;
@@ -148,6 +149,7 @@ async function get_main_as_canvas() {
   return await html2canvas(document.querySelector("#main"), {
     allowTaint: false,
     useCORS: true,
+    width: 793,
   });
 }
 
@@ -403,8 +405,9 @@ function open_popup_image(url) {
         <td colspan="5">
           <div class="wraper">
             <div class="item">
-              <b>*שם מלא:</b>
-
+              <div>
+                <b>*שם מלא:</b>
+              </div>
               <input
                 disabled={data.status == "Signed"}
                 type="text"
@@ -416,7 +419,9 @@ function open_popup_image(url) {
               />
             </div>
             <div class="item">
-              <b>*טלפון:</b>
+              <div>
+                <b>*טלפון:</b>
+              </div>
               <input
                 disabled={data.status == "Signed"}
                 type="text"
@@ -427,7 +432,9 @@ function open_popup_image(url) {
               />
             </div>
             <div class="item">
-              <b>*מספר זהות:</b>
+              <div>
+                <b>*מספר זהות:</b>
+              </div>
               <input
                 disabled={data.status == "Signed"}
                 type="text"
@@ -484,7 +491,13 @@ function open_popup_image(url) {
                 <canvas
                   id="signature-pad"
                   class="signature-pad"
-                  width="550"
+                  width={browser && window.innerWidth > 900
+                    ? 500
+                    : browser && window.innerWidth > 600
+                    ? 400
+                    : browser && window.innerWidth > 400
+                    ? 300
+                    : 200}
                   height="200"
                   bind:this={canvas}
                 />
@@ -590,6 +603,9 @@ function open_popup_image(url) {
         width: 100%;
         height: 100%;
         object-fit: contain;
+        min-width: 80vw;
+        object-fit: contain;
+        max-height: 80vh;
       }
 
       .new-windows-link {
@@ -644,7 +660,6 @@ main {
   flex-direction: column;
   //max: a4
   max-width: 21cm;
-  border: 1px solid red;
 
   margin-bottom: 150px;
 
@@ -880,23 +895,27 @@ main {
 
 @media screen and (max-width: 900px) {
   * {
-    // outline: 1px solid red;
+  }
+  .show_image_popup_backdrop #show_image_popup #image-show-area #large-image {
+    min-width: 95vw;
   }
   main {
     table.products {
       & thead {
-        display: none;
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
       }
       & td {
         display: flex;
-        // border: none;
+        box-sizing: border-box;
       }
 
       & td::before {
         content: attr(label);
         font-weight: bold;
-        width: 120px;
-        min-width: 120px;
+        width: 15px;
+        min-width: 15px;
       }
 
       tbody {
@@ -922,16 +941,22 @@ main {
           font-weight: normal;
           margin-left: 25px;
           content: "מחיר ליח' לפי מע\"מ: ";
+          width: 90px;
+          min-width: 90px;
         }
         & td:nth-of-type(6):before {
           font-weight: normal;
           margin-left: 25px;
           content: "כמות כוללת: ";
+          width: 90px;
+          min-width: 90px;
         }
         & td:nth-of-type(7):before {
           font-weight: normal;
           margin-left: 25px;
           content: 'סה"כ ללא מע"מ: ';
+          width: 90px;
+          min-width: 90px;
         }
 
         & td:nth-of-type(5),
@@ -951,20 +976,11 @@ main {
             white-space: normal;
             font-size: smaller;
             border: none;
-            // &.product-name-td {
-            //   // max-width: 75px;
-            //   // max-width: min-content;
-            //   // white-space: normal;
-            //   max-width: 75px;
-            //   height: 75px;
-            //   // border: 1px solid red;
-            // }
             &.product-name-td {
               font-weight: bold;
               font-size: large;
             }
             &.description-td {
-              // font-size: x-small;
               display: flex;
               max-width: 100%;
 
@@ -973,19 +989,14 @@ main {
                 flex-grow: 1;
                 max-width: 100%;
                 padding-bottom: 0px;
-                // max-width: 100%;
-                // overflow-x: auto;
                 width: 100%;
-                // width: fit-content;
                 max-height: none;
                 overflow-x: scroll;
-                // height: 100%;
                 .load-more-btn {
                   display: none;
                 }
                 .markdown-wraper {
                   width: 100%;
-                  // max-height: 75px;
                   max-height: 100%;
                   min-width: none;
                   overflow-x: scroll;
@@ -1004,7 +1015,64 @@ main {
         }
       }
       tfoot {
-        display: none;
+        .total-tr {
+          font-size: x-large;
+          td:nth-of-type(1) {
+            text-decoration: underline;
+          }
+          td:nth-of-type(2) {
+            font-weight: bold;
+            margin-right: 1rem;
+          }
+        }
+        .flex-center-tr {
+          td {
+            .wraper {
+              width: auto;
+              flex-direction: column;
+              justify-content: space-evenly;
+              align-items: flex-start;
+              .item {
+                div {
+                  margin-left: 5px;
+                }
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+              }
+            }
+          }
+        }
+        tr {
+          h3 {
+            margin-top: 1.5rem;
+            text-decoration: underline;
+          }
+          td.ftoot-cell {
+            &:before {
+              display: none;
+            }
+            .canvas-wraper {
+              margin: 0 auto;
+              .inner-wraper {
+                .signature {
+                  width: 100%;
+                  height: 100%;
+                  img {
+                    width: 100%;
+                    height: 100%;
+                  }
+                }
+                .actions-2 {
+                  button:nth-of-type(1),
+                  button:nth-of-type(2) {
+                    display: none;
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
