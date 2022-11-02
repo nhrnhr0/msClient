@@ -7,6 +7,8 @@ import { clear_all_db_data, clear_all_session_data } from "src/db.js";
 </script>
 
 <script>
+import { NotificationDisplay } from "@beyonk/svelte-notifications";
+
 import "src/app.scss";
 import Navbar from "$lib/Navbar.svelte";
 import { onDestroy, onMount } from "svelte";
@@ -83,7 +85,8 @@ onDestroy(() => {
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script
       async
-      src="https://www.googletagmanager.com/gtag/js?id=UA-172462100-2"></script>
+      src="https://www.googletagmanager.com/gtag/js?id=UA-172462100-2"
+    ></script>
     <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() {
@@ -95,6 +98,7 @@ onDestroy(() => {
     </script>
   {/if}
 </svelte:head>
+<NotificationDisplay />
 <Navbar />
 
 <LoginPopup />
