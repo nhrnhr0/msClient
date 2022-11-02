@@ -149,7 +149,7 @@ async function get_main_as_canvas() {
   return await html2canvas(document.querySelector("#main"), {
     allowTaint: false,
     useCORS: true,
-    width: 793,
+    // width: 793,
   });
 }
 
@@ -173,14 +173,24 @@ async function download_as_pdf() {
     heightLeft -= pageHeight;
   }
   debugger;
-  doc.save("signature.pdf");
+  let current_date = new Date();
+  let date_str = current_date.toLocaleDateString("he-IL");
+  doc.save(
+    "הזמנת עבודה חתומה - " + data.client_name + " - " + date_str + ".pdf"
+  );
+  // filename = "הזמנת עבודה חתומה " + data.client_name +
+  // doc.save("signature.pdf");
 }
 async function download_as_image() {
   let cnv = await get_main_as_canvas();
   // download cnv as pdf
   let img = cnv.toDataURL("image/png");
   let link = document.createElement("a");
-  link.download = "signature.png";
+  let current_date = new Date();
+  let date_str = current_date.toLocaleDateString("he-IL");
+  let filename =
+    "הזמנת עבודה חתומה " + data.client_name + " - " + date_str + ".png";
+  link.download = filename;
   link.href = img;
   link.click();
 }
@@ -518,7 +528,7 @@ function open_popup_image(url) {
                 {:else}
                   <!-- buttons: download as pdf, download as image,copy link-->
                   <button
-                    class="btn btn-primary"
+                    class="btn btn-primary hide-mobile"
                     on:click={() => {
                       download_as_pdf();
                     }}
@@ -526,7 +536,7 @@ function open_popup_image(url) {
                     הורד כ PDF
                   </button>
                   <button
-                    class="btn btn-primary"
+                    class="btn btn-primary hide-mobile"
                     on:click={() => {
                       download_as_image();
                     }}
@@ -652,14 +662,15 @@ main {
   background-color: #fff;
   padding-right: 1rem;
   max-width: 100vw;
+  width: fit-content;
   overflow: scroll;
-  width: 100%;
+  // width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   //max: a4
-  max-width: 21cm;
+  // max-width: 21cm;
 
   margin-bottom: 150px;
 
@@ -1064,8 +1075,11 @@ main {
                   }
                 }
                 .actions-2 {
-                  button:nth-of-type(1),
-                  button:nth-of-type(2) {
+                  // button:nth-of-type(1),
+                  // button:nth-of-type(2) {
+                  //   display: none;
+                  // }
+                  .hide-mobile {
                     display: none;
                   }
                 }

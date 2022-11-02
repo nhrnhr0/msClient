@@ -69,21 +69,24 @@ export let product;
 <style lang="scss">
 table.table.items {
   margin: 0.5rem;
+  margin-bottom: 100px;
   thead {
     background: #eee;
     tr {
       th {
         padding: 0.5em;
         text-align: center;
+        border: 1px solid black;
       }
     }
   }
   tbody {
     tr {
       td {
-        border-bottom: 1px solid #ddd !important;
+        // border-bottom: 1px solid #ddd !important;
         padding: 0.5em;
         white-space: nowrap;
+        border: 1px solid black;
         // padding: 0px !important;
       }
     }
