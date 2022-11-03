@@ -134,7 +134,7 @@ function submit_btn_clicked(e) {
   });
   response.then((res) => {
     if (res.status == "success") {
-      //refresh page
+      alert("המסמך נשלח בהצלחה ✔️");
       window.location.reload();
     } else {
       alert("אירעה שגיאה בחתימה");
@@ -401,7 +401,7 @@ function open_popup_image(url) {
               />
             </div>
           </td>
-          <td colspan="3"> {sim.description}</td>
+          <td colspan="3"> {@html sim.description.replace("\n", "</br>")}</td>
         </tr>
       {/each}
       <tr>
