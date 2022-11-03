@@ -456,10 +456,10 @@ function input_field_focous(e) {
               add_to_cart_btn_clicked = true;
               setTimeout(() => {
                 add_to_cart_btn_clicked = false;
-                notifier.success("המוצר נוסף לעגלה");
+                notifier.success("המוצר נוסף לעגלה", 1000);
               }, 1000);
             } else {
-              notifier.danger("אנא בחר כמות");
+              notifier.danger("אנא בחר כמות", 1500);
             }
             // btn.disabled = true;
           }}
