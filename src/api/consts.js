@@ -89,3 +89,5 @@ export const CLOUDINARY_URL =
 export const REQUEST_PROVIDER_INFO_URL = BASE_URL + '/request-provider-info';
 export const GET_SIGNATURE_URL = BASE_URL + '/api-signature/';
 export const SIGN_ON_DOC_URL = BASE_URL + '/sign-on-doc/';
+export const CREATE_SHAERE_CART_URL = BASE_URL + '/create-shareable-cart/';
+export const GET_SHAREABLE_CART_URL = BASE_URL + '/get-shareable-cart/';

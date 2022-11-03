@@ -33,6 +33,7 @@ export function edit_cart_price_promp(product_id) {
 
 export function mentries_to_data_array(mentries) {
 	let data = [];
+    debugger;
         for(let size_id_idx in Object.entries(mentries)) {
             let size_id = Object.entries(mentries)[size_id_idx][0];
             let colors_vals = Object.entries(mentries)[size_id_idx][1];
