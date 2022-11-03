@@ -1,6 +1,4 @@
 <script context="module">
-import { NotificationDisplay } from "@beyonk/svelte-notifications";
-
 //import { writable } from "svelte/store";
 
 //import { stateQuery} from './../stores/stores'
@@ -9,7 +7,7 @@ import { clear_all_db_data, clear_all_session_data } from "src/db.js";
 </script>
 
 <script>
-import { NotificationDisplay } from "@beyonk/svelte-notifications";
+// import { NotificationDisplay } from "@beyonk/svelte-notifications";
 
 import "src/app.scss";
 import Navbar from "$lib/Navbar.svelte";
@@ -102,7 +100,7 @@ onDestroy(() => {
     </script>
   {/if}
 </svelte:head>
-<NotificationDisplay />
+<!-- <NotificationDisplay /> -->
 
 <Navbar />
 
