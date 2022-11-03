@@ -217,6 +217,7 @@ function get_pivot_rows(use_varients) {
           <div class="modal-body">
             <button
               on:click={add_all_products}
+              disabled={!$shereCartStore.temp_cart && $shereCartStore.uuid}
               class="add-all-btn btn btn-primary">הוסף הכל לסל</button
             >
             <div class="products">

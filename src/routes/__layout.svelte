@@ -1,6 +1,4 @@
 <script context="module">
-import { NotificationDisplay } from "@beyonk/svelte-notifications";
-
 //import { writable } from "svelte/store";
 
 //import { stateQuery} from './../stores/stores'
@@ -100,7 +98,7 @@ onDestroy(() => {
     </script>
   {/if}
 </svelte:head>
-<NotificationDisplay />
+<!-- <NotificationDisplay /> -->
 
 <Navbar />
 
