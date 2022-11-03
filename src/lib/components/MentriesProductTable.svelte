@@ -1,6 +1,6 @@
 <script>
 import { getSessionStorageStore } from "src/stores/sessionStorageStore";
-import { notifier } from "@beyonk/svelte-notifications";
+// import { notifier } from "@beyonk/svelte-notifications";
 
 import { onMount } from "svelte";
 import { Spinner } from "sveltestrap";
@@ -16,7 +16,10 @@ let ALL_SIZES;
 let ALL_COLORS;
 let ALL_VARIENTS;
 export let productInfo;
-let add_to_cart_btn_clicked = false;
+let add_to_cart_btn_clicked_anim1 = false;
+let add_to_cart_btn_clicked_anim2 = false;
+let add_to_cart_btn_enabled = false;
+let last_add_to_cart_amount = 0;
 
 /*function sizes_colors_input_chenged(e) {
         let cartItem = $cartStore[productInfo.id];
@@ -98,6 +101,7 @@ function clear_mentries() {
 }
 
 function input_amount_input(e) {
+  add_to_cart_btn_enabled = true;
   if (e) {
     let target_input = e.target;
     let val = target_input.value;
@@ -108,6 +112,7 @@ function input_amount_input(e) {
 }
 
 function input_amount_changed(e) {
+  add_to_cart_btn_enabled = true;
   calc_amount();
   if (amount == 0 || amount == undefined) {
     //delete $cartStore[productInfo.id];
@@ -173,6 +178,15 @@ function calc_amount() {
     });
     amount = total_amount;
   }
+}
+function add_to_cart_btn_clicked_event(e) {
+  add_to_cart_btn_enabled = false;
+  add_to_cart_btn_clicked_anim1 = true;
+  setTimeout(() => {
+    add_to_cart_btn_clicked_anim1 = false;
+  }, 250);
+
+  // btn.disabled = true;
 }
 
 function fly_to_cart(el = undefined) {
@@ -450,24 +464,17 @@ function input_field_focous(e) {
         בחר צבעים ומידות
         <button
           class="btn btn-primary btn-sm"
-          disabled={add_to_cart_btn_clicked}
+          disabled={!add_to_cart_btn_enabled}
           on:click={(e) => {
-            if ($dictCartStore[productInfo.id]) {
-              add_to_cart_btn_clicked = true;
-              setTimeout(() => {
-                add_to_cart_btn_clicked = false;
-                notifier.success("המוצר נוסף לעגלה");
-              }, 1000);
-            } else {
-              notifier.danger("אנא בחר כמות");
-            }
-            // btn.disabled = true;
+            add_to_cart_btn_clicked_event(e);
           }}
           >הוסף לעגלה
-          {#if add_to_cart_btn_clicked}
+          {#if add_to_cart_btn_clicked_anim1}
             <div class="spinner-border spinner-border-sm" role="status">
               <span class="sr-only" />
             </div>
+          {:else if !add_to_cart_btn_enabled}
+            ✔️
           {/if}
         </button>
         {#if $dictCartStore[productInfo.id]}
@@ -485,21 +492,18 @@ function input_field_focous(e) {
         בחר כמות
         <button
           class="btn btn-primary btn-sm"
-          disabled={add_to_cart_btn_clicked}
+          disabled={add_to_cart_btn_clicked_anim1}
           on:click={(e) => {
             if ($dictCartStore[productInfo.id]) {
-              add_to_cart_btn_clicked = true;
+              add_to_cart_btn_clicked_anim1 = true;
               setTimeout(() => {
-                add_to_cart_btn_clicked = false;
-                notifier.success("המוצר נוסף לעגלה");
+                add_to_cart_btn_clicked_anim1 = false;
               }, 1000);
-            } else {
-              notifier.danger("אנא בחר כמות");
+              // btn.disabled = true;
             }
-            // btn.disabled = true;
           }}
           >הוסף לעגלה
-          {#if add_to_cart_btn_clicked}
+          {#if add_to_cart_btn_clicked_anim1}
             <div class="spinner-border spinner-border-sm" role="status">
               <span class="sr-only" />
             </div>

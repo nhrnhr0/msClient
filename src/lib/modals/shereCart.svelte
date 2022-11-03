@@ -25,7 +25,6 @@ function merge_and_sum_mentries(entries1, entries2) {
   //          add the quantity entties1[entries1_key] to the return variable dict
   // else:
   //     loop through enttries1[entries1_key] keys (entries1_key) (recursive)
-  debugger;
   let return_variable = { ...entries2 };
   for (let keys1 in entries1) {
     for (let keys2 in entries1[keys1]) {
@@ -76,7 +75,6 @@ function merge_and_sum_mentries(entries1, entries2) {
 
 function add_all_products() {
   //   let i = 0;
-  debugger;
   let arr = $shereCartStore.temp_cart;
   for (let i = 0; i < arr.length; i++) {
     setTimeout(() => {
@@ -87,7 +85,6 @@ function add_all_products() {
   }
   //   for (let idx in $shereCartStore.temp_cart) {
   //     setTimeout(() => {
-  //       debugger;
   //       let product_id = $shereCartStore.temp_cart[idx].id;
   //       add_product_to_cart(product_id);
   //     }, i * 150);
@@ -105,7 +102,6 @@ function add_product_to_cart(product_id) {
   let product_data = $shereCartStore.temp_cart.find(
     (product) => product.id == product_id
   );
-  debugger;
   let new_entries = merge_and_sum_mentries(old_entries, product_data.mentries);
   console.log(new_entries);
   let cart_prod = cartStore.getProduct(product_id);
@@ -154,7 +150,6 @@ $: {
     let url = GET_SHAREABLE_CART_URL + $shereCartStore.uuid + "/";
     fetch_wraper(url, {}).then((response) => {
       if (response) {
-        debugger;
         shereCartStore.setCart(response.data);
       }
     });
@@ -481,7 +476,14 @@ function get_pivot_rows(use_varients) {
 
 <style lang="scss">
 #shere_cart_modal {
-  overflow: scroll;
+  // overflow: scroll;
+
+  // position: fixed;
+  // left: 0;
+  // top: 0;
+  // width: 100%;
+  // height: 100vh;
+  // z-index: 990;
 }
 .overlay {
   width: 100%;
@@ -540,10 +542,22 @@ function get_pivot_rows(use_varients) {
 
 .modal_content {
   overflow: auto;
+  .modal-header {
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      @media screen and (max-width: 768px) {
+        font-size: 1.2rem;
+      }
+      @media screen and (max-width: 576px) {
+        font-size: 1rem;
+      }
+    }
+  }
 }
 .modal-body {
   overflow: visible;
-  padding-bottom: 350px;
+  // padding-bottom: 350px;
   overflow-x: hidden;
 }
 .add-all-btn {
@@ -555,6 +569,7 @@ function get_pivot_rows(use_varients) {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  overflow-x: auto;
   .product-wraper {
     display: flex;
     flex-direction: row;
@@ -614,6 +629,30 @@ function get_pivot_rows(use_varients) {
             color: #333;
           }
         }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .products {
+    .product-wraper {
+      flex-direction: column;
+      align-items: flex-start;
+      .product-info {
+        display: flex;
+        flex-direction: column;
+        .attributes {
+          .attribute {
+            margin: 5px 2px;
+          }
+        }
+      }
+      .add-to-cart-btn {
+        margin-top: 10px;
+        // position: relative;
+        // left: none;
+        // margin: auto;
       }
     }
   }
