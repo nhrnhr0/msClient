@@ -1,18 +1,15 @@
 <script context="module">
-
 //import { onMount } from "svelte";
-import Modal from 'svelte-simple-modal';
-import { NotificationDisplay } from '@beyonk/svelte-notifications'
+import Modal from "svelte-simple-modal";
 
-  
-  /*export let sizes;
+/*export let sizes;
   export let colors;*/
-
 </script>
+
 <script>
 import { page } from "$app/stores";
 import { onMount } from "svelte";
-    /*onMount(async()=> {
+/*onMount(async()=> {
         let response = await fetch_wraper(MAIN_PAGE_API, {
       method: 'GET',
       redirect: 'follow'
@@ -41,76 +38,88 @@ import { onMount } from "svelte";
         colorsJsonStore.set(colors_ret);
     })*/
 </script>
-  <svelte:head>
-    <!-- import 
+
+<svelte:head>
+  <!-- import 
     https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.13.0/pivot.min.js
     https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js
       https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.13.0/pivot.min.css
       https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js
   -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.13.0/pivot.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.13.0/pivot.min.css">
-  </svelte:head>
-  <NotificationDisplay />
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.13.0/pivot.min.js"
+  ></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/pivottable/2.13.0/pivot.min.css"
+  />
+</svelte:head>
 
-  <nav>
-    <div class="nav-wrapper">
-        <ul class="nav-mobile">
-            <li data-tab-id="1" class:active={$page.path.includes('/dashboard/inv')}>
-                <a href="/dashboard/inv" >
-                מלאי
-                </a>
-            </li>
-            <li data-tab-id="2" class:active={$page.path.includes('/dashboard/doc-stock-enter')}>
-                <a href="/dashboard/doc-stock-enter" >
-                טפסי הכנסה למלאי
-                </a>
-            </li>
-            <li data-tab-id="3"class:active={$page.path.includes('/dashboard/doc-stock-out')}>
-                <a href="/dashboard/doc-stock-out" >
-                    עגלות
-                </a>
-            </li>
-            <li data-tab-id="4"class:active={$page.path.includes('/dashboard/orders-collection')}>
-                <a href="/dashboard/orders-collection" >
-                    ליקוט
-                </a>
-            </li>
-            <li data-tab-id="5"class:active={$page.path.includes('/dashboard/providers-request')}>
-                <a href="/dashboard/providers-request" >
-                    ספקים
-                </a>
-            </li>
-        </ul>
-    </div>
+<nav>
+  <div class="nav-wrapper">
+    <ul class="nav-mobile">
+      <li data-tab-id="1" class:active={$page.path.includes("/dashboard/inv")}>
+        <a href="/dashboard/inv"> מלאי </a>
+      </li>
+      <li
+        data-tab-id="2"
+        class:active={$page.path.includes("/dashboard/doc-stock-enter")}
+      >
+        <a href="/dashboard/doc-stock-enter"> טפסי הכנסה למלאי </a>
+      </li>
+      <li
+        data-tab-id="3"
+        class:active={$page.path.includes("/dashboard/doc-stock-out")}
+      >
+        <a href="/dashboard/doc-stock-out"> עגלות </a>
+      </li>
+      <li
+        data-tab-id="4"
+        class:active={$page.path.includes("/dashboard/orders-collection")}
+      >
+        <a href="/dashboard/orders-collection"> ליקוט </a>
+      </li>
+      <li
+        data-tab-id="5"
+        class:active={$page.path.includes("/dashboard/providers-request")}
+      >
+        <a href="/dashboard/providers-request"> ספקים </a>
+      </li>
+    </ul>
+  </div>
 </nav>
+<Modal classWindow="my-class-window">
+  <slot />
+</Modal>
 
 <style lang="scss">
-  nav {
-      .nav-wrapper {
-          .nav-mobile {
-              display: flex;
-              flex-direction: row;
-              justify-content: space-around;
-              align-items: center;
-              list-style: none;
-              li {
-                  background-color: #f5f5f5;
-                  padding: 7px;
-                  border-radius: 5px;
-                  cursor: pointer;
-                  &.active {
-                      background-color: #ffc107;
-                  }
-              }
-          }
+nav {
+  .nav-wrapper {
+    .nav-mobile {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: center;
+      list-style: none;
+      li {
+        background-color: #f5f5f5;
+        padding: 7px;
+        border-radius: 5px;
+        cursor: pointer;
+        &.active {
+          background-color: #ffc107;
+        }
       }
+    }
   }
-
+}
 </style>
-<Modal classWindow="my-class-window">
-<slot></slot>
-</Modal>
