@@ -4,7 +4,6 @@
 //import { stateQuery} from './../stores/stores'
 //import { onMount } from "svelte";
 import { clear_all_db_data, clear_all_session_data } from "src/db.js";
-import { NotificationDisplay } from "@beyonk/svelte-notifications";
 </script>
 
 <script>
