@@ -31,6 +31,7 @@ function createShereCartStore(defaultValue) {
     subscribe,
     set,
     setCart: (cart) => update((state) => ({ ...state, temp_cart: cart })),
+    setUUID: (uuid) => update((state) => ({ ...state, uuid: uuid })),
     openModal: () => {
             update((state) => ({ ...state, showModal: true, modal_zIndex:1200 + ((1+get(_modal_z_index_incrementor)) * 15)})),
             _modal_z_index_incrementor.set(get(_modal_z_index_incrementor) + 1);

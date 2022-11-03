@@ -7,7 +7,7 @@ import { scrollFix } from "$lib/ui/scrollFix";
 
 import { flip } from "svelte/animate";
 import { cartStore } from "src/stores/cartStore";
-import { CLOUDINARY_URL } from "src/api/consts";
+import { CLOUDINARY_URL, CREATE_SHAERE_CART_URL } from "src/api/consts";
 import { goto } from "$app/navigation";
 
 import { dictCartStore } from "src/stores/cartStore";
@@ -21,9 +21,40 @@ import EditAmountBtn from "./editAmountBtn.svelte";
 import { productPhotoPopupStore } from "src/stores/popups/productPhotoPopupStore";
 import { edit_cart_price_promp } from "src/lib/utils/utils";
 import { userInfoStore } from "src/stores/stores";
+import { fetch_wraper } from "src/api/api";
+import { notifier } from "@beyonk/svelte-notifications";
 
 let sidebar_top = 62;
 let show_prices = $userInfoStore && $userInfoStore.isLogin;
+let requesting_cart_copy = false;
+let success_copy_cart = false;
+function shere_cart_btn_clicked(e) {
+  // send a reuest to the server to create a shareable cart link
+  // and then copy the link to the clipboard
+  requesting_cart_copy = true;
+  fetch_wraper(CREATE_SHAERE_CART_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      cart: $cartStore,
+    }),
+  })
+    .then((data) => {
+      debugger;
+      if (data && data.link) {
+        navigator.clipboard.writeText(data.link);
+      }
+      success_copy_cart = true;
+      notifier.success("עגלה הועתקה בהצלחה", { timeout: 2000 });
+      setTimeout(() => {
+        success_copy_cart = false;
+        requesting_cart_copy = false;
+      }, 2000);
+    })
+    .catch((e) => {
+      alert("שגיאה בשיתוף עגלה, " + e);
+      requesting_cart_copy = false;
+    });
+}
 async function calc_product_url(product_id) {
   let product = await find_or_get_slim_product_by_id(product_id);
   return `/main?product_id=${product_id}&album=${product.main_public_album__slug}&top=${product.main_public_album_top__slug}`;
@@ -196,9 +227,26 @@ async function calc_product_url(product_id) {
         >
           לקופה
         </button>
-        <!--<button class="copy-button" title="העתק">
-              <img width="25px" height="25px" src="https://res.cloudinary.com/ms-global/image/upload/v1655639299/msAssets/copy-two-paper-sheets-interface-symbol_wldmek.png" alt="copy" />
-            </button>-->
+        <button
+          class="copy-button"
+          on:click={shere_cart_btn_clicked}
+          title="העתק"
+        >
+          {#if requesting_cart_copy}
+            {#if success_copy_cart}
+              ✔️
+            {:else}
+              <Spinner />
+            {/if}
+          {:else}
+            <img
+              width="25px"
+              height="25px"
+              src="https://res.cloudinary.com/ms-global/image/upload/v1655639299/msAssets/copy-two-paper-sheets-interface-symbol_wldmek.png"
+              alt="copy"
+            />
+          {/if}
+        </button>
       </div>
     </main>
   </aside>
