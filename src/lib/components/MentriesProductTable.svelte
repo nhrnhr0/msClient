@@ -1,5 +1,6 @@
 <script>
 import { getSessionStorageStore } from "src/stores/sessionStorageStore";
+import { notifier } from "@beyonk/svelte-notifications";
 
 import { onMount } from "svelte";
 import { Spinner } from "sveltestrap";
@@ -15,6 +16,7 @@ let ALL_SIZES;
 let ALL_COLORS;
 let ALL_VARIENTS;
 export let productInfo;
+let add_to_cart_btn_clicked = false;
 
 /*function sizes_colors_input_chenged(e) {
         let cartItem = $cartStore[productInfo.id];
@@ -446,6 +448,28 @@ function input_field_focous(e) {
     {#if productInfo.show_sizes_popup}
       <h3>
         בחר צבעים ומידות
+        <button
+          class="btn btn-primary btn-sm"
+          disabled={add_to_cart_btn_clicked}
+          on:click={(e) => {
+            if ($dictCartStore[productInfo.id]) {
+              add_to_cart_btn_clicked = true;
+              setTimeout(() => {
+                add_to_cart_btn_clicked = false;
+                notifier.success("המוצר נוסף לעגלה", 1000);
+              }, 1000);
+            } else {
+              notifier.danger("אנא בחר כמות", 1500);
+            }
+            // btn.disabled = true;
+          }}
+          >הוסף לעגלה
+          {#if add_to_cart_btn_clicked}
+            <div class="spinner-border spinner-border-sm" role="status">
+              <span class="sr-only" />
+            </div>
+          {/if}
+        </button>
         {#if $dictCartStore[productInfo.id]}
           <button
             class="btn btn-danger btn-sm"
@@ -459,6 +483,28 @@ function input_field_focous(e) {
     {:else}
       <h3>
         בחר כמות
+        <button
+          class="btn btn-primary btn-sm"
+          disabled={add_to_cart_btn_clicked}
+          on:click={(e) => {
+            if ($dictCartStore[productInfo.id]) {
+              add_to_cart_btn_clicked = true;
+              setTimeout(() => {
+                add_to_cart_btn_clicked = false;
+                notifier.success("המוצר נוסף לעגלה");
+              }, 1000);
+            } else {
+              notifier.danger("אנא בחר כמות");
+            }
+            // btn.disabled = true;
+          }}
+          >הוסף לעגלה
+          {#if add_to_cart_btn_clicked}
+            <div class="spinner-border spinner-border-sm" role="status">
+              <span class="sr-only" />
+            </div>
+          {/if}
+        </button>
         {#if $dictCartStore[productInfo.id]}
           <button
             class="btn btn-danger btn-sm"
@@ -754,6 +800,7 @@ function input_field_focous(e) {
             on:focus={input_field_focous}
             bind:value={amount}
             on:change={input_amount_changed}
+            placeholder="הזן כמות מבוקשת"
             name="amount"
             type="number"
             class="my-form-control my-form-control-single"
@@ -798,7 +845,7 @@ function input_field_focous(e) {
 // input[type=number]::-webkit-outer-spin-button {
 //   opacity: 1;
 // }
-.btn-danger {
+.btn-sm {
   padding: 0.2rem 0.4rem;
   margin: auto;
   border: 0px;
