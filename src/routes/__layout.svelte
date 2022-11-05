@@ -8,8 +8,6 @@ import { NotificationDisplay } from "@beyonk/svelte-notifications";
 </script>
 
 <script>
-import { NotificationDisplay } from "@beyonk/svelte-notifications";
-
 import "src/app.scss";
 import Navbar from "$lib/Navbar.svelte";
 import { onDestroy, onMount } from "svelte";
