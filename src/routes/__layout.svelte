@@ -4,6 +4,7 @@
 //import { stateQuery} from './../stores/stores'
 //import { onMount } from "svelte";
 import { clear_all_db_data, clear_all_session_data } from "src/db.js";
+import { NotificationDisplay } from "@beyonk/svelte-notifications";
 </script>
 
 <script>
@@ -24,6 +25,8 @@ import { WHO_AM_I_URL } from "src/api/consts";
 import { userInfoStore } from "./../stores/stores";
 import SubAlbumsDisplay from "src/lib/popups/SubAlbumsDisplay.svelte";
 import { update_userInfoStore } from "src/api/auth";
+import ShereCart from "src/lib/modals/shereCart.svelte";
+
 onMount(async () => {
   // clear all dbs on startup.
   console.log("+++++++ WARNING: clearing all db data on startup. +++++++ ");
@@ -103,6 +106,7 @@ onDestroy(() => {
 
 <LoginPopup />
 <CartPopup />
+<ShereCart />
 <ProductPhotoPopup />
 <SuccessPopup />
 <SubAlbumsDisplay />

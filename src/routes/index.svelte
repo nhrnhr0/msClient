@@ -39,8 +39,10 @@ import ContentForm from "src/lib/contentForm.svelte";
 import NewProductsSwiper from "src/new/NewProductsSwiper.svelte";
 import { get_topLevelCategories } from "src/stores/sessionStorage/topLevelCategories";
 import { my_fetch } from "src/network/my_fetch";
-import { LOGOS_API_URL } from "src/api/consts";
-
+import { GET_SHAREABLE_CART_URL, LOGOS_API_URL } from "src/api/consts";
+import { page } from "$app/stores";
+import { fetch_wraper } from "src/api/api";
+import { shereCartStore } from "src/stores/shereCartStore";
 export let main_albums;
 export let main_categories;
 export let logos;
@@ -56,6 +58,18 @@ activeModalsStore.subscribe((modals) => {
     } else {
       sl_enable();
     }
+  }
+});
+
+onMount(async () => {
+  debugger;
+  if ($page.query.get("shareable-cart")) {
+    let cart_uuid = $page.query.get("shareable-cart");
+    // let url = GET_SHAREABLE_CART_URL + cart_uuid + "/";
+    // let response = await fetch_wraper(url, {}, fetch);
+    // shereCartStore.setCart(response.data);
+    shereCartStore.setUUID(cart_uuid);
+    shereCartStore.openModal();
   }
 });
 </script>
