@@ -474,7 +474,7 @@ function input_field_focous(e) {
             <div class="spinner-border spinner-border-sm" role="status">
               <span class="sr-only" />
             </div>
-          {:else if !add_to_cart_btn_enabled}
+          {:else if !add_to_cart_btn_enabled && amount}
             ✔️
           {/if}
         </button>
