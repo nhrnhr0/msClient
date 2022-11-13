@@ -1,5 +1,6 @@
 <script>
 import { getSessionStorageStore } from "src/stores/sessionStorageStore";
+
 // import { notifier } from "@beyonk/svelte-notifications";
 
 import { onMount } from "svelte";

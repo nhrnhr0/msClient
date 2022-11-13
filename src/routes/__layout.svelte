@@ -100,7 +100,6 @@ onDestroy(() => {
   {/if}
 </svelte:head>
 <NotificationDisplay />
-
 <Navbar />
 
 <LoginPopup />

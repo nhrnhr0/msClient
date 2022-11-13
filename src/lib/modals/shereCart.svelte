@@ -570,6 +570,7 @@ function get_pivot_rows(use_varients) {
   flex-direction: column;
   justify-content: center;
   overflow-x: auto;
+  margin-bottom: 100px;
   .product-wraper {
     display: flex;
     flex-direction: row;
@@ -636,6 +637,7 @@ function get_pivot_rows(use_varients) {
 
 @media screen and (max-width: 600px) {
   .products {
+    margin-bottom: 0px;
     .product-wraper {
       flex-direction: column;
       align-items: flex-start;

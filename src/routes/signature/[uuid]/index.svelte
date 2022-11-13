@@ -207,7 +207,7 @@ function copy_link() {
 const price_format = (num, decimals) =>
   num.toLocaleString("he-IL", {
     //  minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
   });
 let show_image_popup = false;
 let show_image_popup_url = "";
