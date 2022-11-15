@@ -207,7 +207,7 @@ function copy_link() {
 const price_format = (num, decimals) =>
   num.toLocaleString("he-IL", {
     //  minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
   });
 let show_image_popup = false;
 let show_image_popup_url = "";
@@ -369,11 +369,11 @@ function open_popup_image(url) {
           0
         )}
         <tr class="total-tr">
-          <td colspan="6">סה"כ לפני מע"מ</td>
+          <td colspan="6">סה״כ לפני מע״מ</td>
           <td>{price_format(total_price_before_tax)}₪</td>
         </tr>
         <tr class="total-tr">
-          <td colspan="6">סה"כ לאחר מע"מ</td>
+          <td colspan="6">סה״כ כולל מע״מ</td>
           <td>{price_format(total_price_before_tax * 1.17)}₪</td>
         </tr>
       {/if}
@@ -952,22 +952,19 @@ main {
           font-weight: normal;
           margin-left: 25px;
           content: "מחיר ליח' לפי מע\"מ: ";
-          width: 90px;
-          min-width: 90px;
+          width: 130px;
         }
         & td:nth-of-type(6):before {
           font-weight: normal;
           margin-left: 25px;
           content: "כמות כוללת: ";
-          width: 90px;
-          min-width: 90px;
+          width: 130px;
         }
         & td:nth-of-type(7):before {
           font-weight: normal;
           margin-left: 25px;
           content: 'סה"כ ללא מע"מ: ';
-          width: 90px;
-          min-width: 90px;
+          width: 130px;
         }
 
         & td:nth-of-type(5),
