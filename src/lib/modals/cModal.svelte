@@ -33,7 +33,6 @@ Button,
   } from 'sveltestrap';
   import { selectTextOnFocus } from '$lib/ui/inputActions';
 
-
   function remove_from_cart(e) {
     const productId = e.currentTarget.dataset.productId;
     const imgData = {
@@ -58,7 +57,7 @@ Button,
   }
   let show_prices;
   $: {
-    show_prices =  ($userInfoStore['me'] && Object.keys($userInfoStore['me']) != 0 && $userInfoStore['me'].show_prices == true)? true : false;
+    show_prices = ($userInfoStore['me'] && Object.keys($userInfoStore['me']) != 0 && $userInfoStore['me'].show_prices == true)? true : false;
   }
   export let isModalOpen = false;
   export function toggleModal(push_url = true) {
@@ -93,6 +92,8 @@ Button,
   import {productCartModalStore} from './../../stores/stores';
 
   import MyCountdown from '$lib/components/MyCountdown.svelte';
+import AlbumsView from '$lib/components/AlbumsView.svelte';
+import PriceTag from '../components/priceTag.svelte';
   let products = [];
   let current_album = new writable({});
   let title = 'loading'
@@ -101,6 +102,48 @@ Button,
   let modal_zIndex = 0;
   let is_campain = false;
   let campain;
+  let show_categories = false;
+
+  let groupedAlbums = []; // group groupedAlbums albumsJsonStore by topLevelCategory, if topLevelCategory is not found, create others
+        albumsJsonStore.subscribe((albums) => {
+            if (albums.length > 0) {
+            let groupedAlbumsTemp = albums.reduce((acc, album) => {
+                const topLevelCategory = album.topLevelCategory;
+                if (!acc[topLevelCategory]) {
+                    acc[topLevelCategory] = [];
+                }
+                acc[topLevelCategory].push(album);
+                return acc;
+            }, {});
+            // put undefined topLevelCategory albums at the end
+            
+
+
+            let groupedAlbumsTempArr = [];
+            let entries = Object.entries(groupedAlbumsTemp);
+            
+            let lastVal = undefined;
+            for(let i = 0; i < entries.length; i++) {
+                let key = entries[i][0];
+                let value = entries[i][1];
+                if (key == 'undefined') {
+                    lastVal = value;
+                }else {
+                    groupedAlbumsTempArr.push({
+                        key: key,
+                        value: value
+                    });
+                }
+            }
+            groupedAlbumsTempArr.push({
+                key: 'undefined',
+                value: lastVal
+            });
+
+            groupedAlbums = groupedAlbumsTempArr;
+            }
+        });
+
   export function setAlbum(album, push_url = true) {
     current_album.set(album);
     desctiption = album.description;
@@ -211,66 +254,18 @@ Button,
   }
 </script>
 
-
+<svelte:options accessors/>
 <div id="categoryModal" style="z-index: {modal_zIndex};" class="modal" class:active={isModalOpen}>
   <div class="overlay" style="z-index: {modal_zIndex+5};" on:click={toggleModal}></div>
   <div class="modal_content" style="z-index: {modal_zIndex+10};">
     <div class="modal-header">
       <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
       <h5 class="modal-title">{$current_album.title}</h5>
-
-      <div class="modal-header-links">
-
-        <Dropdown id="modalCategoryList" class="category-menu">
-          <DropdownToggle color="none" caret class="btn btn-outline-dark" aria-label="menu">
-
-
-            כל הקטגוריות
-
-
-          </DropdownToggle>
-          <DropdownMenu>
-            {#each $albumsJsonStore as alb}
-              <DropdownItem>
-                <button on:click={changeCategory(alb)} class="btn btn-dark" class:selected={$current_album.id==alb.id}>
-                  {alb.title}
-                </button>
-              </DropdownItem>        
-            {/each}
-          </DropdownMenu>
-        </Dropdown>
-        <!--
-        <nav class="navbar navbar-expand">
-          <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#categoryNavbarNavDropdown"
-              aria-controls="categoryNavbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" id="categoryNavbarNavDropdown"
-              bis_skin_checked="1">
-              <ul class="navbar-nav align-self-end flex-wrap w-auto" id="categoryNav">
-                {#each $albumsJsonStore as alb}
-                    <li class="nav-item">
-                      <a class="nav-link" aria-label="open category" role="button"><button on:click={setAlbum(alb)} class="btn btn-dark">{alb.title}</button></a>
-                    </li>
-                {/each}
-                <li class="nav-item dropdown d-none">
-                  <a class="btn btn-secondary dropdown-toggle" href="#"  role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                  </a>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                  </ul>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
-        -->
-      </div>
-      
       <button title="Close" on:click={toggleModal} class="close-btn left">x</button>
     </div>
+    
     <div class="modal-body" bind:this={modal_body}>
-
+      <AlbumsView direction="rtl" />
 
 
       {#if $current_album}
@@ -313,7 +308,15 @@ Button,
               {#if img.out_of_stock}
                 <img src="https://res.cloudinary.com/ms-global/image/upload/v1648713887/msAssets/pngfind.com-pubg-player-png-5352359_1_bepovk.png" class="sold-out-icon" alt="מלאי לא זמין"/>
               {/if}
+              <PriceTag
+                                            price={img.price}
+                                            newPrice={img.newPrice}
+                                            ClassName="price-tag"
+                                            show_prices={show_prices && img.out_of_stock == false}
+                                            ></PriceTag>
+              <!--
               <div class="price-tag" class:active={show_prices && img.out_of_stock == false} >{img.price + '₪'}</div>
+              -->
             </div>
             <div class="img-title">{img.title}</div>
           </div>
@@ -577,6 +580,7 @@ Button,
                     align-items: center;
                     width: 100%;
                     * {
+                      z-index: 0;
                         margin: 0;
                         width: 100%;
                         flex:1;
@@ -655,6 +659,18 @@ Button,
       }
     }
 :global(#modalCategoryList.show) {
+  
+  position: initial!important;
+  :global(.dropdown-menu) {
+    border:1px solid red;
+    width: fit-content;
+    position: absolute;
+    right: 0px!important;;
+    top:0px!important;
+    .sub-album {
+      display: none;
+    }
+  }
 }
 
 
@@ -685,39 +701,13 @@ Button,
     }
   .modal-header {
     justify-content: space-between;
-    
-    
+    position: relative;
+    //border:1px solid purple;
     .modal-header-links {
-      flex:4;
-      
-      :global(.category-menu) {
-        :global(.dropdown-menu.show) {
-          max-height: 80vh;
-          overflow-y: auto;
-          left: 0%!important;
-          @media screen and (max-width: 1100px) {
-            grid-template-columns: repeat(4, 1fr);
-            
-          }
-          @media screen and (max-width: 975px) {
-            grid-template-columns: repeat(3, auto);
-          }
-          @media screen and (max-width: 770px) {
-            grid-template-columns: repeat(2, auto);
-            
-          }
-          @media screen and (max-width: 530px) {
-            grid-template-columns: repeat(1, 1fr);
-          }
-
-          :global(.dropdown-item) {
-            :global(.btn-dark.selected) {
-              background-color: rgb(223, 223, 223);
-              color: black;
-              box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
-            }
-          }
-        }
+      //border:1px solid red;
+      .categories-container {
+        position: absolute;
+        right:0px;
       }
     }
     h5 {
@@ -815,11 +805,11 @@ Button,
       width: 100%;
       .category-item-img-wraper {
         position: relative;
-        .price-tag {
+        :global(.price-tag) {
                     position: absolute;
                     bottom: 5px;
                     left:5px;
-                    padding: 5px;
+                    /*padding: 5px;
                     font-weight: bold;
                     border-radius: 999px;
                     background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
@@ -828,7 +818,7 @@ Button,
                     
                     &.active {
                         display: block;
-                    }
+                    }*/
                 }
 
         &:hover {
@@ -858,13 +848,13 @@ Button,
           position: absolute;
           //display: none;
           color: white;
-          z-index: 2000;
+          z-index: 0;
           font-size: 1.2em;
           pointer-events: none;
           top: 0%;
           text-align: center;
           width: 100%;
-          z-index: 9999;
+          //z-index: 9999;
 
 
           

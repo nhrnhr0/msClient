@@ -44,6 +44,7 @@ import { logStore } from './../../stores/logStore';
 import { selectTextOnFocus } from '$lib/ui/inputActions';
 import SvelteTooltip from 'svelte-tooltip';
 import QuestionLabel from '$lib/components/questionLabel.svelte';
+import PriceTag from '../components/priceTag.svelte';
 let mouse_over_right_arrow = false;
 let mouse_over_left_arrow = false;
 
@@ -74,8 +75,6 @@ let mouse_over_left_arrow = false;
                 loaded_data = newData;
                 isLoaded = true;
             });
-            
-            
         }
         }
     }
@@ -506,6 +505,7 @@ on:change={(event) => {
                                 },
                                 'w':{
                                     'id':product.id,
+                                    'title':product.title,
                                 }
                             }
                             );
@@ -548,7 +548,12 @@ on:change={(event) => {
                                             </SvelteTooltip>
                                         </div>
                                         <img  class="product-image" data-catalog-id="{album.id}" data-product-id="{image.id}" src="{CLOUDINARY_URL}f_auto,w_auto/{image.cimage}" alt="{image.title}">
-                                        <div class="price-tag" class:active={show_prices && image.out_of_stock == false} >{image.price + '₪'}</div>
+                                        <PriceTag
+                                            price={image.price}
+                                            newPrice={image.newPrice}
+                                            ClassName="price-tag"
+                                            ></PriceTag>
+                                        <!--<div class="price-tag" class:active={show_prices && image.out_of_stock == false} >{image.price + '₪'}</div>-->
                                         <!--     <FaveBtn product_id={image.id}/>-->
                                     </div> 
                                 </div>
@@ -1082,14 +1087,7 @@ on:change={(event) => {
             .img-wraper{
                 //min-height: 200px;
                 //min-width: 200px;
-                color: white;
-
-                background: rgb(170, 170, 170);
-                background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-                background: linear-gradient(110deg, rgb(197, 197, 197) 8%, rgb(207, 207, 207) 18%, rgb(197, 197, 197) 33%);
-                border-radius: 5px;
-                background-size: 200% 100%;
-                animation: 1.5s shine linear infinite;
+                background: radial-gradient(circle,white 0%,white 32%,#c7c7c7 84%);
 
                 position: relative;
                 width: 100%;
@@ -1114,20 +1112,10 @@ on:change={(event) => {
                     
                 }
                 
-                .price-tag {
+                :global(.price-tag) {
                     position: absolute;
                     bottom: 5px;
                     left:5px;
-                    padding: 5px;
-                    font-weight: bold;
-                    border-radius: 25px;
-                    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-                    display: none;
-                    font-size: x-large;
-                    color: black;
-                    &.active {
-                        display: block;
-                    }
                 }
                 .product-image {
                     cursor: pointer;

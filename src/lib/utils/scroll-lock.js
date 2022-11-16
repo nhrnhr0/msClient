@@ -35,6 +35,7 @@ function getScrollbarWidth() {
   
   }
 export function sl_enable() {
+    
     const scrollbarWidth = getScrollbarWidth();
     scrollPosition = window.pageYOffset;
     $body.style.overflow = 'hidden';
@@ -48,6 +49,7 @@ export function sl_enable() {
     }
   }
   export function sl_disable() {
+    
     $body.style.removeProperty('overflow');
     $body.style.removeProperty('position');
     $body.style.removeProperty('top');

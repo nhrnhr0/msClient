@@ -46,6 +46,112 @@
 @import "bootstrap/scss/toasts";
 @import "bootstrap/scss/tooltip";
 @import "bootstrap/scss/helpers";
+//@import "carbon-components-svelte/css/white.css";
+@import "https://cdn.jsdelivr.net/npm/gridjs/dist/theme/mermaid.min.css";
+
+
+
+
+  // Brand colors
+  //$primary: #354165;
+  $primary: #3b3b3b;
+  //$secondary: #4dc0e3;
+  $secondary: #d4af37;
+  // Standard colors
+  $black: #000;
+  $white: #fff;
+  $red: #cc0000;
+
+  // Shades of gray
+  $gray-100: #f0f0f9;
+  $gray-200: #e1e1e7;
+  $gray-300: #d7d7de;
+  $gray-400: #cdcdd1;
+  $gray-500: #a5a5aa;
+  $gray-600: #98989b;
+  $gray-700: #75757a;
+  $gray-800: #666669;
+  $gray-900: #44444a;
+  $gray-1000: #333336;
+  $gray-1100: #222224;
+  $gray-1200: #131314;
+
+  
+
+  // Replace `$search` with `$replace` in `$string`
+  @function str-replace($string, $search, $replace: "") {
+    $index: str-index($string, $search);
+
+    @if $index {
+      @return str-slice($string, 1, $index - 1) + $replace +
+        str-replace(
+          str-slice($string, $index + str-length($search)),
+          $search,
+          $replace
+        );
+    }
+
+    @return $string;
+  }
+  @mixin hover-active() {
+  &:active,
+  &:hover {
+    @content;
+  }
+}
+
+/* common */
+.ribbon {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  position: absolute;
+}
+.ribbon::before,
+.ribbon::after {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  display: block;
+  //border: 5px solid #2980b9;
+}
+.ribbon span {
+  position: absolute;
+  display: block;
+  width: 225px;
+  padding: 15px 0;
+  //background-color: #3498db;
+  @include bg-gradient();
+  box-shadow: 0 5px 10px rgba(0,0,0,.1);
+  color: black;
+  font: 700 20px/1 'Lato', sans-serif;
+  text-shadow: 0 1px 1px rgba(0,0,0,.2);
+  text-transform: uppercase;
+  text-align: center;
+}
+/* top right*/
+.ribbon-top-right {
+  top: -10px;
+  right: -10px;
+}
+.ribbon-top-right::before,
+.ribbon-top-right::after {
+  border-top-color: transparent;
+  border-right-color: transparent;
+}
+.ribbon-top-right::before {
+  top: 0;
+  left: 0;
+}
+.ribbon-top-right::after {
+  bottom: 0;
+  right: 0;
+}
+.ribbon-top-right span {
+  left: 4px;
+  top: 10px;
+  transform: rotate(45deg) scale(0.55);
+}
 
 :root {
   --swiper-theme-color: #d4af37!important;
@@ -438,11 +544,28 @@ button:focus:not(:focus-visible) {
 
 
 
+.bg-wraper {
+  background: url("https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl");
+  background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)),
+  url("https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl") !important;
+  background-position: center;
+  overflow: hidden;
+  padding-top: 78px;
+}
 
 
 
-
-
+@keyframes pop-animation {
+  0% {
+      transform: scale(1);
+  }
+  50% {
+      transform: scale(1.3);
+  }
+  100% {
+      transform: scale(1.1);
+  }
+}
 
 .category-menu {
   .dropdown-menu.show {

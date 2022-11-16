@@ -18,7 +18,7 @@ export const deleteInitialValue = ( node ) => {
 export const fullNumbersOnly = ( node ) => {
     const handleKeyDown = event => {
         console.log('keycode: ', event.keyCode);
-        debugger;
+        
         let iligalKeyCode = [109,110,190,189,46,8]
         if(iligalKeyCode.includes(event.keyCode)) {
             event.preventDefault();

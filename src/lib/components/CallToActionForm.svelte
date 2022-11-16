@@ -1,6 +1,6 @@
 <div class="cta-ation-form bg-color-primary">
     <div class="vip-text">
-        <div>כל הלקוחות שלנו הם V.I.P אבל יש כאלה שמרוויחים <span class="mark-strong">יותר</span>...</div>
+        <div>כל הלקוחות שלנו הם <span class="mark-strong">V.I.P</span> אבל יש כאלה שמרוויחים <span class="mark-strong">יותר</span>...</div>
 
         <div>
             <span class="mark-strong">
@@ -12,13 +12,7 @@
         </div>
     </div>
     <div class="cta">
-        <span class="mark-strong">
-
-            לקבלת הצעת מחיר משתלמת
-            <span class="mark-bigger">ללא</span>
-            עלות
-            <span class="mark-bigger">וללא</span>
-            התחייבות השאירו שם וטלפון בטופס
+        <span class="mark-strong">השאירו שם וטלפון בטופס
         </span>
     </div>
 
@@ -114,6 +108,10 @@
                     color: #fff;
                     background-color: #218838;
                     border-color: #1e7e34;
+                }
+
+                @media screen and (max-width:450px) {
+                    font-size: 1.3rem;
                 }
             }
 

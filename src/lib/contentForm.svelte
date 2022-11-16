@@ -50,20 +50,27 @@ import { flashy_create_contact } from './flashy';
                 <div class="mark-strong">&nbsp;וללא&nbsp;</div>
                 התחייבות השאירו פרטים ומיד נחזור אליכם
             </h2>
-
-                  <div class="form-group">
+                <div class="row-spliter">
+                <div class="form-group">
                     <input bind:value={form_name} class="form-control" id="id_name" name="name" placeholder="שם - חובה" required="true" title="" type="text">
                 </div>
                 <div class="form-group">
                     <input bind:value={form_phone} class="form-control" id="id_phone" name="phone" placeholder="פאלפון - חובה" required="true" title="" type="text">
-                </div><div class="form-group">
-                  <input bind:value={form_email} class="form-control" id="id_email" name="email" placeholder="אימייל" title="" type="text">
-                </div><div class="form-group">
-                    <textarea bind:value={form_message} class="form-control" cols="40" id="id_message" name="message" placeholder="הודעה" rows="2" title=""></textarea>
                 </div>
                 <div class="form-group">
+                  <input bind:value={form_email} class="form-control" id="id_email" name="email" placeholder="אימייל" title="" type="text">
+                </div>
+              </div>
+              <div class="row-spliter">
+                <div class="form-group message">
+                    <textarea bind:value={form_message} class="form-control" cols="40" id="id_message" name="message" placeholder="הודעה" rows="2" title=""></textarea>
+                </div>
+              </div>
+              <div class="row-spliter">
+                <div class="form-group btn">
                 <button type="submit" on:click|preventDefault={contact_submit} class="btn btn-success form-submit">לשליחת טופס לחץ כאן</button>
                 </div>
+              </div>
               {:else}
               <h2 class="form-header">
                 לכל שאלה או בקשה אנחנו פה לספק לכם תשובות באופן
@@ -147,6 +154,33 @@ import { flashy_create_contact } from './flashy';
       .form-submit {
         display: block;
         margin: 0 auto;
+      }
+
+      .row-spliter {
+        display: flex;
+        justify-content: space-around;
+        
+        .form-group {
+          width:100%;
+          padding:5px;
+          &.message {
+            flex:3;
+            padding:0px;
+          }
+          &.btn {
+            flex:1;
+            width:100%;
+            align-self: center;
+            button {
+              width:100%;
+              transition: all 0.2s ease-in-out;
+              &:hover {
+                box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.7);
+              transform: translateY(-3px);
+              }
+            }
+          }
+        }
       }
     }
   }

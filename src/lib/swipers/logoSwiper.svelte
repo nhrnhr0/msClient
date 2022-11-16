@@ -5,7 +5,7 @@
         Swiper,
         SwiperSlide
     } from 'swiper/svelte';
-    import {CLOUDINARY_URL} from './../../api/consts'
+    import {BASE_URL, CLOUDINARY_URL, LOGOS_API_URL} from './../../api/consts'
 
     // Import Swiper styles
     import 'swiper/css';
@@ -18,8 +18,24 @@
         Pagination,
         Navigation
     } from 'swiper';
+    import { onMount } from 'svelte';
+    import { my_fetch } from 'src/network/my_fetch';
+
+    export async function loadLogos() {
+        let res = await my_fetch(LOGOS_API_URL,{method: 'GET',}).then(response => response.json());
+        return res;
+    }
         // install Swiper modules
         SwiperCore.use([Autoplay, EffectCoverflow, Pagination,Navigation]);
+        onMount(async () => {
+            if (!logos) {
+                logos = await loadLogos();
+                /*requestAnimationFrame(()=> {
+                    let swiperDom = document.querySelector('.logo-swiper');
+                    swiperDom.swiper.update();
+                })*/
+            }
+        });
 </script>
     {#if logos}
     <div class="logos-wraper">
@@ -30,9 +46,9 @@
                 
                 autoplay='{{
                     "delay": 50,
-                    "disableOnInteraction": false
-                  }}'
-                  spaceBetween="{30}" 
+                    "disableOnInteraction": false,
+                }}'
+                spaceBetween="{30}" 
                 speed= "{2500}"
                 loop= "{true}"
                 allowTouchMove="{true}"

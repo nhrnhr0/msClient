@@ -1,206 +1,150 @@
 <script context="module">
-  import { writable } from "svelte/store";
+//import { writable } from "svelte/store";
 
-  import "../app.scss";
-  import Navbar from "$lib/Navbar.svelte";
-  //import { stateQuery} from './../stores/stores'
-import { onMount } from "svelte";
-  import {all_swipers,userDetailModalStore,productPhotoModalStore, productCartModalStore, albumsJsonStore,cartModalStore, successModalStore, productModalStore, categoryModalStore,productImageModalStore,loginModalStore, sizesJsonStore, colorsJsonStore, userInfoStore, productQuestionModalStore} from './../stores/stores'
-  
+//import { stateQuery} from './../stores/stores'
+//import { onMount } from "svelte";
+import { clear_all_db_data, clear_all_session_data } from "src/db.js";
+import { NotificationDisplay } from "@beyonk/svelte-notifications";
 </script>
 
+<script>
+import "src/app.scss";
+import Navbar from "$lib/Navbar.svelte";
+import { onDestroy, onMount } from "svelte";
+import LoginPopup from "src/lib/popups/LoginPopup.svelte";
+import CartPopup from "src/lib/popups/cartPopup.svelte";
+import SuccessPopup from "src/lib/popups/successPopup.svelte";
+import { cartPopupStore } from "src/stores/popups/cartPopupStore";
+import { page } from "$app/stores";
+import { browser } from "$app/env";
+import ProductPhotoPopup from "src/lib/popups/ProductPhotoPopup.svelte";
+import { my_fetch } from "src/network/my_fetch";
+import { WHO_AM_I_URL } from "src/api/consts";
+import { userInfoStore } from "./../stores/stores";
+import SubAlbumsDisplay from "src/lib/popups/SubAlbumsDisplay.svelte";
+import { update_userInfoStore } from "src/api/auth";
+import ShereCart from "src/lib/modals/shereCart.svelte";
 
+onMount(async () => {
+  // clear all dbs on startup.
+  console.log("+++++++ WARNING: clearing all db data on startup. +++++++ ");
+  await clear_all_db_data();
+  await clear_all_session_data();
 
+  if (browser) {
+    calcAppHeight();
+    window.addEventListener("resize", calcAppHeight);
+
+    // call who-am-I
+    await update_userInfoStore();
+    // my_fetch(WHO_AM_I_URL, {}).then((resp) => {
+    //   resp.json().then((userInfo) => {
+    //     $userInfoStore.me = userInfo;
+    //     $userInfoStore = { ...$userInfoStore };
+    //   });
+    // });
+  }
+});
+
+function calcAppHeight() {
+  if (window) {
+    const doc = document.documentElement;
+    doc.style.setProperty("--vh", window.innerHeight * 0.01 + "px");
+  }
+}
+
+onDestroy(() => {
+  if (browser) {
+    window.removeEventListener("resize", calcAppHeight);
+  }
+});
+
+/*$: {
+      if(browser && $page.path == '/main' || $page.path == '/main/') {
+        //window.document.documentElement.classList.add('const-size-page');
+      }else if(browser){
+        window.document.documentElement.classList.remove('const-size-page');
+      }
+    }*/
+/*
+    $: {
+      if (browser){
+        if (full_size_page) {
+          document.documentElement.style= 'height:100vh;height:fill-available;height:-webkit-fill-available;';
+          document.body.style ='min-height:100vh;min-height:fill-available;min-height:-webkit-fill-available;';
+        } else {
+          document.documentElement.style = 'height: auto;';
+          document.body.style = 'min-height: auto;';
+        }
+      }
+    }*/
+</script>
 
 <svelte:head>
   <meta name="theme-color" content="#FFD700" />
+  {#if $page.host == "ms-global.co.il"}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-172462100-2"
+    ></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
 
-  </svelte:head>
-  
-<LoginModal bind:this={$loginModalStore}></LoginModal>
-<ProductModal bind:this={$productModalStore}></ProductModal>
-<ProductImageModal bind:this={$productImageModalStore}></ProductImageModal>
-<CategoryModal bind:this={$categoryModalStore}> </CategoryModal>
+    gtag("config", "UA-172462100-2");
+    </script>
+  {/if}
+</svelte:head>
+<NotificationDisplay />
+<Navbar />
 
-<SuccessModal bind:this={$successModalStore}></SuccessModal>
-<UserDetailsModal bind:this={$userDetailModalStore}></UserDetailsModal>
-<ProductCartModal bind:this={$productCartModalStore}></ProductCartModal>
-<ProductPhotoModal bind:this={$productPhotoModalStore}></ProductPhotoModal>
-<!--
-<SingleAmountModal bind:this={$singleAmountPopupStore}></SingleAmountModal>
--->
-<ProductQuestionModal bind:this={$productQuestionModalStore}></ProductQuestionModal>
-<Navbar></Navbar>
-
-<!--<div class="hidden">
-<input type="text" bind:value={$stateQuery['product']}> 
-<input type="text" bind:value={$stateQuery['category']}> 
-</div>-->
-<script>
-  import CartModal2 from '$lib/modals/cartModal2.svelte';
-  import CategoryModal from "$lib/modals/cModal.svelte";
-  import ProductModal from "$lib/modals/pModal.svelte";
-  import ProductImageModal from "$lib/modals/pImgModal.svelte";
-  import SuccessModal from '$lib/modals/successModal.svelte';
-  import LoginModal from '$lib/modals/loginModal.svelte';
-  import UserDetailsModal from '$lib/modals/userDetailsModal.svelte';
-  import ProductCart from '$lib/modals/productCartModal.svelte';
-  import ProductCartModal from '$lib/modals/productCartModal.svelte';
-  import SingleAmountModal from '$lib/modals/singleAmountModal.svelte';
-import ProductQuestionModal from "$lib/modals/productQuestionModal.svelte";
-import ProductPhotoModal from "$lib/modals/productPhotoModal.svelte";
-  export const prerender = false;
-</script>
-
-<div id="main_wraper" class="bg-wraper">
+<LoginPopup />
+<CartPopup />
+<ShereCart />
+<ProductPhotoPopup />
+<SuccessPopup />
+<SubAlbumsDisplay />
+<div
+  id="main_wraper"
+  class="bg-wraper"
+  class:make-small={$cartPopupStore.isSideOpen && !$cartPopupStore.sideFloating}
+>
   <slot />
-      <footer id="footer">
-        <div class="footer-top">
-            <div class="container">
-
-            </div>
-        </div>
-            <div class="copyright">
-                &copy; Copyright <strong>M.S. Global</strong>. All Rights Reserved
-            </div>
-            <div class="credits">
-                Designed by <a href="https://ms-global.co.il/">M.S. Global</a>
-            </div>
-            <div class="contact">
-
-  
-              <div class="contact-item">
-                <div class="contact-text">
-                  <a href="tel:+972-52-4314-139">+972-52-4314-139</a><div class="text">משרד</div>
-                </div>
-                <div class="contact-icon">
-                  <a rel="noopener" target="_blank" href="https://wa.me/+972524314139">
-                    <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp" />
-                  </a>
-                </div>
-              </div>
-  
-              <div class="contact-item">
-                <div class="contact-text">
-                  <a href="mailto: main@ms-global.co.il">main@ms-global.co.il</a>
-                  <div class="text">אימייל ראשי</div>
-                </div>
-                <div class="contact-icon">
-                  <a rel="noopener" target="_blank" href="mailto: main@ms-global.co.il">
-                    <img src="https://res.cloudinary.com/ms-global/image/upload/v1640258102/msAssets/icons8-email-64_jtvddl.png" alt="whatsapp" />
-                  </a>
-                </div>
-              </div>
-  
-              <div class="contact-item">
-                <div class="contact-text">
-                  <a href="tel:+972-54-791-9908">+972-54-791-9908</a><div class="text">מכירות</div>
-                </div>
-                <div class="contact-icon">
-                  <a rel="noopener" target="_blank" href="https://wa.me/+972547919908">
-                    <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp" />
-                  </a>
-                </div>
-              </div>
-  
-
-  
-  
-  
-  
-              
-        </div>
-    </footer>
 </div>
-<CartModal2 bind:this={$cartModalStore}></CartModal2>
 
 <style lang="scss">
-  .bg-wraper  {
-    background: url('https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl');
-    background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), url('https://res.cloudinary.com/ms-global/image/upload/f_auto/v1634461664/msAssets/wall_bg_az5xzl')!important;
-    background-position: center;
-    overflow:hidden;
-    padding-top: 78px;
+/* {
+      outline: 1px solid red;
+    }
+    :global(html.const-size-page) {
+      // height: 100vh;
+      // height: fill-available;
+      height: -webkit-fill-available;
+      height: -moz-available;
+      :global(body) {
+        height: 100vh;
+        height: -webkit-fill-available;
+        height: -moz-available;
+        height: fill-available;
+        overflow: hidden;
+      }
+    }*/
+#main_wraper {
+  /*height: auto;
+      &.const-page-size {
+        height: 100vh;
+        max-height: fill-available;
+        max-height: -webkit-fill-available;
+      }*/
+
+  &.make-small {
+    width: calc(100vw - 315px);
+    position: absolute;
+    left: 0px;
   }
-
-  #footer {
-    background: #353c41;
-    padding: 5px 0;
-    color: #fff;
-    font-size: 14px;
-    direction: ltr;
-    
-      width: 100%!important;
-      .contact {
-        display: flex;;
-        justify-content: space-between;
-        width: 100%;
-        @media screen and (max-width: 568px) {
-          flex-direction: column;
-        }
-        .contact-item {
-          
-          width: 100%;
-          display: inline-block;
-          margin-right: 20px;
-          display:flex;
-          justify-content: center;
-          align-items: center;
-          
-          &:hover, &:focus {
-            background-color: #dfba41;
-          }
-          @media screen and (max-width: 1230px) {
-            flex-direction: column-reverse;
-            
-          }
-        
-          .contact-icon {
-            img {
-              width: 30px;
-              height: 30px;
-            }
-            margin-left: 10px;
-          }
-          .contact-text {
-            
-            font-size: 16px;
-            display: inline-block;
-            
-            .text {
-              display: inline-block;
-              &::before {
-                content: ' - ';
-                margin-left:4px;
-                margin-right: 4px;
-              }
-            }
-
-            @media screen and (max-width: 1100px) {
-              display:flex;
-              flex-direction: column-reverse;
-              text-align: center;
-              .text {
-                &::before {
-                  content: '';
-                  margin-left:4px;
-                  margin-right: 4px;
-                }
-              }
-            }
-          }
-        }
-      
-    }
-    .copyright {
-        text-align: center;
-    }
-
-    .credits {
-        padding-top: 10px;
-        text-align: center;
-        font-size: 13px;
-        color: #ccc;
-    }
 }
 </style>

@@ -2,12 +2,12 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"$lib": ["src/lib"],
-			"$lib/*": ["src/lib/*"],
-			"$api": ["src/api"],
-			"$api/*": ["src/api/*"],
-			"$stores": ["src/stores"],
-			"$stores/*": ["src/stores/*"]
+			
+			/*"@api": ["src/api"],
+			"@components": ["src/lib/components"],
+			"@lib": ["src/lib"],
+			"@utils": ["src/lib/utils"],
+			"@src": ["src"],*/
 		}
 	},
 	"include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.svelte", "src/stores/queryStore.ts"]

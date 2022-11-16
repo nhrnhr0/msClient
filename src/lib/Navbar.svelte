@@ -24,68 +24,12 @@ Spinner
 import NavLoginManager from "./components/navLoginManager.svelte";
 import { apiSearchProducts } from "./../api/api";
 import { logStore } from "./../stores/logStore";
-        let groupedAlbums; // group groupedAlbums albumsJsonStore by topLevelCategory, if topLevelCategory is not found, create others
-        albumsJsonStore.subscribe((albums) => {
-            if (albums.length > 0) {
-            let groupedAlbumsTemp = albums.reduce((acc, album) => {
-                const topLevelCategory = album.topLevelCategory;
-                if (!acc[topLevelCategory]) {
-                    acc[topLevelCategory] = [];
-                }
-                acc[topLevelCategory].push(album);
-                return acc;
-            }, {});
-            // put undefined topLevelCategory albums at the end
-            
-            console.log('groupedAlbums', groupedAlbums);
 
+import { goto } from "$app/navigation";
+import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
+        
 
-            let groupedAlbumsTempArr = [];
-            let entries = Object.entries(groupedAlbumsTemp);
-            
-            let lastVal = undefined;
-            for(let i = 0; i < entries.length; i++) {
-                let key = entries[i][0];
-                let value = entries[i][1];
-                if (key == 'undefined') {
-                    lastVal = value;
-                }else {
-                    groupedAlbumsTempArr.push({
-                        key: key,
-                        value: value
-                    });
-                }
-            }
-            groupedAlbumsTempArr.push({
-                key: 'undefined',
-                value: lastVal
-            });
-
-            groupedAlbums = groupedAlbumsTempArr;
-            }
-        });
-
-        function menuItemClicked(album) {
-            $categoryModalStore.setAlbum(album);
-            $categoryModalStore.toggleModal();
-
-
-
-            logStore.addLog(
-                            {
-                                'a': 'פתיחת קטגוריה מהנאב-בר',
-                                't': 'open category',
-                                'f':{
-                                    'type':'navbar',
-                                },
-                                'w':{
-                                    'type':'category',
-                                    'id':album.id,
-                                    'ti':album.title, 
-                                }
-                            }
-                            );
-        }
+        
         let searchValue;
         async function searchProducts(keyword) {
             let json = await apiSearchProducts(keyword);
@@ -93,20 +37,18 @@ import { logStore } from "./../stores/logStore";
             let albums = [];
             let album = undefined;
             // get all the albums from the products and count how much products from each album
+            let all_albums = await indexdb_get_catalog_albums();
             for(let i = 0; i < data.all.length; i++) {
                 let my_item = data.all[i];
                 album = undefined;
-                for(let item_album_iter = 0; item_album_iter < my_item.albums.length; item_album_iter++) {
-                    /*if(my_item.albums[alb_iter].is_campain == false) {
-                        album = my_item.albums[alb_iter];
-                        break;
-                    }*/
-                    let alb = $albumsJsonStore.find(album => album.id == my_item.albums[item_album_iter]);
+                /*for(let item_album_iter = 0; item_album_iter < my_item.albums.length; item_album_iter++) {
+                    let alb = all_albums.find(album => album.id == my_item.albums[item_album_iter]);
                     if(alb && alb.is_campain == false && alb.is_public == true) {
                         album = alb;
                         break;
                     }
-                }
+                }*/
+                album = all_albums.find(album => album.id == my_item.public_album_id);
                 // the product is only visible in campain, so hide from search
                 if(album == undefined) {
                     // remove item i from data.all
@@ -146,11 +88,11 @@ import { logStore } from "./../stores/logStore";
             if(item == undefined) {
                 return;
             }
-            let keyword = document.querySelector('input.autocomplete-input').value;
-            
+            let el = document.querySelector('input.autocomplete-input');
+            let keyword = el.value;
             if(item.item_count) {
-                $categoryModalStore.setAlbum(item);
-                $categoryModalStore.toggleModal();
+                //$categoryModalStore.setAlbum(item);
+                //$categoryModalStore.toggleModal();
                 logStore.addLog(
                             {
                                 'a': 'פתיחת קטגוריה מחיפוש',
@@ -166,9 +108,10 @@ import { logStore } from "./../stores/logStore";
                                 }
                             }
                             );
+                            goto(`main?top=${item.topLevelCategory__slug}&album=${item.slug}`);
             }else {
-                $productModalStore.setProduct(item.albumId, item.id);
-                $productModalStore.toggleModal();
+                // $productModalStore.setProduct(item.albumId, item.id);
+                // $productModalStore.toggleModal();
                 logStore.addLog(
                             {
                                 'a': 'פתיחת מוצר מחיפוש',
@@ -184,6 +127,7 @@ import { logStore } from "./../stores/logStore";
                                 }
                             }
                             );
+                            goto(`main?top=${item.public_album_top_slug}&album=${item.public_album_slug}&product_id=${item.id}`);
             }
             
         }
@@ -193,17 +137,21 @@ import { logStore } from "./../stores/logStore";
 	}
 
 
-        
 </script>
 <nav id="main-navbar-wraper" class="navbar navbar-expand-* navbar-light">
     <div class="container-fluid">
         <!-- svelte-ignore a11y-invalid-attribute -->
-        <a class="navbar-logo" href="javascript:window.location.href=window.location.href" aria-label="logo" role="button">
+        <a class="navbar-logo" href="/" aria-label="logo" role="button" tabindex="0">
             <img class="nav-logo" height="32px" width="auto"
                 src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1634457672/msAssets/favicon_rza3n9"
-                alt="">
+                title="דף הבית"
+                alt="דף הבית">
+            <img class="nav-logo-sm" height="32px" width="32px"
+                src="https://res.cloudinary.com/ms-global/image/upload/v1661424264/msAssets/icons8-home-50_fnrnhf"
+                title="דף הבית"
+                alt="דף הבית">
         </a>
-
+        <!--
         <Dropdown id="navCategoryList" class="main-category-menu">
             <DropdownToggle color="none" caret aria-label="menu">  
                 <svg viewBox="0 0 100 80" width="40" height="40">
@@ -245,8 +193,7 @@ import { logStore } from "./../stores/logStore";
                 {/if}
             </DropdownMenu>
         </Dropdown>
-
-        <Cart bind:this={$cartDomElementStore}></Cart>
+        -->
 
         <form class="d-flex" id="search_form">
             <AutoComplete id="search_input" on:focus loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש מוצרים..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:value={searchValue}  >
@@ -287,15 +234,19 @@ import { logStore } from "./../stores/logStore";
             <div class="spiner" style="display: none;"></div>
 
         </form>
+        <Cart bind:this={$cartDomElementStore}></Cart>
 
         <NavLoginManager></NavLoginManager>
-            
-                
-            
             <div>
-            <a class="same-size-icon" rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
-                <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
-            </a>
+                <div class="whatsapp-wraper">
+                    <div class="text">
+                        לוואצאפ
+                    </div>
+                <a class="same-size-icon" rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
+                    <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
+                </a>
+                
+            </div>
         </div>
             
         <div id="navbar_filler" class="none">
@@ -309,11 +260,160 @@ import { logStore } from "./../stores/logStore";
         
 
     </div>
+    <!--
+    <AlbumsView 
+        albumSelected={(album)=> {
+            logStore.addLog(
+                            {
+                                'a': 'פתיחת קטגוריה מהנאב-בר',
+                                't': 'open category',
+                                'f':{
+                                    'type':'navbar',
+                                },
+                                'w':{
+                                    'type':'category',
+                                    'id':album.id,
+                                    'ti':album.title, 
+                                }
+                            }
+                            );
+        }}/>
+    -->
 </nav>
 
 
-
 <style lang="scss">
+    .whatsapp-wraper {
+        position: relative;
+        .same-size-icon {
+            // 
+            img {
+                
+                &:hover {
+                    animation: pop-animation 0.4s ease-in-out forwards;
+                }
+            }
+        }
+
+        .text {
+            font-size: 0.8rem;
+            color: black;
+            text-align: center;
+            position: absolute;
+            top: 100%;
+            width: max-content;
+            left: 0;
+            right: 0;
+            z-index: 1;
+            transform: translate(0%, -20%);
+            @media screen and (max-width: 824px) {
+                display: none;
+            }
+        }
+    }
+    /*@keyframes pop-animation {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+        100% {
+            transform: scale(1.1);
+        }
+    }*/
+
+    /*
+    .container-fluid {
+        overflow: visible;
+    }
+    .album-horazonal-list {
+
+        
+        &.active {
+            cursor: -webkit-grabbing;
+        }
+        //white-space: nowrap;
+        transition: all 2s;//0.2s;
+        
+        //will-change: transform;
+        user-select: none;
+        //cursor: pointer;
+
+
+        width:100%;
+        display: flex;
+        height: 100%;
+        
+        gap: 20px;
+        -ms-overflow-style: none;  
+        scrollbar-width: none;  
+        overflow-x: scroll;
+        &::-webkit-scrollbar {
+            display: none;
+            
+        }
+        .album-babel {
+            display: flex;
+            flex-direction: row-reverse;
+            //background: radial-gradient(circle, white 0%, white 32%, #c7c7c7 84%);
+            border: 2px solid black;
+            border-radius: 25px;
+            padding-left: 3px;
+            padding-right: 3px;
+            overflow-y: visible;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            .sub-album {
+                display: none;  
+                position: absolute;
+                top: 100%;
+                left: 0;
+                
+                width: 100%;
+
+            }
+            &:hover, &:focus {
+                background-color: #f5f5f5;
+                border-bottom-left-radius: 0px;
+                border-bottom-right-radius: 0px;
+                // make sub-album visible
+                .sub-album {
+                    display: block;
+                    background-color: #f5f5f5;
+                }
+            }
+            .album-title {
+                //font-size: 1.2em;
+                font-weight: bold;;
+                width: 100%;
+                height: 100%;
+                
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                white-space: nowrap;
+                
+                
+                //max-width: 170px;
+                .text {
+                    //font-size: 1.2em;
+                    font-weight: bold;
+                    width: 100%;
+                    //height: 100%;
+                    text-align: center;
+
+                    //white-space: nowrap ;
+                }
+            }
+            img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    }
+*/
         :root {
             --autocomplete-bg-hover-clr: rgb(136, 135, 135);
             --autocomplete-txt-hover-clr: rgb(255, 255, 255);
@@ -368,7 +468,7 @@ import { logStore } from "./../stores/logStore";
         }
     }
 }
-
+/*
 :global(.main-category-menu) {
         :global(.dropdown-menu) {
             grid-template-columns: repeat(1, 1fr);
@@ -398,7 +498,8 @@ import { logStore } from "./../stores/logStore";
 
                     }
             :global(.dropdown-header) {
-            :global(.category-menu-2){
+            
+                :global(.category-menu-2){
                 :global(.category-menu-2-menu.show) {
                     display: grid;
                     transform: translate3d(-70%, 32px, 0px)!important;
@@ -447,9 +548,11 @@ import { logStore } from "./../stores/logStore";
                     }
                 }
             }
-        }
-        }
+                }
+            }
+            
 
+*/
 /*
 :global(.autocomplete-cls)  {
     
@@ -523,27 +626,40 @@ import { logStore } from "./../stores/logStore";
     .navbar {
         position: fixed;
         width:100%;
+        
         .container-fluid {
             flex-wrap: nowrap;
+            @media screen and (max-width:350px) {
+                padding-right: 2px;
+                padding-left: 2px;
+                
+            }
         }
         
         @include bg-gradient();
         //position: sticky;
         top: 0;
-        z-index: 10;
-
-        .nav-logo {
-            //width: auto;
-            //height: 40px;
-            @media screen and (max-width: 800px) {
-                display: none;
-            }
+        z-index: 99;
+        
+        .nav-logo-sm {
+            display: none;
         }
 
+        @media screen and (max-width: 800px) {
+            .nav-logo {
+                display: none;
+            }
+            .nav-logo-sm {
+                display: block;
+            }
+        }
         #search_form {
             flex-basis: 50%;
+            z-index: 99999;
             :global(.autocomplete) {
-                min-width: 83px;
+                min-width: 63px;
+                flex-shrink: 1;
+                flex-grow: 0;
                 width: 100%;
                 flex: 1;
                 :global(.autocomplete-list) {
@@ -563,7 +679,7 @@ import { logStore } from "./../stores/logStore";
                     @media screen and (max-width: 550px) {
                         min-width: 90vw;
                         top: 100%;
-                        right: -70px;
+                        //right: -70px;
                         position: absolute;
                     }
                     
