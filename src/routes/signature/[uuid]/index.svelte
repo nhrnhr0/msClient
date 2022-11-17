@@ -216,7 +216,13 @@ function open_popup_image(url) {
   show_image_popup = true;
   show_image_popup_url = url;
 }
+let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msAssets/favicon_hbwcui.jpg`;
 </script>
+
+<svelte:head>
+  <title>מסמך חתימה דיגיטאלי לאישור הזמנה - {data.client_name}</title>
+  <link rel="icon" href={data?.simulations[0]?.cimage || favicon} />
+</svelte:head>
 
 <div
   class="show_image_popup_backdrop"
