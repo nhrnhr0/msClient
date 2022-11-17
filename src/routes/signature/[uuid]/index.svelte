@@ -307,14 +307,16 @@ let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msA
         )}
         <tr>
           <td>
-            <div class="image" on:click={open_popup_image(product.cimage)}>
-              <img
-                src={product.cimage}
-                alt={product.name}
-                class="img-fluid"
-                width="150px"
-              />
-            </div>
+            {#if product.cimage}
+              <div class="image" on:click={open_popup_image(product.cimage)}>
+                <img
+                  src={product.cimage}
+                  alt={product.name}
+                  class="img-fluid"
+                  width="150px"
+                />
+              </div>
+            {/if}
           </td>
           <td class="product-name-td">{product.name}</td>
           <td class="big-td description-td">
