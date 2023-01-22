@@ -172,7 +172,6 @@ async function download_as_pdf() {
     doc.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
   }
-  debugger;
   let current_date = new Date();
   let date_str = current_date.toLocaleDateString("he-IL");
   doc.save(

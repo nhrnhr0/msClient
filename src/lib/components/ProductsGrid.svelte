@@ -134,7 +134,6 @@ function load_more_products(reset = false) {
 function product_clicked(e) {
   let el = e.currentTarget;
   let id = el.dataset.productId;
-  debugger;
   console.log("product_clicked", id);
   let new_query = new URLSearchParams($page.query);
   new_query.set("product_id", id);
