@@ -273,7 +273,6 @@ let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msA
 </div>
 <main id="main">
   <h5><b>הזמנת עבודה לחתימת </b><u>{data.client_name}</u></h5>
-  <h4><span>{uuid}</span></h4>
   <table class="table products">
     <thead>
       <tr>
@@ -283,15 +282,16 @@ let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msA
         <th> תיאור </th>
         <th> פירוט </th>
         <th>
-          ₪ ליח'
-          <br />
-          לפי מע"מ
-        </th>
-        <th>
           כמות
           <br />
           כוללת
         </th>
+        <th>
+          ₪ ליח'
+          <br />
+          לפי מע"מ
+        </th>
+
         <th>
           סה"כ לפני
           <br />
@@ -356,10 +356,10 @@ let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msA
             </div>
           </td>
           <td>
-            {price_format(product.price)}₪
+            {total_amount}
           </td>
           <td>
-            {total_amount}
+            {price_format(product.price)}₪
           </td>
           <td>
             {price_format(product.price * total_amount)}₪
@@ -409,7 +409,10 @@ let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msA
               />
             </div>
           </td>
-          <td colspan="3"> {@html sim.description.replace("\n", "</br>")}</td>
+          <!-- <pre>{JSON.stringify(sim.descri)}</pre> -->
+          <td colspan="3">
+            {@html sim.description.replaceAll("\n", "</br>")}</td
+          >
         </tr>
       {/each}
       <tr>
@@ -424,7 +427,7 @@ let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msA
           <div class="wraper">
             <div class="item">
               <div>
-                <b>*שם מלא:</b>
+                <b>*שם החותם:</b>
               </div>
               <input
                 disabled={data.status == "Signed"}
