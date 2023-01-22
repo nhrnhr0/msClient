@@ -39,7 +39,6 @@ function shere_cart_btn_clicked(e) {
     }),
   })
     .then((data) => {
-      debugger;
       if (data && data.link) {
         navigator.clipboard.writeText(data.link);
       }

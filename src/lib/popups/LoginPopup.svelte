@@ -66,7 +66,6 @@ function login() {
     });
 }
 async function logout() {
-  debugger;
   let response = await request_logout();
   if (response.status === "success") {
   } else if (response.status === "warning") {
