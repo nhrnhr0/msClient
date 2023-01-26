@@ -172,7 +172,6 @@ async function download_as_pdf() {
     doc.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
   }
-  debugger;
   let current_date = new Date();
   let date_str = current_date.toLocaleDateString("he-IL");
   doc.save(
@@ -216,7 +215,13 @@ function open_popup_image(url) {
   show_image_popup = true;
   show_image_popup_url = url;
 }
+let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msAssets/favicon_hbwcui.jpg`;
 </script>
+
+<svelte:head>
+  <title>מסמך חתימה דיגיטאלי לאישור הזמנה - {data.client_name}</title>
+  <link rel="icon" href={data?.simulations[0]?.cimage || favicon} />
+</svelte:head>
 
 <div
   class="show_image_popup_backdrop"
@@ -267,7 +272,6 @@ function open_popup_image(url) {
 </div>
 <main id="main">
   <h5><b>הזמנת עבודה לחתימת </b><u>{data.client_name}</u></h5>
-  <h4><span>{uuid}</span></h4>
   <table class="table products">
     <thead>
       <tr>
@@ -277,15 +281,16 @@ function open_popup_image(url) {
         <th> תיאור </th>
         <th> פירוט </th>
         <th>
-          ₪ ליח'
-          <br />
-          לפי מע"מ
-        </th>
-        <th>
           כמות
           <br />
           כוללת
         </th>
+        <th>
+          ₪ ליח'
+          <br />
+          לפי מע"מ
+        </th>
+
         <th>
           סה"כ לפני
           <br />
@@ -301,14 +306,16 @@ function open_popup_image(url) {
         )}
         <tr>
           <td>
-            <div class="image" on:click={open_popup_image(product.cimage)}>
-              <img
-                src={product.cimage}
-                alt={product.name}
-                class="img-fluid"
-                width="150px"
-              />
-            </div>
+            {#if product.cimage}
+              <div class="image" on:click={open_popup_image(product.cimage)}>
+                <img
+                  src={product.cimage}
+                  alt={product.name}
+                  class="img-fluid"
+                  width="150px"
+                />
+              </div>
+            {/if}
           </td>
           <td class="product-name-td">{product.name}</td>
           <td class="big-td description-td">
@@ -348,10 +355,10 @@ function open_popup_image(url) {
             </div>
           </td>
           <td>
-            {price_format(product.price)}₪
+            {total_amount}
           </td>
           <td>
-            {total_amount}
+            {price_format(product.price)}₪
           </td>
           <td>
             {price_format(product.price * total_amount)}₪
@@ -401,7 +408,10 @@ function open_popup_image(url) {
               />
             </div>
           </td>
-          <td colspan="3"> {@html sim.description.replace("\n", "</br>")}</td>
+          <!-- <pre>{JSON.stringify(sim.descri)}</pre> -->
+          <td colspan="3">
+            {@html sim.description.replaceAll("\n", "</br>")}</td
+          >
         </tr>
       {/each}
       <tr>
@@ -416,7 +426,7 @@ function open_popup_image(url) {
           <div class="wraper">
             <div class="item">
               <div>
-                <b>*שם מלא:</b>
+                <b>*שם החותם:</b>
               </div>
               <input
                 disabled={data.status == "Signed"}

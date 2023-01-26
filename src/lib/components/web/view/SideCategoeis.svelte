@@ -154,6 +154,8 @@ let is_side_closed = false;
   .text {
     color: white;
     writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 1.2rem;
   }
   .acordion-button-icon {
     width: 15px;
