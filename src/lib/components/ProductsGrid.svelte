@@ -134,7 +134,6 @@ function load_more_products(reset = false) {
 function product_clicked(e) {
   let el = e.currentTarget;
   let id = el.dataset.productId;
-  debugger;
   console.log("product_clicked", id);
   let new_query = new URLSearchParams($page.query);
   new_query.set("product_id", id);
@@ -190,6 +189,7 @@ let product_wraper_clientWidth;
           top={"4px"}
           left={"4px"}
           font_size={"0.6em"}
+          out_of_stock={product.out_of_stock}
         />
       </div>
       <div class="product-info">

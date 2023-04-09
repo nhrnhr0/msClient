@@ -62,7 +62,6 @@ activeModalsStore.subscribe((modals) => {
 });
 
 onMount(async () => {
-  debugger;
   if ($page.query.get("shareable-cart")) {
     let cart_uuid = $page.query.get("shareable-cart");
     // let url = GET_SHAREABLE_CART_URL + cart_uuid + "/";

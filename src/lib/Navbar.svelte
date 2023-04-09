@@ -1,157 +1,171 @@
 <script>
-    import AutoComplete from "simple-svelte-autocomplete";
-    import {cartDomElementStore} from './../stores/cartStore';
-    import {albumsJsonStore, loginModalStore, productModalStore, userInfoStore} from './../stores/stores'
-    import {CLOUDINARY_URL, SEARCH_API_URL} from './../api/consts';
+import AutoComplete from "simple-svelte-autocomplete";
+import { cartDomElementStore } from "./../stores/cartStore";
+import {
+  albumsJsonStore,
+  loginModalStore,
+  productModalStore,
+  userInfoStore,
+} from "./../stores/stores";
+import { CLOUDINARY_URL, SEARCH_API_URL } from "./../api/consts";
 
-    /*import {
+/*import {
         faShoppingCart
     } from '@fortawesome/free-solid-svg-icons'*/
-    import { fade, fly } from 'svelte/transition';
+import { fade, fly } from "svelte/transition";
 
-    import {
-            Dropdown,
-            DropdownItem,
-            DropdownMenu,
-            DropdownToggle,
-Spinner
-        } from 'sveltestrap';
-        import {categoryModalStore} from './../stores/stores'
-        import { cartStore } from './../stores/cartStore';
-        import { onDestroy } from "svelte";
-        //import boop from '$lib/components/boop/boop'
-        import Cart from '$lib/components/cart/cart.svelte'
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Spinner,
+} from "sveltestrap";
+import { categoryModalStore } from "./../stores/stores";
+import { cartStore } from "./../stores/cartStore";
+import { onDestroy } from "svelte";
+//import boop from '$lib/components/boop/boop'
+import Cart from "$lib/components/cart/cart.svelte";
 import NavLoginManager from "./components/navLoginManager.svelte";
 import { apiSearchProducts } from "./../api/api";
 import { logStore } from "./../stores/logStore";
 
 import { goto } from "$app/navigation";
 import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
-        
 
-        
-        let searchValue;
-        async function searchProducts(keyword) {
-            let json = await apiSearchProducts(keyword);
-            let data = json;
-            let albums = [];
-            let album = undefined;
-            // get all the albums from the products and count how much products from each album
-            let all_albums = await indexdb_get_catalog_albums();
-            for(let i = 0; i < data.all.length; i++) {
-                let my_item = data.all[i];
-                album = undefined;
-                /*for(let item_album_iter = 0; item_album_iter < my_item.albums.length; item_album_iter++) {
+let searchValue;
+async function searchProducts(keyword) {
+  debugger;
+  keyword = document.querySelector(".autocomplete-input").value; // to include "
+  let json = await apiSearchProducts(keyword);
+  let data = json;
+  let albums = [];
+  let album = undefined;
+  // get all the albums from the products and count how much products from each album
+  let all_albums = await indexdb_get_catalog_albums();
+  for (let i = 0; i < data.all.length; i++) {
+    let my_item = data.all[i];
+    album = undefined;
+    /*for(let item_album_iter = 0; item_album_iter < my_item.albums.length; item_album_iter++) {
                     let alb = all_albums.find(album => album.id == my_item.albums[item_album_iter]);
                     if(alb && alb.is_campain == false && alb.is_public == true) {
                         album = alb;
                         break;
                     }
                 }*/
-                album = all_albums.find(album => album.id == my_item.public_album_id);
-                // the product is only visible in campain, so hide from search
-                if(album == undefined) {
-                    // remove item i from data.all
-                    data.all.splice(i, 1);
-                    continue;
-                }else {
-                    my_item.albumId = album.id;
-                }
-                var album_index = albums.findIndex(a => a.id == album.id);
-                if(album_index == -1) {
-                    album.item_count = 1;
-                    albums.push(album);
-                }else{
-                    albums[album_index].item_count += 1;
-                }
-            }
+    album = all_albums.find((album) => album.id == my_item.public_album_id);
+    // the product is only visible in campain, so hide from search
+    if (album == undefined) {
+      // remove item i from data.all
+      data.all.splice(i, 1);
+      continue;
+    } else {
+      my_item.albumId = album.id;
+    }
+    var album_index = albums.findIndex((a) => a.id == album.id);
+    if (album_index == -1) {
+      album.item_count = 1;
+      albums.push(album);
+    } else {
+      albums[album_index].item_count += 1;
+    }
+  }
 
-            albums.sort(function (a, b) {
-                if (a.item_count > b.item_count) {
-                    return -1;
-                } else if (a.item_count <= b.item_count) {
-                    return 1
-                }
-                return 0;
-            });
-            // keep only the first 5 albums:
-            albums = albums.slice(0, 5);
+  albums.sort(function (a, b) {
+    if (a.item_count > b.item_count) {
+      return -1;
+    } else if (a.item_count <= b.item_count) {
+      return 1;
+    }
+    return 0;
+  });
+  // keep only the first 5 albums:
+  albums = albums.slice(0, 5);
 
-            // add the albums in the start and after the products
-            let items = albums.concat(data.all);
+  // add the albums in the start and after the products
+  let items = albums.concat(data.all);
 
-            return items;
-        }
+  return items;
+}
 
-        function autocompleteItemSelected(item) {
-
-            if(item == undefined) {
-                return;
-            }
-            let el = document.querySelector('input.autocomplete-input');
-            let keyword = el.value;
-            if(item.item_count) {
-                //$categoryModalStore.setAlbum(item);
-                //$categoryModalStore.toggleModal();
-                logStore.addLog(
-                            {
-                                'a': 'פתיחת קטגוריה מחיפוש',
-                                't': 'open category',
-                                'f':{
-                                    'type':'search',
-                                    'term': keyword,
-                                },
-                                'w':{
-                                    'type':'category',
-                                    'id':item.id,
-                                    'ti':item.title, 
-                                }
-                            }
-                            );
-                            goto(`main?top=${item.topLevelCategory__slug}&album=${item.slug}`);
-            }else {
-                // $productModalStore.setProduct(item.albumId, item.id);
-                // $productModalStore.toggleModal();
-                logStore.addLog(
-                            {
-                                'a': 'פתיחת מוצר מחיפוש',
-                                't': 'open product',
-                                'f':{
-                                    'type':'search',
-                                    'term': keyword,
-                                },
-                                'w':{
-                                    'type':'product',
-                                    'id':item.id,
-                                    'ti':item.title, 
-                                }
-                            }
-                            );
-                            goto(`main?top=${item.public_album_top_slug}&album=${item.public_album_slug}&product_id=${item.id}`);
-            }
-            
-        }
-        let isBooped = false;
-    function setIsBooped(val) {
-		isBooped = val;
-	}
-
-
+function autocompleteItemSelected(item) {
+  if (item == undefined) {
+    return;
+  }
+  let el = document.querySelector("input.autocomplete-input");
+  let keyword = el.value;
+  if (item.item_count) {
+    //$categoryModalStore.setAlbum(item);
+    //$categoryModalStore.toggleModal();
+    logStore.addLog({
+      a: "פתיחת קטגוריה מחיפוש",
+      t: "open category",
+      f: {
+        type: "search",
+        term: keyword,
+      },
+      w: {
+        type: "category",
+        id: item.id,
+        ti: item.title,
+      },
+    });
+    goto(`main?top=${item.topLevelCategory__slug}&album=${item.slug}`);
+  } else {
+    // $productModalStore.setProduct(item.albumId, item.id);
+    // $productModalStore.toggleModal();
+    logStore.addLog({
+      a: "פתיחת מוצר מחיפוש",
+      t: "open product",
+      f: {
+        type: "search",
+        term: keyword,
+      },
+      w: {
+        type: "product",
+        id: item.id,
+        ti: item.title,
+      },
+    });
+    goto(
+      `main?top=${item.public_album_top_slug}&album=${item.public_album_slug}&product_id=${item.id}`
+    );
+  }
+}
+let isBooped = false;
+function setIsBooped(val) {
+  isBooped = val;
+}
 </script>
+
 <nav id="main-navbar-wraper" class="navbar navbar-expand-* navbar-light">
-    <div class="container-fluid">
-        <!-- svelte-ignore a11y-invalid-attribute -->
-        <a class="navbar-logo" href="/" aria-label="logo" role="button" tabindex="0">
-            <img class="nav-logo" height="32px" width="auto"
-                src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1634457672/msAssets/favicon_rza3n9"
-                title="דף הבית"
-                alt="דף הבית">
-            <img class="nav-logo-sm" height="32px" width="32px"
-                src="https://res.cloudinary.com/ms-global/image/upload/v1661424264/msAssets/icons8-home-50_fnrnhf"
-                title="דף הבית"
-                alt="דף הבית">
-        </a>
-        <!--
+  <div class="container-fluid">
+    <!-- svelte-ignore a11y-invalid-attribute -->
+    <a
+      class="navbar-logo"
+      href="/"
+      aria-label="logo"
+      role="button"
+      tabindex="0"
+    >
+      <img
+        class="nav-logo"
+        height="32px"
+        width="auto"
+        src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1634457672/msAssets/favicon_rza3n9"
+        title="דף הבית"
+        alt="דף הבית"
+      />
+      <img
+        class="nav-logo-sm"
+        height="32px"
+        width="32px"
+        src="https://res.cloudinary.com/ms-global/image/upload/v1661424264/msAssets/icons8-home-50_fnrnhf"
+        title="דף הבית"
+        alt="דף הבית"
+      />
+    </a>
+    <!--
         <Dropdown id="navCategoryList" class="main-category-menu">
             <DropdownToggle color="none" caret aria-label="menu">  
                 <svg viewBox="0 0 100 80" width="40" height="40">
@@ -195,72 +209,97 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
         </Dropdown>
         -->
 
-        <form class="d-flex" id="search_form">
-            <AutoComplete id="search_input" on:focus loadingText="מחפש מוצרים..." createText="לא נמצאו תוצאות חיפוש" showLoadingIndicator=true noResultsText="" onChange={autocompleteItemSelected} create=true placeholder="חיפוש מוצרים..." className="autocomplete-cls" searchFunction={searchProducts} delay=200 localFiltering="{false}" labelFieldName="title" valueFieldName="value" bind:value={searchValue}  >
-                <div slot="loading" let:loadingText={loadingText}>
-                    <Spinner
-                        size="sm"
-                        speed="750"
-                        unit="em"
-                        color="#A82124"
-                        thickness="2"
-                    />
-                    <span>{loadingText}</span>
-                    <!-- spinner -->
-                    
-                </div>
-                <div slot="item" let:item={item} let:label={label}>
-                    {#if item.item_count}
-                        <div class="list-category">
-                            <div class="search-item">
-                                {item.title} ({item.item_count})
-                                <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
-                            </div>
-                        </div>
-                    {:else}
-                        <div class="search-item">
-                            <img alt="{item.title}" style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
-                            <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global">
-                            {@html label}
-                        </div>
-                    {/if}
-                </div>
-            </AutoComplete>
-            <!--
+    <form class="d-flex" id="search_form">
+      <AutoComplete
+        id="search_input"
+        on:focus
+        loadingText="מחפש מוצרים..."
+        createText="לא נמצאו תוצאות חיפוש"
+        showLoadingIndicator="true"
+        noResultsText=""
+        onChange={autocompleteItemSelected}
+        create="true"
+        placeholder="חיפוש מוצרים..."
+        className="autocomplete-cls"
+        searchFunction={searchProducts}
+        delay="200"
+        localFiltering={false}
+        labelFieldName="title"
+        valueFieldName="value"
+        bind:value={searchValue}
+      >
+        <div slot="loading" let:loadingText>
+          <Spinner
+            size="sm"
+            speed="750"
+            unit="em"
+            color="#A82124"
+            thickness="2"
+          />
+          <span>{loadingText}</span>
+          <!-- spinner -->
+        </div>
+        <div slot="item" let:item let:label>
+          {#if item.item_count}
+            <div class="list-category">
+              <div class="search-item">
+                {item.title} ({item.item_count})
+                <img
+                  class="logo"
+                  src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
+                  alt="M.S. Global"
+                />
+              </div>
+            </div>
+          {:else}
+            <div class="search-item">
+              <img
+                alt={item.title}
+                style="height:25px;"
+                src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}"
+              />
+              <img
+                class="logo"
+                src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
+                alt="M.S. Global"
+              />
+              {@html label}
+            </div>
+          {/if}
+        </div>
+      </AutoComplete>
+      <!--
             <input class="form-control" id="search" autocomplete="on" type="search" placeholder="חיפוש..."
                 aria-label="Search">
                 -->
-            <!-- <button class="btn btn-outline-success" type="submit">Search</button>-->
-            <div class="spiner" style="display: none;"></div>
+      <!-- <button class="btn btn-outline-success" type="submit">Search</button>-->
+      <div class="spiner" style="display: none;" />
+    </form>
+    <Cart bind:this={$cartDomElementStore} />
 
-        </form>
-        <Cart bind:this={$cartDomElementStore}></Cart>
-
-        <NavLoginManager></NavLoginManager>
-            <div>
-                <div class="whatsapp-wraper">
-                    <div class="text">
-                        לוואצאפ
-                    </div>
-                <a class="same-size-icon" rel="noopener" target="_blank" href="https://wa.me/+972547919908" >
-                    <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp">
-                </a>
-                
-            </div>
-        </div>
-            
-        <div id="navbar_filler" class="none">
-            <!--used as a filler in the navbar-->
-        </div>
-
-
-
-        
-        
-        
-
+    <NavLoginManager />
+    <div>
+      <div class="whatsapp-wraper">
+        <div class="text">לוואצאפ</div>
+        <a
+          class="same-size-icon"
+          rel="noopener"
+          target="_blank"
+          href="https://wa.me/+972547919908"
+        >
+          <img
+            src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png"
+            alt="whatsapp"
+          />
+        </a>
+      </div>
     </div>
-    <!--
+
+    <div id="navbar_filler" class="none">
+      <!--used as a filler in the navbar-->
+    </div>
+  </div>
+  <!--
     <AlbumsView 
         albumSelected={(album)=> {
             logStore.addLog(
@@ -281,37 +320,35 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
     -->
 </nav>
 
-
 <style lang="scss">
-    .whatsapp-wraper {
-        position: relative;
-        .same-size-icon {
-            // 
-            img {
-                
-                &:hover {
-                    animation: pop-animation 0.4s ease-in-out forwards;
-                }
-            }
-        }
-
-        .text {
-            font-size: 0.8rem;
-            color: black;
-            text-align: center;
-            position: absolute;
-            top: 100%;
-            width: max-content;
-            left: 0;
-            right: 0;
-            z-index: 1;
-            transform: translate(0%, -20%);
-            @media screen and (max-width: 824px) {
-                display: none;
-            }
-        }
+.whatsapp-wraper {
+  position: relative;
+  .same-size-icon {
+    //
+    img {
+      &:hover {
+        animation: pop-animation 0.4s ease-in-out forwards;
+      }
     }
-    /*@keyframes pop-animation {
+  }
+
+  .text {
+    font-size: 0.8rem;
+    color: black;
+    text-align: center;
+    position: absolute;
+    top: 100%;
+    width: max-content;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    transform: translate(0%, -20%);
+    @media screen and (max-width: 824px) {
+      display: none;
+    }
+  }
+}
+/*@keyframes pop-animation {
         0% {
             transform: scale(1);
         }
@@ -323,7 +360,7 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
         }
     }*/
 
-    /*
+/*
     .container-fluid {
         overflow: visible;
     }
@@ -414,59 +451,55 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
         }
     }
 */
-        :root {
-            --autocomplete-bg-hover-clr: rgb(136, 135, 135);
-            --autocomplete-txt-hover-clr: rgb(255, 255, 255);
-        }
+:root {
+  --autocomplete-bg-hover-clr: rgb(136, 135, 135);
+  --autocomplete-txt-hover-clr: rgb(255, 255, 255);
+}
 :global(#navCategoryList) {
-        :global(.dropdown-toggle) {
-            :global(svg) {
-                width: 32px;
-                height: 32px;;
-            }
-        }
-        :global(.dropdown-menu.show) {
-          grid-template-columns: repeat(1, 1fr);
-          //left: 0%!important;
-          padding-top: 55px;
-            overflow-y: visible;
-          .drop-title {
-            font-size: 1.56rem;
-            top: 0px;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            text-align: center;
-            min-width: fit-content; 
-            
-          }
-          @media screen and (max-width: 900px) {
-            grid-template-columns: repeat(1, 1fr);
-          }
-          @media screen and (max-width: 600px) {
-            grid-template-columns: repeat(1, 1fr);
-            
-          }
-          @media screen and (max-width: 400px) {
-            grid-template-columns: repeat(1, 1fr);
-            :global(.drop-title) {
-                text-align: center;
-                width: 100%;
-                padding-top: 5px;
-            }
-          }
-        }
-
-
+  :global(.dropdown-toggle) {
+    :global(svg) {
+      width: 32px;
+      height: 32px;
     }
+  }
+  :global(.dropdown-menu.show) {
+    grid-template-columns: repeat(1, 1fr);
+    //left: 0%!important;
+    padding-top: 55px;
+    overflow-y: visible;
+    .drop-title {
+      font-size: 1.56rem;
+      top: 0px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      text-align: center;
+      min-width: fit-content;
+    }
+    @media screen and (max-width: 900px) {
+      grid-template-columns: repeat(1, 1fr);
+    }
+    @media screen and (max-width: 600px) {
+      grid-template-columns: repeat(1, 1fr);
+    }
+    @media screen and (max-width: 400px) {
+      grid-template-columns: repeat(1, 1fr);
+      :global(.drop-title) {
+        text-align: center;
+        width: 100%;
+        padding-top: 5px;
+      }
+    }
+  }
+}
 :global(#navLoginManager) {
-    :global(.dropdown-toggle) {
-        padding: 0px;
-        &::after {
-            display: none;
-        }
+  :global(.dropdown-toggle) {
+    padding: 0px;
+    &::after {
+      display: none;
     }
+  }
 }
 /*
 :global(.main-category-menu) {
@@ -566,48 +599,43 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
     }
 }*/
 .list-category {
-    
-    //background-color: black;
-
-
-
-    .search-item {
-        padding-top: 5px;
-        padding-bottom: 5px;
-      text-align: right;
-      border: 2px solid black;
-      border-radius: 15px;
-      //border: 5px black solid;
-      background-color: #FFD880;
-      text-align: center;
-      font-size: larger;
-    font-weight: bold;
-    }
-
-    &:hover {
-      .search-item {
-        //background-color: #40508d;
-        background-color: var(--autocomplete-bg-hover-clr);
-        color: var(--autocomplete-txt-hover-clr);
-      }
-    }
-  }
+  //background-color: black;
 
   .search-item {
+    padding-top: 5px;
+    padding-bottom: 5px;
     text-align: right;
-    padding-bottom:2px;
-    padding-top:2px;
-    .logo {
-      //display: inline-block;
-      height: 20px;
-      //transform: translate(0, 25%);
-      float: left;
-    }
+    border: 2px solid black;
+    border-radius: 15px;
+    //border: 5px black solid;
+    background-color: #ffd880;
+    text-align: center;
+    font-size: larger;
+    font-weight: bold;
   }
 
+  &:hover {
+    .search-item {
+      //background-color: #40508d;
+      background-color: var(--autocomplete-bg-hover-clr);
+      color: var(--autocomplete-txt-hover-clr);
+    }
+  }
+}
 
+.search-item {
+  text-align: right;
+  padding-bottom: 2px;
+  padding-top: 2px;
+  .logo {
+    //display: inline-block;
+    height: 20px;
+    //transform: translate(0, 25%);
+    float: left;
+  }
+}
 
-    /*.navbar :global(#navCategoryList){
+/*.navbar :global(#navCategoryList){
         position: inherit;
         :global(.dropdown-menu.show) {
             background: rgb(242, 242, 242);
@@ -623,72 +651,69 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
             }
     }
 }*/
-    .navbar {
-        position: fixed;
-        width:100%;
-        
-        .container-fluid {
-            flex-wrap: nowrap;
-            @media screen and (max-width:350px) {
-                padding-right: 2px;
-                padding-left: 2px;
-                
+.navbar {
+  position: fixed;
+  width: 100%;
+
+  .container-fluid {
+    flex-wrap: nowrap;
+    @media screen and (max-width: 350px) {
+      padding-right: 2px;
+      padding-left: 2px;
+    }
+  }
+
+  @include bg-gradient();
+  //position: sticky;
+  top: 0;
+  z-index: 99;
+
+  .nav-logo-sm {
+    display: none;
+  }
+
+  @media screen and (max-width: 800px) {
+    .nav-logo {
+      display: none;
+    }
+    .nav-logo-sm {
+      display: block;
+    }
+  }
+  #search_form {
+    flex-basis: 50%;
+    z-index: 99999;
+    :global(.autocomplete) {
+      min-width: 63px;
+      flex-shrink: 1;
+      flex-grow: 0;
+      width: 100%;
+      flex: 1;
+      :global(.autocomplete-list) {
+        :global(.autocomplete-list-item) {
+          :global(.logo) {
+            @media screen and (max-width: 768px) {
+              display: none;
             }
+          }
         }
-        
-        @include bg-gradient();
-        //position: sticky;
-        top: 0;
-        z-index: 99;
-        
-        .nav-logo-sm {
-            display: none;
+        :global(.autocomplete-list-item.selected) {
+          background-color: var(--autocomplete-bg-hover-clr);
+          color: vart(--autocomplete-txt-hover-clr);
         }
 
-        @media screen and (max-width: 800px) {
-            .nav-logo {
-                display: none;
-            }
-            .nav-logo-sm {
-                display: block;
-            }
+        @media screen and (max-width: 550px) {
+          min-width: 90vw;
+          top: 100%;
+          //right: -70px;
+          position: absolute;
         }
-        #search_form {
-            flex-basis: 50%;
-            z-index: 99999;
-            :global(.autocomplete) {
-                min-width: 63px;
-                flex-shrink: 1;
-                flex-grow: 0;
-                width: 100%;
-                flex: 1;
-                :global(.autocomplete-list) {
-                    :global(.autocomplete-list-item) {
-                        :global(.logo) {
-                            @media screen and (max-width: 768px) {
-                                display: none;
-                            }
-                        }
-                        
-                    }
-                    :global(.autocomplete-list-item.selected) {
-                        background-color: var(--autocomplete-bg-hover-clr);
-                            color: vart(--autocomplete-txt-hover-clr);  
-                    }
-
-                    @media screen and (max-width: 550px) {
-                        min-width: 90vw;
-                        top: 100%;
-                        //right: -70px;
-                        position: absolute;
-                    }
-                    
-                }
-                :global(.autocomplete-input) {
-                    border-radius: 25px;
-                    border: 1px solid #ccc;
-                }
-                /*:global(.autocomplete-input) {
+      }
+      :global(.autocomplete-input) {
+        border-radius: 25px;
+        border: 1px solid #ccc;
+      }
+      /*:global(.autocomplete-input) {
                     border: none;
                     border-radius: 0;
                     border-bottom: 1px solid #ccc;
@@ -698,9 +723,9 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
                         display: none;
                     }
                 }*/
-            }
+    }
 
-            /*.menu {}
+    /*.menu {}
 
             .collapsible {
 
@@ -793,8 +818,8 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
                     display: block !important;
                 }
             }*/
-        }
-/*
+  }
+  /*
         #navCategoryList {
             .dropdown-item {
                 padding: .25rem 1rem;
@@ -825,5 +850,5 @@ import { indexdb_get_catalog_albums } from "src/stores/dexie/api_wrapers";
             }
         }
 */
-    }
+}
 </style>

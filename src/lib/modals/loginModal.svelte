@@ -52,7 +52,6 @@ function login() {
   let response = request_login(username, password);
   response
     .then(async (data) => {
-      debugger;
       if (data["detail"]) {
         error_detail = data["detail"];
       } else if (
