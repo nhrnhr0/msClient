@@ -10,7 +10,10 @@ export let out_of_stock = false;
 let show_price_tag;
 $: {
   show_price_tag =
-    $userInfoStore && $userInfoStore.isLogin && (new_price || price);
+    $userInfoStore &&
+    $userInfoStore.isLogin &&
+    (new_price || price) &&
+    out_of_stock == false;
 }
 </script>
 
