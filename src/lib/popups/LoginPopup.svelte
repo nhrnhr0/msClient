@@ -216,10 +216,10 @@ function getUsers(user, keyword) {
                   <div class="col-md-12">
                     <div class="form-group">
                       <!-- hide prices option to admin -->
-                      <label for="hide_prices">הסתר מחירים:</label>
+                      <label for="hide_prices">הצג מחירים:</label>
                       <input
                         type="checkbox"
-                        bind:checked={$userInfoStore.hidePrices}
+                        bind:checked={$userInfoStore.me.show_prices}
                         name="hide_prices"
                         id="hide_prices"
                       />
