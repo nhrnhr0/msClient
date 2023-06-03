@@ -28,7 +28,7 @@ let sidebar_top = 62;
 let show_prices =
   $userInfoStore &&
   $userInfoStore.isLogin &&
-  $userInfoStore.hidePrices == false;
+  $userInfoStore.me.show_prices == true;
 let requesting_cart_copy = false;
 let success_copy_cart = false;
 function shere_cart_btn_clicked(e) {
