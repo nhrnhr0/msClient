@@ -137,7 +137,7 @@ onDestroy(() => {
             <div class="product-title">
               <h2>
                 {productInfo?.title}
-                {#if $userInfoStore.isLogin && $userInfoStore.me.is_superuser && $dictCartStore[productInfo.id]}
+                {#if $userInfoStore.isLogin && $userInfoStore.me.is_superuser && $dictCartStore[productInfo.id] && $userInfoStore.hidePrices == false}
                   <span
                     class="price-edit"
                     on:click={edit_cart_price_promp(productInfo.id)}
