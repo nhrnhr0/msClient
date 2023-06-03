@@ -189,6 +189,7 @@ let product_wraper_clientWidth;
           top={"4px"}
           left={"4px"}
           font_size={"0.6em"}
+          out_of_stock={product.out_of_stock}
         />
       </div>
       <div class="product-info">

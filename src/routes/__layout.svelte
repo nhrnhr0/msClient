@@ -82,7 +82,26 @@ onDestroy(() => {
 
 <svelte:head>
   <meta name="theme-color" content="#FFD700" />
+  {#if browser}
+    <script
+      src="https://code.jquery.com/jquery-3.6.4.min.js"
+      integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+    nl_pos = "bl";
+    nl_dir = "https://ms-global.co.il/";
+    </script>
+    <script
+      src={"https://" + $page.host + "/nagishli.js"}
+      charset="utf-8"
+      defer
+    ></script>
+  {/if}
   {#if $page.host == "ms-global.co.il"}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script
       async

@@ -16,7 +16,10 @@ let form_email;
 let form_phone;
 let form_privateCompany;
 let form_message;
-let show_prices = $userInfoStore.isLogin && $userInfoStore?.me?.show_prices;
+let show_prices =
+  $userInfoStore.isLogin &&
+  $userInfoStore?.me?.show_prices &&
+  $userInfoStore?.hidePrices == false;
 let isSending = false;
 let mform;
 let state = 0;
@@ -356,18 +359,18 @@ function roundHalf(num) {
               </div>
               <div class="form-group">
                 <div class="form-control">
-                  {#if $userInfoStore?.isLogin}
-                    <!-- האם הזמנה או הצעת מחיר -->
-                    <div class="form-group">
-                      <div class="form-control">
-                        <label for="order_type">סוג הזמנה</label>
-                        <select name="order_type">
-                          <option value="הזמנה">הזמנה</option>
-                          <option value="הצעת מחיר">הצעת מחיר</option>
-                        </select>
-                      </div>
+                  <!-- {#if $userInfoStore?.isLogin} -->
+                  <!-- האם הזמנה או הצעת מחיר -->
+                  <div class="form-group">
+                    <div class="form-control">
+                      <label for="order_type">סוג הזמנה</label>
+                      <select name="order_type">
+                        <option value="הצעת מחיר">הצעת מחיר</option>
+                        <option value="הזמנה">הזמנה</option>
+                      </select>
                     </div>
-                  {/if}
+                  </div>
+                  <!-- {/if} -->
                 </div>
               </div>
             </div>
@@ -376,7 +379,7 @@ function roundHalf(num) {
           <div class="send-wra">
             {#if currentStep == 1}
               <button on:click={stepBtnClick} class="submit-btn btn">
-                הבא
+                למילוי פרטי עסק
                 <img
                   class="arrow-left"
                   width="32px"
