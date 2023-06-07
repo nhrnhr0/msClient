@@ -14,6 +14,7 @@ export let productCartModalStore = writable();
 export let productPhotoModalStore = writable();
 //export let singleAmountPopupStore= writable();
 export let _modal_z_index_incrementor = writable(0);
+export let cart_user_info = writable();
 
 export let sizesJsonStore = writable([]);
 export let colorsJsonStore = writable([]);
