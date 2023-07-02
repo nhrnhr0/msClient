@@ -40,7 +40,7 @@ import { logStore } from "./../../stores/logStore";
 import { selectTextOnFocus } from "$lib/ui/inputActions";
 import SvelteTooltip from "svelte-tooltip";
 import QuestionLabel from "$lib/components/questionLabel.svelte";
-import PriceTag from "../components/priceTag.svelte";
+// import PriceTag from "../components/priceTag.svelte";
 let mouse_over_right_arrow = false;
 let mouse_over_left_arrow = false;
 
@@ -596,12 +596,12 @@ const show_prices =
                   src="{CLOUDINARY_URL}f_auto,w_auto/{image.cimage}"
                   alt={image.title}
                 />
-                <PriceTag
+                <!-- <PriceTag
                   price={image.price}
                   newPrice={image.newPrice}
                   ClassName="price-tag"
                   out_of_stock={image.out_of_stock}
-                />
+                /> -->
                 <!--<div class="price-tag" class:active={show_prices && image.out_of_stock == false} >{image.price + '₪'}</div>-->
                 <!--     <FaveBtn product_id={image.id}/>-->
               </div>

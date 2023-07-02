@@ -1,7 +1,7 @@
 <script>
 import { CLOUDINARY_URL, SUBMIT_CART_URL } from "src/api/consts";
 
-import { userInfoStore } from "src/stores/stores";
+import { userInfoStore, cart_user_info } from "src/stores/stores";
 import { cartStore, dictCartStore } from "src/stores/cartStore";
 import { cartPopupStore } from "src/stores/popups/cartPopupStore";
 import { fly, fade } from "svelte/transition";
@@ -11,12 +11,15 @@ import { Spinner } from "sveltestrap";
 import { successPopupStore } from "src/stores/popups/successPopupStore";
 import { browser } from "$app/env";
 let currentStep = 1;
-let form_name;
-let form_email;
-let form_phone;
-let form_privateCompany;
-let form_message;
-let show_prices = $userInfoStore.isLogin && $userInfoStore?.me?.show_prices;
+// let form_name;
+// let form_email;
+// let form_phone;
+// let form_privateCompany;
+// let form_message;
+let show_prices =
+  $userInfoStore.isLogin &&
+  $userInfoStore?.me?.show_prices &&
+  $userInfoStore?.hidePrices == false;
 let isSending = false;
 let mform;
 let state = 0;
@@ -37,21 +40,20 @@ function cart_submit() {
       });
     }
     let actAs = $userInfoStore?.actAs;
-    let order_type = document.querySelectorAll('select[name="order_type"]');
-    if (order_type.length == 1) {
-      order_type = order_type[0].value;
-    } else {
-      order_type = "הזמנה";
-    }
-    console.log("order_type: ", order_type);
+
+    let form_name = $cart_user_info?.name || $userInfoStore?.me?.name || "";
+    let form_email = $cart_user_info?.email || $userInfoStore?.me?.email || "";
+    let form_phone = $cart_user_info?.phone || $userInfoStore?.me?.phone || "";
+    let form_message = $cart_user_info?.message || "";
+    let order_type = $cart_user_info.order_type;
     let data = {
-      name: form_name || "",
-      email: form_email || "",
-      phone: form_phone || "",
+      name: form_name,
+      email: form_email,
+      phone: form_phone,
       business_name: "",
       order_type: order_type,
       uuid: "",
-      message: form_message || "",
+      message: form_message,
       products: cart_products,
       asUser: actAs,
 
@@ -87,6 +89,7 @@ function cart_submit() {
           mform.reset();
           state = 0;
           cartStore.clearCart();
+          $cart_user_info = {};
         }
       });
     response.catch(function (error) {
@@ -103,6 +106,9 @@ function cart_submit() {
 }
 function stepBtnClick() {
   if (currentStep == 1) {
+    if ($cart_user_info == undefined) {
+      $cart_user_info = {};
+    }
     currentStep = 2;
   } else if (currentStep == 2) {
     cart_submit();
@@ -301,7 +307,7 @@ function roundHalf(num) {
                 <div class="form-control">
                   <label for="name">שם בחשבונית</label>
                   <input
-                    bind:value={form_name}
+                    bind:value={$cart_user_info["name"]}
                     name="name"
                     required={!($userInfoStore && $userInfoStore.isLogin)}
                     placeholder={$userInfoStore?.actAs?.businessName ||
@@ -313,7 +319,7 @@ function roundHalf(num) {
                 <div class="form-control">
                   <label for="email">אימייל</label>
                   <input
-                    bind:value={form_email}
+                    bind:value={$cart_user_info["email"]}
                     name="email"
                     placeholder={$userInfoStore?.actAs?.email ||
                       $userInfoStore?.me?.email}
@@ -324,7 +330,7 @@ function roundHalf(num) {
                 <div class="form-control">
                   <label for="phone">טלפון</label>
                   <input
-                    bind:value={form_phone}
+                    bind:value={$cart_user_info["phone"]}
                     name="tel"
                     required={!($userInfoStore && $userInfoStore.isLogin)}
                     placeholder="טלפון"
@@ -336,7 +342,7 @@ function roundHalf(num) {
                   <label for="privateCompany">ח.פ.</label>
                   <input
                     type="text"
-                    bind:value={form_privateCompany}
+                    bind:value={$cart_user_info["privateCompany"]}
                     name="privateCompany"
                     required={false}
                     placeholder={$userInfoStore?.actAs?.privateCompany ||
@@ -347,7 +353,7 @@ function roundHalf(num) {
               <div class="form-group">
                 <div class="form-control">
                   <textarea
-                    bind:value={form_message}
+                    bind:value={$cart_user_info["message"]}
                     name="message"
                     required={false}
                     placeholder="הודעה:"
@@ -356,18 +362,21 @@ function roundHalf(num) {
               </div>
               <div class="form-group">
                 <div class="form-control">
-                  {#if $userInfoStore?.isLogin}
-                    <!-- האם הזמנה או הצעת מחיר -->
-                    <div class="form-group">
-                      <div class="form-control">
-                        <label for="order_type">סוג הזמנה</label>
-                        <select name="order_type">
-                          <option value="הזמנה">הזמנה</option>
-                          <option value="הצעת מחיר">הצעת מחיר</option>
-                        </select>
-                      </div>
+                  <!-- {#if $userInfoStore?.isLogin} -->
+                  <!-- האם הזמנה או הצעת מחיר -->
+                  <div class="form-group">
+                    <div class="form-control">
+                      <label for="order_type">סוג הזמנה</label>
+                      <select
+                        name="order_type"
+                        bind:value={$cart_user_info["order_type"]}
+                      >
+                        <option value="הצעת מחיר">הצעת מחיר</option>
+                        <option value="הזמנה">הזמנה</option>
+                      </select>
                     </div>
-                  {/if}
+                  </div>
+                  <!-- {/if} -->
                 </div>
               </div>
             </div>
@@ -376,7 +385,7 @@ function roundHalf(num) {
           <div class="send-wra">
             {#if currentStep == 1}
               <button on:click={stepBtnClick} class="submit-btn btn">
-                הבא
+                למילוי פרטי עסק
                 <img
                   class="arrow-left"
                   width="32px"
