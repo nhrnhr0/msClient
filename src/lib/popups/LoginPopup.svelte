@@ -212,6 +212,19 @@ function getUsers(user, keyword) {
                       </AutoComplete>
                     </div>
                   </div>
+
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <!-- hide prices option to admin -->
+                      <label for="hide_prices">הצג מחירים:</label>
+                      <input
+                        type="checkbox"
+                        bind:checked={$userInfoStore.me.show_prices}
+                        name="hide_prices"
+                        id="hide_prices"
+                      />
+                    </div>
+                  </div>
                 {/if}
                 <div class="col-md-12">
                   <div class="form-group">

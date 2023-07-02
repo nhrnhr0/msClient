@@ -13,6 +13,7 @@ $: {
     $userInfoStore &&
     $userInfoStore.isLogin &&
     (new_price || price) &&
+    $userInfoStore.me.show_prices == true &&
     out_of_stock == false;
 }
 </script>
