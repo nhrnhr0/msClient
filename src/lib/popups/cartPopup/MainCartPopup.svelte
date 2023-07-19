@@ -10,16 +10,18 @@ import { logStore } from "src/stores/logStore";
 import { Spinner } from "sveltestrap";
 import { successPopupStore } from "src/stores/popups/successPopupStore";
 import { browser } from "$app/env";
-let currentStep = 1;
+import { onMount } from "svelte";
+// let currentStep = 1;
 // let form_name;
 // let form_email;
 // let form_phone;
 // let form_privateCompany;
 // let form_message;
+
 let show_prices =
+  $userInfoStore &&
   $userInfoStore.isLogin &&
-  $userInfoStore?.me?.show_prices &&
-  $userInfoStore?.hidePrices == false;
+  $userInfoStore.me.show_prices == true;
 let isSending = false;
 let mform;
 let state = 0;
@@ -45,12 +47,13 @@ function cart_submit() {
     let form_email = $cart_user_info?.email || $userInfoStore?.me?.email || "";
     let form_phone = $cart_user_info?.phone || $userInfoStore?.me?.phone || "";
     let form_message = $cart_user_info?.message || "";
+    let form_privateCompany = $cart_user_info?.privateCompany || "";
     let order_type = $cart_user_info.order_type;
     let data = {
       name: form_name,
       email: form_email,
       phone: form_phone,
-      business_name: "",
+      business_name: form_privateCompany,
       order_type: order_type,
       uuid: "",
       message: form_message,
@@ -104,16 +107,22 @@ function cart_submit() {
     state = 1;
   }
 }
-function stepBtnClick() {
-  if (currentStep == 1) {
-    if ($cart_user_info == undefined) {
-      $cart_user_info = {};
-    }
-    currentStep = 2;
-  } else if (currentStep == 2) {
-    cart_submit();
+onMount(() => {
+  console.log("onMount");
+  if ($cart_user_info == undefined) {
+    $cart_user_info = {};
   }
-}
+});
+// function stepBtnClick() {
+//   if (currentStep == 1) {
+//     if ($cart_user_info == undefined) {
+//       $cart_user_info = {};
+//     }
+//     currentStep = 2;
+//   } else if (currentStep == 2) {
+//     cart_submit();
+//   }
+// }
 function roundHalf(num) {
   return Math.round(num * 2) / 2;
 }
@@ -151,239 +160,233 @@ function roundHalf(num) {
           {#if $userInfoStore?.me?.is_superuser}
             <h3>סוכן: {$userInfoStore.me.username}</h3>
           {/if}
-          {#if currentStep == 1}
-            <div in:fly={{ x: -340 }} class="step step-1">
-              <table class="products">
-                <thead>
+          <div class="step step-2">
+            <div class="form-group">
+              <div class="form-control">
+                <label for="name">שם בחשבונית</label>
+                <input
+                  bind:value={$cart_user_info["name"]}
+                  name="name"
+                  required={!($userInfoStore && $userInfoStore.isLogin)}
+                  placeholder={$userInfoStore?.actAs?.businessName ||
+                    $userInfoStore?.me?.businessName}
+                  type="text"
+                />
+              </div>
+
+              <div class="form-control">
+                <label for="email">אימייל</label>
+                <input
+                  bind:value={$cart_user_info["email"]}
+                  name="email"
+                  placeholder={$userInfoStore?.actAs?.email ||
+                    $userInfoStore?.me?.email}
+                  type="email"
+                />
+              </div>
+
+              <div class="form-control">
+                <label for="phone">טלפון</label>
+                <input
+                  bind:value={$cart_user_info["phone"]}
+                  name="tel"
+                  required={!($userInfoStore && $userInfoStore.isLogin)}
+                  placeholder="טלפון"
+                  type="tel"
+                />
+              </div>
+
+              <div class="form-control">
+                <label for="privateCompany">ח.פ.</label>
+                <input
+                  type="text"
+                  bind:value={$cart_user_info["privateCompany"]}
+                  name="privateCompany"
+                  required={false}
+                  placeholder={$userInfoStore?.actAs?.privateCompany ||
+                    $userInfoStore?.me?.privateCompany}
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-control">
+                <textarea
+                  bind:value={$cart_user_info["message"]}
+                  name="message"
+                  required={false}
+                  placeholder="הודעה:"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-control">
+                <!-- {#if $userInfoStore?.isLogin} -->
+                <!-- האם הזמנה או הצעת מחיר -->
+                <div class="form-group">
+                  <div class="form-control">
+                    <label for="order_type">סוג הזמנה</label>
+                    <select
+                      name="order_type"
+                      bind:value={$cart_user_info["order_type"]}
+                    >
+                      <option value="הצעת מחיר">הצעת מחיר</option>
+                      <option value="הזמנה">הזמנה</option>
+                    </select>
+                  </div>
+                </div>
+                <!-- {/if} -->
+              </div>
+            </div>
+          </div>
+          <div in:fly={{ x: -340 }} class="step step-1">
+            <table class="products">
+              <thead>
+                <tr>
+                  <th>מוצר</th>
+                  {#if !is_small_screen}
+                    <th class="hide-on-md">ברקוד</th>
+                  {/if}
+                  {#if $userInfoStore?.me?.is_superuser}
+                    <th class="hide-on-md">הדפסה</th>
+                    <th class="hide-on-md">רקמה</th>
+                  {/if}
+                  <th>כמות</th>
+                  {#if show_prices}
+                    <th>מחיר</th>
+                    <th>סה"כ</th>
+                  {/if}
+                </tr>
+              </thead>
+              <tbody>
+                {#each Object.entries($cartStore) as [key, val] (key)}
+                  {@const item = $cartStore[key]}
                   <tr>
-                    <th>מוצר</th>
+                    <td>
+                      <div class="product-image-and-title">
+                        <div class="product-image">
+                          <img
+                            src="{CLOUDINARY_URL}{item.cimage}"
+                            alt={item.title}
+                          />
+                        </div>
+                        <div class="product-title">{item.title}</div>
+                      </div>
+                    </td>
                     {#if !is_small_screen}
-                      <th class="hide-on-md">ברקוד</th>
+                      <td class="hide-on-md">
+                        {item?.barcode || ""}
+                      </td>
                     {/if}
                     {#if $userInfoStore?.me?.is_superuser}
-                      <th class="hide-on-md">הדפסה</th>
-                      <th class="hide-on-md">רקמה</th>
-                    {/if}
-                    <th>כמות</th>
-                    {#if show_prices}
-                      <th>מחיר</th>
-                      <th>סה"כ</th>
-                    {/if}
-                  </tr>
-                </thead>
-                <tbody>
-                  {#each Object.entries($cartStore) as [key, val] (key)}
-                    {@const item = $cartStore[key]}
-                    <tr>
-                      <td>
-                        <div class="product-image-and-title">
-                          <div class="product-image">
-                            <img
-                              src="{CLOUDINARY_URL}{item.cimage}"
-                              alt={item.title}
-                            />
-                          </div>
-                          <div class="product-title">{item.title}</div>
-                        </div>
-                      </td>
-                      {#if !is_small_screen}
-                        <td class="hide-on-md">
-                          {item?.barcode || ""}
-                        </td>
-                      {/if}
-                      {#if $userInfoStore?.me?.is_superuser}
-                        <td class="hide-on-md">
-                          <div
-                            on:click={(e) => {
-                              let p = $cartStore.find(
-                                (prod) => prod.id == item.id
-                              );
-                              if (p) {
-                                if (p.print == undefined) {
-                                  p.print = true;
-                                } else {
-                                  p.print = !p.print;
-                                }
-                                cartStore.setProduct(p);
+                      <td class="hide-on-md">
+                        <div
+                          on:click={(e) => {
+                            let p = $cartStore.find(
+                              (prod) => prod.id == item.id
+                            );
+                            if (p) {
+                              if (p.print == undefined) {
+                                p.print = true;
+                              } else {
+                                p.print = !p.print;
                               }
-                              /*$cartStore[key].print =
+                              cartStore.setProduct(p);
+                            }
+                            /*$cartStore[key].print =
                               !$cartStore[key].print;
                           }}*/
-                            }}
-                          >
-                            {#if item?.print}
-                              ✅
-                            {:else}
-                              ❌
-                            {/if}
-                          </div>
-                        </td>
-                        <td class="hide-on-md">
-                          <div
-                            on:click={(e) => {
-                              let p = $cartStore.find(
-                                (prod) => prod.id == item.id
-                              );
-                              if (p) {
-                                if (p.embro == undefined) {
-                                  p.embro = true;
-                                } else {
-                                  p.embro = !p.embro;
-                                }
-                                cartStore.setProduct(p);
-                              }
-                            }}
-                          >
-                            {#if item?.embro}
-                              ✅
-                            {:else}
-                              ❌
-                            {/if}
-                          </div>
-                        </td>
-                      {/if}
-                      <td>
-                        <div
-                          class="product-amount"
-                          title="ערוך"
-                          on:click={open_edit_amount_dialog(
-                            item.id,
-                            item.title
-                          )}
+                          }}
                         >
-                          {item.amount}
+                          {#if item?.print}
+                            ✅
+                          {:else}
+                            ❌
+                          {/if}
                         </div>
                       </td>
-                      {#if show_prices}
-                        <td>
-                          <div class="product-price">
-                            <!--{#if item.out_of_stock == false}-->
-                            {item.price}₪
-                            <!--{/if}-->
-                          </div>
-                        </td>
-                        <td>
-                          <div class="product-total-price">
-                            <!--{#if item.out_of_stock == false}-->
-                            {roundHalf(item.price * item.amount)}₪
-                            <!--{/if}-->
-                          </div>
-                        </td>
-                      {/if}
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
-              {#if show_prices}
-                <div class="totals">
-                  <div class="product-total-price">סה"כ ללא מע"מ</div>
-                  <div class="product-total-price-result">
-                    {roundHalf(
-                      Object.entries($cartStore).reduce((acc, [key, val]) => {
-                        /*let ret = acc;
-                                      if (val.out_of_stock == false) {
-                                          ret += val.price * val.amount;
-                                      }*/
-                        return acc + val.price * val.amount;
-                      }, 0)
-                    )}₪
-                  </div>
-                  <div class="product-total-price-tax">סה"כ כולל מע"מ</div>
+                      <td class="hide-on-md">
+                        <div
+                          on:click={(e) => {
+                            let p = $cartStore.find(
+                              (prod) => prod.id == item.id
+                            );
+                            if (p) {
+                              if (p.embro == undefined) {
+                                p.embro = true;
+                              } else {
+                                p.embro = !p.embro;
+                              }
+                              cartStore.setProduct(p);
+                            }
+                          }}
+                        >
+                          {#if item?.embro}
+                            ✅
+                          {:else}
+                            ❌
+                          {/if}
+                        </div>
+                      </td>
+                    {/if}
+                    <td>
+                      <div
+                        class="product-amount"
+                        title="ערוך"
+                        on:click={open_edit_amount_dialog(item.id, item.title)}
+                      >
+                        {item.amount}
+                      </div>
+                    </td>
+                    {#if show_prices}
+                      <td>
+                        <div class="product-price">
+                          <!--{#if item.out_of_stock == false}-->
+                          {item.price}₪
+                          <!--{/if}-->
+                        </div>
+                      </td>
+                      <td>
+                        <div class="product-total-price">
+                          <!--{#if item.out_of_stock == false}-->
+                          {roundHalf(item.price * item.amount)}₪
+                          <!--{/if}-->
+                        </div>
+                      </td>
+                    {/if}
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+            {#if show_prices}
+              <div class="totals">
+                <div class="product-total-price">סה"כ ללא מע"מ</div>
+                <div class="product-total-price-result">
                   {roundHalf(
                     Object.entries($cartStore).reduce((acc, [key, val]) => {
                       /*let ret = acc;
-                                  if (val.out_of_stock == false) {
-                                      ret += val.price * val.amount;
-                                  }*/
-                      return acc + val.price * val.amount * 1.17;
+                                      if (val.out_of_stock == false) {
+                                          ret += val.price * val.amount;
+                                      }*/
+                      return acc + val.price * val.amount;
                     }, 0)
                   )}₪
                 </div>
-              {/if}
-            </div>
-          {:else}
-            <div in:fly={{ x: -340 }} class="step step-2">
-              <div class="form-group">
-                <div class="form-control">
-                  <label for="name">שם בחשבונית</label>
-                  <input
-                    bind:value={$cart_user_info["name"]}
-                    name="name"
-                    required={!($userInfoStore && $userInfoStore.isLogin)}
-                    placeholder={$userInfoStore?.actAs?.businessName ||
-                      $userInfoStore?.me?.businessName}
-                    type="text"
-                  />
-                </div>
-
-                <div class="form-control">
-                  <label for="email">אימייל</label>
-                  <input
-                    bind:value={$cart_user_info["email"]}
-                    name="email"
-                    placeholder={$userInfoStore?.actAs?.email ||
-                      $userInfoStore?.me?.email}
-                    type="email"
-                  />
-                </div>
-
-                <div class="form-control">
-                  <label for="phone">טלפון</label>
-                  <input
-                    bind:value={$cart_user_info["phone"]}
-                    name="tel"
-                    required={!($userInfoStore && $userInfoStore.isLogin)}
-                    placeholder="טלפון"
-                    type="tel"
-                  />
-                </div>
-
-                <div class="form-control">
-                  <label for="privateCompany">ח.פ.</label>
-                  <input
-                    type="text"
-                    bind:value={$cart_user_info["privateCompany"]}
-                    name="privateCompany"
-                    required={false}
-                    placeholder={$userInfoStore?.actAs?.privateCompany ||
-                      $userInfoStore?.me?.privateCompany}
-                  />
-                </div>
+                <div class="product-total-price-tax">סה"כ כולל מע"מ</div>
+                {roundHalf(
+                  Object.entries($cartStore).reduce((acc, [key, val]) => {
+                    /*let ret = acc;
+                                  if (val.out_of_stock == false) {
+                                      ret += val.price * val.amount;
+                                  }*/
+                    return acc + val.price * val.amount * 1.17;
+                  }, 0)
+                )}₪
               </div>
-              <div class="form-group">
-                <div class="form-control">
-                  <textarea
-                    bind:value={$cart_user_info["message"]}
-                    name="message"
-                    required={false}
-                    placeholder="הודעה:"
-                  />
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="form-control">
-                  <!-- {#if $userInfoStore?.isLogin} -->
-                  <!-- האם הזמנה או הצעת מחיר -->
-                  <div class="form-group">
-                    <div class="form-control">
-                      <label for="order_type">סוג הזמנה</label>
-                      <select
-                        name="order_type"
-                        bind:value={$cart_user_info["order_type"]}
-                      >
-                        <option value="הצעת מחיר">הצעת מחיר</option>
-                        <option value="הזמנה">הזמנה</option>
-                      </select>
-                    </div>
-                  </div>
-                  <!-- {/if} -->
-                </div>
-              </div>
-            </div>
-          {/if}
+            {/if}
+          </div>
 
           <div class="send-wra">
-            {#if currentStep == 1}
+            <!-- {#if currentStep == 1}
               <button on:click={stepBtnClick} class="submit-btn btn">
                 למילוי פרטי עסק
                 <img
@@ -394,22 +397,22 @@ function roundHalf(num) {
                   src="/right-arrow-hover.png"
                 />
               </button>
-            {:else}
-              <button on:click={stepBtnClick} class="submit-btn btn">
-                {#if isSending}
-                  <Spinner />
-                {:else}
-                  שלח
-                {/if}
-              </button>
-            {/if}
-            <button
+            {:else} -->
+            <button on:click={cart_submit} class="submit-btn btn">
+              {#if isSending}
+                <Spinner />
+              {:else}
+                שלח
+              {/if}
+            </button>
+            <!-- {/if} -->
+            <!-- <button
               on:click={() => {
                 currentStep -= 1;
               }}
               class="btn back-btn"
               style:display={currentStep == 1 ? "none" : "block"}>הקודם</button
-            >
+            > -->
           </div>
         </form>
       </div>
