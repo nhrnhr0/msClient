@@ -47,12 +47,13 @@ function cart_submit() {
     let form_email = $cart_user_info?.email || $userInfoStore?.me?.email || "";
     let form_phone = $cart_user_info?.phone || $userInfoStore?.me?.phone || "";
     let form_message = $cart_user_info?.message || "";
+    let form_privateCompany = $cart_user_info?.privateCompany || "";
     let order_type = $cart_user_info.order_type;
     let data = {
       name: form_name,
       email: form_email,
       phone: form_phone,
-      business_name: "",
+      business_name: form_privateCompany,
       order_type: order_type,
       uuid: "",
       message: form_message,
