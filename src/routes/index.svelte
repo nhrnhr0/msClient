@@ -3,14 +3,8 @@
 export async function load({ fetch, page, session, contex }) {
   let data_promise = fetch_main_page_albums(fetch);
   let main_categories_promise = get_topLevelCategories(fetch);
-  let logos_promise = my_fetch(LOGOS_API_URL, { method: "GET" }, fetch).then(
-    (response) => response.json()
-  );
-  let [data, main_categories, logos] = await Promise.all([
-    data_promise,
-    main_categories_promise,
-    logos_promise,
-  ]);
+  let logos_promise = my_fetch(LOGOS_API_URL, { method: "GET" }, fetch).then((response) => response.json());
+  let [data, main_categories, logos] = await Promise.all([data_promise, main_categories_promise, logos_promise]);
   return {
     props: {
       main_albums: data,
@@ -78,9 +72,7 @@ onMount(async () => {
 <TopLevelCategoriesBlock {main_categories} />
 {#if $userInfoStore.isLogin == false}
   <div class="whatsapp-btn-wraper">
-    <button on:click={open_whatsapp_link} class="whatsapp-btn">
-      רוצים לראות מחירים באתר?
-    </button>
+    <button on:click={open_whatsapp_link} class="whatsapp-btn"> בואו נדבר </button>
   </div>
 {/if}
 <NewProductsSwiper />
@@ -108,10 +100,7 @@ onMount(async () => {
       </div>
       <div class="contact-icon">
         <a rel="noopener" target="_blank" href="https://wa.me/+972524314139">
-          <img
-            src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png"
-            alt="whatsapp"
-          />
+          <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp" />
         </a>
       </div>
     </div>
@@ -123,10 +112,7 @@ onMount(async () => {
       </div>
       <div class="contact-icon">
         <a rel="noopener" target="_blank" href="mailto: main@ms-global.co.il">
-          <img
-            src="https://res.cloudinary.com/ms-global/image/upload/v1640258102/msAssets/icons8-email-64_jtvddl.png"
-            alt="whatsapp"
-          />
+          <img src="https://res.cloudinary.com/ms-global/image/upload/v1640258102/msAssets/icons8-email-64_jtvddl.png" alt="whatsapp" />
         </a>
       </div>
     </div>
@@ -138,10 +124,7 @@ onMount(async () => {
       </div>
       <div class="contact-icon">
         <a rel="noopener" target="_blank" href="https://wa.me/+972547919908">
-          <img
-            src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png"
-            alt="whatsapp"
-          />
+          <img src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png" alt="whatsapp" />
         </a>
       </div>
     </div>
