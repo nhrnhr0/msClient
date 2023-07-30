@@ -41,7 +41,7 @@ export let main_albums;
 export let main_categories;
 export let logos;
 function open_whatsapp_link() {
-  const whatsapp_text = encodeURIComponent("אני מעוניין לראות מחירים באתר");
+  const whatsapp_text = encodeURIComponent("אשמח לשמוע פרטים");
   var url = `https://api.whatsapp.com/send?phone=972547919908&text=${whatsapp_text}`;
   window.open(url, "_blank");
 }
