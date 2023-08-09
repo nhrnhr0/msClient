@@ -87,10 +87,10 @@ onMount(async () => {
     <div class="container" />
   </div>
   <div class="copyright">
-    &copy; Copyright <strong>M.S. Global</strong>. All Rights Reserved
+    &copy; Copyright <strong>BizBiz</strong>. All Rights Reserved
   </div>
   <div class="credits">
-    Designed by <a href="https://ms-global.co.il/">M.S. Global</a>
+    Designed by <a href="https://ms-global.co.il/">BizBiz</a>
   </div>
   <div class="contact">
     <div class="contact-item">

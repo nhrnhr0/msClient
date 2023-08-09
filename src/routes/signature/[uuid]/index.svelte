@@ -11,11 +11,7 @@ export async function load({ fetch, page, session, contex }) {
   let uuid = page.params.uuid;
   let response = {};
   try {
-    response = await fetch_wraper(
-      GET_SIGNATURE_URL + uuid,
-      { method: "GET" },
-      fetch
-    );
+    response = await fetch_wraper(GET_SIGNATURE_URL + uuid, { method: "GET" }, fetch);
   } catch (error) {
     response = { status: 404 };
   }
@@ -45,10 +41,8 @@ let submiting = false;
 let canvas;
 let signaturePad;
 let is_signing = false;
-const DESCRIPTION_SIZE_WIDTH =
-  browser && window && window.innerWidth > 900 ? 217 : 100;
-const DESCRIPTION_SIZE_HEIGHT =
-  browser && window && window.innerWidth > 900 ? 50 : 50;
+const DESCRIPTION_SIZE_WIDTH = browser && window && window.innerWidth > 900 ? 217 : 100;
+const DESCRIPTION_SIZE_HEIGHT = browser && window && window.innerWidth > 900 ? 50 : 50;
 
 const is_small_screen = browser && window && window.innerWidth < 900;
 onMount(() => {
@@ -174,9 +168,7 @@ async function download_as_pdf() {
   }
   let current_date = new Date();
   let date_str = current_date.toLocaleDateString("he-IL");
-  doc.save(
-    "הזמנת עבודה חתומה - " + data.client_name + " - " + date_str + ".pdf"
-  );
+  doc.save("הזמנת עבודה חתומה - " + data.client_name + " - " + date_str + ".pdf");
   // filename = "הזמנת עבודה חתומה " + data.client_name +
   // doc.save("signature.pdf");
 }
@@ -187,8 +179,7 @@ async function download_as_image() {
   let link = document.createElement("a");
   let current_date = new Date();
   let date_str = current_date.toLocaleDateString("he-IL");
-  let filename =
-    "הזמנת עבודה חתומה " + data.client_name + " - " + date_str + ".png";
+  let filename = "הזמנת עבודה חתומה " + data.client_name + " - " + date_str + ".png";
   link.download = filename;
   link.href = img;
   link.click();
@@ -215,7 +206,8 @@ function open_popup_image(url) {
   show_image_popup = true;
   show_image_popup_url = url;
 }
-let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msAssets/favicon_hbwcui.jpg`;
+// let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msAssets/favicon_hbwcui.jpg`;
+let favicon = `https://res.cloudinary.com/ms-global/image/upload/c_scale,w_219,h_219/c_scale,u_v1649744644:msAssets:image_5_qo7yhx.jpg,w_300/v1/bizbiz/z6bktayusj7uc7rl2xgg.png`;
 </script>
 
 <svelte:head>
@@ -259,12 +251,7 @@ let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msA
           }}
         >
           פתח את התמונה בחלון חדש
-          <img
-            src="https://res.cloudinary.com/ms-global/image/upload/v1667127471/msAssets/resize_p95nlc.png"
-            alt=""
-            width="32px"
-            height="32px"
-          />
+          <img src="https://res.cloudinary.com/ms-global/image/upload/v1667127471/msAssets/resize_p95nlc.png" alt="" width="32px" height="32px" />
         </h4>
       </div>
     </div>
@@ -300,50 +287,31 @@ let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msA
     </thead>
     <tbody>
       {#each data.items as product}
-        {@const total_amount = product.details.reduce(
-          (acc, detail) => acc + detail.quantity,
-          0
-        )}
+        {@const total_amount = product.details.reduce((acc, detail) => acc + detail.quantity, 0)}
         <tr>
           <td>
             {#if product.cimage}
               <div class="image" on:click={open_popup_image(product.cimage)}>
-                <img
-                  src={product.cimage}
-                  alt={product.name}
-                  class="img-fluid"
-                  width="150px"
-                />
+                <img src={product.cimage} alt={product.name} class="img-fluid" width="150px" />
               </div>
             {/if}
           </td>
           <td class="product-name-td">{product.name}</td>
           <td class="big-td description-td">
-            <div
-              class="description-wraper"
-              class:active={product?.show_full_description}
-            >
+            <div class="description-wraper" class:active={product?.show_full_description}>
               {#if product.clientWidth_description_width >= DESCRIPTION_SIZE_WIDTH || product.clientHeight_description_height >= DESCRIPTION_SIZE_HEIGHT}
                 <button
                   class="load-more-btn"
                   class:active={product.show_full_description}
                   on:click={() => {
-                    product.show_full_description =
-                      !product.show_full_description;
+                    product.show_full_description = !product.show_full_description;
                   }}
                 >
-                  <img
-                    src="https://res.cloudinary.com/ms-global/image/upload/v1667124674/msAssets/icons8-down-16_iugalf.png"
-                    alt="more"
-                  />
+                  <img src="https://res.cloudinary.com/ms-global/image/upload/v1667124674/msAssets/icons8-down-16_iugalf.png" alt="more" />
                 </button>
               {/if}
 
-              <div
-                class="markdown-wraper"
-                bind:clientHeight={product.clientHeight_description_height}
-                bind:clientWidth={product.clientWidth_description_width}
-              >
+              <div class="markdown-wraper" bind:clientHeight={product.clientHeight_description_height} bind:clientWidth={product.clientWidth_description_width}>
                 <SvelteMarkdown source={product.description} />
               </div>
             </div>
@@ -368,13 +336,7 @@ let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msA
     </tbody>
     <tfoot>
       {#if data && data.items.length > 0}
-        {@const total_price_before_tax = data.items.reduce(
-          (acc, product) =>
-            acc +
-            product.details.reduce((acc, detail) => acc + detail.quantity, 0) *
-              product.price,
-          0
-        )}
+        {@const total_price_before_tax = data.items.reduce((acc, product) => acc + product.details.reduce((acc, detail) => acc + detail.quantity, 0) * product.price, 0)}
         <tr class="total-tr">
           <td colspan="6">סה״כ לפני מע״מ</td>
           <td>{price_format(total_price_before_tax)}₪</td>
@@ -399,19 +361,11 @@ let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msA
  -->
           <td colspan="3">
             <div class="image">
-              <img
-                on:click={open_popup_image(sim.cimage)}
-                src={sim.cimage}
-                alt={sim.description}
-                class="img-fluid"
-                width="350px"
-              />
+              <img on:click={open_popup_image(sim.cimage)} src={sim.cimage} alt={sim.description} class="img-fluid" width="350px" />
             </div>
           </td>
           <!-- <pre>{JSON.stringify(sim.descri)}</pre> -->
-          <td colspan="3">
-            {@html sim.description.replaceAll("\n", "</br>")}</td
-          >
+          <td colspan="3"> {@html sim.description.replaceAll("\n", "</br>")}</td>
         </tr>
       {/each}
       <tr>
@@ -442,27 +396,13 @@ let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msA
               <div>
                 <b>*טלפון:</b>
               </div>
-              <input
-                disabled={data.status == "Signed"}
-                type="text"
-                name="phone"
-                value={data.user_info_phone || ""}
-                required
-                id="phone_input"
-              />
+              <input disabled={data.status == "Signed"} type="text" name="phone" value={data.user_info_phone || ""} required id="phone_input" />
             </div>
             <div class="item">
               <div>
                 <b>*מספר זהות:</b>
               </div>
-              <input
-                disabled={data.status == "Signed"}
-                type="text"
-                name="id"
-                value={data.user_info_id || ""}
-                required
-                id="id_input"
-              />
+              <input disabled={data.status == "Signed"} type="text" name="id" value={data.user_info_id || ""} required id="id_input" />
             </div>
           </div>
         </td>
@@ -511,24 +451,14 @@ let favicon = `https://res.cloudinary.com/ms-global/image/upload/v1641224100/msA
                 <canvas
                   id="signature-pad"
                   class="signature-pad"
-                  width={browser && window.innerWidth > 900
-                    ? 500
-                    : browser && window.innerWidth > 600
-                    ? 400
-                    : browser && window.innerWidth > 400
-                    ? 300
-                    : 200}
+                  width={browser && window.innerWidth > 900 ? 500 : browser && window.innerWidth > 600 ? 400 : browser && window.innerWidth > 400 ? 300 : 200}
                   height="200"
                   bind:this={canvas}
                 />
               {/if}
               <div class="actions-2">
                 {#if data.status == "Published" || data.status == "Draft"}
-                  <button
-                    class="submit-btn"
-                    on:click={submit_btn_clicked}
-                    disabled={submiting}
-                  >
+                  <button class="submit-btn" on:click={submit_btn_clicked} disabled={submiting}>
                     {#if submiting == false}
                       שלח
                     {:else}
@@ -791,19 +721,11 @@ main {
                 left: 0;
                 width: 100%;
 
-                background: linear-gradient(
-                  0deg,
-                  rgba(100, 100, 100, 0.603) 0%,
-                  #ccc 100%
-                );
+                background: linear-gradient(0deg, rgba(100, 100, 100, 0.603) 0%, #ccc 100%);
                 z-index: 1;
                 border: none;
                 &:hover {
-                  background: linear-gradient(
-                    0deg,
-                    rgba(100, 100, 100, 0.2) 0%,
-                    rgba(204, 204, 204, 0.692) 100%
-                  );
+                  background: linear-gradient(0deg, rgba(100, 100, 100, 0.2) 0%, rgba(204, 204, 204, 0.692) 100%);
                 }
                 &.active {
                   img {
@@ -814,12 +736,7 @@ main {
             }
           }
           .image {
-            background: radial-gradient(
-              circle,
-              white 0%,
-              white 32%,
-              #c7c7c7 84%
-            );
+            background: radial-gradient(circle, white 0%, white 32%, #c7c7c7 84%);
             width: 85px;
             padding: 0.3rem;
           }

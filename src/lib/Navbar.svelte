@@ -1,12 +1,7 @@
 <script>
 import AutoComplete from "simple-svelte-autocomplete";
 import { cartDomElementStore } from "./../stores/cartStore";
-import {
-  albumsJsonStore,
-  loginModalStore,
-  productModalStore,
-  userInfoStore,
-} from "./../stores/stores";
+import { albumsJsonStore, loginModalStore, productModalStore, userInfoStore } from "./../stores/stores";
 import { CLOUDINARY_URL, SEARCH_API_URL } from "./../api/consts";
 
 /*import {
@@ -14,13 +9,7 @@ import { CLOUDINARY_URL, SEARCH_API_URL } from "./../api/consts";
     } from '@fortawesome/free-solid-svg-icons'*/
 import { fade, fly } from "svelte/transition";
 
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Spinner,
-} from "sveltestrap";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Spinner } from "sveltestrap";
 import { categoryModalStore } from "./../stores/stores";
 import { cartStore } from "./../stores/cartStore";
 import { onDestroy } from "svelte";
@@ -127,9 +116,7 @@ function autocompleteItemSelected(item) {
         ti: item.title,
       },
     });
-    goto(
-      `main?top=${item.public_album_top_slug}&album=${item.public_album_slug}&product_id=${item.id}`
-    );
+    goto(`main?top=${item.public_album_top_slug}&album=${item.public_album_slug}&product_id=${item.id}`);
   }
 }
 let isBooped = false;
@@ -141,18 +128,12 @@ function setIsBooped(val) {
 <nav id="main-navbar-wraper" class="navbar navbar-expand-* navbar-light">
   <div class="container-fluid">
     <!-- svelte-ignore a11y-invalid-attribute -->
-    <a
-      class="navbar-logo"
-      href="/"
-      aria-label="logo"
-      role="button"
-      tabindex="0"
-    >
+    <a class="navbar-logo" href="/" aria-label="logo" role="button" tabindex="0">
       <img
         class="nav-logo"
-        height="32px"
+        height="55px"
         width="auto"
-        src="https://res.cloudinary.com/ms-global/image/upload/f_auto,w_auto/v1634457672/msAssets/favicon_rza3n9"
+        src="https://res.cloudinary.com/ms-global/image/upload/f_auto,q_auto/v1/bizbiz/z6bktayusj7uc7rl2xgg"
         title="דף הבית"
         alt="דף הבית"
       />
@@ -229,13 +210,7 @@ function setIsBooped(val) {
         bind:value={searchValue}
       >
         <div slot="loading" let:loadingText>
-          <Spinner
-            size="sm"
-            speed="750"
-            unit="em"
-            color="#A82124"
-            thickness="2"
-          />
+          <Spinner size="sm" speed="750" unit="em" color="#A82124" thickness="2" />
           <span>{loadingText}</span>
           <!-- spinner -->
         </div>
@@ -244,25 +219,13 @@ function setIsBooped(val) {
             <div class="list-category">
               <div class="search-item">
                 {item.title} ({item.item_count})
-                <img
-                  class="logo"
-                  src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
-                  alt="M.S. Global"
-                />
+                <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global" />
               </div>
             </div>
           {:else}
             <div class="search-item">
-              <img
-                alt={item.title}
-                style="height:25px;"
-                src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}"
-              />
-              <img
-                class="logo"
-                src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9"
-                alt="M.S. Global"
-              />
+              <img alt={item.title} style="height:25px;" src="{CLOUDINARY_URL}f_auto,w_auto/{item.cimage}" />
+              <img class="logo" src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1634457672/msAssets/favicon_rza3n9" alt="M.S. Global" />
               {@html label}
             </div>
           {/if}
@@ -281,16 +244,8 @@ function setIsBooped(val) {
     <div>
       <div class="whatsapp-wraper">
         <div class="text">לוואצאפ</div>
-        <a
-          class="same-size-icon"
-          rel="noopener"
-          target="_blank"
-          href="https://wa.me/+972547919908"
-        >
-          <img
-            src="https://res.cloudinary.com/ms-global/image/upload/w_auto,f_auto/v1636418636/msAssets/whatsapp_be98kb.png"
-            alt="whatsapp"
-          />
+        <a class="same-size-icon" rel="noopener" target="_blank" href="https://wa.me/+972547919908">
+          <img src="https://res.cloudinary.com/ms-global/image/upload/f_auto,q_auto/v1/msAssets/kp9sil30azmyj7thfnq8.png" alt="whatsapp" />
         </a>
       </div>
     </div>
@@ -322,8 +277,11 @@ function setIsBooped(val) {
 
 <style lang="scss">
 .whatsapp-wraper {
+  color: var(--text-on-background-color);
   position: relative;
   .same-size-icon {
+    // apply the --text-on-background-color color to image
+
     //
     img {
       &:hover {
@@ -334,7 +292,7 @@ function setIsBooped(val) {
 
   .text {
     font-size: 0.8rem;
-    color: black;
+
     text-align: center;
     position: absolute;
     top: 100%;

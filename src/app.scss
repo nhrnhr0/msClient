@@ -154,10 +154,14 @@
 }
 
 :root {
-  --swiper-theme-color: #d4af37!important;
+  // --swiper-theme-color: #d4af37!important;
+  --text-on-background-color: #F2F2F2;
+  --swiper-theme-color: #3b3b3b!important;
   --swiper-navigation-size: 80px!important;
-  --buy-btn-color: #70C38A;
-  --buy-btn-color-hover: #5A9E7D;
+  // --buy-btn-color: #70C38A;
+  --buy-btn-color: #d4af37;
+  // --buy-btn-color-hover: #5A9E7D;
+  --buy-btn-color-hover: #d4af37;
   --details-btn-color: #565E64;
   --details-btn-color-hover: #3D3E3F;
   /*font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
