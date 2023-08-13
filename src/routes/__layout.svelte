@@ -81,32 +81,23 @@ onDestroy(() => {
 </script>
 
 <svelte:head>
-  <meta name="theme-color" content="#FFD700" />
+  <meta name="theme-color" content="#222" />
   {#if browser}
-    <script
-      src="https://code.jquery.com/jquery-3.6.4.min.js"
-      integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
     <script>
     nl_pos = "bl";
     nl_dir = "https://ms-global.co.il/";
     </script>
-    <script
-      src={"https://" + $page.host + "/nagishli.js"}
-      charset="utf-8"
-      defer
-    ></script>
+    <script src={"https://" + $page.host + "/nagishli.js"} charset="utf-8" defer></script>
   {/if}
   {#if $page.host == "ms-global.co.il"}
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=UA-172462100-2"
-    ></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-172462100-2"></script>
     <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() {
@@ -127,11 +118,7 @@ onDestroy(() => {
 <ProductPhotoPopup />
 <SuccessPopup />
 <SubAlbumsDisplay />
-<div
-  id="main_wraper"
-  class="bg-wraper"
-  class:make-small={$cartPopupStore.isSideOpen && !$cartPopupStore.sideFloating}
->
+<div id="main_wraper" class="bg-wraper" class:make-small={$cartPopupStore.isSideOpen && !$cartPopupStore.sideFloating}>
   <slot />
 </div>
 

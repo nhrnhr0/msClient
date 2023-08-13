@@ -1,5 +1,4 @@
 import { browser } from "$app/env";
-import { update_cart_to_server } from "$lib/flashy";
 import { writable, get, derived } from "svelte/store";
 import {cartModalStore} from "./../stores/stores";
 

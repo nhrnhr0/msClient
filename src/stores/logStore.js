@@ -7,6 +7,7 @@ import { get } from 'svelte/store';
 
 // browser storage - logStore
 let initLogData = [];
+let interval = null;
 if(browser) {
     initLogData=JSON.parse(localStorage.getItem('log'));
     if(!initLogData) {
@@ -32,7 +33,10 @@ logStore.addLog = (log) => {
 
 if(browser) {
     console.log('logStore.js creating interval loop! SHOULD CALLED ONLY once');
-    setInterval(() => {
+    if (interval) {
+        clearInterval(interval);
+    }
+    interval = setInterval(() => {
         sendLogsToServer();
     }, 1000 * 5 * 5);
 }

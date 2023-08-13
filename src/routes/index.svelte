@@ -179,7 +179,10 @@ onMount(async () => {
 
       &:hover,
       &:focus {
-        background-color: #dfba41;
+        background-color: #39a5bd;
+        a {
+          color: #fff;
+        }
       }
       @media screen and (max-width: 1230px) {
         flex-direction: column-reverse;

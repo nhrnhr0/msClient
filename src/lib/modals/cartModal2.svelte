@@ -46,9 +46,6 @@
 		productCartModalStore
 	} from "./../../stores/stores";
 	import {
-		flashy_purchase
-	} from "$lib/flashy";
-	import {
 		Spinner
 	} from "sveltestrap";
 	import {

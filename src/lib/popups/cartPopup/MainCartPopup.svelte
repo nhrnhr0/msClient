@@ -84,7 +84,6 @@ function cart_submit() {
       .then((data_json) => {
         let cart_id = data_json["cart_id"];
         let product_ids = data_json["product_ids"];
-        //flashy_purchase(cart_id, product_ids);
         if (data_json["status"] == "success") {
           cartPopupStore.close();
           successPopupStore.open();

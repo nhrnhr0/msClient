@@ -1,7 +1,7 @@
 <div class="about">
   <div class="container">
     <div class="hero-description">
-      <h1 class="hero-description-title">ביז ביז</h1>
+      <h1 class="hero-description-title">ביזביז</h1>
       מתמחה באספקת מגוון רחב של מוצרים למוסדות ולחנויות ברחבי הארץ
       <br />
       ביגוד • הנעלה • הלבשה תחתונה • טקסטיל לבית • תיקים ופאוצ'ים • משק בית • חשמל לבית • כלי מטבח • משחקים וצעצועים • תחזוקה לבית • ספורט • גאדג'טים ועוד...

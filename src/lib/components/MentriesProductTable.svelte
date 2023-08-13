@@ -5,11 +5,7 @@ import { getSessionStorageStore } from "src/stores/sessionStorageStore";
 
 import { onMount } from "svelte";
 import { Spinner } from "sveltestrap";
-import {
-  cartDomElementStore,
-  cartStore,
-  dictCartStore,
-} from "src/stores/cartStore";
+import { cartDomElementStore, cartStore, dictCartStore } from "src/stores/cartStore";
 import ColorDisplay from "./ColorDisplay.svelte";
 import { browser } from "$app/env";
 
@@ -42,21 +38,17 @@ function create_mentries() {
     for (let clrIdx = 0; clrIdx < productInfo.colors.length; clrIdx++) {
       tempMentries[productInfo.colors[clrIdx]] = {};
       for (let sizeIdx = 0; sizeIdx < productInfo.sizes.length; sizeIdx++) {
-        tempMentries[productInfo.colors[clrIdx]][productInfo.sizes[sizeIdx]] =
-          {};
+        tempMentries[productInfo.colors[clrIdx]][productInfo.sizes[sizeIdx]] = {};
         if (productInfo.varients.length != 0) {
           for (let varIdx = 0; varIdx < productInfo.varients.length; varIdx++) {
-            tempMentries[productInfo.colors[clrIdx]][
-              productInfo.sizes[sizeIdx]
-            ][productInfo.varients[varIdx].id] = {
+            tempMentries[productInfo.colors[clrIdx]][productInfo.sizes[sizeIdx]][productInfo.varients[varIdx].id] = {
               quantity: undefined,
             };
           }
         } else {
-          tempMentries[productInfo.colors[clrIdx]][productInfo.sizes[sizeIdx]] =
-            {
-              quantity: undefined,
-            };
+          tempMentries[productInfo.colors[clrIdx]][productInfo.sizes[sizeIdx]] = {
+            quantity: undefined,
+          };
         }
       }
     }
@@ -341,11 +333,7 @@ onMount(async () => {
   let ALL_SIZES_promise = getSessionStorageStore("sizes");
   let ALL_COLORS_promise = getSessionStorageStore("colors");
   let ALL_VARIENTS_promise = getSessionStorageStore("varients");
-  Promise.all([
-    ALL_SIZES_promise,
-    ALL_COLORS_promise,
-    ALL_VARIENTS_promise,
-  ]).then((values) => {
+  Promise.all([ALL_SIZES_promise, ALL_COLORS_promise, ALL_VARIENTS_promise]).then((values) => {
     ALL_SIZES = values[0];
     ALL_COLORS = values[1];
     ALL_VARIENTS = values[2];
@@ -404,9 +392,7 @@ function clear_sizes_entries(color_key) {
     } else {
       let sizeKeys = Object.keys(mentries[color_key]);
       for (let size_index = 0; size_index < sizeKeys.length; size_index++) {
-        let verientsKeys = Object.keys(
-          mentries[color_key][sizeKeys[size_index]]
-        );
+        let verientsKeys = Object.keys(mentries[color_key][sizeKeys[size_index]]);
         for (let i = 0; i < verientsKeys.length; i++) {
           mentries[color_key][sizeKeys[size_index]][verientsKeys[i]] = {
             quantity: undefined,
@@ -525,9 +511,7 @@ function input_field_focous(e) {
       <table class="product-table">
         <thead>
           <tr>
-            <th class="const-size-cell" bind:clientWidth={color_th_width}
-              >צבע</th
-            >
+            <th class="const-size-cell" bind:clientWidth={color_th_width}>צבע</th>
             {#if productInfo.varients.length != 0}
               <th class="const-size-cell">מודל</th>
             {/if}
@@ -543,18 +527,12 @@ function input_field_focous(e) {
             <tr>
               <td class="sticky-col">
                 <div class="color-box">
-                  <div
-                    class="inner"
-                    style="background-color: {ALL_COLORS[color].color}"
-                  />
+                  <div class="inner" style="background-color: {ALL_COLORS[color].color}" />
                   {ALL_COLORS[color].name}
                 </div>
               </td>
               {#if productInfo.varients.length != 0}
-                <td
-                  class="sticky-col verient-sticky-col-padd"
-                  style:right={color_th_width + 0.5 + "px"}
-                >
+                <td class="sticky-col verient-sticky-col-padd" style:right={color_th_width + 0.5 + "px"}>
                   {#each productInfo.varients as varient}
                     <div class="varient-box cls-cell">
                       {varient.name}
@@ -578,9 +556,7 @@ function input_field_focous(e) {
                         type="number"
                         placeholder={ALL_SIZES[size].size}
                         bind:value={mentries[color][size].quantity}
-                        title={ALL_SIZES[size].size +
-                          " " +
-                          ALL_COLORS[color].name}
+                        title={ALL_SIZES[size].size + " " + ALL_COLORS[color].name}
                         min="0"
                         max="9999"
                       />
@@ -601,12 +577,7 @@ function input_field_focous(e) {
                           bind:value={mentries[color][size][id].quantity}
                           min="0"
                           max="9999"
-                          title={ALL_SIZES[size].size +
-                            " " +
-                            ALL_COLORS[color].name +
-                            " (" +
-                            name +
-                            ")"}
+                          title={ALL_SIZES[size].size + " " + ALL_COLORS[color].name + " (" + name + ")"}
                         />
                       </div>
                     {/each}
@@ -615,12 +586,7 @@ function input_field_focous(e) {
               {/each}
               <td class="delete-cell-style">
                 <button class="remove-button">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    on:click={clear_sizes_entries(color)}
-                    width="16px"
-                    height="16px"
-                    viewBox="0 0 32 36"
+                  <svg xmlns="http://www.w3.org/2000/svg" on:click={clear_sizes_entries(color)} width="16px" height="16px" viewBox="0 0 32 36"
                     ><path
                       fill="currentColor"
                       d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"
@@ -679,9 +645,7 @@ function input_field_focous(e) {
                     {Object.keys(mentries).reduce((acc, curr) => {
                       let sum = 0;
                       for (let i = 0; i < productInfo.varients.length; i++) {
-                        sum +=
-                          mentries[curr][size_id][productInfo.varients[i].id]
-                            .quantity || 0;
+                        sum += mentries[curr][size_id][productInfo.varients[i].id].quantity || 0;
                       }
                       return acc + sum;
                     }, 0)}
@@ -758,11 +722,7 @@ function input_field_focous(e) {
               <div class="flex-list">
                 {#each productInfo.colors as color_id}
                   <div class="item">
-                    <ColorDisplay
-                      hideName={true}
-                      width={"auto"}
-                      color={get_color_rep(color_id)}
-                    />
+                    <ColorDisplay hideName={true} width={"auto"} color={get_color_rep(color_id)} />
                   </div>
                 {/each}
               </div>
@@ -859,11 +819,7 @@ function input_field_focous(e) {
   width: 75px;
 }
 .wraper {
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.199) 0%,
-    rgba(255, 255, 255, 0.199) 100%
-  );
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.199) 0%, rgba(255, 255, 255, 0.199) 100%);
   //width:100%;
   //height: calc(100% - 30px);
   overflow-y: visible;
@@ -951,6 +907,7 @@ function input_field_focous(e) {
               }
               &:focus {
                 @include bg-gradient();
+                color: var(--text-on-background-color);
               }
 
               //border: 1px solid rgb(85, 85, 85);
@@ -1168,6 +1125,7 @@ function input_field_focous(e) {
       margin-top: 15px;
       .amount-btn {
         @include bg-gradient();
+        color: var(--text-on-background-color);
 
         width: 120px;
         height: 75px;

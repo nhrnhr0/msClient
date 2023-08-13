@@ -27,7 +27,11 @@ function open_cart() {
 <div class="cart-btn-wraper">
   <div id="cart-btn" class="popup-animation cart" on:click={open_cart}>
     <Fa size="2x" icon={faShoppingCart} />
-    {#if $cartStore.length > 0}
+    {#if $cartStore == undefined}
+      <div class="items-counter">
+        <div class="num">0</div>
+      </div>
+    {:else if $cartStore.length > 0}
       <div class="items-counter">
         <div class="num">{$cartStore.length}</div>
       </div>

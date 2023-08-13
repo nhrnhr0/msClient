@@ -39,15 +39,9 @@ export async function load({ fetch, page, session, contex }) {
 </script>
 
 <script>
-import { flashy_page_view } from "$lib/flashy";
-
 export let data;
 onMount(() => {
-  flashy_page_view();
-  sessionStorage.setItem(
-    "onLoadTask",
-    JSON.stringify({ type: "category", data: data })
-  );
+  sessionStorage.setItem("onLoadTask", JSON.stringify({ type: "category", data: data }));
   window.location.replace("/");
 });
 </script>

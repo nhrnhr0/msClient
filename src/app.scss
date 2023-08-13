@@ -123,7 +123,7 @@
   //background-color: #3498db;
   @include bg-gradient();
   box-shadow: 0 5px 10px rgba(0,0,0,.1);
-  color: black;
+  color: var(--text-on-background-color);
   font: 700 20px/1 'Lato', sans-serif;
   text-shadow: 0 1px 1px rgba(0,0,0,.2);
   text-transform: uppercase;
@@ -510,7 +510,7 @@ button:focus:not(:focus-visible) {
       &.gold {
           @include bg-gradient();
           &:hover, &:focus {
-              box-shadow: inset 0 0 0 0.2rem #e0aa3e;
+              // box-shadow: inset 0 0 0 0.2rem #e0aa3e;
           }
           
       }

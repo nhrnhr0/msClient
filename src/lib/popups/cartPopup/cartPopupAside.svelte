@@ -13,10 +13,7 @@ import { goto } from "$app/navigation";
 import { dictCartStore } from "src/stores/cartStore";
 import { get_catalog_album_by_id } from "src/stores/dexie/catalogAlbums";
 import { Spinner } from "sveltestrap";
-import {
-  find_or_get_slim_product_by_id,
-  slimProductsStore,
-} from "src/stores/sessionStorage/slimProducts";
+import { find_or_get_slim_product_by_id, slimProductsStore } from "src/stores/sessionStorage/slimProducts";
 import EditAmountBtn from "./editAmountBtn.svelte";
 import { productPhotoPopupStore } from "src/stores/popups/productPhotoPopupStore";
 import { edit_cart_price_promp } from "src/lib/utils/utils";
@@ -25,10 +22,7 @@ import { fetch_wraper } from "src/api/api";
 import { notifier } from "@beyonk/svelte-notifications";
 
 let sidebar_top = 62;
-let show_prices =
-  $userInfoStore &&
-  $userInfoStore.isLogin &&
-  $userInfoStore.me.show_prices == true;
+let show_prices = $userInfoStore && $userInfoStore.isLogin && $userInfoStore.me.show_prices == true;
 let requesting_cart_copy = false;
 let success_copy_cart = false;
 function shere_cart_btn_clicked(e) {
@@ -75,12 +69,7 @@ async function calc_product_url(product_id) {
 </script>
 
 <div class="sidebar-cart-wraper">
-  <aside
-    on:click|preventDefault={() => {}}
-    transition:fly={{ x: 340 }}
-    id="sidebar-cart"
-    style:top={sidebar_top + "px"}
-  >
+  <aside on:click|preventDefault={() => {}} transition:fly={{ x: 340 }} id="sidebar-cart" style:top={sidebar_top + "px"}>
     <main>
       <button
         class="close-button"
@@ -100,13 +89,7 @@ async function calc_product_url(product_id) {
         }}
       >
         <span>שלח מוצר שלא מצאת</span>
-        <img
-          class="upload"
-          width="45px"
-          height="45px"
-          src="https://res.cloudinary.com/ms-global/image/upload/v1649581221/msAssets/upload_camera_s12a01.png"
-          alt=""
-        />
+        <img class="upload" width="45px" height="45px" src="https://res.cloudinary.com/ms-global/image/upload/v1649581221/msAssets/upload_camera_s12a01.png" alt="" />
       </div>
       <!--
         {#if $userInfoStore.isLogin}
@@ -138,10 +121,7 @@ async function calc_product_url(product_id) {
             >
               <div class="product-link">
                 <span class="product-image">
-                  <img
-                    src="{CLOUDINARY_URL}f_auto,w_auto/{cartProduct.cimage}"
-                    alt={cartProduct.title}
-                  />
+                  <img src="{CLOUDINARY_URL}f_auto,w_auto/{cartProduct.cimage}" alt={cartProduct.title} />
                 </span>
                 <span class="product-details">
                   <h3>{cartProduct.title}</h3>
@@ -163,13 +143,9 @@ async function calc_product_url(product_id) {
                             edit_cart_price_promp(cartProduct.id);
                           }}
                         >
-                          <div class="table-cell table-cell-title">
-                            :'מחיר ליח
-                          </div>
+                          <div class="table-cell table-cell-title">:'מחיר ליח</div>
                           <div class="table-cell">
-                            <span class=""
-                              >{cartStore.getProduct(key).price}₪</span
-                            >
+                            <span class="">{cartStore.getProduct(key).price}₪</span>
                           </div>
                         </div>
                       {/if}
@@ -201,11 +177,7 @@ async function calc_product_url(product_id) {
                     });*/
                 }}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16px"
-                  height="16px"
-                  viewBox="0 0 32 36"
+                <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 32 36"
                   ><path
                     fill="currentColor"
                     d="M30.9 2.3h-8.6L21.6 1c-.3-.6-.9-1-1.5-1h-8.2c-.6 0-1.2.4-1.5.9l-.7 1.4H1.1C.5 2.3 0 2.8 0 3.4v2.2c0 .6.5 1.1 1.1 1.1h29.7c.6 0 1.1-.5 1.1-1.1V3.4c.1-.6-.4-1.1-1-1.1zM3.8 32.8A3.4 3.4 0 0 0 7.2 36h17.6c1.8 0 3.3-1.4 3.4-3.2L29.7 9H2.3l1.5 23.8z"
@@ -229,11 +201,7 @@ async function calc_product_url(product_id) {
         >
           לקופה
         </button>
-        <button
-          class="copy-button"
-          on:click={shere_cart_btn_clicked}
-          title="העתק"
-        >
+        <button class="copy-button" on:click={shere_cart_btn_clicked} title="העתק">
           {#if requesting_cart_copy}
             {#if success_copy_cart}
               ✔️
@@ -686,9 +654,9 @@ div.action-buttons {
     color: $black;
     width: 60%;
     @include bg-gradient();
-
+    color: var(--text-on-background-color);
     &::before {
-      content: url("data:image/svg+xml,%3Csvg fill='%23#{str-replace('' + $black + '', '#', '')}' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath d='M311.03 131.515l-7.071 7.07c-4.686 4.686-4.686 12.284 0 16.971L387.887 239H12c-6.627 0-12 5.373-12 12v10c0 6.627 5.373 12 12 12h375.887l-83.928 83.444c-4.686 4.686-4.686 12.284 0 16.971l7.071 7.07c4.686 4.686 12.284 4.686 16.97 0l116.485-116c4.686-4.686 4.686-12.284 0-16.971L328 131.515c-4.686-4.687-12.284-4.687-16.97 0z'/%3E%3C/svg%3E");
+      content: url("data:image/svg+xml,%3Csvg fill='%23#{str-replace('' + $white + '', '#', '')}' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath d='M311.03 131.515l-7.071 7.07c-4.686 4.686-4.686 12.284 0 16.971L387.887 239H12c-6.627 0-12 5.373-12 12v10c0 6.627 5.373 12 12 12h375.887l-83.928 83.444c-4.686 4.686-4.686 12.284 0 16.971l7.071 7.07c4.686 4.686 12.284 4.686 16.97 0l116.485-116c4.686-4.686 4.686-12.284 0-16.971L328 131.515c-4.686-4.687-12.284-4.687-16.97 0z'/%3E%3C/svg%3E");
       width: 20px;
       height: 14px;
       display: inline-block;

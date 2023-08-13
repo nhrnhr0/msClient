@@ -141,7 +141,7 @@ function setIsBooped(val) {
         class="nav-logo-sm"
         height="32px"
         width="32px"
-        src="https://res.cloudinary.com/ms-global/image/upload/v1661424264/msAssets/icons8-home-50_fnrnhf"
+        src="https://res.cloudinary.com/ms-global/image/upload/f_auto,q_auto/v1/msAssets/fwu4x1gx9jelq1slwxdk"
         title="דף הבית"
         alt="דף הבית"
       />

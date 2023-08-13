@@ -1,4 +1,3 @@
-import { flashy_page_view } from "$lib/flashy";
 
 export function pushProductState(categoryId, productId) {
     pushState(`/category/${categoryId}/products/${productId}`);
@@ -17,5 +16,4 @@ export function pushState(url) {
 
     window.ga('set', 'page', url);
     window.ga('send', 'pageview', url);
-    flashy_page_view();
 }
