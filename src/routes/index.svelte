@@ -79,6 +79,10 @@ onMount(async () => {
     name="description"
     content="אצלנו תמצאו תחת קורת גג אחת ביגוד עבודה איכותי ומגוון, ציוד בטיחות מתקדם להגנה מיטבית על העובדים, נעלי עבודה אמינות ונוחות, מוצרי פרסום ייחודיים עם הדפסת הלוגו שלכם, והדפסות ורקמות איכותיות בטכנולוגיה מתקדמת - הכל כדי לספק לכם פתרון שלם לצרכי העסק."
   />
+  <meta
+    property="og:image"
+    content="https://res.cloudinary.com/ms-global/image/upload/c_scale,w_219,h_219/c_scale,u_v1649744644:msAssets:image_5_qo7yhx.jpg,w_300/v1/bizbiz/z6bktayusj7uc7rl2xgg.png"
+  />
 </svelte:head>
 <Header />
 <LogoSwiper {logos} />
