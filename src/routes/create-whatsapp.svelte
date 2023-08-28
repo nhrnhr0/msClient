@@ -13,21 +13,22 @@ let selectedProducts = [];
 let searchValue = "";
 let show_title = false;
 const IMAGE_LOCATIONS = {
-  0: [{ left: 261, top: 130, max_width: 35 }],
+  0: [{ left: 261, top: 25, max_width: 35 }],
   1: [
-    { left: 4, top: 130, max_width: 35 },
-    { left: 561, top: 130, max_width: 35 },
+    { left: 4, top: 25, max_width: 35 },
+    { left: 561, top: 25, max_width: 35 },
   ],
   2: [
-    { left: 4, top: 130, max_width: 30 },
-    { left: 600, top: 130, max_width: 30 },
-    { left: 290, top: 130, max_width: 30 },
+    { left: 4, top: 55, max_width: 30 },
+    { left: 600, top: 55, max_width: 30 },
+    { left: 290, top: 55, max_width: 30 },
   ],
   3: [
-    { left: 4, top: 0, max_width: 25 },
-    { left: 600, top: 0, max_width: 25 },
-    { left: 150, top: 251, max_width: 20 },
-    { left: 550, top: 251, max_width: 20 },
+    // split evenly in a raw, top: 55 left from 0 - 625 , 4 times, max_width: 22
+    { left: 16, top: 55, max_width: 22 },
+    { left: 230, top: 55, max_width: 22 },
+    { left: 444, top: 55, max_width: 22 },
+    { left: 658, top: 55, max_width: 22 },
   ],
   4: [
     { left: 4, top: 0, max_width: 25 },
@@ -84,6 +85,17 @@ function download() {
 </script>
 
 <svelte:head>
+  <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
+  <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
+  <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
+  <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
+  <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
+  <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
+  <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
+  <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
+  <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
+  <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
+  <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
   <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
   <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
   <!-- link https://html2canvas.hertzen.com/dist/html2canvas.min.js-->
@@ -302,7 +314,7 @@ function download() {
           console.log("on:load: ", e);
         }}
         crossorigin="anonymous"
-        src="https://res.cloudinary.com/ms-global/image/upload/f_auto,q_auto/v1/bizbiz/mj9o1wu9y09v7j5zozin"
+        src="https://res.cloudinary.com/ms-global/image/upload/f_auto,q_auto/v1/bizbiz/whatsapp_base"
         alt=""
       />
 
