@@ -34,7 +34,7 @@ export async function request_logout() {
 }
 export async function request_whoAmI() {
     let response = await my_fetch(WHO_AM_I_URL, {method:"GET"});
-    let json = response.json();
+    let json = await response.json();
     return json;
 }
 

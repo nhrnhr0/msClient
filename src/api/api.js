@@ -139,7 +139,7 @@ export async function get_products_info(product_ids) {
     return response;
 }
 export async function apiGetAllUsers() {
-    return my_fetch(GET_ALL_USERS_URL).then(response => response.json());
+    return await fetch_wraper(GET_ALL_USERS_URL);
 }
 export function apiSendLogs(logs) {
   let body = {
@@ -271,6 +271,7 @@ export function fetch_wraper(
   isRetry = false,
   headers_json = {}
 ) {
+  debugger;
   requestOptions = fetch_wraper_prep(url, requestOptions, headers_json);
   let response;
   try {
@@ -287,6 +288,7 @@ export function fetch_wraper(
   return response
     .then((data) => {
       if (data.status == 401) {
+        debugger;
         let userInfo = get(userInfoStore);
         userInfo.isLogin = false;
         userInfo.access = null;

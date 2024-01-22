@@ -8,6 +8,7 @@ import { Spinner } from "sveltestrap";
 import { cartDomElementStore, cartStore, dictCartStore } from "src/stores/cartStore";
 import ColorDisplay from "./ColorDisplay.svelte";
 import { browser } from "$app/env";
+import { userInfoStore } from "src/stores/stores";
 
 let ALL_SIZES;
 let ALL_COLORS;
@@ -507,6 +508,7 @@ function input_field_focous(e) {
         {/if}
       </h3>
     {/if}
+
     {#if productInfo.show_sizes_popup && mentries}
       <table class="product-table">
         <thead>
@@ -796,6 +798,47 @@ function input_field_focous(e) {
         </div>
       </div>
     {/if}
+    {#if $dictCartStore[productInfo.id] && $userInfoStore?.me?.is_superuser}
+      <!-- bind 2 comments, private and public comments only if admin -->
+      <div class="cart-comments">
+        <div class="form-group">
+          <label for="private_comment">
+            הערה פרטית
+            <span class="small">(לא תוצג ללקוח)</span>
+          </label>
+          <textarea
+            rows="4"
+            cols="50"
+            name="private_comment"
+            on:change={(e) => {
+              let new_val = e.target.value;
+              cartStore.setProductPrivateComment(productInfo.id, new_val);
+              debugger;
+              // $dictCartStore[productInfo.id].comment = new_val;
+              // $dictCartStore[productInfo.id] = { ...$dictCartStore[productInfo.id] };
+            }}
+          />
+        </div>
+        <div class="form-group">
+          <label for="public_comment">
+            הערה ציבורית
+            <span class="small">(תוצג ללקוח)</span>
+          </label>
+          <textarea
+            rows="4"
+            cols="50"
+            name="public_comment"
+            on:change={(e) => {
+              let new_val = e.target.value;
+              cartStore.setProductPublicComment(productInfo.id, new_val);
+              // $dictCartStore[productInfo.id].public_comment = new_val;
+              // $dictCartStore[productInfo.id] = { ...$dictCartStore[productInfo.id] };
+            }}
+          />
+        </div>
+      </div>
+    {/if}
+
     <!--{#if productInfo.show_sizes_popup}-->
   {:else}
     <!--{#if ALL_VARIENTS && ALL_COLORS && ALL_SIZES && productInfo}-->
@@ -806,6 +849,25 @@ function input_field_focous(e) {
 </div>
 
 <style lang="scss">
+.cart-comments {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    textarea {
+      width: 100%;
+      height: 100px;
+      border-radius: 5px;
+      border: 1px solid #777777;
+      padding: 5px;
+      resize: none;
+    }
+  }
+}
 //   input[type=number]::-webkit-inner-spin-button,
 // input[type=number]::-webkit-outer-spin-button {
 //   opacity: 1;

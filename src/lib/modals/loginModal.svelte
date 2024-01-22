@@ -1,10 +1,5 @@
 <script>
-import {
-  albumsJsonStore,
-  campainsStore,
-  userInfoStore,
-  _modal_z_index_incrementor,
-} from "./../../stores/stores";
+import { albumsJsonStore, campainsStore, userInfoStore, _modal_z_index_incrementor } from "./../../stores/stores";
 import { cartStore } from "./../../stores/cartStore";
 import { Input } from "sveltestrap";
 import Spinner from "svelte-spinner";
@@ -54,13 +49,11 @@ function login() {
     .then(async (data) => {
       if (data["detail"]) {
         error_detail = data["detail"];
-      } else if (
-        data["non_field_errors"] &&
-        data["non_field_errors"].length > 0
-      ) {
+      } else if (data["non_field_errors"] && data["non_field_errors"].length > 0) {
         error_detail = data["non_field_errors"][0];
       } else {
         //localStorage.setItem('refresh', data.refresh);
+        debugger;
         $userInfoStore.access = data.token;
         let me = data.me;
         $userInfoStore.me = me;
@@ -115,66 +108,32 @@ export function isOpen() {
 let show_password = false;
 </script>
 
-<div
-  style="z-index: {modal_zIndex};"
-  id="loginModal"
-  class="modal"
-  class:active={isModalOpen}
->
-  <div
-    style="z-index: {modal_zIndex + 5};"
-    class="overlay"
-    on:click={toggleModal}
-  />
+<div style="z-index: {modal_zIndex};" id="loginModal" class="modal" class:active={isModalOpen}>
+  <div style="z-index: {modal_zIndex + 5};" class="overlay" on:click={toggleModal} />
   <div style="z-index: {modal_zIndex + 10};" class="modal_content">
     <div class="modal-header">
-      <button title="Close" on:click={toggleModal} class="close-btn right"
-        >x</button
-      >
+      <button title="Close" on:click={toggleModal} class="close-btn right">x</button>
       <h1>התחברות</h1>
-      <button title="Close" on:click={toggleModal} class="close-btn left"
-        >x</button
-      >
+      <button title="Close" on:click={toggleModal} class="close-btn left">x</button>
     </div>
 
     <div class="modal-body">
       <form action="" method="POST">
-        <Input
-          name="username"
-          bind:value={username}
-          placeholder="שם משתמש"
-          type="text"
-        />
-        <Input
-          name="password"
-          data="current-password"
-          bind:value={password}
-          placeholder="סיסמא"
-          type={show_password ? "text" : "password"}
-        />
+        <Input name="username" bind:value={username} placeholder="שם משתמש" type="text" />
+        <Input name="password" data="current-password" bind:value={password} placeholder="סיסמא" type={show_password ? "text" : "password"} />
         <!-- checkbox to show password when typing -->
 
         <div class="checkbox form-control">
           <label>
             הצג סיסמא
-            <input
-              type="checkbox"
-              style="width: 20px;height: 20px;"
-              bind:checked={show_password}
-            />
+            <input type="checkbox" style="width: 20px;height: 20px;" bind:checked={show_password} />
           </label>
         </div>
 
         <button class="btn btn-dark submit-btn" on:click|preventDefault={login}>
           {#if is_requesting}
             <div class="loader-wraper">
-              <Spinner
-                size="40"
-                speed="750"
-                color="#A82124"
-                thickness="2"
-                gap="40"
-              />
+              <Spinner size="40" speed="750" color="#A82124" thickness="2" gap="40" />
             </div>
           {/if}
           <div class="text">התחבר</div>

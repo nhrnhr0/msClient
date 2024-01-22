@@ -2,6 +2,7 @@ import { browser } from "$app/env";
 import { get} from 'svelte/store';
 import { BASE_URL } from "src/api/consts";
 import { userInfoStore } from "src/stores/stores";
+import { get_csrf_token } from "src/api/api";
 
 
 
@@ -52,22 +53,23 @@ export function my_fetch(url, options, custom_fetch=undefined, retry_on_failure=
 
 function defult_request_options(requestOptions,headers_json= {}) {
         //console.log('fetch_wraper: ', url);
+        debugger;
         headers_json= Object.assign({}, {
             'Content-Type': 'application/json',
             'Content-Type': 'application/json; charset=UTF-8',
         },headers_json);
         
-        /*if(requestOptions && requestOptions.method != "GET") {
+        if(requestOptions && requestOptions.method != "GET" && browser) {
             headers_json['X-CSRFToken']= get_csrf_token();
         }
         else {
-        }*/
-        // if (browser) {
-        //     if (get(userInfoStore)?.access) {
-        //         headers_json['Authorization'] = "Token " +get(userInfoStore).access;
-        //     }
-        // }
-        headers_json['Authorization'] = undefined;
+        }
+        if (browser) {
+            if (get(userInfoStore)?.access) {
+                headers_json['Authorization'] = "Token " +get(userInfoStore).access;
+            }
+        }
+        // headers_json['Authorization'] = undefined;
         var myHeaders = new Headers(headers_json);
         var requestOptions = Object.assign({}, {
                 method: "GET",

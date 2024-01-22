@@ -76,6 +76,24 @@ function createCartStore() {
     subscribe,
     //set,
     //update,
+    setProductPrivateComment: function(productId, comment) {
+      update((cart) => {
+        let index = cart.findIndex((item) => item.id == productId);
+        if (index != -1) {
+          cart[index].private_comment = comment;
+        }
+        return cart;
+      });
+    },
+    setProductPublicComment: function(productId, comment) {
+      update((cart) => {
+        let index = cart.findIndex((item) => item.id == productId);
+        if (index != -1) {
+          cart[index].public_comment = comment;
+        }
+        return cart;
+      });
+    },
     clearCart: () => {
       set([]);
     },
